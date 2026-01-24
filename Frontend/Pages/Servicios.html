@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios | Ruta Turística Caño Salao | Proyecto Factible</title>
+    <meta name="description" content="Descubre nuestros servicios turísticos en Caño Salao: tours por manglares, avistamiento de aves, experiencias pesqueras y más. Proyecto factible de turismo sostenible">
+    <meta name="keywords" content="servicios turísticos Caño Salao, tours manglares Venezuela, ecoturismo Barcelona, proyecto factible, turismo sostenible, experiencias acuáticas">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+    
+    <!-- Cargar CSS principal -->
+    <link rel="stylesheet" href="../index.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        /* Estilos adicionales específicos para Servicios */
+        .page-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .hero-bg.loaded {
+            opacity: 1;
+        }
+        
+        .page-hero .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 1rem;
+        }
+        
+        .page-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .page-hero .hero-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .breadcrumb {
+            background: var(--color-light);
+            padding: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--color-accent);
+        }
+        
+        .breadcrumb span {
+            color: var(--color-dark);
+            font-weight: 500;
+        }
+        
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .service-card-header {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .service-card-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        
+        .service-card:hover .service-card-header img {
+            transform: scale(1.1);
+        }
+        
+        .service-card-price {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .service-card-content {
+            padding: 1.5rem;
+        }
+        
+        .service-card-content h3 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .service-features {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+        
+        .service-features li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .service-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        /* Estilo mejorado para botones dentro de las tarjetas */
+        .service-card-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: var(--color-primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: 0.95rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .service-card-btn:hover {
+            background: #0c3254;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .service-card-btn.secondary {
+            background: transparent;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+        
+        .service-card-btn.secondary:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .service-card-btn.accent {
+            background: var(--color-accent);
+        }
+        
+        .service-card-btn.accent:hover {
+            background: #d81b60;
+        }
+        
+        .info-box {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .info-item h4 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--color-light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .info-item ul {
+            padding-left: 1.2rem;
+        }
+        
+        .info-item li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 2;
+        }
+        
+        .featured-card {
+            border: 2px solid var(--color-accent);
+            transform: scale(1.02);
+        }
+        
+        @media (max-width: 768px) {
+            .page-hero {
+                min-height: 60vh;
+                padding: 3rem 0;
+            }
+            
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .service-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
+                </div>
+
+                <!-- Contenedor para centrar la navegación -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                            <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                            <li><a href="Servicios.html" class="active"><i class="bi bi-list-check"></i> Servicios</a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Botón Iniciar Sesión a la derecha -->
+                <div class="auth-section">
+                    <a href="#" class="login-btn">
+                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                    </a>
+                </div>
+
+                <button class="menu-toggle" aria-label="Menú">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section con imagen de fondo -->
+    <section class="page-hero">
+        <div class="hero-bg" id="heroBackgroundServices"></div>
+        <div class="container">
+            <h1 class="times-font">Nuestros Servicios</h1>
+            <p class="times-font hero-subtitle">
+                Experiencias turísticas únicas y personalizadas como parte de nuestro proyecto factible de desarrollo sostenible
+            </p>
+            <a href="#tours" class="btn" style="background: var(--color-accent); padding: 1rem 2.5rem; font-size: 1.1rem;">
+                <i class="bi bi-arrow-down-circle"></i> Ver Tours
+            </a>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
+            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
+            <span>Servicios</span>
+        </div>
+    </section>
+
+    <!-- Page Content -->
+    <section id="servicios" style="padding: 4rem 0; background: #f8f9fa;">
+        <div class="container">
+            <!-- Introducción -->
+            <div class="section-title" style="margin-bottom: 3rem;">
+                <h2 class="times-font"><i class="bi bi-list-check"></i> Paquetes Turísticos</h2>
+                <p>Como parte de nuestro proyecto factible de desarrollo comunitario, ofrecemos servicios diseñados para diferentes intereses y necesidades</p>
+            </div>
+
+            <div class="history-content" style="margin-bottom: 4rem; background: white; padding: 2rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+                <div class="history-text">
+                    <h3 class="times-font" style="color: var(--color-primary); margin-bottom: 1rem;">Sobre Nuestros Servicios</h3>
+                    <p style="margin-bottom: 1rem;">Nuestros servicios han sido desarrollados mediante un proceso de investigación de campo y diagnóstico participativo, identificando las necesidades reales del sector turístico local y las potencialidades de nuestra comunidad.</p>
+                    <p style="margin-bottom: 1.5rem;">Desde recorridos básicos hasta experiencias personalizadas, tenemos la opción perfecta para tu aventura en Caño Salao. Cada servicio incluye una contribución al fondo de desarrollo comunitario.</p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="Contacto.html" class="btn" style="background: var(--color-primary);">
+                            <i class="bi bi-calendar-check"></i> Contactar para Reservar
+                        </a>
+                        <a href="#tours" class="btn" style="background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary);">
+                            <i class="bi bi-eye"></i> Ver Tours
+                        </a>
+                    </div>
+                </div>
+                <div class="history-image">
+                    <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Manglares de Caño Salao" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Tabla de Precios -->
+            <div id="tours" style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h2 class="times-font"><i class="bi bi-tags"></i> Nuestros Tours</h2>
+                    <p>Selecciona la experiencia que mejor se adapte a tus intereses. Todos incluyen contribución al desarrollo comunitario.</p>
+                </div>
+                
+                <div class="service-grid">
+                    <!-- Tour Básico -->
+                    <div class="service-card">
+                        <div class="service-card-header">
+                            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tour Básico" loading="lazy">
+                            <div class="service-card-price">$25/persona</div>
+                        </div>
+                        <div class="service-card-content">
+                            <h3 class="times-font"><i class="bi bi-star" style="color: #FF9800;"></i> Tour Básico</h3>
+                            <p style="color: #666; margin-bottom: 1.5rem; line-height: 1.6;">Recorrido introductorio perfecto para conocer Caño Salao y sus manglares.</p>
+                            <ul class="service-features">
+                                <li>Recorrido de 2 horas por manglares</li>
+                                <li>Guía local bilingüe</li>
+                                <li>Avistamiento de aves</li>
+                                <li>Seguro básico y refrigerio</li>
+                                <li>Equipo de seguridad completo</li>
+                                <li>Contribución al fondo comunitario</li>
+                            </ul>
+                            <a href="Contacto.html" class="service-card-btn">
+                                <i class="bi bi-calendar-plus"></i> Reservar Este Tour
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Tour Completo (Más Popular) -->
+                    <div class="service-card featured-card">
+                        <div class="service-card-header">
+                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tour Completo" loading="lazy">
+                            <div class="service-card-price">$45/persona</div>
+                            <div class="featured-badge">Más Popular</div>
+                        </div>
+                        <div class="service-card-content">
+                            <h3 class="times-font"><i class="bi bi-award" style="color: var(--color-accent);"></i> Tour Completo</h3>
+                            <p style="color: #666; margin-bottom: 1.5rem; line-height: 1.6;">Experiencia completa que incluye manglares, ruinas históricas y gastronomía local.</p>
+                            <ul class="service-features">
+                                <li>Recorrido de 4 horas completo</li>
+                                <li>Visita a manglares y ruinas históricas</li>
+                                <li>Guía especializado y almuerzo típico</li>
+                                <li>Fotografías del recorrido</li>
+                                <li>Seguro completo y equipo premium</li>
+                                <li>Mayor contribución comunitaria</li>
+                            </ul>
+                            <a href="Contacto.html" class="service-card-btn accent">
+                                <i class="bi bi-calendar-plus"></i> Reservar Este Tour
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Tour Personalizado -->
+                    <div class="service-card">
+                        <div class="service-card-header">
+                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tour Personalizado" loading="lazy">
+                            <div class="service-card-price">Desde $65</div>
+                        </div>
+                        <div class="service-card-content">
+                            <h3 class="times-font"><i class="bi bi-stars" style="color: #9C27B0;"></i> Tour Personalizado</h3>
+                            <p style="color: #666; margin-bottom: 1.5rem; line-height: 1.6;">Experiencia exclusiva diseñada según tus intereses específicos y necesidades.</p>
+                            <ul class="service-features">
+                                <li>Duración flexible (4-8 horas)</li>
+                                <li>Itinerario y guía privado</li>
+                                <li>Almuerzo gourmet y transporte privado</li>
+                                <li>Servicio fotográfico profesional</li>
+                                <li>Seguro premium y atención VIP</li>
+                                <li>Apoyo directo a proyectos comunitarios</li>
+                            </ul>
+                            <a href="Contacto.html" class="service-card-btn secondary">
+                                <i class="bi bi-chat-dots"></i> Consultar Personalización
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Servicios Especializados -->
+            <div style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h2 class="times-font"><i class="bi bi-gear"></i> Servicios Especializados</h2>
+                    <p>Servicios diseñados para maximizar el impacto positivo en la comunidad mientras ofrecemos experiencias auténticas</p>
+                </div>
+                
+                <div class="factible-features" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-ship" style="color: #2196F3;"></i>
+                        </div>
+                        <h3 class="times-font">Paseos en Bote</h3>
+                        <p>Recorridos guiados por los canales y manglares de la región en embarcaciones seguras y cómodas. Nuestros botes están equipados con chalecos salvavidas y son operados por capitanes experimentados de la comunidad local.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-bird" style="color: #4CAF50;"></i>
+                        </div>
+                        <h3 class="times-font">Avistamiento de Aves</h3>
+                        <p>Observa la diversidad de aves que habitan en los ecosistemas costeros de Caño Salao. Contamos con guías especializados en ornitología que te ayudarán a identificar las diferentes especies en su hábitat natural.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-fish" style="color: #FF9800;"></i>
+                        </div>
+                        <h3 class="times-font">Experiencia Pesquera</h3>
+                        <p>Vive la experiencia de la pesca artesanal junto a los pescadores locales. Aprende técnicas tradicionales y disfruta de la pesca sostenible en aguas del Mar Caribe, apoyando directamente a las familias pesqueras.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-book" style="color: #9C27B0;"></i>
+                        </div>
+                        <h3 class="times-font">Turismo Educativo</h3>
+                        <p>Programas especiales para estudiantes y grupos interesados en la ecología y cultura local. Incluye material educativo y actividades interactivas desarrolladas como parte de nuestro proyecto factible.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-camera" style="color: #E91E63;"></i>
+                        </div>
+                        <h3 class="times-font">Servicio Fotográfico</h3>
+                        <p>Captura los mejores momentos de tu experiencia con nuestro servicio fotográfico profesional. Recibe fotografías digitales de alta calidad como recuerdo de tu visita, realizadas por talento local.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-egg-fried" style="color: #795548;"></i>
+                        </div>
+                        <h3 class="times-font">Gastronomía Local</h3>
+                        <p>Disfruta de la auténtica cocina local preparada con ingredientes frescos de la región. Opciones vegetarianas y para dietas especiales disponibles con reserva previa, apoyando a productores locales.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Adicional -->
+            <div class="info-box">
+                <div class="section-title">
+                    <h2 class="times-font"><i class="bi bi-info-circle"></i> Información Adicional</h2>
+                    <p>Todo lo que necesitas saber para planificar tu visita a Caño Salao</p>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h4 class="times-font">¿Qué incluye?</h4>
+                        <ul>
+                            <li>Guías locales certificados</li>
+                            <li>Equipo de seguridad completo</li>
+                            <li>Seguro de responsabilidad civil</li>
+                            <li>Material informativo educativo</li>
+                            <li>Atención personalizada 24/7</li>
+                            <li>Contribución al fondo comunitario</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-item">
+                        <h4 class="times-font">Recomendaciones</h4>
+                        <ul>
+                            <li>Protector solar y repelente</li>
+                            <li>Ropa cómoda y ligera</li>
+                            <li>Calzado adecuado para caminar</li>
+                            <li>Cámara fotográfica o teléfono</li>
+                            <li>Binoculares (opcional pero útil)</li>
+                            <li>Botella de agua reutilizable</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-item">
+                        <h4 class="times-font">Políticas</h4>
+                        <ul>
+                            <li>Reserva con 24h de anticipación</li>
+                            <li>Cancelación gratuita 48h antes</li>
+                            <li>Pago seguro en línea/efectivo</li>
+                            <li>Grupos mínimos de 4 personas</li>
+                            <li>Accesibilidad limitada - consultar</li>
+                            <li>Compromiso con turismo sostenible</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Empresa de producción social de transporte turístico acuático comprometida con el desarrollo sostenible de la comunidad y la protección del medio ambiente.</p>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                        <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                        <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-people"></i> Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <p style="font-size: 0.9rem;"><i class="bi bi-telephone"></i> +58 412-205-6558</p>
+                        <p style="font-size: 0.9rem;"><i class="bi bi-envelope"></i> info@canosalaotours.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p><i class="bi bi-c-circle"></i> 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Menu toggle para dispositivos móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const mainNav = document.querySelector('#main-navigation');
+            
+            if (menuToggle && mainNav) {
+                menuToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('show');
+                    const icon = this.querySelector('i');
+                    icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
+                    
+                    // Actualizar atributo ARIA
+                    const isExpanded = mainNav.classList.contains('show');
+                    this.setAttribute('aria-expanded', isExpanded);
+                });
+            }
+            
+            // Cargar imagen de fondo del hero
+            function loadHeroImage() {
+                const heroBg = document.getElementById('heroBackgroundServices');
+                if (!heroBg) return;
+                
+                // Usar la misma imagen que en index.html para consistencia
+                const heroImg = new Image();
+                heroImg.src = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80';
+                
+                heroImg.onload = function() {
+                    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${this.src}')`;
+                    heroBg.classList.add('loaded');
+                };
+                
+                // Fallback si la imagen no carga
+                heroImg.onerror = function() {
+                    heroBg.style.backgroundImage = `linear-gradient(135deg, #1a5276 0%, #2c82c9 100%)`;
+                    heroBg.classList.add('loaded');
+                };
+            }
+            
+            // Iniciar carga de imagen
+            loadHeroImage();
+            
+            // Animación de scroll para enlaces internos
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: target.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Animaciones para elementos al hacer scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar todas las secciones
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

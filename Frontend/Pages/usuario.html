@@ -1,0 +1,2957 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuenta | Ruta Turística Caño Salao | Barcelona, Venezuela</title>
+    <meta name="description" content="Gestiona tu cuenta, reservas y preferencias en la Ruta Turística Marítima Caño Salao.">
+    <meta name="keywords" content="cuenta usuario, mis reservas, perfil, Caño Salao, turismo Venezuela">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+    
+    <!-- Estilos críticos inline -->
+    <style>
+        /* SOLO ESTILOS CRÍTICOS PARA RENDER INICIAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-out forwards;
+            background: #fff;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header mínimo para render inicial */
+        header {
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.75rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+        
+        .text-orange {
+            color: #FF8C42;
+        }
+        
+        /* Loader minimalista */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Prevenir scroll durante carga */
+        body.loading {
+            overflow: hidden;
+        }
+    </style>
+    
+    <!-- Cargar CSS principal de forma no bloqueante -->
+    <link rel="stylesheet" href="../index.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../index.css"></noscript>
+    
+    <!-- Bootstrap Icons diferido -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+    
+    <style>
+        /* ========== ESTILOS ESPECÍFICOS PARA USUARIO ========== */
+        :root {
+            --user-primary: #2c82c9;
+            --user-secondary: #1a5276;
+            --user-accent: #FF8C42;
+            --user-success: #27ae60;
+            --user-warning: #f39c12;
+            --user-danger: #e74c3c;
+            --user-light: #f8f9fa;
+            --user-dark: #2c3e50;
+        }
+        
+        .page-hero {
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+        }
+        
+        .page-hero .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 1rem;
+        }
+        
+        .page-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .page-hero .hero-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .breadcrumb {
+            background: var(--user-light);
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .breadcrumb a {
+            color: var(--user-primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--user-accent);
+        }
+        
+        .breadcrumb span {
+            color: var(--user-dark);
+            font-weight: 500;
+        }
+        
+        /* Contenedor principal de usuario */
+        .user-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            min-height: 60vh;
+        }
+        
+        .user-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+        }
+        
+        /* Sidebar de usuario */
+        .user-sidebar {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: fit-content;
+        }
+        
+        .user-profile-card {
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--user-primary) 0%, var(--user-secondary) 100%);
+            color: white;
+        }
+        
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: white;
+            color: var(--user-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+        
+        .user-name {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .user-email {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .user-role-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .user-menu {
+            padding: 20px 0;
+        }
+        
+        .user-menu-item {
+            display: block;
+            padding: 15px 30px;
+            text-decoration: none;
+            color: var(--user-dark);
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .user-menu-item:hover {
+            background: var(--user-light);
+            color: var(--user-primary);
+        }
+        
+        .user-menu-item.active {
+            background: var(--user-light);
+            color: var(--user-primary);
+            border-left-color: var(--user-accent);
+        }
+        
+        .user-menu-item i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            color: var(--user-danger);
+            cursor: pointer;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        /* Contenido principal */
+        .user-content {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .user-section {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .user-section.active {
+            display: block;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-header h2 {
+            color: var(--user-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-user {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--user-primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .btn-user:hover {
+            background: var(--user-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-user-secondary {
+            background: var(--user-light);
+            color: var(--user-dark);
+            border: 1px solid #ddd;
+        }
+        
+        .btn-user-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .btn-user-danger {
+            background: var(--user-danger);
+        }
+        
+        .btn-user-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-user-success {
+            background: var(--user-success);
+        }
+        
+        .btn-user-success:hover {
+            background: #219653;
+        }
+        
+        /* Estadísticas rápidas - VERSIÓN ADMIN */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .admin-stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .admin-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .admin-stat-card i {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--user-primary);
+        }
+        
+        .admin-stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--user-dark);
+            margin: 10px 0;
+        }
+        
+        .admin-stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Acciones rápidas para admin */
+        .admin-quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .quick-action-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .quick-action-card:hover {
+            border-color: var(--user-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(44, 130, 201, 0.1);
+        }
+        
+        .quick-action-card i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--user-primary);
+        }
+        
+        .quick-action-card h3 {
+            margin: 10px 0;
+            color: var(--user-dark);
+        }
+        
+        .quick-action-card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        /* Tablas de usuario */
+        .user-table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .user-table thead {
+            background: var(--user-light);
+        }
+        
+        .user-table th {
+            padding: 15px;
+            text-align: left;
+            color: var(--user-dark);
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .user-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+        
+        .user-table tbody tr:hover {
+            background: var(--user-light);
+        }
+        
+        /* Badges de estado */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-completed {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        /* Formularios de usuario */
+        .user-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--user-dark);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--user-primary);
+            box-shadow: 0 0 0 3px rgba(44, 130, 201, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Alertas */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Reservas vacías */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .page-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            background: var(--user-light);
+        }
+        
+        .page-btn.active {
+            background: var(--user-primary);
+            color: white;
+            border-color: var(--user-primary);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Sección de cambio de contraseña */
+        .password-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid var(--user-primary);
+        }
+        
+        .password-section h3 {
+            color: var(--user-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .user-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .user-sidebar {
+                order: 2;
+            }
+            
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .admin-quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .user-container {
+                padding: 20px 15px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-stats, .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-table {
+                font-size: 0.8rem;
+            }
+            
+            .user-table th,
+            .user-table td {
+                padding: 10px;
+            }
+            
+            .admin-quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .user-profile-card {
+                padding: 20px;
+            }
+            
+            .user-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 28px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-user {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Modal de confirmación */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .modal-header {
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: var(--user-dark);
+        }
+        
+        .modal-body {
+            margin-bottom: 30px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        /* Separador de secciones */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 40px 0;
+        }
+        
+        /* Tabla de usuarios para admin */
+        .admin-users-table th {
+            background: rgba(44, 130, 201, 0.1);
+            color: var(--user-primary);
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .role-admin {
+            background: rgba(44, 130, 201, 0.2);
+            color: var(--user-primary);
+        }
+        
+        .role-user {
+            background: rgba(44, 130, 201, 0.1);
+            color: var(--user-secondary);
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Loader para experiencia inicial -->
+    <div id="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
+                </div>
+
+                <!-- Contenedor para centrar la navegación -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                            <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                            <li><a href="usuario.html" class="active"><i class="bi bi-person-circle"></i> Mi Cuenta</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Botón Mi Cuenta a la derecha -->
+                <div class="auth-section">
+                    <a href="usuario.html" class="login-btn">
+                        <i class="bi bi-person-circle"></i> Mi Cuenta
+                    </a>
+                </div>
+
+                <button class="menu-toggle" aria-label="Menú">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section - Se actualizará dinámicamente según el rol -->
+    <section class="page-hero" id="page-hero">
+        <div class="container">
+            <h1 class="times-font" id="hero-title">Mi Cuenta</h1>
+            <p class="times-font hero-subtitle" id="hero-subtitle">
+                Gestiona tu perfil y preferencias en Caño Salao
+            </p>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
+            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
+            <span id="breadcrumb-text">Mi Cuenta</span>
+        </div>
+    </section>
+
+    <!-- Contenido Principal -->
+    <main class="user-container">
+        <div class="user-layout">
+            <!-- Sidebar - Se actualizará dinámicamente según el rol -->
+            <aside class="user-sidebar">
+                <div class="user-profile-card" id="profile-card">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <h3 class="user-name" id="user-name">Cargando...</h3>
+                    <p class="user-email" id="user-email">cargando@ejemplo.com</p>
+                    <div class="user-role-badge" id="user-role-badge">Usuario</div>
+                </div>
+                
+                <nav class="user-menu" id="user-menu">
+                    <!-- Menú para usuario normal -->
+                    <div id="normal-user-menu">
+                        <a href="#" class="user-menu-item active" data-section="dashboard">
+                            <i class="bi bi-speedometer2"></i> Panel Principal
+                        </a>
+                        <a href="#" class="user-menu-item" data-section="bookings">
+                            <i class="bi bi-calendar-check"></i> Mis Reservas
+                        </a>
+                        <a href="#" class="user-menu-item" data-section="profile">
+                            <i class="bi bi-person"></i> Mi Perfil
+                        </a>
+                        <a href="#" class="user-menu-item" data-section="preferences">
+                            <i class="bi bi-gear"></i> Preferencias
+                        </a>
+                        <a href="#" class="user-menu-item" data-section="help">
+                            <i class="bi bi-question-circle"></i> Ayuda
+                        </a>
+                    </div>
+                    
+                    <!-- Menú para administrador -->
+                    <div id="admin-menu" style="display: none;">
+                        <a href="#" class="user-menu-item active" data-section="admin-dashboard">
+                            <i class="bi bi-speedometer2"></i> Panel Administrativo
+                        </a>
+                        <a href="admin.html" class="user-menu-item">
+                            <i class="bi bi-gear"></i> Panel de Control Completo
+                        </a>
+                        <a href="#" class="user-menu-item" data-section="admin-profile">
+                            <i class="bi bi-person-badge"></i> Perfil de Administrador
+                        </a>
+                        <a href="#" class="user-menu-item" data-section="admin-users">
+                            <i class="bi bi-people"></i> Usuarios del Sistema
+                        </a>
+                    </div>
+                    
+                    <button class="logout-btn" id="logout-btn">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Contenido Principal -->
+            <div class="user-content">
+                <!-- Alertas -->
+                <div id="user-alert" class="alert" style="display: none;"></div>
+                
+                <!-- ========== SECCIONES PARA USUARIO NORMAL ========== -->
+                
+                <!-- Sección: Dashboard (Usuario Normal) -->
+                <div id="dashboard" class="user-section active">
+                    <div class="section-header">
+                        <h2><i class="bi bi-speedometer2"></i> Panel Principal</h2>
+                        <button class="btn-user" onclick="refreshDashboard()">
+                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+                        </button>
+                    </div>
+                    
+                    <!-- Estadísticas -->
+                    <div class="user-stats">
+                        <div class="stat-card">
+                            <i class="bi bi-calendar-check"></i>
+                            <div class="stat-number" id="total-bookings">0</div>
+                            <div class="stat-label">Reservas Totales</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="bi bi-clock-history"></i>
+                            <div class="stat-number" id="pending-bookings">0</div>
+                            <div class="stat-label">Pendientes</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="bi bi-check-circle"></i>
+                            <div class="stat-number" id="confirmed-bookings">0</div>
+                            <div class="stat-label">Confirmadas</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <i class="bi bi-currency-dollar"></i>
+                            <div class="stat-number" id="total-spent">$0</div>
+                            <div class="stat-label">Total Gastado</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reservas Recientes -->
+                    <div class="section-header">
+                        <h2><i class="bi bi-clock-history"></i> Reservas Recientes</h2>
+                        <button class="btn-user" onclick="showSection('bookings')">
+                            <i class="bi bi-eye"></i> Ver Todas
+                        </button>
+                    </div>
+                    
+                    <div class="user-table-container">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Tour</th>
+                                    <th>Fecha</th>
+                                    <th>Personas</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-bookings">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <div class="spinner"></div>
+                                        <p>Cargando reservas...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Acciones Rápidas -->
+                    <div class="section-header" style="margin-top: 40px;">
+                        <h2><i class="bi bi-lightning"></i> Acciones Rápidas</h2>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="btn-user" onclick="nuevaReserva()">
+                            <i class="bi bi-calendar-plus"></i> Nueva Reserva
+                        </button>
+                        <button class="btn-user btn-user-secondary" onclick="showSection('profile')">
+                            <i class="bi bi-pencil"></i> Editar Perfil
+                        </button>
+                        <button class="btn-user btn-user-secondary" onclick="verMisReservas()">
+                            <i class="bi bi-list-check"></i> Ver Todas las Reservas
+                        </button>
+                        <button class="btn-user btn-user-success" onclick="contactarSoporte()">
+                            <i class="bi bi-chat-dots"></i> Contactar Soporte
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Sección: Mis Reservas (Usuario Normal) -->
+                <div id="bookings" class="user-section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-calendar-check"></i> Mis Reservas</h2>
+                        <button class="btn-user" onclick="nuevaReserva()">
+                            <i class="bi bi-plus-circle"></i> Nueva Reserva
+                        </button>
+                    </div>
+                    
+                    <!-- Filtros -->
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <select id="booking-filter" class="form-control" style="max-width: 200px;" onchange="filterBookings()">
+                            <option value="all">Todas las reservas</option>
+                            <option value="pending">Pendientes</option>
+                            <option value="confirmed">Confirmadas</option>
+                            <option value="cancelled">Canceladas</option>
+                            <option value="completed">Completadas</option>
+                        </select>
+                        
+                        <input type="text" id="booking-search" class="form-control" placeholder="Buscar por código o tour..." style="flex: 1;" onkeyup="searchBookings()">
+                    </div>
+                    
+                    <!-- Tabla de reservas -->
+                    <div class="user-table-container">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Tour</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Personas</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body">
+                                <tr>
+                                    <td colspan="8" class="empty-state">
+                                        <div class="spinner"></div>
+                                        <p>Cargando reservas...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginación -->
+                    <div class="pagination" id="bookings-pagination" style="display: none;">
+                        <button class="page-btn" onclick="prevBookingsPage()"><i class="bi bi-chevron-left"></i></button>
+                        <span id="bookings-page-info" style="padding: 8px 15px;">Página 1</span>
+                        <button class="page-btn" onclick="nextBookingsPage()"><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Sección: Mi Perfil (Usuario Normal) -->
+                <div id="profile" class="user-section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-person"></i> Mi Perfil</h2>
+                    </div>
+                    
+                    <form id="profile-form" class="user-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="bi bi-person"></i> Nombre Completo *</label>
+                                <input type="text" id="profile-name" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-envelope"></i> Correo Electrónico *</label>
+                                <input type="email" id="profile-email" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="bi bi-telephone"></i> Teléfono</label>
+                                <input type="tel" id="profile-phone" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-calendar"></i> Fecha de Nacimiento</label>
+                                <input type="date" id="profile-birthdate" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="bi bi-geo-alt"></i> Dirección</label>
+                            <input type="text" id="profile-address" class="form-control" placeholder="Dirección completa">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="bi bi-chat-text"></i> Sobre mí</label>
+                            <textarea id="profile-bio" class="form-control" rows="4" placeholder="Cuéntanos algo sobre ti..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn-user btn-user-secondary" onclick="cancelarEdicion()">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </button>
+                            <button type="submit" class="btn-user" id="save-profile-btn">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Sección de Cambio de Contraseña -->
+                    <div class="password-section">
+                        <h3><i class="bi bi-shield-lock"></i> Cambiar Contraseña</h3>
+                        
+                        <form id="password-form" class="user-form">
+                            <div class="form-group">
+                                <label><i class="bi bi-key"></i> Contraseña Actual *</label>
+                                <input type="password" id="current-password" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-key-fill"></i> Nueva Contraseña *</label>
+                                <input type="password" id="new-password" class="form-control" required minlength="6">
+                                <small style="color: #666; display: block; margin-top: 5px;">Mínimo 6 caracteres</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-key-fill"></i> Confirmar Nueva Contraseña *</label>
+                                <input type="password" id="confirm-password" class="form-control" required>
+                                <small style="color: #666; display: block; margin-top: 5px;">Repite la nueva contraseña</small>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-user" id="save-password-btn">
+                                    <i class="bi bi-check-circle"></i> Cambiar Contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Sección: Preferencias (Usuario Normal) -->
+                <div id="preferences" class="user-section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-gear"></i> Preferencias</h2>
+                    </div>
+                    
+                    <form id="preferences-form" class="user-form">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="pref-newsletter" checked> 
+                                <i class="bi bi-envelope"></i> Recibir newsletter y promociones
+                            </label>
+                            <small style="display: block; color: #666; margin-top: 5px;">
+                                Recibe correos con novedades, ofertas especiales y consejos de viaje
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="pref-notifications" checked> 
+                                <i class="bi bi-bell"></i> Notificaciones por email
+                            </label>
+                            <small style="display: block; color: #666; margin-top: 5px;">
+                                Recibe notificaciones sobre el estado de tus reservas y recordatorios
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="pref-sms" checked> 
+                                <i class="bi bi-chat-text"></i> Notificaciones por SMS
+                            </label>
+                            <small style="display: block; color: #666; margin-top: 5px;">
+                                Recibe mensajes de texto con información importante de tus reservas
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="bi bi-globe"></i> Idioma Preferido</label>
+                            <select id="pref-language" class="form-control">
+                                <option value="es" selected>Español</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="bi bi-currency-dollar"></i> Moneda Preferida</label>
+                            <select id="pref-currency" class="form-control">
+                                <option value="USD" selected>Dólares (USD)</option>
+                                <option value="EUR">Euros (EUR)</option>
+                                <option value="VES">Bolívares (VES)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-user">
+                                <i class="bi bi-check-circle"></i> Guardar Preferencias
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Sección: Ayuda (Usuario Normal) -->
+                <div id="help" class="user-section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-question-circle"></i> Ayuda y Soporte</h2>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3><i class="bi bi-chat-dots"></i> Preguntas Frecuentes</h3>
+                        
+                        <div style="margin-top: 20px;">
+                            <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                <strong>¿Cómo puedo modificar una reserva?</strong>
+                                <p style="margin-top: 5px; color: #666;">Puedes modificar tus reservas desde la sección "Mis Reservas". Selecciona la reserva que deseas modificar y haz clic en "Editar".</p>
+                            </div>
+                            
+                            <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                <strong>¿Cuál es la política de cancelación?</strong>
+                                <p style="margin-top: 5px; color: #666;">Las cancelaciones con más de 48 horas de anticipación reciben reembolso del 90%. Entre 24 y 48 horas, reembolso del 50%. Menos de 24 horas, no hay reembolso.</p>
+                            </div>
+                            
+                            <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                <strong>¿Qué debo llevar al tour?</strong>
+                                <p style="margin-top: 5px; color: #666;">Recomendamos llevar protector solar, gorra, agua, cámara fotográfica y ropa cómoda. En caso de lluvia, contamos con ponchos disponibles.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3><i class="bi bi-headset"></i> Contactar Soporte</h3>
+                        
+                        <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                            <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
+                                <i class="bi bi-telephone" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
+                                <h4 style="margin: 10px 0;">Teléfono</h4>
+                                <p style="color: #666;">+58 412-205-6558</p>
+                                <small style="color: #999;">Lunes a Domingo 8:00 AM - 6:00 PM</small>
+                            </div>
+                            
+                            <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
+                                <i class="bi bi-envelope" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
+                                <h4 style="margin: 10px 0;">Email</h4>
+                                <p style="color: #666;">soporte@canosalaotours.com</p>
+                                <small style="color: #999;">Respuesta en 24 horas</small>
+                            </div>
+                            
+                            <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
+                                <i class="bi bi-whatsapp" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
+                                <h4 style="margin: 10px 0;">WhatsApp</h4>
+                                <p style="color: #666;">+58 412-205-6558</p>
+                                <small style="color: #999;">Respuesta inmediata</small>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <h4><i class="bi bi-chat-text"></i> Enviar Mensaje Directo</h4>
+                            <textarea id="support-message" class="form-control" rows="4" placeholder="Describe tu consulta o problema..." style="margin-top: 10px;"></textarea>
+                            <button class="btn-user" onclick="enviarMensajeSoporte()" style="margin-top: 15px;">
+                                <i class="bi bi-send"></i> Enviar Mensaje
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== SECCIONES PARA ADMINISTRADOR ========== -->
+                
+                <!-- Sección: Dashboard Administrativo -->
+                <div id="admin-dashboard" class="user-section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-speedometer2"></i> Panel Administrativo</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-user" onclick="irAlPanelCompleto()">
+                                <i class="bi bi-gear"></i> Panel Completo
+                            </button>
+                            <button class="btn-user" onclick="refreshAdminDashboard()">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Estadísticas del Sistema -->
+                    <div class="admin-stats">
+                        <div class="admin-stat-card">
+                            <i class="bi bi-people"></i>
+                            <div class="admin-stat-number" id="admin-total-users">0</div>
+                            <div class="admin-stat-label">Usuarios Registrados</div>
+                        </div>
+                        
+                        <div class="admin-stat-card">
+                            <i class="bi bi-calendar-check"></i>
+                            <div class="admin-stat-number" id="admin-total-bookings">0</div>
+                            <div class="admin-stat-label">Reservas Totales</div>
+                        </div>
+                        
+                        <div class="admin-stat-card">
+                            <i class="bi bi-currency-dollar"></i>
+                            <div class="admin-stat-number" id="admin-total-revenue">$0</div>
+                            <div class="admin-stat-label">Ingresos Totales</div>
+                        </div>
+                        
+                        <div class="admin-stat-card">
+                            <i class="bi bi-clock-history"></i>
+                            <div class="admin-stat-number" id="admin-pending-bookings">0</div>
+                            <div class="admin-stat-label">Reservas Pendientes</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Acciones Rápidas para Admin -->
+                    <div class="section-header">
+                        <h2><i class="bi bi-lightning"></i> Acciones Rápidas</h2>
+                    </div>
+                    
+                    <div class="admin-quick-actions">
+                        <a href="admin.html?section=bookings" class="quick-action-card">
+                            <i class="bi bi-calendar-check"></i>
+                            <h3>Gestionar Reservas</h3>
+                            <p>Revisa, confirma o cancela reservas de usuarios</p>
+                        </a>
+                        
+                        <a href="admin.html?section=tours" class="quick-action-card">
+                            <i class="bi bi-map"></i>
+                            <h3>Gestionar Tours</h3>
+                            <p>Agrega, edita o elimina tours disponibles</p>
+                        </a>
+                        
+                        <a href="#" class="quick-action-card" onclick="showSection('admin-users')">
+                            <i class="bi bi-people"></i>
+                            <h3>Ver Usuarios</h3>
+                            <p>Consulta la lista de usuarios registrados</p>
+                        </a>
+                        
+                        <a href="#" class="quick-action-card" onclick="generarReporte()">
+                            <i class="bi bi-graph-up"></i>
+                            <h3>Generar Reporte</h3>
+                            <p>Crea reportes de ingresos y estadísticas</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Últimas Reservas del Sistema -->
+                    <div class="section-header">
+                        <h2><i class="bi bi-clock-history"></i> Últimas Reservas</h2>
+                        <button class="btn-user" onclick="verTodasLasReservas()">
+                            <i class="bi bi-eye"></i> Ver Todas
+                        </button>
+                    </div>
+                    
+                    <div class="user-table-container">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Usuario</th>
+                                    <th>Tour</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-recent-bookings">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <div class="spinner"></div>
+                                        <p>Cargando reservas recientes...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Sección: Perfil de Administrador -->
+                <div id="admin-profile" class="user-section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-person-badge"></i> Perfil de Administrador</h2>
+                    </div>
+                    
+                    <div style="background: rgba(44, 130, 201, 0.05); padding: 25px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid var(--user-primary);">
+                        <h3 style="color: var(--user-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <i class="bi bi-shield-check"></i> Cuenta de Administrador
+                        </h3>
+                        <p>Esta es una cuenta de administrador con acceso completo al sistema. Puedes gestionar todos los aspectos de la plataforma Caño Salao.</p>
+                    </div>
+                    
+                    <form id="admin-profile-form" class="user-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="bi bi-person-badge"></i> Nombre del Administrador *</label>
+                                <input type="text" id="admin-profile-name" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-envelope"></i> Correo Electrónico *</label>
+                                <input type="email" id="admin-profile-email" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="bi bi-telephone"></i> Teléfono de Contacto</label>
+                            <input type="tel" id="admin-profile-phone" class="form-control">
+                            <small style="color: #666; display: block; margin-top: 5px;">Para emergencias del sistema</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="bi bi-chat-text"></i> Notas del Administrador</label>
+                            <textarea id="admin-profile-notes" class="form-control" rows="4" placeholder="Notas importantes sobre esta cuenta..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn-user btn-user-secondary" onclick="cancelarEdicionAdmin()">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </button>
+                            <button type="submit" class="btn-user" id="save-admin-profile-btn">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Sección de Cambio de Contraseña para Admin -->
+                    <div class="password-section">
+                        <h3><i class="bi bi-shield-lock"></i> Cambiar Contraseña de Administrador</h3>
+                        
+                        <form id="admin-password-form" class="user-form">
+                            <div class="form-group">
+                                <label><i class="bi bi-key"></i> Contraseña Actual *</label>
+                                <input type="password" id="admin-current-password" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-key-fill"></i> Nueva Contraseña *</label>
+                                <input type="password" id="admin-new-password" class="form-control" required minlength="8">
+                                <small style="color: #666; display: block; margin-top: 5px;">Mínimo 8 caracteres (recomendado: 12+ con mayúsculas, números y símbolos)</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-key-fill"></i> Confirmar Nueva Contraseña *</label>
+                                <input type="password" id="admin-confirm-password" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-user" id="save-admin-password-btn">
+                                    <i class="bi bi-shield-check"></i> Cambiar Contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Sección: Usuarios del Sistema -->
+                <div id="admin-users" class="user-section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-people"></i> Usuarios del Sistema</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="user-search" class="form-control" placeholder="Buscar usuario..." style="max-width: 250px;" onkeyup="searchUsers()">
+                            <button class="btn-user" onclick="exportarUsuarios()">
+                                <i class="bi bi-download"></i> Exportar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="user-table-container">
+                        <table class="user-table admin-users-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-table-body">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <div class="spinner"></div>
+                                        <p>Cargando usuarios del sistema...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination" id="users-pagination" style="display: none;">
+                        <button class="page-btn" onclick="prevUsersPage()"><i class="bi bi-chevron-left"></i></button>
+                        <span id="users-page-info" style="padding: 8px 15px;">Página 1</span>
+                        <button class="page-btn" onclick="nextUsersPage()"><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Empresa de producción social de transporte turístico acuático comprometida con el desarrollo sostenible de la comunidad y la protección del medio ambiente.</p>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                        <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                        <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        <li><a href="usuario.html" class="active"><i class="bi bi-person-circle"></i> Mi Cuenta</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-people"></i> Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <p style="font-size: 0.9rem;"><i class="bi bi-telephone"></i> +58 412-205-6558</p>
+                        <p style="font-size: 0.9rem;"><i class="bi bi-envelope"></i> info@canosalaotours.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p><i class="bi bi-c-circle"></i> 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Confirmación -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="bi bi-exclamation-triangle"></i> Confirmar Acción</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">¿Estás seguro de realizar esta acción?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-user btn-user-secondary" onclick="closeModal()">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+                <button class="btn-user btn-user-danger" id="confirm-action-btn">
+                    <i class="bi bi-check-circle"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts optimizados -->
+    <script>
+        (function() {
+            // ========== CONFIGURACIÓN ==========
+            let currentUser = null;
+            let userData = null;
+            let userBookings = [];
+            let allUsers = [];
+            let systemBookings = [];
+            let currentBookingsPage = 1;
+            let currentUsersPage = 1;
+            const bookingsPerPage = 10;
+            const usersPerPage = 10;
+            let currentModalAction = null;
+            let isAdmin = false;
+            
+            // ========== INICIALIZACIÓN ==========
+            function init() {
+                hideLoader();
+                if (checkAuthentication()) {
+                    initEventListeners();
+                    loadUserData();
+                    setupUIByRole();
+                    loadUserBookings();
+                    if (isAdmin) {
+                        loadAdminData();
+                    }
+                    updateDashboard();
+                    loadUserPreferences();
+                }
+            }
+            
+            function hideLoader() {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        document.body.classList.remove('loading');
+                        document.body.style.overflow = 'visible';
+                    }, 300);
+                }
+            }
+            
+            function checkAuthentication() {
+                const authData = localStorage.getItem('admin_auth');
+                const userSession = localStorage.getItem('user_session') || sessionStorage.getItem('user_session');
+                
+                if (!authData && !userSession) {
+                    showAlert('Por favor inicia sesión para acceder a esta página', 'error');
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                    return false;
+                }
+                
+                try {
+                    if (authData) {
+                        currentUser = JSON.parse(authData);
+                        isAdmin = currentUser.rol === 'admin';
+                    } else if (userSession) {
+                        const sessionData = JSON.parse(userSession);
+                        currentUser = {
+                            nombre: sessionData.nombre,
+                            email: sessionData.email,
+                            rol: 'user'
+                        };
+                        isAdmin = false;
+                    }
+                    
+                    if (!currentUser) {
+                        window.location.href = 'login.html';
+                        return false;
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error en autenticación:', error);
+                    window.location.href = 'login.html';
+                    return false;
+                }
+            }
+            
+            function setupUIByRole() {
+                if (isAdmin) {
+                    setupAdminUI();
+                } else {
+                    setupNormalUserUI();
+                }
+            }
+            
+            function setupAdminUI() {
+                // Actualizar hero section
+                document.getElementById('hero-title').textContent = 'Panel de Administrador';
+                document.getElementById('hero-subtitle').textContent = 'Gestiona el sistema Caño Salao desde tu panel administrativo';
+                document.getElementById('breadcrumb-text').textContent = 'Panel de Administrador';
+                
+                // Mostrar menú de admin y ocultar menú normal
+                document.getElementById('normal-user-menu').style.display = 'none';
+                document.getElementById('admin-menu').style.display = 'block';
+                
+                // Ocultar secciones de usuario normal
+                document.querySelectorAll('.user-section').forEach(section => {
+                    if (!section.id.startsWith('admin-')) {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                // Mostrar dashboard de admin por defecto
+                showSection('admin-dashboard');
+            }
+            
+            function setupNormalUserUI() {
+                // Ocultar menú de admin
+                document.getElementById('admin-menu').style.display = 'none';
+                
+                // Ocultar secciones de admin
+                document.querySelectorAll('.user-section').forEach(section => {
+                    if (section.id.startsWith('admin-')) {
+                        section.style.display = 'none';
+                    }
+                });
+                
+                // Mostrar dashboard normal por defecto
+                showSection('dashboard');
+            }
+            
+            // ========== UI FUNCTIONS ==========
+            function initEventListeners() {
+                // Navegación del menú
+                document.querySelectorAll('.user-menu-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        if (this.hasAttribute('href') && this.getAttribute('href') !== '#') {
+                            return; // Dejar que los enlaces externos funcionen normalmente
+                        }
+                        
+                        e.preventDefault();
+                        
+                        // Actualizar menú activo
+                        document.querySelectorAll('.user-menu-item').forEach(i => {
+                            i.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        // Mostrar sección correspondiente
+                        const sectionId = this.getAttribute('data-section');
+                        if (sectionId) {
+                            showSection(sectionId);
+                        }
+                    });
+                });
+                
+                // Botón de logout
+                document.getElementById('logout-btn').addEventListener('click', logout);
+                
+                // Formulario de perfil normal
+                if (document.getElementById('profile-form')) {
+                    document.getElementById('profile-form').addEventListener('submit', saveProfile);
+                }
+                
+                // Formulario de perfil admin
+                if (document.getElementById('admin-profile-form')) {
+                    document.getElementById('admin-profile-form').addEventListener('submit', saveAdminProfile);
+                }
+                
+                // Formulario de contraseña normal
+                if (document.getElementById('password-form')) {
+                    document.getElementById('password-form').addEventListener('submit', changePassword);
+                }
+                
+                // Formulario de contraseña admin
+                if (document.getElementById('admin-password-form')) {
+                    document.getElementById('admin-password-form').addEventListener('submit', changeAdminPassword);
+                }
+                
+                // Formulario de preferencias
+                if (document.getElementById('preferences-form')) {
+                    document.getElementById('preferences-form').addEventListener('submit', savePreferences);
+                }
+                
+                // Menú móvil
+                const menuToggle = document.querySelector('.menu-toggle');
+                const mainNav = document.querySelector('#main-navigation');
+                
+                if (menuToggle && mainNav) {
+                    menuToggle.addEventListener('click', function() {
+                        mainNav.classList.toggle('show');
+                        const icon = this.querySelector('i');
+                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
+                    });
+                }
+                
+                // Validación en tiempo real de contraseñas
+                const passwordInputs = [
+                    { new: 'new-password', confirm: 'confirm-password' },
+                    { new: 'admin-new-password', confirm: 'admin-confirm-password' }
+                ];
+                
+                passwordInputs.forEach(input => {
+                    const newInput = document.getElementById(input.new);
+                    const confirmInput = document.getElementById(input.confirm);
+                    
+                    if (newInput && confirmInput) {
+                        confirmInput.addEventListener('input', function() {
+                            const newPassword = newInput.value;
+                            const confirmPassword = this.value;
+                            
+                            if (confirmPassword && newPassword !== confirmPassword) {
+                                this.style.borderColor = '#e74c3c';
+                                this.style.boxShadow = '0 0 0 3px rgba(231, 76, 60, 0.1)';
+                            } else if (confirmPassword && newPassword === confirmPassword) {
+                                this.style.borderColor = '#27ae60';
+                                this.style.boxShadow = '0 0 0 3px rgba(39, 174, 96, 0.1)';
+                            } else {
+                                this.style.borderColor = '';
+                                this.style.boxShadow = '';
+                            }
+                        });
+                    }
+                });
+            }
+            
+            function showSection(sectionId) {
+                // Ocultar todas las secciones
+                document.querySelectorAll('.user-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Mostrar sección seleccionada
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    
+                    // Cargar datos específicos si es necesario
+                    switch(sectionId) {
+                        case 'bookings':
+                            loadUserBookings();
+                            break;
+                        case 'profile':
+                            loadProfileForm();
+                            break;
+                        case 'admin-dashboard':
+                            loadAdminDashboardData();
+                            break;
+                        case 'admin-users':
+                            loadSystemUsers();
+                            break;
+                        case 'admin-profile':
+                            loadAdminProfileForm();
+                            break;
+                    }
+                }
+            }
+            
+            function updateUserUI() {
+                if (!currentUser) return;
+                
+                // Actualizar información del usuario
+                document.getElementById('user-name').textContent = currentUser.nombre || 'Usuario';
+                document.getElementById('user-email').textContent = currentUser.email || 'usuario@ejemplo.com';
+                document.getElementById('user-avatar').textContent = (currentUser.nombre?.charAt(0) || 'U').toUpperCase();
+                document.getElementById('user-role-badge').textContent = isAdmin ? 'Administrador' : 'Usuario';
+                
+                // Actualizar formularios según el rol
+                if (isAdmin) {
+                    document.getElementById('admin-profile-name').value = currentUser.nombre || '';
+                    document.getElementById('admin-profile-email').value = currentUser.email || '';
+                    document.getElementById('admin-profile-phone').value = currentUser.telefono || '';
+                    document.getElementById('admin-profile-notes').value = currentUser.notas || '';
+                } else {
+                    document.getElementById('profile-name').value = currentUser.nombre || '';
+                    document.getElementById('profile-email').value = currentUser.email || '';
+                    document.getElementById('profile-phone').value = currentUser.telefono || '';
+                    document.getElementById('profile-birthdate').value = currentUser.fecha_nacimiento || '';
+                    document.getElementById('profile-address').value = currentUser.direccion || '';
+                    document.getElementById('profile-bio').value = currentUser.bio || '';
+                }
+            }
+            
+            // ========== USER DATA ==========
+            function loadUserData() {
+                // Cargar datos del usuario desde localStorage
+                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                const user = users.find(u => u.email === currentUser.email);
+                
+                if (user) {
+                    userData = user;
+                    currentUser = { ...currentUser, ...user };
+                    updateUserUI();
+                }
+                
+                // Cargar preferencias para usuarios normales
+                if (!isAdmin) {
+                    const userPrefs = JSON.parse(localStorage.getItem(`user_prefs_${currentUser.email}`) || '{}');
+                    if (Object.keys(userPrefs).length > 0) {
+                        userData = { ...userData, ...userPrefs };
+                    }
+                }
+            }
+            
+            function loadProfileForm() {
+                if (!userData || isAdmin) return;
+                
+                document.getElementById('profile-name').value = userData.nombre || '';
+                document.getElementById('profile-email').value = userData.email || '';
+                document.getElementById('profile-phone').value = userData.telefono || '';
+                document.getElementById('profile-birthdate').value = userData.fecha_nacimiento || '';
+                document.getElementById('profile-address').value = userData.direccion || '';
+                document.getElementById('profile-bio').value = userData.bio || '';
+                
+                // Limpiar formulario de contraseña
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                document.getElementById('confirm-password').style.borderColor = '';
+                document.getElementById('confirm-password').style.boxShadow = '';
+            }
+            
+            function loadAdminProfileForm() {
+                if (!userData || !isAdmin) return;
+                
+                document.getElementById('admin-profile-name').value = userData.nombre || '';
+                document.getElementById('admin-profile-email').value = userData.email || '';
+                document.getElementById('admin-profile-phone').value = userData.telefono || '';
+                document.getElementById('admin-profile-notes').value = userData.notas || '';
+                
+                // Limpiar formulario de contraseña
+                document.getElementById('admin-current-password').value = '';
+                document.getElementById('admin-new-password').value = '';
+                document.getElementById('admin-confirm-password').value = '';
+                document.getElementById('admin-confirm-password').style.borderColor = '';
+                document.getElementById('admin-confirm-password').style.boxShadow = '';
+            }
+            
+            // ========== ADMIN FUNCTIONS ==========
+            function loadAdminData() {
+                // Cargar todos los usuarios
+                allUsers = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                
+                // Cargar todas las reservas
+                systemBookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
+                
+                // Cargar estadísticas del sistema
+                updateAdminDashboard();
+            }
+            
+            function loadAdminDashboardData() {
+                updateAdminDashboard();
+                loadRecentSystemBookings();
+            }
+            
+            function updateAdminDashboard() {
+                if (!isAdmin) return;
+                
+                // Estadísticas del sistema
+                const totalUsers = allUsers.length;
+                const totalBookings = systemBookings.length;
+                const pendingBookings = systemBookings.filter(b => b.estado === 'pending').length;
+                const totalRevenue = systemBookings
+                    .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
+                    .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
+                
+                // Actualizar UI
+                document.getElementById('admin-total-users').textContent = totalUsers;
+                document.getElementById('admin-total-bookings').textContent = totalBookings;
+                document.getElementById('admin-pending-bookings').textContent = pendingBookings;
+                document.getElementById('admin-total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
+            }
+            
+            function loadRecentSystemBookings() {
+                const tbody = document.getElementById('admin-recent-bookings');
+                const recentBookings = systemBookings.slice(0, 5);
+                const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
+                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                
+                if (recentBookings.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <i class="bi bi-calendar-x" style="font-size: 36px;"></i>
+                                <p>No hay reservas en el sistema</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = '';
+                    recentBookings.forEach(booking => {
+                        const tour = tours.find(t => t.id == booking.tour_id);
+                        const user = users.find(u => u.id == booking.usuario_id || u.email === booking.usuario_email);
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><strong>${booking.codigo || 'N/A'}</strong></td>
+                            <td>${user?.nombre || booking.usuario_email || 'Usuario'}</td>
+                            <td>${tour?.nombre || 'Tour no disponible'}</td>
+                            <td>${formatDate(booking.fecha)}</td>
+                            <td>$${booking.total || '0.00'}</td>
+                            <td><span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+            }
+            
+            function loadSystemUsers() {
+                const tbody = document.getElementById('admin-users-table-body');
+                const searchTerm = document.getElementById('user-search')?.value?.toLowerCase() || '';
+                
+                // Filtrar usuarios
+                let filteredUsers = [...allUsers];
+                
+                if (searchTerm) {
+                    filteredUsers = filteredUsers.filter(user => 
+                        user.nombre?.toLowerCase().includes(searchTerm) ||
+                        user.email?.toLowerCase().includes(searchTerm) ||
+                        user.rol?.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                // Calcular paginación
+                const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+                const startIndex = (currentUsersPage - 1) * usersPerPage;
+                const endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
+                const pageUsers = filteredUsers.slice(startIndex, endIndex);
+                
+                if (pageUsers.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <i class="bi bi-people" style="font-size: 48px;"></i>
+                                <h3>No hay usuarios</h3>
+                                <p>${searchTerm ? 'No se encontraron usuarios con ese criterio' : 'No hay usuarios registrados en el sistema'}</p>
+                            </td>
+                        </tr>
+                    `;
+                    document.getElementById('users-pagination').style.display = 'none';
+                } else {
+                    tbody.innerHTML = '';
+                    pageUsers.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.nombre || 'Sin nombre'}</td>
+                            <td>${user.email || 'Sin email'}</td>
+                            <td><span class="role-badge ${user.rol === 'admin' ? 'role-admin' : 'role-user'}">${user.rol === 'admin' ? 'Administrador' : 'Usuario'}</span></td>
+                            <td>${formatDate(user.fecha_registro)}</td>
+                            <td><span class="status-badge ${user.activo ? 'status-confirmed' : 'status-cancelled'}">${user.activo ? 'Activo' : 'Inactivo'}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <button class="btn-user" style="padding: 5px 10px; font-size: 0.8rem;" onclick="verUsuario('${user.id}')" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    ${user.rol !== 'admin' ? `
+                                        <button class="btn-user btn-user-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="eliminarUsuario('${user.id}')" title="Eliminar usuario">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    // Mostrar paginación
+                    document.getElementById('users-pagination').style.display = 'flex';
+                    document.getElementById('users-page-info').textContent = `Página ${currentUsersPage} de ${totalPages}`;
+                }
+            }
+            
+            function searchUsers() {
+                currentUsersPage = 1;
+                loadSystemUsers();
+            }
+            
+            function prevUsersPage() {
+                if (currentUsersPage > 1) {
+                    currentUsersPage--;
+                    loadSystemUsers();
+                }
+            }
+            
+            function nextUsersPage() {
+                const searchTerm = document.getElementById('user-search')?.value?.toLowerCase() || '';
+                let filteredUsers = [...allUsers];
+                
+                if (searchTerm) {
+                    filteredUsers = filteredUsers.filter(user => 
+                        user.nombre?.toLowerCase().includes(searchTerm) ||
+                        user.email?.toLowerCase().includes(searchTerm) ||
+                        user.rol?.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+                if (currentUsersPage < totalPages) {
+                    currentUsersPage++;
+                    loadSystemUsers();
+                }
+            }
+            
+            // ========== COMMON FUNCTIONS ==========
+            function saveProfile(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('profile-name').value.trim();
+                const email = document.getElementById('profile-email').value.trim().toLowerCase();
+                const phone = document.getElementById('profile-phone').value.trim();
+                const birthdate = document.getElementById('profile-birthdate').value;
+                const address = document.getElementById('profile-address').value.trim();
+                const bio = document.getElementById('profile-bio').value.trim();
+                const saveBtn = document.getElementById('save-profile-btn');
+                
+                // Validación
+                if (!name || !email) {
+                    showAlert('Por favor completa los campos obligatorios', 'error');
+                    return;
+                }
+                
+                if (!validateEmail(email)) {
+                    showAlert('Email inválido', 'error');
+                    return;
+                }
+                
+                // Verificar si el email ya existe (si cambió)
+                if (email !== currentUser.email) {
+                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                    const emailExists = users.some(u => u.email === email && u.id !== userData.id);
+                    
+                    if (emailExists) {
+                        showAlert('Este email ya está registrado', 'error');
+                        return;
+                    }
+                }
+                
+                // Deshabilitar botón y mostrar loading
+                saveBtn.disabled = true;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                
+                // Actualizar usuario en localStorage
+                setTimeout(() => {
+                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                    const userIndex = users.findIndex(u => u.id === userData.id);
+                    
+                    if (userIndex !== -1) {
+                        users[userIndex] = {
+                            ...users[userIndex],
+                            nombre: name,
+                            email: email,
+                            telefono: phone,
+                            fecha_nacimiento: birthdate,
+                            direccion: address,
+                            bio: bio
+                        };
+                        
+                        localStorage.setItem('cano_salao_users', JSON.stringify(users));
+                        
+                        // Actualizar sesión actual
+                        currentUser.nombre = name;
+                        currentUser.email = email;
+                        
+                        // Actualizar admin_auth si existe
+                        const authData = localStorage.getItem('admin_auth');
+                        if (authData) {
+                            const auth = JSON.parse(authData);
+                            auth.nombre = name;
+                            auth.email = email;
+                            localStorage.setItem('admin_auth', JSON.stringify(auth));
+                        }
+                        
+                        // Actualizar user_session si existe
+                        const userSession = localStorage.getItem('user_session') || sessionStorage.getItem('user_session');
+                        if (userSession) {
+                            const sessionData = JSON.parse(userSession);
+                            sessionData.nombre = name;
+                            sessionData.email = email;
+                            if (localStorage.getItem('user_session')) {
+                                localStorage.setItem('user_session', JSON.stringify(sessionData));
+                            } else {
+                                sessionStorage.setItem('user_session', JSON.stringify(sessionData));
+                            }
+                        }
+                        
+                        showAlert('✅ Perfil actualizado exitosamente', 'success');
+                        updateUserUI();
+                    }
+                    
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                }, 1500);
+            }
+            
+            function saveAdminProfile(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('admin-profile-name').value.trim();
+                const email = document.getElementById('admin-profile-email').value.trim().toLowerCase();
+                const phone = document.getElementById('admin-profile-phone').value.trim();
+                const notes = document.getElementById('admin-profile-notes').value.trim();
+                const saveBtn = document.getElementById('save-admin-profile-btn');
+                
+                // Validación
+                if (!name || !email) {
+                    showAlert('Por favor completa los campos obligatorios', 'error');
+                    return;
+                }
+                
+                if (!validateEmail(email)) {
+                    showAlert('Email inválido', 'error');
+                    return;
+                }
+                
+                // Verificar si el email ya existe (si cambió)
+                if (email !== currentUser.email) {
+                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                    const emailExists = users.some(u => u.email === email && u.id !== userData.id);
+                    
+                    if (emailExists) {
+                        showAlert('Este email ya está registrado', 'error');
+                        return;
+                    }
+                }
+                
+                // Deshabilitar botón y mostrar loading
+                saveBtn.disabled = true;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                
+                // Actualizar usuario en localStorage
+                setTimeout(() => {
+                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                    const userIndex = users.findIndex(u => u.id === userData.id);
+                    
+                    if (userIndex !== -1) {
+                        users[userIndex] = {
+                            ...users[userIndex],
+                            nombre: name,
+                            email: email,
+                            telefono: phone,
+                            notas: notes
+                        };
+                        
+                        localStorage.setItem('cano_salao_users', JSON.stringify(users));
+                        
+                        // Actualizar sesión actual
+                        currentUser.nombre = name;
+                        currentUser.email = email;
+                        currentUser.telefono = phone;
+                        currentUser.notas = notes;
+                        
+                        // Actualizar admin_auth
+                        const authData = localStorage.getItem('admin_auth');
+                        if (authData) {
+                            const auth = JSON.parse(authData);
+                            auth.nombre = name;
+                            auth.email = email;
+                            localStorage.setItem('admin_auth', JSON.stringify(auth));
+                        }
+                        
+                        showAlert('✅ Perfil de administrador actualizado exitosamente', 'success');
+                        updateUserUI();
+                    }
+                    
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                }, 1500);
+            }
+            
+            function changePassword(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                const saveBtn = document.getElementById('save-password-btn');
+                
+                // Validación
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showAlert('Por favor completa todos los campos', 'error');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    showAlert('La nueva contraseña debe tener al menos 6 caracteres', 'error');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showAlert('Las contraseñas no coinciden', 'error');
+                    return;
+                }
+                
+                // Verificar contraseña actual
+                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                const user = users.find(u => u.id === userData.id);
+                
+                if (!user) {
+                    showAlert('Usuario no encontrado', 'error');
+                    return;
+                }
+                
+                if (user.password !== btoa(currentPassword)) {
+                    showAlert('Contraseña actual incorrecta', 'error');
+                    return;
+                }
+                
+                // Deshabilitar botón y mostrar loading
+                saveBtn.disabled = true;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                
+                // Cambiar contraseña
+                setTimeout(() => {
+                    user.password = btoa(newPassword);
+                    localStorage.setItem('cano_salao_users', JSON.stringify(users));
+                    
+                    showAlert('✅ Contraseña cambiada exitosamente', 'success');
+                    document.getElementById('password-form').reset();
+                    document.getElementById('confirm-password').style.borderColor = '';
+                    document.getElementById('confirm-password').style.boxShadow = '';
+                    
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                }, 1500);
+            }
+            
+            function changeAdminPassword(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('admin-current-password').value;
+                const newPassword = document.getElementById('admin-new-password').value;
+                const confirmPassword = document.getElementById('admin-confirm-password').value;
+                const saveBtn = document.getElementById('save-admin-password-btn');
+                
+                // Validación
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showAlert('Por favor completa todos los campos', 'error');
+                    return;
+                }
+                
+                if (newPassword.length < 8) {
+                    showAlert('La nueva contraseña debe tener al menos 8 caracteres', 'error');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showAlert('Las contraseñas no coinciden', 'error');
+                    return;
+                }
+                
+                // Verificar contraseña actual
+                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                const user = users.find(u => u.id === userData.id);
+                
+                if (!user) {
+                    showAlert('Usuario no encontrado', 'error');
+                    return;
+                }
+                
+                if (user.password !== btoa(currentPassword)) {
+                    showAlert('Contraseña actual incorrecta', 'error');
+                    return;
+                }
+                
+                // Deshabilitar botón y mostrar loading
+                saveBtn.disabled = true;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                
+                // Cambiar contraseña
+                setTimeout(() => {
+                    user.password = btoa(newPassword);
+                    localStorage.setItem('cano_salao_users', JSON.stringify(users));
+                    
+                    showAlert('✅ Contraseña de administrador cambiada exitosamente', 'success');
+                    document.getElementById('admin-password-form').reset();
+                    document.getElementById('admin-confirm-password').style.borderColor = '';
+                    document.getElementById('admin-confirm-password').style.boxShadow = '';
+                    
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                }, 1500);
+            }
+            
+            function loadUserPreferences() {
+                if (isAdmin) return;
+                
+                const prefs = JSON.parse(localStorage.getItem(`user_prefs_${currentUser.email}`) || '{}');
+                
+                document.getElementById('pref-newsletter').checked = prefs.newsletter !== false;
+                document.getElementById('pref-notifications').checked = prefs.notifications !== false;
+                document.getElementById('pref-sms').checked = prefs.sms !== false;
+                document.getElementById('pref-language').value = prefs.language || 'es';
+                document.getElementById('pref-currency').value = prefs.currency || 'USD';
+            }
+            
+            function savePreferences(e) {
+                e.preventDefault();
+                
+                const prefs = {
+                    newsletter: document.getElementById('pref-newsletter').checked,
+                    notifications: document.getElementById('pref-notifications').checked,
+                    sms: document.getElementById('pref-sms').checked,
+                    language: document.getElementById('pref-language').value,
+                    currency: document.getElementById('pref-currency').value,
+                    updated: new Date().toISOString()
+                };
+                
+                localStorage.setItem(`user_prefs_${currentUser.email}`, JSON.stringify(prefs));
+                showAlert('✅ Preferencias guardadas exitosamente', 'success');
+            }
+            
+            // ========== BOOKINGS MANAGEMENT ==========
+            function loadUserBookings() {
+                const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
+                
+                // Filtrar reservas del usuario actual
+                userBookings = bookings.filter(booking => 
+                    booking.usuario_id == userData?.id || 
+                    booking.usuario_email === currentUser.email
+                );
+                
+                updateBookingsTable();
+                updateDashboard();
+            }
+            
+            function updateBookingsTable() {
+                const tbody = document.getElementById('bookings-table-body');
+                const filter = document.getElementById('booking-filter')?.value || 'all';
+                const searchTerm = document.getElementById('booking-search')?.value?.toLowerCase() || '';
+                
+                // Aplicar filtros
+                let filteredBookings = [...userBookings];
+                
+                if (filter !== 'all') {
+                    filteredBookings = filteredBookings.filter(b => b.estado === filter);
+                }
+                
+                if (searchTerm) {
+                    filteredBookings = filteredBookings.filter(b => 
+                        b.codigo?.toLowerCase().includes(searchTerm) ||
+                        b.tour_nombre?.toLowerCase().includes(searchTerm) ||
+                        b.tour_id?.toString().includes(searchTerm)
+                    );
+                }
+                
+                // Calcular paginación
+                const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
+                const startIndex = (currentBookingsPage - 1) * bookingsPerPage;
+                const endIndex = Math.min(startIndex + bookingsPerPage, filteredBookings.length);
+                const pageBookings = filteredBookings.slice(startIndex, endIndex);
+                
+                // Obtener tours para mostrar nombres
+                const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
+                
+                // Renderizar tabla
+                if (pageBookings.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <i class="bi bi-calendar-x" style="font-size: 48px;"></i>
+                                <h3>No hay reservas</h3>
+                                <p>${filter !== 'all' ? 'No hay reservas con este filtro' : 'Aún no tienes reservas realizadas'}</p>
+                                ${filter !== 'all' ? 
+                                    '<button class="btn-user" onclick="document.getElementById(\'booking-filter\').value=\'all\'; filterBookings()">Ver todas las reservas</button>' : 
+                                    '<button class="btn-user" onclick="nuevaReserva()">Hacer mi primera reserva</button>'
+                                }
+                            </td>
+                        </tr>
+                    `;
+                    document.getElementById('bookings-pagination').style.display = 'none';
+                } else {
+                    tbody.innerHTML = '';
+                    pageBookings.forEach(booking => {
+                        const tour = tours.find(t => t.id == booking.tour_id);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><strong>${booking.codigo || 'N/A'}</strong></td>
+                            <td>${tour?.nombre || 'Tour no disponible'}</td>
+                            <td>${formatDate(booking.fecha)}</td>
+                            <td>${booking.hora || 'N/A'}</td>
+                            <td>${booking.personas || '1'}</td>
+                            <td>$${booking.total || '0.00'}</td>
+                            <td><span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <button class="btn-user" style="padding: 5px 10px; font-size: 0.8rem;" onclick="verDetallesReserva('${booking.id}')" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    ${booking.estado === 'pending' ? `
+                                        <button class="btn-user btn-user-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="cancelarReserva('${booking.id}')" title="Cancelar">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    // Mostrar paginación
+                    document.getElementById('bookings-pagination').style.display = 'flex';
+                    document.getElementById('bookings-page-info').textContent = `Página ${currentBookingsPage} de ${totalPages}`;
+                }
+                
+                // Actualizar tabla de reservas recientes (dashboard)
+                updateRecentBookingsTable();
+            }
+            
+            function updateRecentBookingsTable() {
+                const tbody = document.getElementById('recent-bookings');
+                const recentBookings = userBookings.slice(0, 5);
+                const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
+                
+                if (recentBookings.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <i class="bi bi-calendar-plus" style="font-size: 36px;"></i>
+                                <p>No tienes reservas recientes</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = '';
+                    recentBookings.forEach(booking => {
+                        const tour = tours.find(t => t.id == booking.tour_id);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><strong>${booking.codigo || 'N/A'}</strong></td>
+                            <td>${tour?.nombre || 'Tour no disponible'}</td>
+                            <td>${formatDate(booking.fecha)}</td>
+                            <td>${booking.personas || '1'}</td>
+                            <td>$${booking.total || '0.00'}</td>
+                            <td><span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+            }
+            
+            function getBookingStatusClass(status) {
+                switch(status) {
+                    case 'confirmed': return 'status-confirmed';
+                    case 'pending': return 'status-pending';
+                    case 'cancelled': return 'status-cancelled';
+                    case 'completed': return 'status-completed';
+                    default: return 'status-pending';
+                }
+            }
+            
+            function getBookingStatusText(status) {
+                switch(status) {
+                    case 'confirmed': return 'Confirmada';
+                    case 'pending': return 'Pendiente';
+                    case 'cancelled': return 'Cancelada';
+                    case 'completed': return 'Completada';
+                    default: return status;
+                }
+            }
+            
+            function filterBookings() {
+                currentBookingsPage = 1;
+                updateBookingsTable();
+            }
+            
+            function searchBookings() {
+                currentBookingsPage = 1;
+                updateBookingsTable();
+            }
+            
+            function prevBookingsPage() {
+                if (currentBookingsPage > 1) {
+                    currentBookingsPage--;
+                    updateBookingsTable();
+                }
+            }
+            
+            function nextBookingsPage() {
+                const filteredBookings = getFilteredBookings();
+                const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
+                if (currentBookingsPage < totalPages) {
+                    currentBookingsPage++;
+                    updateBookingsTable();
+                }
+            }
+            
+            function getFilteredBookings() {
+                let filtered = [...userBookings];
+                const filter = document.getElementById('booking-filter')?.value || 'all';
+                const searchTerm = document.getElementById('booking-search')?.value?.toLowerCase() || '';
+                
+                if (filter !== 'all') {
+                    filtered = filtered.filter(b => b.estado === filter);
+                }
+                
+                if (searchTerm) {
+                    filtered = filtered.filter(b => 
+                        b.codigo?.toLowerCase().includes(searchTerm) ||
+                        b.tour_nombre?.toLowerCase().includes(searchTerm) ||
+                        b.tour_id?.toString().includes(searchTerm)
+                    );
+                }
+                
+                return filtered;
+            }
+            
+            function verDetallesReserva(bookingId) {
+                const booking = userBookings.find(b => b.id == bookingId);
+                if (booking) {
+                    const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
+                    const tour = tours.find(t => t.id == booking.tour_id);
+                    
+                    const detalles = `
+                        <h3>Detalles de la Reserva</h3>
+                        <div style="margin-top: 20px;">
+                            <p><strong>Código:</strong> ${booking.codigo || 'N/A'}</p>
+                            <p><strong>Tour:</strong> ${tour?.nombre || 'N/A'}</p>
+                            <p><strong>Descripción:</strong> ${tour?.descripcion || 'Sin descripción'}</p>
+                            <p><strong>Fecha:</strong> ${formatDate(booking.fecha)}</p>
+                            <p><strong>Hora:</strong> ${booking.hora || 'N/A'}</p>
+                            <p><strong>Personas:</strong> ${booking.personas || '1'}</p>
+                            <p><strong>Total:</strong> $${booking.total || '0.00'}</p>
+                            <p><strong>Estado:</strong> <span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></p>
+                            ${booking.notas ? `<p><strong>Notas:</strong> ${booking.notas}</p>` : ''}
+                            <p><strong>Fecha de creación:</strong> ${formatDate(booking.fecha_creacion)}</p>
+                        </div>
+                    `;
+                    
+                    showAlert(detalles, 'info');
+                }
+            }
+            
+            function cancelarReserva(bookingId) {
+                const booking = userBookings.find(b => b.id == bookingId);
+                if (!booking) {
+                    showAlert('Reserva no encontrada', 'error');
+                    return;
+                }
+                
+                if (booking.estado !== 'pending') {
+                    showAlert('Solo se pueden cancelar reservas pendientes', 'error');
+                    return;
+                }
+                
+                // Configurar modal de confirmación
+                document.getElementById('confirm-message').textContent = 
+                    `¿Estás seguro de cancelar la reserva ${booking.codigo}?\n\nEsta acción no se puede deshacer.`;
+                
+                currentModalAction = () => {
+                    // Cancelar reserva
+                    const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
+                    const bookingIndex = bookings.findIndex(b => b.id == bookingId);
+                    
+                    if (bookingIndex !== -1) {
+                        bookings[bookingIndex].estado = 'cancelled';
+                        localStorage.setItem('admin_bookings_cache', JSON.stringify(bookings));
+                        
+                        showAlert(`✅ Reserva ${booking.codigo} cancelada exitosamente', 'success`);
+                        loadUserBookings();
+                        updateDashboard();
+                    }
+                    
+                    closeModal();
+                };
+                
+                openModal('confirm-modal');
+            }
+            
+            // ========== DASHBOARD ==========
+            function updateDashboard() {
+                if (isAdmin) return;
+                
+                // Calcular estadísticas
+                const totalBookings = userBookings.length;
+                const pendingBookings = userBookings.filter(b => b.estado === 'pending').length;
+                const confirmedBookings = userBookings.filter(b => b.estado === 'confirmed' || b.estado === 'completed').length;
+                const totalSpent = userBookings
+                    .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
+                    .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
+                
+                // Actualizar UI
+                document.getElementById('total-bookings').textContent = totalBookings;
+                document.getElementById('pending-bookings').textContent = pendingBookings;
+                document.getElementById('confirmed-bookings').textContent = confirmedBookings;
+                document.getElementById('total-spent').textContent = `$${totalSpent.toFixed(2)}`;
+            }
+            
+            function refreshDashboard() {
+                if (isAdmin) {
+                    loadAdminDashboardData();
+                    showAlert('Panel administrativo actualizado', 'success');
+                } else {
+                    loadUserBookings();
+                    showAlert('Dashboard actualizado', 'success');
+                }
+            }
+            
+            function refreshAdminDashboard() {
+                loadAdminData();
+                showAlert('Panel administrativo actualizado', 'success');
+            }
+            
+            // ========== UTILITY FUNCTIONS ==========
+            function logout() {
+                if (confirm('¿Estás seguro de cerrar sesión?')) {
+                    // Limpiar sesiones
+                    localStorage.removeItem('admin_auth');
+                    localStorage.removeItem('user_session');
+                    sessionStorage.removeItem('user_session');
+                    
+                    // Redirigir al login
+                    window.location.href = 'login.html';
+                }
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function formatDate(dateString) {
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                } catch (error) {
+                    return 'Fecha inválida';
+                }
+            }
+            
+            function showAlert(message, type = 'info') {
+                const alertDiv = document.getElementById('user-alert');
+                if (!alertDiv) return;
+                
+                alertDiv.innerHTML = message;
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.style.display = 'block';
+                
+                // Auto-ocultar después de 5 segundos
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                }, 5000);
+            }
+            
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            function closeModal() {
+                const modals = document.querySelectorAll('.modal.active');
+                modals.forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+                currentModalAction = null;
+            }
+            
+            // ========== ACCIONES RÁPIDAS ==========
+            function nuevaReserva() {
+                window.location.href = 'Servicios.html';
+            }
+            
+            function verMisReservas() {
+                showSection('bookings');
+            }
+            
+            function contactarSoporte() {
+                showSection('help');
+            }
+            
+            function enviarMensajeSoporte() {
+                const message = document.getElementById('support-message').value.trim();
+                if (!message) {
+                    showAlert('Por favor escribe un mensaje', 'error');
+                    return;
+                }
+                
+                showAlert('Mensaje enviado al soporte. Te contactaremos pronto.', 'success');
+                document.getElementById('support-message').value = '';
+            }
+            
+            function cancelarEdicion() {
+                loadProfileForm();
+                showAlert('Edición cancelada', 'info');
+            }
+            
+            function cancelarEdicionAdmin() {
+                loadAdminProfileForm();
+                showAlert('Edición cancelada', 'info');
+            }
+            
+            function irAlPanelCompleto() {
+                window.location.href = 'admin.html';
+            }
+            
+            function verTodasLasReservas() {
+                window.location.href = 'admin.html?section=bookings';
+            }
+            
+            function generarReporte() {
+                showAlert('Función de generación de reportes en desarrollo', 'info');
+            }
+            
+            function exportarUsuarios() {
+                showAlert('Función de exportación de usuarios en desarrollo', 'info');
+            }
+            
+            function verUsuario(userId) {
+                const user = allUsers.find(u => u.id == userId);
+                if (user) {
+                    const detalles = `
+                        <h3>Detalles del Usuario</h3>
+                        <div style="margin-top: 20px;">
+                            <p><strong>Nombre:</strong> ${user.nombre || 'Sin nombre'}</p>
+                            <p><strong>Email:</strong> ${user.email || 'Sin email'}</p>
+                            <p><strong>Rol:</strong> <span class="role-badge ${user.rol === 'admin' ? 'role-admin' : 'role-user'}">${user.rol === 'admin' ? 'Administrador' : 'Usuario'}</span></p>
+                            <p><strong>Fecha de registro:</strong> ${formatDate(user.fecha_registro)}</p>
+                            <p><strong>Estado:</strong> <span class="status-badge ${user.activo ? 'status-confirmed' : 'status-cancelled'}">${user.activo ? 'Activo' : 'Inactivo'}</span></p>
+                            ${user.telefono ? `<p><strong>Teléfono:</strong> ${user.telefono}</p>` : ''}
+                            ${user.direccion ? `<p><strong>Dirección:</strong> ${user.direccion}</p>` : ''}
+                        </div>
+                    `;
+                    
+                    showAlert(detalles, 'info');
+                }
+            }
+            
+            function eliminarUsuario(userId) {
+                const user = allUsers.find(u => u.id == userId);
+                if (!user) {
+                    showAlert('Usuario no encontrado', 'error');
+                    return;
+                }
+                
+                if (user.rol === 'admin') {
+                    showAlert('No se pueden eliminar cuentas de administrador', 'error');
+                    return;
+                }
+                
+                // Configurar modal de confirmación
+                document.getElementById('confirm-message').textContent = 
+                    `¿Estás seguro de eliminar al usuario "${user.nombre}" (${user.email})?\n\nEsta acción no se puede deshacer y se perderán todas sus reservas.`;
+                
+                currentModalAction = () => {
+                    // Eliminar usuario
+                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                    const userIndex = users.findIndex(u => u.id == userId);
+                    
+                    if (userIndex !== -1) {
+                        users.splice(userIndex, 1);
+                        localStorage.setItem('cano_salao_users', JSON.stringify(users));
+                        
+                        // Actualizar lista de usuarios
+                        allUsers = users;
+                        
+                        // Eliminar reservas del usuario
+                        const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
+                        const userBookings = bookings.filter(b => b.usuario_id == userId || b.usuario_email === user.email);
+                        
+                        if (userBookings.length > 0) {
+                            const updatedBookings = bookings.filter(b => b.usuario_id != userId && b.usuario_email !== user.email);
+                            localStorage.setItem('admin_bookings_cache', JSON.stringify(updatedBookings));
+                        }
+                        
+                        showAlert(`✅ Usuario "${user.nombre}" eliminado exitosamente', 'success`);
+                        loadSystemUsers();
+                        updateAdminDashboard();
+                    }
+                    
+                    closeModal();
+                };
+                
+                openModal('confirm-modal');
+            }
+            
+            // Configurar modal de confirmación
+            document.getElementById('confirm-action-btn').addEventListener('click', function() {
+                if (currentModalAction) {
+                    currentModalAction();
+                }
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeModal();
+                    }
+                });
+            });
+            
+            // Cerrar modal con Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+            
+            // Inicializar cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+            
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia Completa - Ruta Turística Caño Salao | Proyecto Factible</title>
+    <meta name="description" content="Descubre la fascinante historia de Caño Salao, desde sus orígenes indígenas hasta su desarrollo como destino turístico sostenible en Barcelona, Venezuela">
+    <meta name="keywords" content="historia Caño Salao, comunidad pesquera Venezuela, Barcelona Anzoátegui, proyecto factible, turismo sostenible, desarrollo comunitario">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+    
+    <!-- Cargar CSS principal -->
+    <link rel="stylesheet" href="../index.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        /* Estilos adicionales específicos para Historia */
+        .page-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .hero-bg.loaded {
+            opacity: 1;
+        }
+        
+        .page-hero .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 1rem;
+        }
+        
+        .page-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .page-hero .hero-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .breadcrumb {
+            background: var(--color-light);
+            padding: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--color-accent);
+        }
+        
+        .breadcrumb span {
+            color: var(--color-dark);
+            font-weight: 500;
+        }
+        
+        /* Timeline styles */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 3rem auto;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            border-radius: 2px;
+        }
+        
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .timeline-content {
+            width: 45%;
+            padding: 1.5rem;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            transition: var(--transition-normal);
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-right: auto;
+        }
+        
+        .timeline-date {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .timeline-content h3 {
+            color: var(--color-primary);
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+        
+        .timeline-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 4px solid var(--color-primary);
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        /* Gallery styles */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .gallery-item {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
+            height: 250px;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .page-hero {
+                min-height: 60vh;
+                padding: 3rem 0;
+            }
+            
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-left: 60px;
+            }
+            
+            .timeline-content {
+                width: 100%;
+                margin: 0 !important;
+            }
+            
+            .timeline-dot {
+                left: 30px;
+                transform: translateX(-50%);
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
+                </div>
+
+                <!-- Contenedor para centrar la navegación -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                            <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                            <li><a href="Historia.html" class="active"><i class="bi bi-journal-text"></i> Historia</a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Botón Iniciar Sesión a la derecha -->
+                <div class="auth-section">
+                    <a href="#" class="login-btn">
+                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                    </a>
+                </div>
+
+                <button class="menu-toggle" aria-label="Menú">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section con imagen de fondo -->
+    <section class="page-hero">
+        <div class="hero-bg" id="heroBackgroundHistoria"></div>
+        <div class="container">
+            <h1 class="times-font">Historia de Caño Salao</h1>
+            <p class="times-font hero-subtitle">
+                Descubre los orígenes y evolución de nuestra comunidad y su transformación en un proyecto factible de turismo sostenible
+            </p>
+            <a href="#historia-content" class="btn" style="background: var(--color-accent); padding: 1rem 2.5rem; font-size: 1.1rem;">
+                <i class="bi bi-arrow-down-circle"></i> Conoce Nuestra Historia
+            </a>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
+            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
+            <span>Historia</span>
+        </div>
+    </section>
+
+    <!-- Page Content -->
+    <section id="historia-content" style="padding: 4rem 0; background: #f8f9fa;">
+        <div class="container">
+            <!-- Introducción -->
+            <div class="section-title" style="margin-bottom: 3rem;">
+                <h2 class="times-font"><i class="bi bi-book"></i> Orígenes y Fundación</h2>
+                <p>Descubre cómo surgió nuestra comunidad y su evolución a través del tiempo</p>
+            </div>
+
+            <div class="history-content" style="margin-bottom: 4rem; background: white; padding: 2rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+                <div class="history-text">
+                    <p style="margin-bottom: 1.5rem; line-height: 1.7;">Caño Salao es una pequeña aldea de pescadores ubicada en el estado Anzoátegui, Venezuela, que surgió a mediados del siglo XX gracias a la iniciativa de varias familias provenientes de Barcelona. Atraídos por los hermosos paisajes costeros y la abundancia de recursos marinos, estos pioneros decidieron establecerse en esta zona y construir sus hogares.</p>
+                    
+                    <p style="margin-bottom: 1.5rem; line-height: 1.7;">Inicialmente, el territorio fue habitado por indígenas Cumanagotos, pero luego fue ocupado por colonizadores españoles. Sin embargo, fue a mediados del siglo XX cuando la comunidad de "Caño Salao" comenzó a tomar forma, gracias a figuras como Francisco Martínez Planchar y José Antonio Yánez, quienes lideraron el asentamiento de las primeras familias.</p>
+                    
+                    <div style="margin-top: 2rem;">
+                        <a href="#timeline" class="btn" style="background: var(--color-primary);">
+                            <i class="bi bi-clock-history"></i> Ver Línea de Tiempo
+                        </a>
+                    </div>
+                </div>
+                <div class="history-image">
+                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Paisaje histórico de Caño Salao" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Línea de Tiempo -->
+            <div id="timeline" style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h2 class="times-font"><i class="bi bi-clock-history"></i> Línea de Tiempo Histórica</h2>
+                    <p>Un recorrido visual por los hitos más importantes de nuestra comunidad</p>
+                </div>
+                
+                <div class="timeline">
+                    <!-- Época Precolombina -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Época Precolombina</div>
+                            <h3 class="times-font">Población Indígena</h3>
+                            <p>El territorio fue habitado originalmente por indígenas Cumanagotos, quienes aprovechaban los recursos costeros para su subsistencia. Vivían en armonía con la naturaleza, practicando la pesca y la recolección.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Periodo Colonial -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Periodo Colonial</div>
+                            <h3 class="times-font">Llegada de los Españoles</h3>
+                            <p>Durante la colonización española, la zona fue ocupada y se establecieron puntos de control como la aduana tradicional para controlar el comercio marítimo en la región.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Mediados del Siglo XX -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Mediados del Siglo XX</div>
+                            <h3 class="times-font">Fundación de la Comunidad</h3>
+                            <p>Familias provenientes de Barcelona se establecieron en la zona, dando origen a la comunidad actual de Caño Salao. Iniciaron actividades pesqueras y construyeron las primeras viviendas.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 1987 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">1987</div>
+                            <h3 class="times-font">Declaración del Parque Metropolitano</h3>
+                            <p>Una parte de la zona costera fue declarada Parque Metropolitano Simón Bolívar, reconociendo su valor ecológico y potencial turístico para la preservación del ecosistema.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 2014 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">2014</div>
+                            <h3 class="times-font">Base de Misiones</h3>
+                            <p>Se construyó la base de misiones que ofrece servicios sociales a la comunidad, incluyendo consultorio médico, espacios recreativos y programas de desarrollo comunitario.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 2025 -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">2025</div>
+                            <h3 class="times-font">Proyecto Factible de Desarrollo Turístico</h3>
+                            <p>Implementación del proyecto factible para el desarrollo del sitio web y la promoción de la ruta turística marítima como modelo de turismo sostenible y desarrollo comunitario.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Significado del Nombre -->
+            <div style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h2 class="times-font"><i class="bi bi-info-circle"></i> Significado del Nombre</h2>
+                    <p>Descubre el origen y significado del nombre "Caño Salao"</p>
+                </div>
+                
+                <div class="history-content" style="background: white; padding: 2rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+                    <div class="history-text">
+                        <p style="margin-bottom: 1.5rem; line-height: 1.7;">El nombre "Caño Salao" se debe a la gran cantidad de caños y lagunas saladas que caracterizan la zona. La actividad principal de los primeros habitantes era la pesca, complementada con la cría de animales y la extracción de sal.</p>
+                        
+                        <p style="margin-bottom: 1.5rem; line-height: 1.7;">Esta característica geográfica única ha definido la identidad de la comunidad a lo largo de los años, influyendo en sus actividades económicas y su relación con el entorno natural. Los caños salados son ecosistemas ricos en biodiversidad que han sustentado a generaciones de pescadores.</p>
+                        
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem;">
+                            <div style="flex: 1; min-width: 200px; background: var(--color-light); padding: 1rem; border-radius: var(--radius-sm);">
+                                <h4 class="times-font" style="color: var(--color-primary); margin-bottom: 0.5rem;">Caño</h4>
+                                <p style="margin: 0; font-size: 0.9rem;">Término que se refiere a los pequeños canales de agua que conectan lagunas y esteros en la zona costera.</p>
+                            </div>
+                            <div style="flex: 1; min-width: 200px; background: var(--color-light); padding: 1rem; border-radius: var(--radius-sm);">
+                                <h4 class="times-font" style="color: var(--color-primary); margin-bottom: 0.5rem;">Salao</h4>
+                                <p style="margin: 0; font-size: 0.9rem;">Adjetivo que describe el agua salada característica de estos ecosistemas costeros únicos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="history-image">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Caños y lagunas saladas de Caño Salao" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Galería Histórica -->
+            <div style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h2 class="times-font"><i class="bi bi-images"></i> Galería Histórica</h2>
+                    <p>Imágenes que capturan la esencia y belleza de Caño Salao a través del tiempo</p>
+                </div>
+                
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Paisaje histórico de Caño Salao" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Puente histórico Una Luz" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Ruinas de la antigua aduana" loading="lazy">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Manglares históricos" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Llamada a la acción -->
+            <div style="background: var(--color-primary); color: white; padding: 3rem; border-radius: var(--radius-lg); text-align: center; margin-top: 4rem;">
+                <h2 class="times-font" style="color: white; margin-bottom: 1rem;">¿Listo para explorar nuestro presente?</h2>
+                <p style="margin-bottom: 2rem; opacity: 0.9; max-width: 700px; margin-left: auto; margin-right: auto;">
+                    Descubre cómo nuestra rica historia se combina con modernos servicios turísticos sostenibles
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="Servicios.html" class="btn" style="background: var(--color-accent);">
+                        <i class="bi bi-list-check"></i> Ver Servicios
+                    </a>
+                    <a href="Atracciones.html" class="btn" style="background: white; color: var(--color-primary);">
+                        <i class="bi bi-star"></i> Ver Atracciones
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Empresa de producción social de transporte turístico acuático comprometida con el desarrollo sostenible de la comunidad y la protección del medio ambiente.</p>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                        <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                        <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-people"></i> Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <p style="font-size: 0.9rem;"><i class="bi bi-telephone"></i> +58 412-205-6558</p>
+                        <p style="font-size: 0.9rem;"><i class="bi bi-envelope"></i> info@canosalaotours.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p><i class="bi bi-c-circle"></i> 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Menu toggle para dispositivos móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const mainNav = document.querySelector('#main-navigation');
+            
+            if (menuToggle && mainNav) {
+                menuToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('show');
+                    const icon = this.querySelector('i');
+                    icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
+                    
+                    // Actualizar atributo ARIA
+                    const isExpanded = mainNav.classList.contains('show');
+                    this.setAttribute('aria-expanded', isExpanded);
+                });
+            }
+            
+            // Cargar imagen de fondo del hero
+            function loadHeroImage() {
+                const heroBg = document.getElementById('heroBackgroundHistoria');
+                if (!heroBg) return;
+                
+                // Usar la misma imagen que en index.html para consistencia
+                const heroImg = new Image();
+                heroImg.src = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80';
+                
+                heroImg.onload = function() {
+                    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${this.src}')`;
+                    heroBg.classList.add('loaded');
+                };
+                
+                // Fallback si la imagen no carga
+                heroImg.onerror = function() {
+                    heroBg.style.backgroundImage = `linear-gradient(135deg, #1a5276 0%, #2c82c9 100%)`;
+                    heroBg.classList.add('loaded');
+                };
+            }
+            
+            // Iniciar carga de imagen
+            loadHeroImage();
+            
+            // Animación de scroll para enlaces internos
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: target.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Animaciones para elementos al hacer scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        
+                        // Animación especial para timeline items
+                        if (entry.target.classList.contains('timeline-content')) {
+                            entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar todas las secciones
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Observar timeline items
+            document.querySelectorAll('.timeline-content').forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>

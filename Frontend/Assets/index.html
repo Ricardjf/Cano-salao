@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caño Salao | Ruta Turística Marítima | Barcelona, Venezuela | Ecoturismo</title>
+    <meta name="description" content="Descubre la Ruta Turística Marítima Caño Salao en Barcelona, Venezuela. Tours en barco por manglares, avistamiento de aves y visita a patrimonios históricos. Turismo sostenible y comunitario.">
+    <meta name="keywords" content="Caño Salao, turismo Venezuela, Barcelona Anzoátegui, ruta marítima, manglares, tours en barco, ecoturismo, turismo sostenible, comunidad, patrimonio histórico, Puerto La Cruz, estado Anzoátegui, proyecto factible, turismo sostenible, Caño Salao, desarrollo web, universidad, PNF Informática, UPTJAA">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    <meta name="copyright" content="Ruta Turística Marítima Caño Salao">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos para navegación por teclado */
+        .keyboard-navigation a:focus,
+        .keyboard-navigation button:focus,
+        .keyboard-navigation input:focus,
+        .keyboard-navigation textarea:focus,
+        .keyboard-navigation select:focus {
+            outline: 3px solid #4CAF50;
+            outline-offset: 2px;
+        }
+        
+        /* Estilos para elementos enfocados */
+        .focused {
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* Animaciones para notificaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header role="banner">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Caño Salao</h1>
+                </div>
+
+                <button class="menu-toggle" 
+                        aria-expanded="false" 
+                        aria-controls="main-navigation"
+                        aria-label="Abrir menú de navegación">
+                    ☰
+                </button>
+
+                <nav role="navigation" aria-label="Navegación principal">
+                    <ul id="main-navigation" role="menubar">
+                        <li role="none"><a href="index.html" role="menuitem" aria-current="page">Inicio</a></li>
+                        <li role="none"><a href="Pages/Empresa.html" role="menuitem">Empresa</a></li>
+                        <li role="none"><a href="Pages/Historia.html" role="menuitem">Historia</a></li>
+                        <li role="none"><a href="Pages/Servicios.html" role="menuitem">Servicios</a></li>
+                        <li role="none"><a href="Pages/Atracciones.html" role="menuitem">Atracciones</a></li>
+                        <li role="none"><a href="Pages/Contacto.html" role="menuitem">Contacto</a></li>
+                        <li role="none"><a href="Pages/admin.html" role="menuitem">admin</a></li>
+                        <li id="auth-menu" style="display: none;">
+                            <div class="user-menu">
+                                <div class="user-avatar" id="user-menu-toggle">
+                                    <div class="avatar" id="user-avatar">U</div>
+                                    <span id="user-name">Usuario</span>
+                                </div>
+                                <div class="user-dropdown" id="user-dropdown">
+                                    <a href="Pages/admin.html" id="admin-link" style="display: none;">Panel Admin</a>
+                                    <a href="#" id="logout-btn">Cerrar Sesión</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li id="login-menu">
+                            <a href="Pages/login.html">Iniciar Sesión</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero" role="main" aria-labelledby="hero-title">
+        <div class="container">
+            <h2 id="hero-title">¡Descubre la Belleza Natural de Caño Salao!</h2>
+            <p id="hero-description">
+                Descubre la belleza natural de los manglares y la biodiversidad de la Ruta Marítima Caño Salao.
+            </p>
+            <a href="Pages/contacto.html" class="btn" aria-label="Reservar tour en Caño Salao">
+                ¡Reserva tu Tour Ahora!
+            </a>
+        </div>
+    </section>
+    
+    <!-- Empresa Factible -->
+    <section id="empresa">
+        <div class="container">
+            <div class="section-title">
+                <h2>Empresa de Producción Social</h2>
+                <p>Conoce nuestro modelo de negocio sostenible que beneficia a la comunidad de Caño Salao</p>
+            </div>
+            <div class="history-content">
+                <div class="history-text">
+                    <p>La empresa de producción social de transporte turístico acuático "Caño Salao" se establece como una entidad jurídica con el propósito de ofrecer servicios turísticos acuáticos sostenibles en la comunidad de Caño Salao, ubicada en Barcelona, Municipio Simón Bolívar, estado Anzoátegui.</p>
+                    <p>Su razón social refleja su compromiso con la protección del medio ambiente natural y el desarrollo socioeconómico de las comunidades locales. Su principal actividad es la organización de paseos en barco y recorridos por los canales y manglares de la región, ofreciendo a los visitantes la oportunidad de explorar la rica biodiversidad del ecosistema local.</p>
+                    <p>Además, se enfoca en la generación de empleo y el impulso de proyectos comunitarios, reinvirtiendo sus ganancias en iniciativas que beneficien a los habitantes de Caño Salao.</p>
+                    <a href="Pages/empresa.html" class="btn">Conoce Más Sobre Nuestra Empresa</a>
+                </div>
+                <div class="history-image">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Nuestra empresa">
+                </div>
+            </div>
+            
+            <div class="factible-features">
+                <div class="factible-feature">
+                    <div class="factible-icon">🌿</div>
+                    <h3>Sostenibilidad Ambiental</h3>
+                    <p>Comprometidos con la protección del ecosistema único de manglares y especies marinas de Caño Salao.</p>
+                </div>
+                <div class="factible-feature">
+                    <div class="factible-icon">👥</div>
+                    <h3>Desarrollo Comunitario</h3>
+                    <p>Generamos empleo local y reinvertimos utilidades en proyectos que benefician a la comunidad.</p>
+                </div>
+                <div class="factible-feature">
+                    <div class="factible-icon">🚤</div>
+                    <h3>Turismo Responsable</h3>
+                    <p>Ofrecemos experiencias auténticas que respetan la cultura local y el medio ambiente.</p>
+                </div>
+                <div class="factible-feature">
+                    <div class="factible-icon">📈</div>
+                    <h3>Modelo Económico Sólido</h3>
+                    <p>Combinamos viabilidad económica con impacto social positivo para un desarrollo sostenible.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Historia -->
+    <section id="historia">
+        <div class="container">
+            <div class="section-title">
+                <h2>Historia de Caño Salao</h2>
+                <p>Conoce los orígenes de esta comunidad pesquera y su transformación en un destino turístico sostenible</p>
+            </div>
+            <div class="history-content">
+                <div class="history-text">
+                    <p>Caño Salao es una pequeña aldea de pescadores ubicada en el estado Anzoátegui, Venezuela, que surgió a mediados del siglo XX gracias a la iniciativa de varias familias provenientes de Barcelona.</p>
+                    <p>Atraídos por los hermosos paisajes costeros y la abundancia de recursos marinos, estos pioneros decidieron establecerse en esta zona y construir sus hogares.</p>
+                    <p>Inicialmente, el territorio fue habitado por indígenas Cumanagotos, pero luego fue ocupado por colonizadores españoles. Sin embargo, fue a mediados del siglo XX cuando la comunidad de "Caño Salao" comenzó a tomar forma, gracias a figuras como Francisco Martínez Planchar y José Antonio Yánez.</p>
+                    <p>El nombre "Caño Salao" se debe a la gran cantidad de caños y lagunas saladas que caracterizan la zona. La actividad principal de los primeros habitantes era la pesca, complementada con la cría de animales y la extracción de sal.</p>
+                </div>
+                <div class="history-image">
+                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Paisaje de Caño Salao">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Atracciones -->
+    <section id="atracciones">
+        <div class="container">
+            <div class="section-title">
+                <h2>Atracciones Turísticas</h2>
+                <p>Descubre los tesoros naturales y culturales que hacen única a la ruta marítima Caño Salao</p>
+            </div>
+            <div class="attractions-grid">
+                <div class="attraction-card">
+                    <div class="attraction-img">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Manglares">
+                    </div>
+                    <div class="attraction-info">
+                        <h3>Recorrido por Manglares</h3>
+                        <p>Navega entre los impresionantes manglares que albergan una rica biodiversidad de aves y especies marinas.</p>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-img">
+                        <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Puente Una Luz">
+                    </div>
+                    <div class="attraction-info">
+                        <h3>Puente Una Luz</h3>
+                        <p>Visita este histórico puente construido hace muchos años, testigo del desarrollo de la comunidad.</p>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-img">
+                        <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Ruinas de la Aduana">
+                    </div>
+                    <div class="attraction-info">
+                        <h3>Ruinas de la Antigua Aduana</h3>
+                        <p>Explora los restos de un edificio importante de la época colonial española que controlaba el comercio marítimo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección La Ruta -->
+    <section id="la-ruta">
+        <div class="container">
+            <h2>Descubre Nuestra Ruta</h2>
+            <p class="subtitle">Una experiencia única que combina naturaleza, historia y aventura en el corazón de Caño Salao</p>
+            
+            <div class="programas">
+                <div class="carta">
+                    <div class="carta-header"></div>
+                    <div class="carta-content">
+                        <h3>Manglares y Biodiversidad</h3>
+                        <p>Explora los impresionantes manglares que albergan una rica diversidad de aves y especies marinas. Un ecosistema único que te conectará con la naturaleza.</p>
+                        <a href="#" class="carta-btn">Saber Más</a>
+                    </div>
+                </div>
+                
+                <div class="carta">
+                    <div class="carta-header"></div>
+                    <div class="carta-content">
+                        <h3>Patrimonio Histórico</h3>
+                        <p>Descubre los tesoros históricos de Caño Salao, desde el Puente Una Luz hasta las ruinas de la antigua aduana colonial.</p>
+                        <a href="#" class="carta-btn">Explorar Historia</a>
+                    </div>
+                </div>
+                
+                <div class="carta">
+                    <div class="carta-header"></div>
+                    <div class="carta-content">
+                        <h3>Aventura Acuática</h3>
+                        <p>Vive la emoción de navegar por los canales y disfrutar de paisajes espectaculares que combinan la serenidad del agua con la exuberancia de la vegetación.</p>
+                        <a href="#" class="carta-btn">Iniciar Aventura</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Características -->
+    <section id="caracteristicas">
+        <div class="container">
+            <h2>¿Por Qué Elegirnos?</h2>
+            <div class="caracteristicas-grid">
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon">🌿</span>
+                    <h3>Turismo Sostenible</h3>
+                    <p>Comprometidos con la protección del medio ambiente y el desarrollo de la comunidad local.</p>
+                </div>
+                
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon">👥</span>
+                    <h3>Guías Expertos</h3>
+                    <p>Nuestros guías locales conocen cada rincón de Caño Salao y su fascinante historia.</p>
+                </div>
+                
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon">🚤</span>
+                    <h3>Equipo Seguro</h3>
+                    <p>Embarcaciones modernas y equipos de seguridad para garantizar tu tranquilidad.</p>
+                </div>
+                
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon">💰</span>
+                    <h3>Precios Accesibles</h3>
+                    <p>Experiencias inolvidables a precios que respetan tu presupuesto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Preguntas -->
+    <section id="preguntas">
+        <div class="container">
+            <h2>¿Listo para la Aventura?</h2>
+            <p class="subtitle">Reserva tu experiencia hoy mismo y descubre la magia de Caño Salao</p>
+            
+            <div class="cta-buttons">
+                <a href="Pages/contacto.html" class="cta-btn">Reservar Ahora</a>
+                <a href="Pages/Servicios.html" class="cta-btn secondary">Ver Tours</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contacto</h2>
+                <p>Reserva tu tour o solicita más información sobre nuestros servicios</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Información de Contacto</h3>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div>
+                                <h4>Ubicación</h4>
+                                <p>Sector Caño Salao, Barcelona, Municipio Simón Bolívar, Estado Anzoátegui, Venezuela</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div>
+                                <h4>Teléfono</h4>
+                                <p>+58 412-205-6558</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">✉️</div>
+                            <div>
+                                <h4>Email</h4>
+                                <p>info@canosalaotours.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Horarios de Atención</h3>
+                    <p>Lunes a Domingo: 8:00 AM - 5:00 PM</p>
+                </div>
+                <div class="contact-form">
+                    <form id="reservation-form">
+                        <div class="form-group">
+                            <label for="name">Nombre Completo *</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico *</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Teléfono</label>
+                            <input type="tel" id="phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Fecha Preferida</label>
+                            <input type="date" id="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message" class="form-control" placeholder="Cuéntanos sobre tus intereses o necesidades especiales..." rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Enviar Reserva</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Ruta Turística Caño Salao</h3>
+                    <p>Empresa de producción social de transporte turístico acuático comprometida con el desarrollo sostenible de la comunidad y la protección del medio ambiente.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="Pages/Empresa.html">Empresa</a></li>
+                        <li><a href="Pages/Historia.html">Historia</a></li>
+                        <li><a href="Pages/Servicios.html">Servicios</a></li>
+                        <li><a href="Pages/Atracciones.html">Atracciones</a></li>
+                        <li><a href="Pages/contacto.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">FB</a>
+                        <a href="#" class="social-icon">IG</a>
+                        <a href="#" class="social-icon">TW</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p>Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts - ORDEN IMPORTANTE -->
+    <script src="Scripts/auth.js"></script>
+    <script src="Scripts/main.js"></script>
+
+</body>
+</html>

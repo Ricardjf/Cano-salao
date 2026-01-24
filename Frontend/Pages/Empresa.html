@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empresa de Producción Social - Ruta Turística Caño Salao | Turismo Sostenible</title>
+    <meta name="description" content="Conoce nuestra empresa de producción social de transporte turístico acuático en Caño Salao, Barcelona, Venezuela. Modelo de negocio sostenible que beneficia a la comunidad.">
+    <meta name="keywords" content="empresa Caño Salao, producción social, turismo sostenible, desarrollo comunitario, Barcelona Venezuela, empresa social turismo">
+    <meta property="og:title" content="Empresa de Producción Social - Ruta Turística Caño Salao">
+    <meta property="og:description" content="Modelo de negocio sostenible que combina desarrollo económico, protección ambiental y beneficio comunitario">
+    <meta property="og:type" content="website">
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+    
+    <!-- Estilos críticos inline -->
+    <style>
+        /* SOLO ESTILOS CRÍTICOS PARA RENDER INICIAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-out forwards;
+            background: #fff;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header mínimo para render inicial */
+        header {
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.75rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+        
+        .text-orange {
+            color: #FF8C42;
+        }
+        
+        /* Loader minimalista */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Prevenir scroll durante carga */
+        body.loading {
+            overflow: hidden;
+        }
+    </style>
+    
+    <!-- Cargar CSS principal de forma no bloqueante -->
+    <link rel="stylesheet" href="../index.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../index.css"></noscript>
+    
+    <!-- Bootstrap Icons diferido -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+    
+    <style>
+        /* Estilos específicos para la página Empresa */
+        .page-hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+        }
+        
+        .page-hero .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 1rem;
+        }
+        
+        .page-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .page-hero .hero-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .breadcrumb {
+            background: var(--color-light);
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--color-accent);
+        }
+        
+        .breadcrumb span {
+            color: var(--color-dark);
+            font-weight: 500;
+        }
+        
+        /* Contenido principal */
+        .page-content {
+            padding: 4rem 0;
+            background: #f8f9fa;
+        }
+        
+        .content-block {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .content-block h2 {
+            color: var(--color-primary);
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .content-block h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--color-accent);
+        }
+        
+        .history-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        
+        .history-text {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .history-image {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition-normal);
+        }
+        
+        .history-image:hover {
+            transform: translateY(-5px);
+        }
+        
+        .history-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        
+        .history-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Grid de contenido */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .service-item {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            transition: var(--transition-normal);
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-left-color: var(--color-accent);
+        }
+        
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+        
+        .service-item h3 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .service-item p, .service-item ul {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .service-item ul {
+            padding-left: 1.5rem;
+        }
+        
+        .service-item li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Grid de objetivos */
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .objective-card {
+            background: linear-gradient(135deg, var(--color-light), #e9ecef);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .objective-card h3 {
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+        
+        /* Factible features mejoradas */
+        .factible-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .factible-feature {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-normal);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .factible-feature:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-accent);
+        }
+        
+        .factible-icon {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-primary);
+            transition: var(--transition-normal);
+        }
+        
+        .factible-feature:hover .factible-icon {
+            transform: scale(1.1) rotate(5deg);
+            color: var(--color-accent);
+        }
+        
+        .factible-feature h3 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        /* Llamada a la acción */
+        .cta-block {
+            text-align: center;
+            background: linear-gradient(135deg, var(--color-light), #e9ecef);
+            padding: 4rem;
+            border-radius: var(--radius-lg);
+            margin-top: 3rem;
+        }
+        
+        .cta-block h2 {
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Responsive para empresa */
+        @media (max-width: 992px) {
+            .page-hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .content-block {
+                padding: 2rem;
+            }
+            
+            .content-block h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-hero {
+                min-height: 50vh;
+                padding: 3rem 0;
+            }
+            
+            .page-hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .history-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .content-grid, .objectives-grid, .factible-features {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .cta-block {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .content-block {
+                padding: 1.5rem;
+            }
+            
+            .content-block h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Loader para experiencia inicial -->
+    <div id="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
+                </div>
+
+                <!-- Contenedor para centrar la navegación -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                            <li><a href="Empresa.html" class="active"><i class="bi bi-building"></i> Empresa</a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Botón Iniciar Sesión a la derecha -->
+                <div class="auth-section">
+                    <a href="login.html" class="login-btn">
+                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                    </a>
+                </div>
+
+                <button class="menu-toggle" aria-label="Menú">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="container">
+            <h1 class="times-font">Empresa de Producción Social</h1>
+            <p class="times-font hero-subtitle">
+                Modelo de negocio sostenible que combina desarrollo económico, protección ambiental y beneficio comunitario
+            </p>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
+            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
+            <span>Empresa</span>
+        </div>
+    </section>
+
+    <!-- Page Content -->
+    <section class="page-content">
+        <div class="container">
+            <!-- Introducción a la Empresa -->
+            <div class="content-block">
+                <h2 class="times-font"><i class="bi bi-building"></i> Nuestra Empresa</h2>
+                <div class="history-content">
+                    <div class="history-text">
+                        <p>La empresa de producción social de transporte turístico acuático <strong>"Caño Salao"</strong> se establece como una entidad jurídica con el propósito de ofrecer servicios turísticos acuáticos sostenibles en la comunidad de Caño Salao, ubicada en Barcelona, Municipio Simón Bolívar, estado Anzoátegui.</p>
+                        
+                        <p>Su razón social refleja su compromiso con la protección del medio ambiente natural y el desarrollo socioeconómico de las comunidades locales. Su principal actividad es la organización de paseos en barco y recorridos por los canales y manglares de la región, ofreciendo a los visitantes la oportunidad de explorar la rica biodiversidad del ecosistema local.</p>
+                        
+                        <p>Además, se enfoca en la generación de empleo y el impulso de proyectos comunitarios, reinvirtiendo sus ganancias en iniciativas que beneficien a los habitantes de Caño Salao.</p>
+                        
+                        <a href="Servicios.html" class="btn" style="margin-top: 1rem;">
+                            <i class="bi bi-signpost"></i> Conoce Nuestros Servicios
+                        </a>
+                    </div>
+                    <div class="history-image">
+                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Nuestra empresa de producción social" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Misión y Visión -->
+            <div class="content-block">
+                <h2 class="times-font"><i class="bi bi-bullseye"></i> Misión y Visión</h2>
+                <div class="content-grid">
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="bi bi-target"></i>
+                        </div>
+                        <h3 class="times-font">Misión</h3>
+                        <p>Prestar servicios turísticos acuáticos que respeten y preserven el entorno natural único de la región, generando empleo y oportunidades económicas para los habitantes locales, asegurando que los beneficios del turismo se traduzcan en mejoras tangibles para la comunidad.</p>
+                    </div>
+                    <div class="service-item">
+                        <div class="service-icon">
+                            <i class="bi bi-eye"></i>
+                        </div>
+                        <h3 class="times-font">Visión</h3>
+                        <p>Convertirnos en un modelo de turismo sostenible, donde la protección del medio ambiente y el bienestar de la comunidad vayan de la mano, posicionándonos como referente en turismo responsable a nivel regional y nacional.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Características Principales -->
+            <div class="content-block">
+                <h2 class="times-font"><i class="bi bi-star"></i> Características de Nuestra Empresa</h2>
+                <div class="factible-features">
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <h3 class="times-font">Enfoque Social</h3>
+                        <p>Reinversión de utilidades en proyectos comunitarios para el desarrollo sostenible de la comunidad local.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-tree-fill"></i>
+                        </div>
+                        <h3 class="times-font">Sostenibilidad Ambiental</h3>
+                        <p>Operaciones turísticas de bajo impacto ecológico para la preservación del ecosistema de manglares.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-briefcase-fill"></i>
+                        </div>
+                        <h3 class="times-font">Generación de Empleo</h3>
+                        <p>Contratación de guías y personal local para mejorar la economía familiar de la comunidad.</p>
+                    </div>
+                    <div class="factible-feature">
+                        <div class="factible-icon">
+                            <i class="bi bi-handshake-fill"></i>
+                        </div>
+                        <h3 class="times-font">Autogestión Comunitaria</h3>
+                        <p>Participación activa de la comunidad en decisiones, fomentando empoderamiento y sentido de pertenencia.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Valores Corporativos -->
+            <div class="content-block">
+                <h2 class="times-font"><i class="bi bi-heart"></i> Nuestros Valores</h2>
+                <div class="content-grid">
+                    <div class="service-item">
+                        <h3 class="times-font"><i class="bi bi-recycle"></i> Sostenibilidad</h3>
+                        <p>Compromiso con la protección del medio ambiente y el uso responsable de los recursos naturales en todas nuestras operaciones.</p>
+                    </div>
+                    <div class="service-item">
+                        <h3 class="times-font"><i class="bi bi-person-heart"></i> Responsabilidad Social</h3>
+                        <p>Trabajamos para el beneficio de la comunidad, reinvirtiendo en proyectos que mejoran la calidad de vida local.</p>
+                    </div>
+                    <div class="service-item">
+                        <h3 class="times-font"><i class="bi bi-award"></i> Excelencia</h3>
+                        <p>Buscamos la más alta calidad en nuestros servicios, garantizando experiencias memorables para nuestros visitantes.</p>
+                    </div>
+                    <div class="service-item">
+                        <h3 class="times-font"><i class="bi bi-eye-fill"></i> Transparencia</h3>
+                        <p>Gestión clara y abierta de nuestros recursos, rindiendo cuentas a la comunidad que servimos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objetivos del Proyecto -->
+            <div class="content-block">
+                <h2 class="times-font"><i class="bi bi-flag"></i> Objetivos del Proyecto</h2>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <h3 class="times-font"><i class="bi bi-bullseye"></i> Objetivo General</h3>
+                        <ul>
+                            <li>Desarrollar un sitio web para la empresa de producción social de transporte acuático "Caño Salao"</li>
+                            <li>Promover el turismo sostenible en la comunidad</li>
+                            <li>Fortalecer la economía local mediante el turismo responsable</li>
+                        </ul>
+                    </div>
+                    <div class="objective-card">
+                        <h3 class="times-font"><i class="bi bi-list-check"></i> Objetivos Específicos</h3>
+                        <ul>
+                            <li>Analizar la situación actual de la empresa y la comunidad</li>
+                            <li>Planificar las actividades conducentes al desarrollo del proyecto</li>
+                            <li>Establecer el contenido del sitio web con información relevante</li>
+                            <li>Diseñar y codificar el sitio web responsivo y accesible</li>
+                            <li>Realizar pruebas de funcionalidad y usabilidad del sitio web</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impacto Esperado -->
+            <div class="content-block">
+                <h2 class="times-font"><i class="bi bi-graph-up"></i> Impacto Esperado</h2>
+                <div class="content-grid">
+                    <div class="service-item">
+                        <h3 class="times-font"><i class="bi bi-cash-stack"></i> Impacto Económico</h3>
+                        <ul>
+                            <li>Generación de empleo local estable y digno</li>
+                            <li>Diversificación de fuentes de ingreso para familias</li>
+                            <li>Reinversión de utilidades en proyectos comunitarios</li>
+                            <li>Desarrollo de microempresas complementarias</li>
+                            <li>Incremento en el flujo de turistas y visitantes</li>
+                        </ul>
+                    </div>
+                    <div class="service-item">
+                        <h3 class="times-font"><i class="bi bi-people-fill"></i> Impacto Social</h3>
+                        <ul>
+                            <li>Fortalecimiento del tejido social comunitario</li>
+                            <li>Valorización de conocimientos y tradiciones locales</li>
+                            <li>Mejora de la autoestima e identidad comunitaria</li>
+                            <li>Participación activa en la gestión turística</li>
+                            <li>Preservación del patrimonio cultural local</li>
+                        </ul>
+                    </div>
+                    <div class="service-item">
+                        <h3 class="times-font"><i class="bi bi-tree-fill"></i> Impacto Ambiental</h3>
+                        <ul>
+                            <li>Conservación de ecosistemas de manglar únicos</li>
+                            <li>Protección de especies en riesgo y biodiversidad</li>
+                            <li>Educación ambiental para visitantes y comunidad</li>
+                            <li>Prácticas turísticas de bajo impacto ecológico</li>
+                            <li>Concienciación sobre la importancia de los humedales</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compromiso con la Comunidad -->
+            <div class="content-block">
+                <h2 class="times-font"><i class="bi bi-hand-thumbs-up"></i> Compromiso con la Comunidad</h2>
+                <div class="history-content">
+                    <div class="history-text">
+                        <p>Como empresa de producción social, nuestro compromiso principal es con el desarrollo integral de la comunidad de Caño Salao. Trabajamos bajo un modelo de autogestión donde las decisiones se toman colectivamente y los beneficios se reinvierten en proyectos que mejoran la calidad de vida de todos los habitantes.</p>
+                        
+                        <p>Entre nuestros principales compromisos se encuentran:</p>
+                        
+                        <ul>
+                            <li><strong>Capacitación continua:</strong> Programas de formación en turismo, ecología y atención al cliente para miembros de la comunidad.</li>
+                            <li><strong>Reinversión social:</strong> Destino del 100% de las utilidades a proyectos comunitarios previamente aprobados en asamblea.</li>
+                            <li><strong>Protección ambiental:</strong> Implementación de prácticas sostenibles y programas de conservación del ecosistema local.</li>
+                            <li><strong>Transparencia:</strong> Rendición de cuentas periódica a la comunidad sobre la gestión de recursos y proyectos.</li>
+                        </ul>
+                        
+                        <a href="Contacto.html" class="btn" style="margin-top: 1rem;">
+                            <i class="bi bi-chat-dots"></i> Conoce Más Sobre Nuestro Modelo
+                        </a>
+                    </div>
+                    <div class="history-image">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Comunidad de Caño Salao trabajando junta" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Llamada a la Acción -->
+            <div class="cta-block">
+                <h2 class="times-font">¿Interesado en Conocer Más?</h2>
+                <p style="max-width: 600px; margin: 0 auto 2rem; color: #666;">
+                    Descubre cómo nuestro modelo de empresa de producción social puede inspirar proyectos similares o cómo puedes apoyar nuestra iniciativa.
+                </p>
+                <div>
+                    <a href="Contacto.html" class="btn" style="margin: 0.5rem; background: var(--color-accent);">
+                        <i class="bi bi-telephone"></i> Contáctanos
+                    </a>
+                    <a href="Servicios.html" class="btn" style="margin: 0.5rem; background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary);">
+                        <i class="bi bi-signpost"></i> Ver Servicios
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Empresa de producción social de transporte turístico acuático comprometida con el desarrollo sostenible de la comunidad y la protección del medio ambiente.</p>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                        <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                        <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        <li><a href="login.html"><i class="bi bi-person-circle"></i> Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-people"></i> Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <p style="font-size: 0.9rem;"><i class="bi bi-telephone"></i> +58 412-205-6558</p>
+                        <p style="font-size: 0.9rem;"><i class="bi bi-envelope"></i> info@canosalaotours.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p><i class="bi bi-c-circle"></i> 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts optimizados -->
+    <script>
+        (function() {
+            // Remover loader cuando el DOM esté listo
+            function hideLoader() {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        document.body.classList.remove('loading');
+                        document.body.style.overflow = 'visible';
+                        initContent();
+                    }, 300);
+                }
+            }
+            
+            // Inicializar contenido
+            function initContent() {
+                // Inicializar funcionalidades básicas
+                initBasicFunctionality();
+                
+                // Animaciones para elementos al hacer scroll
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('animated');
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    
+                    // Observar todas las secciones
+                    document.querySelectorAll('section').forEach(section => {
+                        observer.observe(section);
+                    });
+                }
+            }
+            
+            // Funcionalidad básica inmediata
+            function initBasicFunctionality() {
+                // Menú móvil
+                const menuToggle = document.querySelector('.menu-toggle');
+                const mainNav = document.querySelector('#main-navigation');
+                
+                if (menuToggle && mainNav) {
+                    menuToggle.addEventListener('click', function() {
+                        mainNav.classList.toggle('show');
+                        const icon = this.querySelector('i');
+                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
+                        
+                        // Actualizar atributo ARIA
+                        const isExpanded = mainNav.classList.contains('show');
+                        this.setAttribute('aria-expanded', isExpanded);
+                    });
+                }
+                
+                // Smooth scroll para enlaces internos
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        if (href === '#') return;
+                        
+                        const target = document.querySelector(href);
+                        if (target) {
+                            e.preventDefault();
+                            window.scrollTo({
+                                top: target.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // Iniciar
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', hideLoader);
+            } else {
+                hideLoader();
+            }
+            
+        })();
+    </script>
+</body>
+</html>

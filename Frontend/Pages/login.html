@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Ruta Turística Caño Salao | Barcelona, Venezuela</title>
+    <meta name="description" content="Inicia sesión en la Ruta Turística Marítima Caño Salao. Accede a funciones especiales y gestiona tus reservas.">
+    <meta name="keywords" content="login Caño Salao, inicio sesión turismo, cuenta usuario, reservas tours, acceso sistema">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+    
+    <!-- Estilos críticos inline -->
+    <style>
+        /* SOLO ESTILOS CRÍTICOS PARA RENDER INICIAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-out forwards;
+            background: #fff;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header mínimo para render inicial */
+        header {
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.75rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+        
+        .text-orange {
+            color: #FF8C42;
+        }
+        
+        /* Loader minimalista */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Prevenir scroll durante carga */
+        body.loading {
+            overflow: hidden;
+        }
+    </style>
+    
+    <!-- Cargar CSS principal de forma no bloqueante -->
+    <link rel="stylesheet" href="../index.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../index.css"></noscript>
+    
+    <!-- Bootstrap Icons diferido -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+    
+    <style>
+        /* Estilos específicos para la página de login */
+        .page-hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+        }
+        
+        .page-hero .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            padding: 0 1rem;
+        }
+        
+        .page-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .page-hero .hero-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .breadcrumb {
+            background: var(--color-light);
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--color-accent);
+        }
+        
+        .breadcrumb span {
+            color: var(--color-dark);
+            font-weight: 500;
+        }
+        
+        /* Contenedor de autenticación */
+        .auth-section-full {
+            padding: 4rem 0;
+            background: #f8f9fa;
+            min-height: 60vh;
+        }
+        
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--color-light);
+            border: none;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-dark);
+            transition: var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .auth-tab:hover {
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .auth-tab.active {
+            background: white;
+            color: var(--color-primary);
+            border-bottom: 3px solid var(--color-accent);
+        }
+        
+        .auth-form-container {
+            padding: 2.5rem;
+        }
+        
+        .auth-form {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+            background: var(--color-light);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(230, 43, 126, 0.1);
+            background: white;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--color-accent);
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+            color: var(--color-dark);
+        }
+        
+        .btn-block {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+        
+        .auth-switch a {
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+        
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .terms-link {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+        
+        .terms-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive para login */
+        @media (max-width: 768px) {
+            .page-hero {
+                min-height: 50vh;
+                padding: 3rem 0;
+            }
+            
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .auth-container {
+                margin: 0 1rem;
+            }
+            
+            .auth-form-container {
+                padding: 1.5rem;
+            }
+            
+            .auth-tab {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .auth-tabs {
+                flex-direction: column;
+            }
+            
+            .auth-tab {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="loading">
+    <!-- Loader para experiencia inicial -->
+    <div id="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
+                </div>
+
+                <!-- Contenedor para centrar la navegación -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                            <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                            <li><a href="login.html" class="active"><i class="bi bi-person-circle"></i> Login</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Botón Iniciar Sesión a la derecha -->
+                <div class="auth-section">
+                    <a href="login.html" class="login-btn">
+                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                    </a>
+                </div>
+
+                <button class="menu-toggle" aria-label="Menú">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="container">
+            <h1 class="times-font">Acceso al Sistema</h1>
+            <p class="times-font hero-subtitle">
+                Inicia sesión o regístrate para acceder a funciones especiales y gestionar tus reservas en Caño Salao
+            </p>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
+            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
+            <span>Iniciar Sesión</span>
+        </div>
+    </section>
+
+    <!-- Sección de Autenticación -->
+    <section class="auth-section-full">
+        <div class="container">
+            <div class="auth-container">
+                <!-- Pestañas de Login/Registro -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                    </button>
+                    <button class="auth-tab" data-tab="register">
+                        <i class="bi bi-person-plus"></i> Registrarse
+                    </button>
+                </div>
+
+                <div class="auth-form-container">
+                    <!-- Formulario de Login -->
+                    <form id="login-form" class="auth-form active">
+                        <div id="login-alert" class="alert"></div>
+                        
+                        <div class="form-group">
+                            <label for="login-email"><i class="bi bi-envelope"></i> Correo Electrónico</label>
+                            <input type="email" id="login-email" class="form-control" placeholder="ejemplo@correo.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password"><i class="bi bi-key"></i> Contraseña</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="Tu contraseña" required>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Recordar sesión</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-block" id="login-btn">
+                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                        </button>
+                        
+                        <div class="auth-switch">
+                            ¿No tienes cuenta? 
+                            <a href="#" id="show-register">Regístrate aquí</a>
+                        </div>
+                    </form>
+
+                    <!-- Formulario de Registro -->
+                    <form id="register-form" class="auth-form">
+                        <div id="register-alert" class="alert"></div>
+                        
+                        <div class="form-group">
+                            <label for="register-name"><i class="bi bi-person"></i> Nombre Completo</label>
+                            <input type="text" id="register-name" class="form-control" placeholder="Tu nombre completo" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-email"><i class="bi bi-envelope"></i> Correo Electrónico</label>
+                            <input type="email" id="register-email" class="form-control" placeholder="ejemplo@correo.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-password"><i class="bi bi-key"></i> Contraseña</label>
+                            <input type="password" id="register-password" class="form-control" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-confirm"><i class="bi bi-key-fill"></i> Confirmar Contraseña</label>
+                            <input type="password" id="register-confirm" class="form-control" placeholder="Repite tu contraseña" required>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="accept-terms" required>
+                            <label for="accept-terms">
+                                Acepto los <a href="#" class="terms-link">términos de servicio</a> 
+                                y la <a href="#" class="terms-link">política de privacidad</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-block" id="register-btn">
+                            <i class="bi bi-person-plus"></i> Crear Cuenta
+                        </button>
+                        
+                        <div class="auth-switch">
+                            ¿Ya tienes cuenta? 
+                            <a href="#" id="show-login">Inicia sesión aquí</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Empresa de producción social de transporte turístico acuático comprometida con el desarrollo sostenible de la comunidad y la protección del medio ambiente.</p>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                        <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                        <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        <li><a href="login.html"><i class="bi bi-person-circle"></i> Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-people"></i> Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <p style="font-size: 0.9rem;"><i class="bi bi-telephone"></i> +58 412-205-6558</p>
+                        <p style="font-size: 0.9rem;"><i class="bi bi-envelope"></i> info@canosalaotours.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p><i class="bi bi-c-circle"></i> 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts optimizados -->
+    <script>
+        (function() {
+            // Remover loader cuando el DOM esté listo
+            function hideLoader() {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        document.body.classList.remove('loading');
+                        document.body.style.overflow = 'visible';
+                        initContent();
+                    }, 300);
+                }
+            }
+            
+            // Inicializar contenido
+            function initContent() {
+                // Inicializar funcionalidades básicas
+                initBasicFunctionality();
+                initAuthForms();
+                
+                // Animaciones para elementos al hacer scroll
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('animated');
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    
+                    // Observar todas las secciones
+                    document.querySelectorAll('section').forEach(section => {
+                        observer.observe(section);
+                    });
+                }
+            }
+            
+            // Funcionalidad básica inmediata
+            function initBasicFunctionality() {
+                // Menú móvil
+                const menuToggle = document.querySelector('.menu-toggle');
+                const mainNav = document.querySelector('#main-navigation');
+                
+                if (menuToggle && mainNav) {
+                    menuToggle.addEventListener('click', function() {
+                        mainNav.classList.toggle('show');
+                        const icon = this.querySelector('i');
+                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
+                        
+                        // Actualizar atributo ARIA
+                        const isExpanded = mainNav.classList.contains('show');
+                        this.setAttribute('aria-expanded', isExpanded);
+                    });
+                }
+                
+                // Smooth scroll para enlaces internos
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        if (href === '#') return;
+                        
+                        const target = document.querySelector(href);
+                        if (target) {
+                            e.preventDefault();
+                            window.scrollTo({
+                                top: target.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // Funcionalidad de formularios de autenticación
+            function initAuthForms() {
+                // Cambiar entre pestañas de login/registro
+                document.querySelectorAll('.auth-tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabId = this.getAttribute('data-tab');
+                        
+                        // Actualizar pestañas activas
+                        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Actualizar formularios activos
+                        document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+                        document.getElementById(`${tabId}-form`).classList.add('active');
+                        
+                        // Limpiar alertas
+                        document.getElementById('login-alert').style.display = 'none';
+                        document.getElementById('register-alert').style.display = 'none';
+                    });
+                });
+                
+                // Enlaces para cambiar entre formularios
+                document.getElementById('show-register').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('[data-tab="register"]').click();
+                });
+                
+                document.getElementById('show-login').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('[data-tab="login"]').click();
+                });
+                
+                // Manejo del formulario de login
+                document.getElementById('login-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('login-email').value.trim().toLowerCase();
+                    const password = document.getElementById('login-password').value;
+                    const rememberMe = document.getElementById('remember-me').checked;
+                    const loginBtn = document.getElementById('login-btn');
+                    const alertDiv = document.getElementById('login-alert');
+                    
+                    // Validaciones básicas
+                    if (!email || !password) {
+                        showAlert(alertDiv, 'Por favor, completa todos los campos', 'error');
+                        return;
+                    }
+                    
+                    if (!validateEmail(email)) {
+                        showAlert(alertDiv, 'Por favor, ingresa un email válido', 'error');
+                        return;
+                    }
+                    
+                    // Deshabilitar botón y mostrar loading
+                    loginBtn.disabled = true;
+                    const originalText = loginBtn.innerHTML;
+                    loginBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Iniciando sesión...';
+                    
+                    // Verificar credenciales
+                    setTimeout(() => {
+                        // Obtener usuarios registrados
+                        const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                        
+                        // Buscar usuario
+                        const user = users.find(u => u.email === email);
+                        
+                        if (!user) {
+                            showAlert(alertDiv, 'Usuario no encontrado. Por favor regístrate primero.', 'error');
+                            loginBtn.disabled = false;
+                            loginBtn.innerHTML = originalText;
+                            return;
+                        }
+                        
+                        // Verificar contraseña (en base64)
+                        const encryptedPassword = btoa(password);
+                        if (user.password !== encryptedPassword) {
+                            showAlert(alertDiv, 'Contraseña incorrecta', 'error');
+                            loginBtn.disabled = false;
+                            loginBtn.innerHTML = originalText;
+                            return;
+                        }
+                        
+                        // Login exitoso - CREAR LA SESIÓN
+                        const authData = {
+                            id: user.id,
+                            nombre: user.nombre,
+                            email: user.email,
+                            rol: user.rol || 'user',
+                            activo: true,
+                            fecha_creacion: user.fecha_registro || new Date().toISOString()
+                        };
+                        
+                        // Guardar en localStorage
+                        localStorage.setItem('admin_auth', JSON.stringify(authData));
+                        
+                        // También guardar sesión normal si se marcó "Recordar"
+                        if (rememberMe) {
+                            localStorage.setItem('user_session', JSON.stringify({
+                                email: email,
+                                nombre: user.nombre,
+                                timestamp: new Date().getTime()
+                            }));
+                        } else {
+                            sessionStorage.setItem('user_session', JSON.stringify({
+                                email: email,
+                                nombre: user.nombre,
+                                timestamp: new Date().getTime()
+                            }));
+                        }
+                        
+                        showAlert(alertDiv, `¡Inicio de sesión exitoso! Bienvenido/a, ${user.nombre}`, 'success');
+                        
+                        // CAMBIO CLAVE: Redirigir SIEMPRE a usuario.html
+                        setTimeout(() => {
+                            window.location.href = 'usuario.html';
+                        }, 1500);
+                        
+                    }, 1000);
+                });
+                
+                // Manejo del formulario de registro
+                document.getElementById('register-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('register-name').value.trim();
+                    const email = document.getElementById('register-email').value.trim().toLowerCase();
+                    const password = document.getElementById('register-password').value;
+                    const confirmPassword = document.getElementById('register-confirm').value;
+                    const acceptTerms = document.getElementById('accept-terms').checked;
+                    const registerBtn = document.getElementById('register-btn');
+                    const alertDiv = document.getElementById('register-alert');
+                    
+                    // Validaciones
+                    if (!name || !email || !password || !confirmPassword) {
+                        showAlert(alertDiv, 'Por favor, completa todos los campos', 'error');
+                        return;
+                    }
+                    
+                    if (password.length < 6) {
+                        showAlert(alertDiv, 'La contraseña debe tener al menos 6 caracteres', 'error');
+                        return;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        showAlert(alertDiv, 'Las contraseñas no coinciden', 'error');
+                        return;
+                    }
+                    
+                    if (!validateEmail(email)) {
+                        showAlert(alertDiv, 'Por favor, ingresa un email válido', 'error');
+                        return;
+                    }
+                    
+                    if (!acceptTerms) {
+                        showAlert(alertDiv, 'Debes aceptar los términos de servicio', 'error');
+                        return;
+                    }
+                    
+                    // Deshabilitar botón y mostrar loading
+                    registerBtn.disabled = true;
+                    const originalText = registerBtn.innerHTML;
+                    registerBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Creando cuenta...';
+                    
+                    // Simular proceso de registro
+                    setTimeout(() => {
+                        // Obtener usuarios existentes
+                        const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                        
+                        // Verificar si el usuario ya existe
+                        if (users.some(user => user.email === email)) {
+                            showAlert(alertDiv, 'Este email ya está registrado', 'error');
+                            registerBtn.disabled = false;
+                            registerBtn.innerHTML = originalText;
+                            return;
+                        }
+                        
+                        // Determinar rol: el primer usuario será admin, los demás user
+                        const userRole = users.length === 0 ? 'admin' : 'user';
+                        
+                        // Agregar nuevo usuario
+                        const newUser = {
+                            id: Date.now(),
+                            nombre: name,
+                            email: email,
+                            password: btoa(password), // Encriptación básica
+                            rol: userRole,
+                            activo: true,
+                            fecha_registro: new Date().toISOString()
+                        };
+                        
+                        users.push(newUser);
+                        localStorage.setItem('cano_salao_users', JSON.stringify(users));
+                        
+                        showAlert(alertDiv, `¡Cuenta creada exitosamente! Bienvenido/a, ${name}`, 'success');
+                        
+                        // Auto-login después del registro
+                        const authData = {
+                            id: newUser.id,
+                            nombre: newUser.nombre,
+                            email: newUser.email,
+                            rol: newUser.rol,
+                            activo: true,
+                            fecha_creacion: newUser.fecha_registro
+                        };
+                        
+                        localStorage.setItem('admin_auth', JSON.stringify(authData));
+                        sessionStorage.setItem('user_session', JSON.stringify({
+                            email: email,
+                            nombre: name,
+                            timestamp: new Date().getTime()
+                        }));
+                        
+                        // Mostrar mensaje especial si es admin
+                        if (userRole === 'admin') {
+                            showAlert(alertDiv, `¡Eres el primer usuario! Has sido asignado como administrador.`, 'success');
+                        }
+                        
+                        // CAMBIO CLAVE: Redirigir SIEMPRE a usuario.html
+                        setTimeout(() => {
+                            window.location.href = 'usuario.html';
+                        }, 2000);
+                        
+                    }, 1500);
+                });
+                
+                // Validación en tiempo real para confirmar contraseña
+                const passwordInput = document.getElementById('register-password');
+                const confirmInput = document.getElementById('register-confirm');
+                
+                if (passwordInput && confirmInput) {
+                    confirmInput.addEventListener('input', function() {
+                        if (passwordInput.value !== confirmInput.value && confirmInput.value.length > 0) {
+                            confirmInput.style.borderColor = 'var(--color-accent)';
+                        } else {
+                            confirmInput.style.borderColor = '';
+                        }
+                    });
+                }
+            }
+            
+            // Funciones de utilidad
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function showAlert(alertDiv, message, type) {
+                alertDiv.textContent = message;
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.style.display = 'block';
+                
+                // Auto-ocultar después de 5 segundos para errores
+                if (type === 'error') {
+                    setTimeout(() => {
+                        alertDiv.style.display = 'none';
+                    }, 5000);
+                }
+            }
+            
+            // Verificar si ya hay una sesión activa
+            function checkExistingSession() {
+                const session = JSON.parse(localStorage.getItem('admin_auth') || 'null');
+                
+                if (session) {
+                    // CAMBIO: Redirigir siempre a usuario.html si ya hay sesión
+                    setTimeout(() => {
+                        window.location.href = 'usuario.html';
+                    }, 500);
+                }
+            }
+            
+            // Cargar usuarios demo si no existen
+            function loadDemoUsers() {
+                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                
+                if (users.length === 0) {
+                    // Crear usuarios demo por defecto
+                    const demoUsers = [
+                        {
+                            id: 1,
+                            nombre: 'Administrador',
+                            email: 'admin@canosalaotours.com',
+                            password: btoa('admin123'), // admin123
+                            rol: 'admin',
+                            activo: true,
+                            fecha_registro: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            nombre: 'Usuario Demo',
+                            email: 'usuario@demo.com',
+                            password: btoa('demo123'), // demo123
+                            rol: 'user',
+                            activo: true,
+                            fecha_registro: new Date().toISOString()
+                        }
+                    ];
+                    
+                    localStorage.setItem('cano_salao_users', JSON.stringify(demoUsers));
+                    console.log('Usuarios demo cargados correctamente');
+                }
+            }
+            
+            // Iniciar
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    hideLoader();
+                    loadDemoUsers(); // Cargar usuarios demo al inicio
+                    checkExistingSession();
+                });
+            } else {
+                hideLoader();
+                loadDemoUsers();
+                checkExistingSession();
+            }
+            
+        })();
+    </script>
+</body>
+</html>

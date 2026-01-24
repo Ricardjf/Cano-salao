@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caño Salao | Ruta Turística Marítima | Barcelona, Venezuela</title>
+    <meta name="description" content="Descubre la Ruta Turística Marítima Caño Salao en Barcelona, Venezuela. Tours en barco por manglares, avistamiento de aves y turismo comunitario.">
+    <meta name="keywords" content="Caño Salao, turismo Venezuela, Barcelona Anzoátegui, ruta marítima, manglares, tours en barco, turismo comunitario">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- Preload de fuentes críticas -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+    
+    <!-- Estilos críticos inline -->
+    <style>
+        /* SOLO ESTILOS CRÍTICOS PARA RENDER INICIAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header mínimo para render inicial */
+        header {
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.75rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+        
+        .text-orange {
+            color: #FF8C42;
+        }
+        
+        /* Hero básico para render inicial */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 2rem 1rem;
+            position: relative;
+            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+        }
+        
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Preload de imagen del hero */
+        .hero-preload {
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Esconder contenido no crítico inicialmente */
+        .non-critical {
+            opacity: 0;
+        }
+        
+        /* Loader minimalista */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    
+    <!-- Cargar CSS principal de forma no bloqueante -->
+    <link rel="stylesheet" href="index.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="index.css"></noscript>
+    
+    <!-- Bootstrap Icons diferido -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+</head>
+<body>
+    <!-- Loader para experiencia inicial -->
+    <div id="page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
+                </div>
+
+                <!-- Contenedor para centrar la navegación -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="index.html" class="active"><i class="bi bi-house"></i> Inicio</a></li>
+                            <li><a href="Pages/Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                            <li><a href="Pages/Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                            <li><a href="Pages/Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                            <li><a href="Pages/Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                            <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Botón Iniciar Sesión a la derecha -->
+                <div class="auth-section">
+                    <a href="Pages/login.html" class="login-btn">
+                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                    </a>
+                </div>
+
+                <button class="menu-toggle" aria-label="Menú">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Preload de imagen del hero -->
+    <div class="hero-preload">
+        <img src="media/upscalemedia-transformed.jpeg" alt="preload" width="1" height="1">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="fallback" width="1" height="1">
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg" id="heroBackground"></div>
+        <div class="container">
+            <h2 class="times-font hero-title">¡Descubre la Belleza Natural de <span class="text-orange">Caño</span> Salao!</h2>
+            <p class="times-font hero-subtitle">
+                Embárcate en una aventura única por los manglares de Barcelona, Venezuela. 
+                <strong>Turismo comunitario</strong> que conecta naturaleza, historia y comunidad.
+            </p>
+            <a href="Pages/contacto.html" class="btn">
+                <i class="bi bi-calendar-check"></i> ¡Reserva tu Tour Ahora!
+            </a>
+        </div>
+    </section>
+    
+    <!-- Empresa Factible -->
+    <section id="empresa" class="non-critical">
+        <div class="container">
+            <div class="section-title">
+                <h2 class="times-font"><i class="bi bi-building icon-comunidad"></i> Empresa de Producción Social</h2>
+                <p>Conoce nuestro modelo de negocio sostenible que beneficia a la comunidad de Caño Salao</p>
+            </div>
+            <div class="history-content">
+                <div class="history-text">
+                    <p>La empresa de producción social de transporte turístico acuático "Caño Salao" se establece como una entidad jurídica con el propósito de ofrecer servicios turísticos acuáticos sostenibles en la comunidad de Caño Salao, ubicada en Barcelona, Municipio Simón Bolívar, estado Anzoátegui.</p>
+                    <p>Su razón social refleja su compromiso con la protección del medio ambiente natural y el desarrollo socioeconómico de las comunidades locales.</p>
+                    <a href="Pages/empresa.html" class="btn">
+                        <i class="bi bi-info-circle icon-comunidad"></i> Conoce Más
+                    </a>
+                </div>
+                <div class="history-image">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Nuestra empresa" loading="lazy">
+                </div>
+            </div>
+            
+            <div class="factible-features">
+                <div class="factible-feature">
+                    <div class="factible-icon">
+                        <i class="bi bi-tree-fill"></i>
+                    </div>
+                    <h3 class="times-font">Sostenibilidad Ambiental</h3>
+                    <p>Comprometidos con la protección del ecosistema único de manglares y especies marinas de Caño Salao.</p>
+                </div>
+                <div class="factible-feature">
+                    <div class="factible-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h3 class="times-font">Desarrollo Comunitario</h3>
+                    <p>Generamos empleo local y reinvertimos utilidades en proyectos que benefician a la comunidad.</p>
+                </div>
+                <div class="factible-feature">
+                    <div class="factible-icon">
+                        <i class="bi bi-globe-americas"></i>
+                    </div>
+                    <h3 class="times-font">Turismo Responsable</h3>
+                    <p>Ofrecemos experiencias auténticas que respetan la cultura local y el medio ambiente.</p>
+                </div>
+                <div class="factible-feature">
+                    <div class="factible-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h3 class="times-font">Modelo Económico Sólido</h3>
+                    <p>Combinamos viabilidad económica con impacto social positivo para un desarrollo sostenible.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Historia -->
+    <section id="historia" class="non-critical">
+        <div class="container">
+            <div class="section-title">
+                <h2 class="times-font"><i class="bi bi-journal-text icon-historia"></i> Historia de Caño Salao</h2>
+                <p>Conoce los orígenes de esta comunidad pesquera y su transformación en un destino turístico sostenible</p>
+            </div>
+            <div class="history-content">
+                <div class="history-text">
+                    <p>Caño Salao es una pequeña aldea de pescadores ubicada en el estado Anzoátegui, Venezuela, que surgió a mediados del siglo XX gracias a la iniciativa de varias familias provenientes de Barcelona.</p>
+                    <p>Atraídos por los hermosos paisajes costeros y la abundancia de recursos marinos, estos pioneros decidieron establecerse en esta zona y construir sus hogares.</p>
+                    <a href="Pages/historia.html" class="btn">
+                        <i class="bi bi-clock-history icon-historia"></i> Ver Historia Completa
+                    </a>
+                </div>
+                <div class="history-image">
+                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Paisaje de Caño Salao" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Atracciones -->
+    <section id="atracciones" class="non-critical">
+        <div class="container">
+            <div class="section-title">
+                <h2 class="times-font"><i class="bi bi-star icon-turismo"></i> Atracciones Turísticas</h2>
+                <p>Descubre los tesoros naturales y culturales que hacen única a la ruta marítima Caño Salao</p>
+            </div>
+            <div class="attractions-grid">
+                <div class="attraction-card">
+                    <div class="attraction-img">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Manglares" loading="lazy">
+                    </div>
+                    <div class="attraction-info">
+                        <h3 class="times-font"><i class="bi bi-tree icon-naturaleza"></i> Recorrido por Manglares</h3>
+                        <p>Navega entre los impresionantes manglares que albergan una rica biodiversidad de aves y especies marinas.</p>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-img">
+                        <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Puente Una Luz" loading="lazy">
+                    </div>
+                    <div class="attraction-info">
+                        <h3 class="times-font"><i class="bi bi-bridge icon-historia"></i> Puente Una Luz</h3>
+                        <p>Visita este histórico puente construido hace muchos años, testigo del desarrollo de la comunidad.</p>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-img">
+                        <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Ruinas de la Aduana" loading="lazy">
+                    </div>
+                    <div class="attraction-info">
+                        <h3 class="times-font"><i class="bi bi-building icon-historia"></i> Ruinas de la Antigua Aduana</h3>
+                        <p>Explora los restos de un edificio importante de la época colonial española que controlaba el comercio marítimo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección La Ruta -->
+    <section id="la-ruta" class="non-critical">
+        <div class="container">
+            <h2 class="times-font"><i class="bi bi-map"></i> Descubre Nuestra Ruta</h2>
+            <p class="subtitle times-font">Una experiencia única que combina naturaleza, historia y aventura en el corazón de Caño Salao</p>
+            
+            <div class="programas">
+                <div class="carta">
+                    <div class="carta-header">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Manglares" loading="lazy">
+                    </div>
+                    <div class="carta-content">
+                        <h3 class="times-font"><i class="bi bi-flower1"></i> Manglares y Biodiversidad</h3>
+                        <p>Explora los impresionantes manglares que albergan una rica diversidad de aves y especies marinas.</p>
+                        <a href="#" class="carta-btn">
+                            <i class="bi bi-arrow-right-circle"></i> Saber Más
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="carta">
+                    <div class="carta-header">
+                        <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Patrimonio Histórico" loading="lazy">
+                    </div>
+                    <div class="carta-content">
+                        <h3 class="times-font"><i class="bi bi-buildings"></i> Patrimonio Histórico</h3>
+                        <p>Descubre los tesoros históricos de Caño Salao, desde el Puente Una Luz hasta las ruinas coloniales.</p>
+                        <a href="#" class="carta-btn">
+                            <i class="bi bi-arrow-right-circle"></i> Explorar Historia
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="carta">
+                    <div class="carta-header">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Aventura Acuática" loading="lazy">
+                    </div>
+                    <div class="carta-content">
+                        <h3 class="times-font"><i class="bi bi-compass"></i> Aventura Acuática</h3>
+                        <p>Vive la emoción de navegar por los canales y disfrutar de paisajes espectaculares.</p>
+                        <a href="#" class="carta-btn">
+                            <i class="bi bi-arrow-right-circle"></i> Iniciar Aventura
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Características -->
+    <section id="caracteristicas" class="non-critical">
+        <div class="container">
+            <div class="section-title">
+                <h2 class="times-font"><i class="bi bi-check-circle"></i> ¿Por Qué Elegirnos?</h2>
+                <p>Descubre lo que nos hace la mejor opción para tu aventura en Caño Salao</p>
+            </div>
+            <div class="caracteristicas-grid">
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon"><i class="bi bi-recycle"></i></span>
+                    <h3 class="times-font">Turismo Sostenible</h3>
+                    <p>Comprometidos con la protección del medio ambiente y el desarrollo de la comunidad local.</p>
+                </div>
+                
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon"><i class="bi bi-person-badge"></i></span>
+                    <h3 class="times-font">Guías Expertos</h3>
+                    <p>Nuestros guías locales conocen cada rincón de Caño Salao y su fascinante historia.</p>
+                </div>
+                
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon"><i class="bi bi-shield-check"></i></span>
+                    <h3 class="times-font">Equipo Seguro</h3>
+                    <p>Embarcaciones modernas y equipos de seguridad para garantizar tu tranquilidad.</p>
+                </div>
+                
+                <div class="caracteristica-item">
+                    <span class="caracteristica-icon"><i class="bi bi-cash-stack"></i></span>
+                    <h3 class="times-font">Precios Accesibles</h3>
+                    <p>Experiencias inolvidables a precios que respetan tu presupuesto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Preguntas -->
+    <section id="preguntas" class="non-critical">
+        <div class="container">
+            <h2 class="times-font"><i class="bi bi-question-circle"></i> ¿Listo para la Aventura?</h2>
+            <p class="subtitle times-font">Reserva tu experiencia hoy mismo y descubre la magia de Caño Salao</p>
+            
+            <div class="cta-buttons">
+                <a href="Pages/contacto.html" class="cta-btn">
+                    <i class="bi bi-calendar-plus"></i> Reservar Ahora
+                </a>
+                <a href="Pages/Servicios.html" class="cta-btn secondary">
+                    <i class="bi bi-eye"></i> Ver Tours
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="non-critical">
+        <div class="container">
+            <div class="section-title">
+                <h2 class="times-font"><i class="bi bi-chat-dots icon-contacto"></i> Contacto</h2>
+                <p>Reserva tu tour o solicita más información sobre nuestros servicios</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3 class="times-font"><i class="bi bi-info-circle icon-contacto"></i> Información de Contacto</h3>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                            <div>
+                                <h4 class="times-font">Ubicación</h4>
+                                <p>Sector Caño Salao, Barcelona, Municipio Simón Bolívar, Estado Anzoátegui, Venezuela</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+                            <div>
+                                <h4 class="times-font">Teléfono</h4>
+                                <p>+58 412-205-6558</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+                            <div>
+                                <h4 class="times-font">Email</h4>
+                                <p>info@canosalaotours.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="times-font"><i class="bi bi-clock icon-contacto"></i> Horarios de Atención</h3>
+                    <p>Lunes a Domingo: 8:00 AM - 5:00 PM</p>
+                </div>
+                <div class="contact-form">
+                    <form id="reservation-form">
+                        <div class="form-group">
+                            <label for="name" class="times-font"><i class="bi bi-person icon-contacto"></i> Nombre Completo *</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="times-font"><i class="bi bi-envelope icon-contacto"></i> Correo Electrónico *</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="times-font"><i class="bi bi-telephone icon-contacto"></i> Teléfono</label>
+                            <input type="tel" id="phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="times-font"><i class="bi bi-chat-text icon-contacto"></i> Mensaje</label>
+                            <textarea id="message" class="form-control" placeholder="Cuéntanos sobre tus intereses o necesidades especiales..." rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="bi bi-send"></i> Enviar Reserva
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="non-critical">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Empresa de producción social de transporte turístico acuático comprometida con el desarrollo sostenible de la comunidad y la protección del medio ambiente.</p>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Pages/Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                        <li><a href="Pages/Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                        <li><a href="Pages/Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                        <li><a href="Pages/Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                        <li><a href="Pages/contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3 class="times-font"><i class="bi bi-people"></i> Síguenos</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p><i class="bi bi-c-circle"></i> 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Script con funcionalidad diferida
+        (function() {
+            // Remover loader cuando el DOM esté listo
+            function hideLoader() {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        document.body.style.overflow = 'visible';
+                        initContent();
+                    }, 300);
+                }
+            }
+            
+            // Inicializar contenido no crítico
+            function initContent() {
+                // Mostrar contenido no crítico gradualmente
+                const nonCritical = document.querySelectorAll('.non-critical');
+                nonCritical.forEach((el, index) => {
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.transition = 'opacity 0.5s ease';
+                    }, index * 100);
+                });
+                
+                // Inicializar funcionalidades básicas
+                initBasicFunctionality();
+                
+                // Cargar funcionalidades avanzadas diferidamente
+                if ('IntersectionObserver' in window) {
+                    setTimeout(initAdvancedFeatures, 500);
+                }
+            }
+            
+            // Funcionalidad básica inmediata
+            function initBasicFunctionality() {
+                // Menú móvil
+                const menuToggle = document.querySelector('.menu-toggle');
+                const mainNav = document.querySelector('#main-navigation');
+                
+                if (menuToggle && mainNav) {
+                    menuToggle.addEventListener('click', function() {
+                        mainNav.classList.toggle('show');
+                        const icon = this.querySelector('i');
+                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
+                    });
+                }
+                
+                // Cargar imagen del hero de forma inteligente
+                loadHeroImage();
+            }
+            
+            // Funcionalidades avanzadas diferidas
+            function initAdvancedFeatures() {
+                // Observer para animaciones perezosas
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animated');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                // Observar elementos para animaciones
+                document.querySelectorAll('section').forEach(section => {
+                    observer.observe(section);
+                });
+                
+                // Smooth scroll diferido
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        if (href === '#') return;
+                        
+                        const target = document.querySelector(href);
+                        if (target) {
+                            e.preventDefault();
+                            window.scrollTo({
+                                top: target.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+                
+                // Form submission
+                const form = document.getElementById('reservation-form');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        // Validación básica
+                        const name = document.getElementById('name').value;
+                        const email = document.getElementById('email').value;
+                        
+                        if (!name || !email) {
+                            alert('Por favor completa los campos requeridos (Nombre y Email)');
+                            return;
+                        }
+                        
+                        // Simular envío
+                        const button = this.querySelector('button[type="submit"]');
+                        const originalText = button.innerHTML;
+                        button.innerHTML = '<i class="bi bi-arrow-repeat"></i> Enviando...';
+                        button.disabled = true;
+                        
+                        setTimeout(() => {
+                            alert('¡Gracias! Tu reserva ha sido enviada. Nos pondremos en contacto pronto.');
+                            form.reset();
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                        }, 1500);
+                    });
+                }
+            }
+            
+            // Carga inteligente de imagen del hero
+            function loadHeroImage() {
+                const heroBg = document.querySelector('.hero-bg');
+                if (!heroBg) return;
+                
+                // Primero intentar con imagen local
+                const localImg = new Image();
+                localImg.src = 'media/upscalemedia-transformed.jpeg';
+                
+                localImg.onload = function() {
+                    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${this.src}')`;
+                    heroBg.classList.add('loaded');
+                };
+                
+                localImg.onerror = function() {
+                    // Fallback a imagen online
+                    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`;
+                    heroBg.classList.add('loaded');
+                };
+            }
+            
+            // Iniciar
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', hideLoader);
+            } else {
+                hideLoader();
+            }
+            
+            // Prevenir scroll durante carga
+            document.body.style.overflow = 'hidden';
+        })();
+    </script>
+</body>
+</html>
