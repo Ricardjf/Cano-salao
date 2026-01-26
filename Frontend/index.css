@@ -221,7 +221,7 @@ nav ul li a.active {
     justify-content: center;
 }
 
-/* ========== MENÚ MÓVIL - COMPLETAMENTE CORREGIDO ========== */
+/* ========== MENÚ MÓVIL - SOLO NAVEGACIÓN ========== */
 .mobile-menu-overlay {
     display: none;
     position: fixed;
@@ -328,33 +328,6 @@ nav ul li a.active {
 
 .mobile-menu-nav a:hover {
     background: rgba(255,255,255,0.1);
-}
-
-/* Responsive para móvil */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: flex !important;
-    }
-    
-    .nav-center {
-        display: none !important;
-    }
-    
-    .header-content {
-        flex-wrap: nowrap;
-    }
-    
-    .logo {
-        flex: 1;
-    }
-    
-    .logo h1 {
-        font-size: 1.4rem;
-    }
-    
-    .auth-section {
-        order: 3;
-    }
 }
 
 /* ========== HERO ========== */
@@ -1394,14 +1367,3 @@ footer {
         }
     }
 }
-
-/* ========== MEJORAS DE ACCESIBILIDAD ========== */
-@media (prefers-contrast: high) {
-    .btn,
-    .carta-btn,
-    .login-btn {
-        border: 2px solid currentColor;
-    }
-}
-
-
