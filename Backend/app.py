@@ -43,7 +43,7 @@ class Config:
     
     # Configuración CORS para GitHub Pages y localhost
     CORS_ORIGINS = [
-        'https://tuusuario.github.io',  # Tu GitHub Pages
+        'https://ricardjf.github.io',  # Tu GitHub Pages
         'http://localhost:5500',
         'http://127.0.0.1:5500',
         'http://localhost:3000',
@@ -551,3 +551,4 @@ if __name__ == '__main__':
         port=port,
         debug=app.config['DEBUG']
     )
+
