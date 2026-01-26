@@ -1,14 +1,15 @@
-# Backend/app.py - APLICACIÓN FLASK COMPLETA Y CORREGIDA
+# Backend/app.py - APLICACIÓN FLASK PARA RENDER.COM
 import os
 import sys
 import logging
-from datetime import timedelta
-from flask import Flask, jsonify, request
+from datetime import timedelta, datetime
+from flask import Flask, jsonify, request, send_from_directory
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
-# Configurar logging antes de cualquier import
+# Configurar logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -24,439 +25,515 @@ print("\n" + "="*60)
 print("🚀 INICIANDO CAÑO SALAO - BACKEND API")
 print("="*60)
 
-# Agregar el directorio actual al path para importaciones
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, current_dir)
-
-# Importar configuración
-try:
-    from config import current_config as Config
-    print("✅ Configuración cargada correctamente")
-except ImportError as e:
-    print(f"❌ Error importando config: {e}")
-    print("   Creando configuración mínima...")
+# ========== CONFIGURACIÓN BÁSICA ==========
+class Config:
+    # Claves secretas - Usar variables de entorno en producción
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-cano-salao-2024')
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-cano-salao-2024')
     
-    # Configuración mínima por defecto
-    class Config:
-        SECRET_KEY = 'dev-secret-key-cano-salao-2024-turismo-barcelona-venezuela'
-        JWT_SECRET_KEY = 'jwt-dev-secret-key-cano-salao-2024-sistema-turismo'
-        SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(current_dir, "instance", "cano_salao.db")}'
-        SQLALCHEMY_TRACK_MODIFICATIONS = False
-        JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
-        CORS_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000', 
-                       'http://localhost:5500', 'http://127.0.0.1:5500']
-        DEBUG = True
-        HOST = '0.0.0.0'
-        PORT = 5000
-        ENV = 'development'
+    # Configuración de base de datos para Render
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    
+    # En Render, usa la ruta absoluta para SQLite
+    DATABASE_PATH = os.path.join(basedir, 'instance', 'cano_salao.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or f'sqlite:///{DATABASE_PATH}'
+    
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    
+    # Configuración CORS para GitHub Pages y localhost
+    CORS_ORIGINS = [
+        'https://tuusuario.github.io',  # Tu GitHub Pages
+        'http://localhost:5500',
+        'http://127.0.0.1:5500',
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+    ]
+    
+    # Configuración del servidor para Render
+    HOST = '0.0.0.0'
+    PORT = int(os.environ.get('PORT', 5000))
+    DEBUG = os.environ.get('FLASK_ENV', 'development') == 'development'
+    ENV = os.environ.get('FLASK_ENV', 'development')
 
+# ========== CREAR APLICACIÓN ==========
 def create_app(config_class=Config):
     """Factory para crear la aplicación Flask"""
-    
-    print("🔧 Creando aplicación Flask...")
     
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # Configuraciones específicas para desarrollo
-    if app.config.get('DEBUG'):
-        app.config['SQLALCHEMY_ECHO'] = True
-        print("   📍 Modo DEBUG activado")
+    # Configurar CORS primero
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": app.config['CORS_ORIGINS'],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True
+        }
+    })
+    print("✅ CORS configurado")
     
-    # ========== INICIALIZAR EXTENSIONES ==========
-    
-    # 1. CORS - Configurar primero para evitar problemas
-    try:
-        CORS(app, 
-             origins=app.config.get('CORS_ORIGINS', ['http://localhost:3000']),
-             supports_credentials=True,
-             methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-             allow_headers=['Content-Type', 'Authorization', 'X-Requested-With', 
-                           'Accept', 'Origin', 'X-Total-Count'],
-             expose_headers=['Content-Length', 'X-Requested-With', 'X-Response-Time'],
-             max_age=86400)
-        print("✅ CORS configurado correctamente")
-    except Exception as e:
-        print(f"⚠️  Error configurando CORS: {e}")
-    
-    # 2. JWT Manager
+    # Inicializar JWT
     jwt = JWTManager(app)
     
-    # Configurar callbacks de JWT
+    # Configurar JWT callbacks
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
         return jsonify({
             'success': False,
             'error': 'Token expirado',
-            'message': 'Tu sesión ha expirado, por favor inicia sesión nuevamente'
+            'message': 'Tu sesión ha expirado'
         }), 401
     
-    @jwt.invalid_token_loader
-    def invalid_token_callback(error):
-        return jsonify({
-            'success': False,
-            'error': 'Token inválido',
-            'message': 'Token de autenticación inválido'
-        }), 401
+    print("✅ JWT configurado")
     
-    @jwt.unauthorized_loader
-    def missing_token_callback(error):
-        return jsonify({
-            'success': False,
-            'error': 'Token requerido',
-            'message': 'Se requiere autenticación para acceder a este recurso'
-        }), 401
+    # Inicializar base de datos
+    db = SQLAlchemy(app)
     
-    @jwt.needs_fresh_token_loader
-    def token_not_fresh_callback(jwt_header, jwt_payload):
-        return jsonify({
-            'success': False,
-            'error': 'Token no fresco',
-            'message': 'Se requiere un token fresco para esta operación'
-        }), 401
-    
-    print("✅ JWT Manager configurado")
-    
-    # 3. Inicializar base de datos
-    try:
-        from models import db, init_database
-        db.init_app(app)
-        print("✅ Base de datos inicializada")
-    except ImportError as e:
-        print(f"❌ Error importando modelos: {e}")
-        print("   Creando sistema mínimo...")
-        from flask_sqlalchemy import SQLAlchemy
-        db = SQLAlchemy()
-        db.init_app(app)
-    
-    # 4. Inicializar migraciones
+    # Inicializar migraciones (solo si existe)
     try:
         migrate = Migrate(app, db)
-        print("✅ Sistema de migraciones inicializado")
-    except Exception as e:
-        print(f"⚠️  Error inicializando migraciones: {e}")
+        print("✅ Migraciones configuradas")
+    except:
+        print("⚠️  Migraciones no disponibles")
     
-    # ========== REGISTRAR RUTAS ==========
+    # ========== MODELOS BÁSICOS ==========
+    class User(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        nombre = db.Column(db.String(100), nullable=False)
+        email = db.Column(db.String(120), unique=True, nullable=False)
+        password = db.Column(db.String(200), nullable=False)
+        rol = db.Column(db.String(20), default='user')
+        activo = db.Column(db.Boolean, default=True)
+        telefono = db.Column(db.String(20))
+        created_at = db.Column(db.DateTime, default=datetime.utcnow)
+        updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    print("🔗 Registrando rutas...")
+    class Tour(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        nombre = db.Column(db.String(100), nullable=False)
+        descripcion = db.Column(db.Text)
+        precio = db.Column(db.Float, nullable=False)
+        capacidad = db.Column(db.Integer, default=15)
+        disponible = db.Column(db.Boolean, default=True)
+        duracion = db.Column(db.String(50))
+        imagen_url = db.Column(db.String(500))
+        created_at = db.Column(db.DateTime, default=datetime.utcnow)
+        updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Importar y registrar blueprints de rutas
-    try:
-        from routes import register_all_blueprints, print_routes_summary
-        register_all_blueprints(app)
-        print("✅ Blueprints registrados correctamente")
-    except ImportError as e:
-        print(f"⚠️  Error registrando blueprints: {e}")
-        print("   Registrando rutas básicas manualmente...")
+    class Booking(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        codigo = db.Column(db.String(50), unique=True, nullable=False)
+        user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+        tour_id = db.Column(db.Integer, db.ForeignKey('tour.id'), nullable=False)
+        fecha = db.Column(db.Date, nullable=False)
+        personas = db.Column(db.Integer, nullable=False)
+        total = db.Column(db.Float, nullable=False)
+        estado = db.Column(db.String(20), default='pending')
+        created_at = db.Column(db.DateTime, default=datetime.utcnow)
+        updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
         
-        # Rutas básicas como fallback
-        @app.route('/api/auth/login', methods=['POST'])
-        def auth_login_fallback():
-            try:
-                data = request.get_json()
-                if not data:
-                    return jsonify({
-                        'success': False,
-                        'error': 'Datos no proporcionados'
-                    }), 400
+        user = db.relationship('User', backref='bookings')
+        tour = db.relationship('Tour', backref='bookings')
+    
+    class BlogPost(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        titulo = db.Column(db.String(200), nullable=False)
+        contenido = db.Column(db.Text, nullable=False)
+        excerpt = db.Column(db.Text)
+        categoria = db.Column(db.String(50))
+        autor = db.Column(db.String(100))
+        imagen_url = db.Column(db.String(500))
+        publicado = db.Column(db.Boolean, default=False)
+        vistas = db.Column(db.Integer, default=0)
+        created_at = db.Column(db.DateTime, default=datetime.utcnow)
+        updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # ========== INICIALIZAR BASE DE DATOS ==========
+    with app.app_context():
+        try:
+            # Crear directorio instance si no existe
+            os.makedirs(os.path.join(app.config['basedir'], 'instance'), exist_ok=True)
+            
+            # Crear tablas
+            db.create_all()
+            print("✅ Base de datos inicializada")
+            
+            # Crear admin por defecto si no existe
+            if User.query.count() == 0:
+                # ¡EN PRODUCCIÓN, CAMBIA ESTA CONTRASEÑA!
+                from werkzeug.security import generate_password_hash
+                admin = User(
+                    nombre='Administrador',
+                    email='admin@canosalao.com',
+                    password=generate_password_hash('admin123'),
+                    rol='admin',
+                    telefono='+58 412-205-6558'
+                )
+                db.session.add(admin)
                 
-                # Credenciales de prueba
-                if data.get('email') == 'admin@canosalaotours.com' and data.get('password') == 'admin123':
-                    return jsonify({
-                        'success': True,
-                        'access_token': 'dev-token-simulado-' + os.urandom(10).hex(),
-                        'user': {
-                            'id': 1,
-                            'nombre': 'Administrador',
-                            'email': 'admin@canosalaotours.com',
-                            'rol': 'admin',
-                            'activo': True,
-                            'telefono': '+58 412-205-6558'
-                        },
-                        'message': 'Login exitoso (modo desarrollo)'
-                    })
-                else:
-                    return jsonify({
-                        'success': False,
-                        'error': 'Credenciales incorrectas'
-                    }), 401
-            except Exception as e:
-                return jsonify({
-                    'success': False,
-                    'error': f'Error en el servidor: {str(e)}'
-                }), 500
-        
-        @app.route('/api/auth/register', methods=['POST'])
-        def auth_register_fallback():
-            try:
-                data = request.get_json()
-                if not data:
-                    return jsonify({
-                        'success': False,
-                        'error': 'Datos no proporcionados'
-                    }), 400
+                # Crear tours de ejemplo
+                tours = [
+                    Tour(
+                        nombre='Tour Básico',
+                        descripcion='Recorrido por los manglares',
+                        precio=25.00,
+                        capacidad=15,
+                        duracion='2 horas',
+                        imagen_url='https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600'
+                    ),
+                    Tour(
+                        nombre='Tour Completo',
+                        descripcion='Experiencia completa de 4 horas',
+                        precio=45.00,
+                        capacidad=12,
+                        duracion='4 horas',
+                        imagen_url='https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600'
+                    )
+                ]
+                db.session.add_all(tours)
                 
-                return jsonify({
-                    'success': True,
-                    'message': 'Registro exitoso (modo desarrollo)',
-                    'user': {
-                        'id': 999,
-                        'nombre': data.get('nombre', 'Usuario'),
-                        'email': data.get('email'),
-                        'rol': 'user',
-                        'activo': True
-                    },
-                    'access_token': 'dev-token-registro-' + os.urandom(10).hex()
-                })
-            except Exception as e:
-                return jsonify({
-                    'success': False,
-                    'error': f'Error en el servidor: {str(e)}'
-                }), 500
+                # Crear artículo de blog de ejemplo
+                blog_post = BlogPost(
+                    titulo='Bienvenidos a Caño Salao',
+                    contenido='<h1>¡Bienvenidos!</h1><p>Descubre la belleza de nuestros manglares...</p>',
+                    excerpt='Conoce más sobre nuestra comunidad y tours',
+                    categoria='noticias',
+                    autor='Equipo Caño Salao',
+                    publicado=True
+                )
+                db.session.add(blog_post)
+                
+                db.session.commit()
+                print("✅ Datos de ejemplo creados")
+                print("👑 Admin: admin@canosalao.com / admin123")
+                
+        except Exception as e:
+            print(f"⚠️  Error inicializando base de datos: {e}")
     
     # ========== RUTAS BÁSICAS ==========
     
     @app.route('/')
     def home():
-        """Página de inicio de la API"""
         return jsonify({
             'success': True,
-            'message': '¡Bienvenido a la API de Caño Salao Turismo! 🚤',
+            'message': '🚤 API Caño Salao - Sistema de Turismo',
             'version': '1.0.0',
             'status': 'online',
             'endpoints': {
-                'home': '/',
-                'test': '/api/test',
-                'health': '/health',
                 'status': '/api/status',
-                'auth': {
-                    'login': '/api/auth/login [POST]',
-                    'register': '/api/auth/register [POST]',
-                    'validate': '/api/auth/validate [GET]'
-                },
-                'users': '/api/users/* [GET, POST, PUT, DELETE]',
-                'documentation': 'Ver /api/docs para documentación completa'
+                'health': '/health',
+                'login': '/api/auth/login [POST]',
+                'register': '/api/auth/register [POST]',
+                'tours': '/api/tours [GET]',
+                'blog': '/api/blog [GET]'
             },
-            'environment': app.config.get('ENV', 'development'),
-            'timestamp': __import__('datetime').datetime.utcnow().isoformat()
-        })
-    
-    @app.route('/api/test')
-    def test():
-        """Endpoint de prueba para verificar que el backend funciona"""
-        return jsonify({
-            'success': True,
-            'message': '✅ ¡Backend funcionando correctamente!',
-            'status': 'operational',
-            'timestamp': __import__('datetime').datetime.utcnow().isoformat(),
-            'database': 'SQLite' if 'sqlite' in app.config.get('SQLALCHEMY_DATABASE_URI', '') else 'Other',
-            'cors_enabled': True,
-            'jwt_enabled': True
-        })
-    
-    @app.route('/health')
-    def health():
-        """Endpoint de salud para monitoreo"""
-        try:
-            # Verificar conexión a base de datos
-            db.session.execute('SELECT 1')
-            db_status = 'connected'
-        except Exception as e:
-            db_status = f'error: {str(e)}'
-        
-        import psutil
-        import datetime
-        
-        process = psutil.Process(os.getpid())
-        
-        return jsonify({
-            'status': 'healthy',
-            'service': 'cano-salao-api',
-            'timestamp': datetime.datetime.utcnow().isoformat(),
-            'database': db_status,
-            'system': {
-                'memory_usage_mb': round(process.memory_info().rss / (1024 * 1024), 2),
-                'cpu_percent': process.cpu_percent(),
-                'uptime_seconds': int((datetime.datetime.utcnow() - datetime.datetime.fromtimestamp(process.create_time())).total_seconds())
-            }
+            'timestamp': datetime.utcnow().isoformat()
         })
     
     @app.route('/api/status')
     def api_status():
-        """Endpoint para verificar estado completo de la API"""
-        import datetime
-        
-        endpoints = []
-        for rule in app.url_map.iter_rules():
-            if rule.endpoint != 'static':
-                endpoints.append({
-                    'endpoint': rule.rule,
-                    'methods': sorted(list(rule.methods - {'OPTIONS', 'HEAD'})),
-                    'description': 'Ver documentación para detalles'
-                })
-        
         return jsonify({
             'success': True,
             'status': 'online',
-            'app_name': 'Caño Salao Turismo API',
-            'version': '1.0.0',
-            'environment': app.config.get('ENV', 'development'),
-            'debug_mode': app.config.get('DEBUG', False),
-            'timestamp': datetime.datetime.utcnow().isoformat(),
-            'endpoints_count': len(endpoints),
-            'sample_endpoints': endpoints[:20]  # Mostrar solo primeros 20
+            'service': 'cano-salao-api',
+            'environment': app.config['ENV'],
+            'timestamp': datetime.utcnow().isoformat(),
+            'database': 'connected' if db.engine.connect() else 'disconnected'
         })
     
-    # ========== MANEJADORES DE ERRORES ==========
+    @app.route('/health')
+    def health():
+        try:
+            db.session.execute('SELECT 1')
+            return jsonify({'status': 'healthy', 'database': 'connected'})
+        except:
+            return jsonify({'status': 'unhealthy', 'database': 'disconnected'}), 500
     
-    @app.errorhandler(400)
-    def bad_request(error):
-        return jsonify({
-            'success': False,
-            'error': 'Solicitud incorrecta',
-            'message': 'La solicitud contiene datos inválidos',
-            'path': request.path
-        }), 400
+    # ========== RUTAS DE AUTENTICACIÓN ==========
+    
+    @app.route('/api/auth/login', methods=['POST'])
+    def login():
+        try:
+            data = request.get_json()
+            if not data or not data.get('email') or not data.get('password'):
+                return jsonify({'success': False, 'error': 'Email y contraseña requeridos'}), 400
+            
+            user = User.query.filter_by(email=data['email'], activo=True).first()
+            if not user:
+                return jsonify({'success': False, 'error': 'Credenciales incorrectas'}), 401
+            
+            from werkzeug.security import check_password_hash
+            if not check_password_hash(user.password, data['password']):
+                return jsonify({'success': False, 'error': 'Credenciales incorrectas'}), 401
+            
+            # Crear token JWT
+            from flask_jwt_extended import create_access_token
+            access_token = create_access_token(identity={
+                'id': user.id,
+                'email': user.email,
+                'nombre': user.nombre,
+                'rol': user.rol
+            })
+            
+            return jsonify({
+                'success': True,
+                'token': access_token,
+                'user': {
+                    'id': user.id,
+                    'nombre': user.nombre,
+                    'email': user.email,
+                    'rol': user.rol,
+                    'telefono': user.telefono
+                }
+            })
+            
+        except Exception as e:
+            logger.error(f"Login error: {e}")
+            return jsonify({'success': False, 'error': 'Error en el servidor'}), 500
+    
+    @app.route('/api/auth/register', methods=['POST'])
+    def register():
+        try:
+            data = request.get_json()
+            if not data or not data.get('email') or not data.get('password') or not data.get('nombre'):
+                return jsonify({'success': False, 'error': 'Datos incompletos'}), 400
+            
+            # Verificar si el email ya existe
+            existing_user = User.query.filter_by(email=data['email']).first()
+            if existing_user:
+                return jsonify({'success': False, 'error': 'El email ya está registrado'}), 400
+            
+            from werkzeug.security import generate_password_hash
+            new_user = User(
+                nombre=data['nombre'],
+                email=data['email'],
+                password=generate_password_hash(data['password']),
+                rol='user',
+                telefono=data.get('telefono', '')
+            )
+            
+            db.session.add(new_user)
+            db.session.commit()
+            
+            # Crear token JWT
+            from flask_jwt_extended import create_access_token
+            access_token = create_access_token(identity={
+                'id': new_user.id,
+                'email': new_user.email,
+                'nombre': new_user.nombre,
+                'rol': new_user.rol
+            })
+            
+            return jsonify({
+                'success': True,
+                'token': access_token,
+                'user': {
+                    'id': new_user.id,
+                    'nombre': new_user.nombre,
+                    'email': new_user.email,
+                    'rol': new_user.rol
+                },
+                'message': 'Usuario registrado exitosamente'
+            }), 201
+            
+        except Exception as e:
+            logger.error(f"Register error: {e}")
+            db.session.rollback()
+            return jsonify({'success': False, 'error': 'Error en el servidor'}), 500
+    
+    # ========== RUTAS PÚBLICAS ==========
+    
+    @app.route('/api/tours', methods=['GET'])
+    def get_tours():
+        try:
+            tours = Tour.query.filter_by(disponible=True).order_by(Tour.precio).all()
+            tours_list = []
+            for tour in tours:
+                tours_list.append({
+                    'id': tour.id,
+                    'nombre': tour.nombre,
+                    'descripcion': tour.descripcion,
+                    'precio': tour.precio,
+                    'capacidad': tour.capacidad,
+                    'duracion': tour.duracion,
+                    'imagen_url': tour.imagen_url
+                })
+            return jsonify(tours_list)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    @app.route('/api/blog', methods=['GET'])
+    def get_blog_posts():
+        try:
+            posts = BlogPost.query.filter_by(publicado=True).order_by(BlogPost.created_at.desc()).limit(10).all()
+            posts_list = []
+            for post in posts:
+                posts_list.append({
+                    'id': post.id,
+                    'titulo': post.titulo,
+                    'excerpt': post.excerpt,
+                    'categoria': post.categoria,
+                    'autor': post.autor,
+                    'imagen_url': post.imagen_url,
+                    'vistas': post.vistas,
+                    'created_at': post.created_at.isoformat()
+                })
+            return jsonify(posts_list)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    # ========== RUTAS PROTEGIDAS ==========
+    
+    @app.route('/api/user/profile', methods=['GET'])
+    @jwt_required()
+    def get_profile():
+        try:
+            current_user = get_jwt_identity()
+            user = User.query.get(current_user['id'])
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado'}), 404
+            
+            return jsonify({
+                'id': user.id,
+                'nombre': user.nombre,
+                'email': user.email,
+                'rol': user.rol,
+                'telefono': user.telefono,
+                'created_at': user.created_at.isoformat()
+            })
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    @app.route('/api/bookings', methods=['POST'])
+    @jwt_required()
+    def create_booking():
+        try:
+            current_user = get_jwt_identity()
+            data = request.get_json()
+            
+            if not data.get('tour_id') or not data.get('fecha') or not data.get('personas'):
+                return jsonify({'error': 'Datos incompletos'}), 400
+            
+            tour = Tour.query.get(data['tour_id'])
+            if not tour or not tour.disponible:
+                return jsonify({'error': 'Tour no disponible'}), 400
+            
+            total = tour.precio * data['personas']
+            codigo = f"RES-{datetime.now().strftime('%Y%m%d')}-{current_user['id']:03d}"
+            
+            new_booking = Booking(
+                codigo=codigo,
+                user_id=current_user['id'],
+                tour_id=tour.id,
+                fecha=datetime.strptime(data['fecha'], '%Y-%m-%d').date(),
+                personas=data['personas'],
+                total=total,
+                estado='pending'
+            )
+            
+            db.session.add(new_booking)
+            db.session.commit()
+            
+            return jsonify({
+                'success': True,
+                'booking': {
+                    'id': new_booking.id,
+                    'codigo': new_booking.codigo,
+                    'tour_nombre': tour.nombre,
+                    'fecha': new_booking.fecha.isoformat(),
+                    'personas': new_booking.personas,
+                    'total': new_booking.total,
+                    'estado': new_booking.estado
+                }
+            }), 201
+            
+        except Exception as e:
+            logger.error(f"Booking error: {e}")
+            db.session.rollback()
+            return jsonify({'error': 'Error creando reserva'}), 500
+    
+    # ========== RUTAS DE ADMINISTRADOR ==========
+    
+    def admin_required(fn):
+        @jwt_required()
+        def wrapper(*args, **kwargs):
+            current_user = get_jwt_identity()
+            if current_user['rol'] != 'admin':
+                return jsonify({'error': 'Acceso solo para administradores'}), 403
+            return fn(*args, **kwargs)
+        return wrapper
+    
+    @app.route('/api/admin/dashboard', methods=['GET'])
+    @admin_required
+    def admin_dashboard():
+        try:
+            stats = {
+                'total_users': User.query.count(),
+                'total_tours': Tour.query.count(),
+                'total_bookings': Booking.query.count(),
+                'total_blog_posts': BlogPost.query.count(),
+                'pending_bookings': Booking.query.filter_by(estado='pending').count(),
+                'active_tours': Tour.query.filter_by(disponible=True).count()
+            }
+            
+            return jsonify(stats)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    @app.route('/api/admin/tours', methods=['POST'])
+    @admin_required
+    def create_tour():
+        try:
+            data = request.get_json()
+            if not data.get('nombre') or not data.get('precio'):
+                return jsonify({'error': 'Nombre y precio requeridos'}), 400
+            
+            new_tour = Tour(
+                nombre=data['nombre'],
+                descripcion=data.get('descripcion', ''),
+                precio=float(data['precio']),
+                capacidad=data.get('capacidad', 15),
+                duracion=data.get('duracion', ''),
+                imagen_url=data.get('imagen_url', '')
+            )
+            
+            db.session.add(new_tour)
+            db.session.commit()
+            
+            return jsonify({
+                'success': True,
+                'tour': {
+                    'id': new_tour.id,
+                    'nombre': new_tour.nombre,
+                    'precio': new_tour.precio,
+                    'disponible': new_tour.disponible
+                }
+            }), 201
+            
+        except Exception as e:
+            logger.error(f"Create tour error: {e}")
+            db.session.rollback()
+            return jsonify({'error': 'Error creando tour'}), 500
+    
+    # ========== MANEJADORES DE ERROR ==========
     
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({
-            'success': False,
-            'error': 'Endpoint no encontrado',
-            'message': 'La ruta solicitada no existe en esta API',
-            'path': request.path,
-            'available_endpoints': '/'
-        }), 404
-    
-    @app.errorhandler(405)
-    def method_not_allowed(error):
-        return jsonify({
-            'success': False,
-            'error': 'Método no permitido',
-            'message': f'El método {request.method} no está permitido para esta ruta',
-            'allowed_methods': ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
-        }), 405
+        return jsonify({'error': 'Endpoint no encontrado'}), 404
     
     @app.errorhandler(500)
     def internal_error(error):
-        logger.error(f'Error 500: {str(error)}', exc_info=True)
-        return jsonify({
-            'success': False,
-            'error': 'Error interno del servidor',
-            'message': 'Ocurrió un error inesperado. Por favor intenta nuevamente.',
-            'debug_info': str(error) if app.config.get('DEBUG') else None
-        }), 500
+        logger.error(f'Server error: {error}')
+        return jsonify({'error': 'Error interno del servidor'}), 500
     
-    # ========== MIDDLEWARE PARA LOGGING ==========
-    
-    @app.before_request
-    def before_request():
-        """Middleware para logging antes de procesar peticiones"""
-        if request.endpoint and request.endpoint != 'static':
-            request.start_time = __import__('datetime').datetime.utcnow()
-            logger.info(f'Request: {request.method} {request.path} - IP: {request.remote_addr} - Endpoint: {request.endpoint}')
-    
-    @app.after_request
-    def after_request(response):
-        """Middleware para logging después de procesar peticiones"""
-        if request.endpoint and request.endpoint != 'static' and hasattr(request, 'start_time'):
-            import datetime
-            response_time = (datetime.datetime.utcnow() - request.start_time).total_seconds()
-            response.headers['X-Response-Time'] = f'{response_time:.3f}s'
-            
-            logger.info(f'Response: {request.method} {request.path} - Status: {response.status_code} - Time: {response_time:.3f}s')
-        
-        # Headers para desarrollo
-        if app.config.get('DEBUG'):
-            response.headers['X-Developed-By'] = 'Caño Salao Turismo Team'
-            response.headers['X-API-Version'] = '1.0.0'
-            response.headers['X-Environment'] = app.config.get('ENV', 'development')
-        
-        return response
-    
-    # ========== INICIALIZAR BASE DE DATOS ==========
-    
-    print("🗄️  Inicializando base de datos...")
-    with app.app_context():
-        try:
-            # Crear tablas si no existen
-            db.create_all()
-            print("✅ Tablas de base de datos verificadas/creadas")
-            
-            # Crear usuario admin por defecto si no existe
-            try:
-                from models.user import User
-                admin_email = 'admin@canosalaotours.com'
-                if not User.find_by_email(admin_email):
-                    admin_user = User(
-                        nombre='Administrador',
-                        email=admin_email,
-                        rol='admin',
-                        activo=True,
-                        telefono='+58 412-205-6558',
-                        ciudad='Barcelona',
-                        estado='Anzoátegui',
-                        pais='Venezuela',
-                        email_verificado=True
-                    )
-                    admin_user.set_password('admin123')
-                    db.session.add(admin_user)
-                    db.session.commit()
-                    print("✅ Usuario administrador creado por defecto")
-                else:
-                    print("✅ Usuario administrador ya existe")
-            except Exception as e:
-                print(f"⚠️  No se pudo crear usuario admin: {e}")
-                db.session.rollback()
-            
-            # Crear datos de prueba en desarrollo
-            if app.config.get('DEBUG'):
-                try:
-                    from models import create_test_data
-                    create_test_data()
-                except Exception as e:
-                    print(f"⚠️  Error creando datos de prueba: {e}")
-            
-        except Exception as e:
-            print(f"⚠️  Error al inicializar base de datos: {e}")
-            if app.config.get('DEBUG'):
-                import traceback
-                traceback.print_exc()
-            print("   Intentando continuar sin base de datos...")
-    
-    # ========== IMPRIMIR RESUMEN FINAL ==========
-    
+    # ========== IMPRIMIR RESUMEN ==========
     print("\n" + "="*60)
     print("✅ APLICACIÓN CREADA EXITOSAMENTE")
-    print("="*60)
-    
-    # Imprimir resumen de configuración
-    try:
-        config_class.print_config_summary()
-    except:
-        pass
-    
-    # Imprimir resumen de rutas
-    try:
-        from routes import print_routes_summary
-        print_routes_summary(app)
-    except:
-        # Resumen manual de rutas
-        print("\n📋 RUTAS PRINCIPALES:")
-        print("-" * 40)
-        routes_list = []
-        for rule in app.url_map.iter_rules():
-            if rule.endpoint != 'static':
-                methods = ', '.join(sorted(list(rule.methods - {'OPTIONS', 'HEAD'})))
-                routes_list.append((rule.rule, methods))
-        
-        routes_list.sort(key=lambda x: x[0])
-        for route, methods in routes_list[:20]:  # Mostrar solo 20
-            print(f"  {methods:15} {route}")
-        
-        if len(routes_list) > 20:
-            print(f"  ... y {len(routes_list) - 20} más")
-    
+    print(f"📡 URL: http://{app.config['HOST']}:{app.config['PORT']}")
+    print(f"🗄️  Base de datos: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    print(f"🔐 Admin: admin@canosalao.com / admin123")
     print("="*60)
     
     return app
@@ -464,44 +541,13 @@ def create_app(config_class=Config):
 # ========== CREAR APLICACIÓN ==========
 app = create_app()
 
+# Importar JWT decorator después de crear app
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 if __name__ == '__main__':
-    print("\n" + "="*60)
-    print("🚀 INICIANDO SERVIDOR DE DESARROLLO")
-    print("="*60)
-    print(f"📡 URL Principal: http://localhost:{app.config.get('PORT', 5000)}")
-    print(f"🔧 Debug Mode: {'✅ ON' if app.config.get('DEBUG') else '❌ OFF'}")
-    print(f"🗄️  Database: {app.config.get('SQLALCHEMY_DATABASE_URI', 'No configurada')}")
-    print(f"🌐 CORS Origins: {app.config.get('CORS_ORIGINS', ['localhost:3000'])}")
-    print("="*60)
-    print("📋 ACCESO RÁPIDO:")
-    print(f"  http://localhost:{app.config.get('PORT', 5000)}")
-    print(f"  http://localhost:{app.config.get('PORT', 5000)}/api/test")
-    print(f"  http://localhost:{app.config.get('PORT', 5000)}/health")
-    print(f"  http://localhost:{app.config.get('PORT', 5000)}/api/status")
-    print("="*60)
-    print("🔐 CREDENCIALES DE PRUEBA:")
-    print("  Email: admin@canosalaotours.com")
-    print("  Contraseña: admin123")
-    print("="*60)
-    print("💡 COMANDOS ÚTILES:")
-    print("  curl http://localhost:5000/api/test")
-    print("  curl -X POST http://localhost:5000/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"admin@canosalaotours.com\",\"password\":\"admin123\"}'")
-    print("="*60)
-    print("🚨 Usa Ctrl+C para detener el servidor\n")
-    
-    try:
-        app.run(
-            host=app.config.get('HOST', '0.0.0.0'),
-            port=app.config.get('PORT', 5000),
-            debug=app.config.get('DEBUG', True),
-            threaded=True,
-            use_reloader=True
-        )
-    except KeyboardInterrupt:
-        print("\n👋 Servidor detenido por el usuario")
-        sys.exit(0)
-    except Exception as e:
-        print(f"❌ Error crítico al iniciar el servidor: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(
+        host=app.config['HOST'],
+        port=port,
+        debug=app.config['DEBUG']
+    )
