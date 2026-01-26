@@ -566,8 +566,16 @@
                 <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
             </ul>
         </nav>
+        
+        <!-- Sección de autenticación en móvil -->
+        <div style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem;">
+            <a href="Pages/login.html" class="btn" style="width: 100%; justify-content: center;">
+                <i class="bi bi-person-circle"></i> Iniciar Sesión
+            </a>
+        </div>
     </div>
 
+    <!-- El resto del contenido HTML permanece igual... -->
     <!-- Hero Section CON CONTENIDO DINÁMICO -->
     <section class="hero">
         <div class="hero-bg" id="heroBackground"></div>
@@ -1293,171 +1301,34 @@
             // ... (código del modal del blog, igual que antes)
         }
         
-        // ========== SISTEMA DE MENÚ MÓVIL ==========
+        // ========== SISTEMA DE MENÚ MÓVIL CORREGIDO PARA ANDROID ==========
         
-        function initMobileMenu() {
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileMenuClose = document.getElementById('mobile-menu-close');
-    const mobileMenuContainer = document.getElementById('mobile-menu-container');
-    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-    let isMobileMenuOpen = false;
-    
-    // Función para abrir el menú
-    function openMobileMenu() {
-        mobileMenuContainer.classList.add('active');
-        mobileMenuOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        isMobileMenuOpen = true;
-        mobileMenuToggle.setAttribute('aria-expanded', 'true');
-        mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
-    }
-    
-    // Función para cerrar el menú
-    function closeMobileMenu() {
-        mobileMenuContainer.classList.remove('active');
-        mobileMenuOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-        isMobileMenuOpen = false;
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
-    }
-    
-    // Eventos para abrir/cerrar menú
-    mobileMenuToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!isMobileMenuOpen) {
-            openMobileMenu();
-        } else {
-            closeMobileMenu();
-        }
-    });
-    
-    // También agregar touchstart para Android
-    mobileMenuToggle.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        if (!isMobileMenuOpen) {
-            openMobileMenu();
-        } else {
-            closeMobileMenu();
-        }
-    }, { passive: false });
-    
-    // Cerrar con el botón X
-    mobileMenuClose.addEventListener('click', closeMobileMenu);
-    mobileMenuClose.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        closeMobileMenu();
-    }, { passive: false });
-    
-    // Cerrar al hacer click/touch en el overlay
-    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-    mobileMenuOverlay.addEventListener('touchstart', function(e) {
-        if (e.target === mobileMenuOverlay) {
-            e.preventDefault();
-            closeMobileMenu();
-        }
-    }, { passive: false });
-    
-    // Cerrar al hacer click/touch en los enlaces del menú
-    const mobileMenuLinks = mobileMenuContainer.querySelectorAll('a');
-    mobileMenuLinks.forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
-        link.addEventListener('touchstart', function(e) {
-            setTimeout(closeMobileMenu, 100);
-        }, { passive: true });
-    });
-    
-    // Prevenir que el menú se cierre al tocar dentro del mismo
-    mobileMenuContainer.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
-    
-    mobileMenuContainer.addEventListener('touchstart', function(e) {
-        e.stopPropagation();
-    }, { passive: true });
-    
-    // Cerrar menú con la tecla ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && isMobileMenuOpen) {
-            closeMobileMenu();
-        }
-    });
-    
-    // Cerrar menú al cambiar orientación del dispositivo
-    window.addEventListener('orientationchange', function() {
-        if (isMobileMenuOpen) {
-            closeMobileMenu();
-        }
-    });
-    
-    // Cerrar menú al hacer scroll (opcional, mejora UX)
-    window.addEventListener('scroll', function() {
-        if (isMobileMenuOpen && window.innerWidth <= 768) {
-            closeMobileMenu();
-        }
-    });
-    
-    return {
-        open: openMobileMenu,
-        close: closeMobileMenu,
-        isOpen: () => isMobileMenuOpen
-    };
-}
-
-// Luego, dentro de la función initFunctionality(), LLAMA a initMobileMenu():
-function initFunctionality() {
-    // Inicializar el menú móvil
-    const mobileMenu = initMobileMenu();
-    
-    // El resto de tu código existente (hero, formularios, etc.)
-    // Cargar imagen del hero
-    loadHeroImage();
-    
-    // Configurar formulario de reservas
-    const reservationForm = document.getElementById('reservation-form');
-    if (reservationForm) {
-        reservationForm.addEventListener('submit', handleReservationSubmit);
-    }
-    
-    // Observer para animaciones
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
-    }
-    
-    // Smooth scroll mejorado
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href === '#') return;
+        function initFunctionality() {
+            // ========== MENÚ MÓVIL - COMPLETAMENTE CORREGIDO ==========
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const mobileMenuContainer = document.getElementById('mobile-menu-container');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
             
-            const target = document.querySelector(href);
-            if (target) {
-                e.preventDefault();
-                
-                // Cerrar menú móvil si está abierto
-                if (mobileMenu.isOpen()) {
-                    mobileMenu.close();
-                }
-                
-                window.scrollTo({
-                    top: target.offsetTop - 80,
-                    behavior: 'smooth'
-                });
+            // Función para abrir el menú
+            function openMobileMenu() {
+                mobileMenuContainer.classList.add('active');
+                mobileMenuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                isMobileMenuOpen = true;
+                mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
             }
-        });
-    });
+            
+            // Función para cerrar el menú
+            function closeMobileMenu() {
+                mobileMenuContainer.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                isMobileMenuOpen = false;
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
+            }
             
             // ========== EVENTOS PARA ANDROID - CORREGIDOS ==========
             
