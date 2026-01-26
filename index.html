@@ -1,32 +1,429 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cano Salão - Redirigiendo...</title>
-    <!-- Redirección inmediata -->
-    <meta http-equiv="refresh" content="0; url=./Frontend/index.html">
+    <title>Cano Salão | Redirección</title>
     
-    <!-- Para SEO y si JavaScript está deshabilitado -->
-    <script>
-        window.location.href = "./Frontend/index.html";
-    </script>
+    <!-- Redirección por HTTP (la más rápida) -->
+    <meta http-equiv="refresh" content="2; url=./Frontend/index.html">
+    
+    <!-- Canonical URL para SEO -->
+    <link rel="canonical" href="https://ricardjf.github.io/Cano-salao/Frontend/index.html">
+    
+    <!-- Open Graph para redes sociales -->
+    <meta property="og:title" content="Cano Salão">
+    <meta property="og:description" content="Bienvenido a Cano Salão">
+    <meta property="og:image" content="https://ricardjf.github.io/Cano-salao/Frontend/assets/logo.png">
+    <meta property="og:url" content="https://ricardjf.github.io/Cano-salao/Frontend/index.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="./Frontend/favicon.ico" type="image/x-icon">
+    
+    <!-- Preconnect para recursos -->
+    <link rel="preconnect" href="https://ricardjf.github.io">
+    
+    <!-- Estilos inline críticos -->
+    <style>
+        :root {
+            --primary-color: #2ea44f;
+            --primary-dark: #22863a;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--light-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .loader {
+            width: 100%;
+            height: 4px;
+            background: var(--light-bg);
+            border-radius: 2px;
+            margin: 30px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loader-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            animation: loading 2s ease-in-out forwards;
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .redirect-info {
+            background: var(--light-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .url-display {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .url-box {
+            flex: 1;
+            background: var(--white);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(46, 164, 79, 0.2);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .countdown {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .error-fallback {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            color: #856404;
+        }
+        
+        @media (max-width: 600px) {
+            .card {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .url-display {
+                flex-direction: column;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
-<body style="background: #f5f5f5; font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-    <div style="max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #333;">Cano Salão</h1>
-        <p style="color: #666; font-size: 18px;">Redirigiendo a la página principal...</p>
-        <p style="margin-top: 30px;">
-            <a href="./Frontend/index.html" style="background: #2ea44f; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                Haz clic aquí si no redirige automáticamente
-            </a>
-        </p>
-        <div style="margin-top: 40px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <p style="color: #888; font-size: 14px;">
-                Si la redirección no funciona, copia y pega esta URL en tu navegador:<br>
-                <code style="background: #f8f9fa; padding: 5px; border-radius: 3px;">https://ricardjf.github.io/Cano-salao/Frontend/index.html</code>
-            </p>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo">
+                ✂️
+            </div>
+            
+            <h1>Cano Salão</h1>
+            <p class="subtitle">Estás siendo redirigido a nuestra página principal</p>
+            
+            <div class="loader">
+                <div class="loader-bar"></div>
+            </div>
+            
+            <div class="redirect-info">
+                <p><strong>Redirección en progreso...</strong></p>
+                <p>Si la redirección automática no funciona, puedes usar estos enlaces:</p>
+                
+                <div class="url-display">
+                    <div class="url-box" id="targetUrl">https://ricardjf.github.io/Cano-salao/Frontend/index.html</div>
+                    <button class="copy-btn" onclick="copyUrl()" id="copyBtn">
+                        <span id="copyText">Copiar URL</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <a href="./Frontend/index.html" class="btn btn-primary" id="manualRedirect">
+                    <span>Ir ahora mismo</span>
+                    <span>→</span>
+                </a>
+                
+                <a href="https://github.com/ricardjf/Cano-salao" class="btn btn-secondary" target="_blank">
+                    <span>Ver código en GitHub</span>
+                    <span>↗</span>
+                </a>
+            </div>
+            
+            <div class="status">
+                Redirigiendo en <span class="countdown" id="countdown">2</span> segundos...
+            </div>
+            
+            <div class="error-fallback" id="errorFallback">
+                <strong>⚠️ Redirección fallida</strong>
+                <p>Parece que la redirección automática no está funcionando. Por favor, haz clic en el botón "Ir ahora mismo" arriba o copia manualmente la URL.</p>
+            </div>
         </div>
     </div>
+
+    <!-- JavaScript robusto con múltiples capas de redirección -->
+    <script>
+        // Variables
+        const targetUrl = './Frontend/index.html';
+        const fallbackTime = 5000; // 5 segundos para fallback
+        let redirectTimer;
+        let countdown = 2;
+        
+        // 1. Redirección principal con JavaScript
+        redirectTimer = setTimeout(() => {
+            performRedirect();
+        }, 2000);
+        
+        // 2. Actualizar countdown
+        const countdownElement = document.getElementById('countdown');
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdownElement) {
+                countdownElement.textContent = countdown;
+            }
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
+        
+        // 3. Redirección por fallback (si no se ha redirigido en X segundos)
+        setTimeout(() => {
+            if (!window.location.href.includes('/Frontend/')) {
+                showErrorFallback();
+            }
+        }, fallbackTime);
+        
+        // 4. Función para redirigir
+        function performRedirect() {
+            // Intentar con replace primero (no guarda en historial)
+            try {
+                window.location.replace(targetUrl);
+            } catch (e) {
+                // Fallback a href normal
+                window.location.href = targetUrl;
+            }
+        }
+        
+        // 5. Redirección manual
+        document.getElementById('manualRedirect').addEventListener('click', function(e) {
+            e.preventDefault();
+            clearTimeout(redirectTimer);
+            clearInterval(countdownInterval);
+            performRedirect();
+        });
+        
+        // 6. Copiar URL al portapapeles
+        function copyUrl() {
+            const url = document.getElementById('targetUrl').textContent;
+            const copyBtn = document.getElementById('copyBtn');
+            const copyText = document.getElementById('copyText');
+            
+            navigator.clipboard.writeText(url).then(() => {
+                // Feedback visual
+                copyBtn.classList.add('copied');
+                copyText.textContent = '¡Copiado!';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyText.textContent = 'Copiar URL';
+                }, 2000);
+            }).catch(err => {
+                // Fallback para navegadores antiguos
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                copyBtn.classList.add('copied');
+                copyText.textContent = 'Copiado';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyText.textContent = 'Copiar URL';
+                }, 2000);
+            });
+        }
+        
+        // 7. Mostrar error si falla la redirección
+        function showErrorFallback() {
+            document.getElementById('errorFallback').style.display = 'block';
+        }
+        
+        // 8. Prevenir redirección si el usuario quiere quedarse
+        window.addEventListener('beforeunload', function(e) {
+            // Opcional: Puedes agregar lógica aquí si necesitas
+        });
+        
+        // 9. Detectar si estamos ya en la página destino (por si acaso)
+        if (window.location.pathname.includes('/Frontend/')) {
+            // Ya estamos en la página correcta
+            document.querySelector('.subtitle').textContent = '¡Ya estás en la página correcta!';
+            document.querySelector('.countdown').textContent = '0';
+            clearTimeout(redirectTimer);
+            clearInterval(countdownInterval);
+        }
+        
+        // 10. Analytics simple (opcional)
+        window.onload = function() {
+            console.log('Redirect page loaded for Cano Salão');
+            // Aquí podrías agregar Google Analytics o similares
+        };
+    </script>
 </body>
 </html>
