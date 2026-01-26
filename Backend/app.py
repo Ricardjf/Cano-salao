@@ -4,10 +4,11 @@ import sys
 import logging
 from datetime import timedelta, datetime
 from flask import Flask, jsonify, request, send_from_directory
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Configurar logging
 logging.basicConfig(
@@ -32,11 +33,15 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-cano-salao-2024')
     
     # Configuración de base de datos para Render
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    
-    # En Render, usa la ruta absoluta para SQLite
-    DATABASE_PATH = os.path.join(basedir, 'instance', 'cano_salao.db')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or f'sqlite:///{DATABASE_PATH}'
+    # NOTA IMPORTANTE: En Render, necesitamos manejar DATABASE_URL que incluye postgresql://
+    if os.environ.get('DATABASE_URL'):
+        # Si hay DATABASE_URL de Render (PostgreSQL)
+        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL').replace('postgres://', 'postgresql://')
+    else:
+        # Usar SQLite localmente
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        DATABASE_PATH = os.path.join(basedir, 'instance', 'cano_salao.db')
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{DATABASE_PATH}'
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
@@ -153,17 +158,18 @@ def create_app(config_class=Config):
     # ========== INICIALIZAR BASE DE DATOS ==========
     with app.app_context():
         try:
-            # Crear directorio instance si no existe
-            os.makedirs(os.path.join(app.config['basedir'], 'instance'), exist_ok=True)
+            # En Render con PostgreSQL, no necesitamos crear directorios
+            if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
+                # Solo para SQLite: crear directorio instance si no existe
+                os.makedirs(os.path.dirname(app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')), exist_ok=True)
             
             # Crear tablas
             db.create_all()
             print("✅ Base de datos inicializada")
+            print(f"📁 URI de BD: {app.config['SQLALCHEMY_DATABASE_URI'][:50]}...")
             
             # Crear admin por defecto si no existe
             if User.query.count() == 0:
-                # ¡EN PRODUCCIÓN, CAMBIA ESTA CONTRASEÑA!
-                from werkzeug.security import generate_password_hash
                 admin = User(
                     nombre='Administrador',
                     email='admin@canosalao.com',
@@ -210,7 +216,7 @@ def create_app(config_class=Config):
                 print("👑 Admin: admin@canosalao.com / admin123")
                 
         except Exception as e:
-            print(f"⚠️  Error inicializando base de datos: {e}")
+            print(f"⚠️  Error inicializando base de datos: {str(e)[:100]}")
     
     # ========== RUTAS BÁSICAS ==========
     
@@ -264,12 +270,10 @@ def create_app(config_class=Config):
             if not user:
                 return jsonify({'success': False, 'error': 'Credenciales incorrectas'}), 401
             
-            from werkzeug.security import check_password_hash
             if not check_password_hash(user.password, data['password']):
                 return jsonify({'success': False, 'error': 'Credenciales incorrectas'}), 401
             
             # Crear token JWT
-            from flask_jwt_extended import create_access_token
             access_token = create_access_token(identity={
                 'id': user.id,
                 'email': user.email,
@@ -305,7 +309,6 @@ def create_app(config_class=Config):
             if existing_user:
                 return jsonify({'success': False, 'error': 'El email ya está registrado'}), 400
             
-            from werkzeug.security import generate_password_hash
             new_user = User(
                 nombre=data['nombre'],
                 email=data['email'],
@@ -318,7 +321,6 @@ def create_app(config_class=Config):
             db.session.commit()
             
             # Crear token JWT
-            from flask_jwt_extended import create_access_token
             access_token = create_access_token(identity={
                 'id': new_user.id,
                 'email': new_user.email,
@@ -532,7 +534,7 @@ def create_app(config_class=Config):
     print("\n" + "="*60)
     print("✅ APLICACIÓN CREADA EXITOSAMENTE")
     print(f"📡 URL: http://{app.config['HOST']}:{app.config['PORT']}")
-    print(f"🗄️  Base de datos: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    print(f"🗄️  Base de datos: {app.config['SQLALCHEMY_DATABASE_URI'][:50]}...")
     print(f"🔐 Admin: admin@canosalao.com / admin123")
     print("="*60)
     
@@ -541,9 +543,6 @@ def create_app(config_class=Config):
 # ========== CREAR APLICACIÓN ==========
 app = create_app()
 
-# Importar JWT decorator después de crear app
-from flask_jwt_extended import jwt_required, get_jwt_identity
-
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(
@@ -551,4 +550,3 @@ if __name__ == '__main__':
         port=port,
         debug=app.config['DEBUG']
     )
-
