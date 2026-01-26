@@ -59,7 +59,7 @@
             padding: 0 20px;
         }
         
-        /* Header mínimo para render inicial - CORREGIDO PARA ANDROID */
+        /* Header mínimo para render inicial - CORREGIDO */
         header {
             background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
             color: white;
@@ -111,7 +111,7 @@
             color: #FF8C42;
         }
         
-        /* Menu toggle para móvil - CORREGIDO PARA ANDROID */
+        /* Menu toggle para móvil - OCULTO POR DEFECTO */
         .menu-toggle {
             display: none;
             background: none;
@@ -127,12 +127,11 @@
             touch-action: manipulation;
             min-width: 44px;
             min-height: 44px;
-            display: flex;
             align-items: center;
             justify-content: center;
         }
         
-        /* Navegación móvil - CORREGIDA COMPLETAMENTE */
+        /* Navegación desktop - VISIBLE POR DEFECTO */
         .nav-center {
             flex: 1;
             display: flex;
@@ -172,6 +171,14 @@
             white-space: nowrap;
             -webkit-tap-highlight-color: rgba(255,255,255,0.1);
             touch-action: manipulation;
+        }
+        
+        nav ul li a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        nav ul li a.active {
+            background: rgba(255,255,255,0.15);
         }
         
         /* MENÚ MÓVIL - ESTILOS CRÍTICOS */
@@ -243,10 +250,13 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            display: flex;
+            flex-direction: column;
         }
         
         .mobile-menu-nav li {
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
         }
         
         .mobile-menu-nav li:last-child {
@@ -264,6 +274,7 @@
             transition: background 0.2s ease;
             -webkit-tap-highlight-color: rgba(255,255,255,0.2);
             touch-action: manipulation;
+            width: 100%;
         }
         
         .mobile-menu-nav a.active {
@@ -301,6 +312,31 @@
             font-weight: bold;
             font-size: 16px;
             flex-shrink: 0;
+        }
+        
+        /* Sección de autenticación */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+        
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
         }
         
         /* Hero básico para render inicial */
@@ -420,7 +456,6 @@
                 order: 3;
             }
             
-            /* Asegurar que el menú no interfiera con otros elementos */
             .mobile-menu-container {
                 z-index: 1000;
             }
@@ -457,6 +492,10 @@
             .btn,
             .login-btn {
                 min-height: 44px;
+            }
+            
+            .menu-toggle,
+            .mobile-menu-close {
                 min-width: 44px;
             }
             
@@ -490,7 +529,6 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <!-- LOGO 35px constante -->
                     <img 
                         src="media/Logo_cano_60.png" 
                         srcset="media/Logo_cano_60.png 1x, media/Logo_cano_120.png 2x" 
@@ -566,16 +604,8 @@
                 <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
             </ul>
         </nav>
-        
-        <!-- Sección de autenticación en móvil -->
-        <div style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem;">
-            <a href="Pages/login.html" class="btn" style="width: 100%; justify-content: center;">
-                <i class="bi bi-person-circle"></i> Iniciar Sesión
-            </a>
-        </div>
     </div>
 
-    <!-- El resto del contenido HTML permanece igual... -->
     <!-- Hero Section CON CONTENIDO DINÁMICO -->
     <section class="hero">
         <div class="hero-bg" id="heroBackground"></div>
@@ -939,7 +969,7 @@
         </div>
     </footer>
 
-    <!-- Scripts COMPLETOS Y CORREGIDOS PARA ANDROID -->
+    <!-- Scripts -->
     <script>
         // ========== SISTEMA DE AUTENTICACIÓN Y ADMIN ==========
         
@@ -1043,7 +1073,7 @@
             // Configurar avatar
             userAvatar.textContent = currentUser.nombre.charAt(0).toUpperCase();
             
-            // Configurar menú desplegable - SIMPLIFICADO PARA MÓVIL
+            // Configurar menú desplegable
             setupUserMenu();
         }
         
@@ -1161,7 +1191,7 @@
         }
         
         function loadDefaultContent() {
-            // Contenido por defecto (el que ya tienes en el HTML)
+            // Contenido por defecto
             websiteContent = {
                 hero: {
                     title: '¡Descubre la Belleza Natural de <span class="text-orange">Caño</span> Salao!',
@@ -1222,7 +1252,6 @@
                 if (websiteContent.contacto.hours) document.getElementById('contact-hours').textContent = websiteContent.contacto.hours;
             }
             
-            // Aplicar más contenido según sea necesario
             console.log('📝 Contenido dinámico aplicado');
         }
         
@@ -1298,13 +1327,13 @@
         }
         
         function viewBlogPost(postId) {
-            // ... (código del modal del blog, igual que antes)
+            // ... (código del modal del blog)
         }
         
-        // ========== SISTEMA DE MENÚ MÓVIL CORREGIDO PARA ANDROID ==========
+        // ========== SISTEMA DE MENÚ MÓVIL CORREGIDO ==========
         
         function initFunctionality() {
-            // ========== MENÚ MÓVIL - COMPLETAMENTE CORREGIDO ==========
+            // ========== MENÚ MÓVIL ==========
             const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
             const mobileMenuClose = document.getElementById('mobile-menu-close');
             const mobileMenuContainer = document.getElementById('mobile-menu-container');
@@ -1330,9 +1359,7 @@
                 mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
             }
             
-            // ========== EVENTOS PARA ANDROID - CORREGIDOS ==========
-            
-            // Usar tanto click como touchstart para mejor compatibilidad
+            // Eventos
             mobileMenuToggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1579,7 +1606,7 @@
                 created_at: new Date().toISOString()
             };
             
-            // Guardar en localStorage (igual que en el panel admin)
+            // Guardar en localStorage
             const bookingsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || '[]');
             bookingsData.push(booking);
             localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookingsData));
