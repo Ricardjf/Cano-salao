@@ -2,6 +2,7 @@
 import os
 import sys
 import logging
+import functools  # ¡NUEVO IMPORT NECESARIO!
 from datetime import timedelta, datetime
 from flask import Flask, jsonify, request, send_from_directory
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -459,6 +460,7 @@ def create_app(config_class=Config):
     # ========== RUTAS DE ADMINISTRADOR ==========
     
     def admin_required(fn):
+        @functools.wraps(fn)  # ¡ESTO ES LO IMPORTANTE QUE FALTA!
         @jwt_required()
         def wrapper(*args, **kwargs):
             current_user = get_jwt_identity()
