@@ -1404,33 +1404,4 @@ footer {
     }
 }
 
-/* ========== DARK MODE (opcional) ========== */
-@media (prefers-color-scheme: dark) {
-    body {
-        background: #121212;
-        color: #e0e0e0;
-    }
-    
-    .factible-feature,
-    .attraction-card,
-    .caracteristica-item,
-    .contact-form,
-    .contact-item {
-        background: #1e1e1e;
-        color: #e0e0e0;
-    }
-    
-    .factible-feature h3,
-    .attraction-info h3,
-    .caracteristica-item h3,
-    .contact-item h4 {
-        color: #bb86fc;
-    }
-    
-    .factible-feature p,
-    .attraction-info p,
-    .caracteristica-item p {
-        color: #b0b0b0;
-    }
-}
 
