@@ -1,37 +1,44 @@
-# Backend/config.py - CONFIGURACIÓN CORREGIDA Y SEGURA
+# Backend/config.py - CONFIGURACIÓN OPTIMIZADA PARA RENDER.COM
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde .env
+# Cargar variables de entorno
 load_dotenv()
 
 class Config:
-    """Configuración para la aplicación Flask - Caño Salao"""
+    """Configuración base para la aplicación Flask"""
+    
+    # ========== CONFIGURACIÓN BÁSICA ==========
+    # Nombre de la aplicación
+    APP_NAME = 'Caño Salao Turismo API'
+    APP_VERSION = '1.0.0'
+    API_PREFIX = '/api'
     
     # ========== CONFIGURACIÓN DE SEGURIDAD ==========
-    # Claves secretas - Usar variables de entorno o valores por defecto para desarrollo
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-cano-salao-2024-turismo-barcelona-venezuela')
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'jwt-dev-secret-key-cano-salao-2024-sistema-turismo')
-    
-    # Configuración de seguridad adicional
-    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Lax'
+    # Claves secretas - OBLIGATORIAS en producción
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-cano-salao-2024-turismo'
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-dev-secret-key-cano-salao-2024'
     
     # ========== CONFIGURACIÓN DE BASE DE DATOS ==========
-    # Base de datos SQLite por defecto, PostgreSQL en producción
+    # Para Render.com: usar ruta absoluta para SQLite
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    
+    # DATABASE_URL de Render o SQLite local
     DATABASE_URL = os.environ.get('DATABASE_URL')
     
-    if DATABASE_URL:
-        # PostgreSQL en producción (render.com, railway.app, etc.)
-        if DATABASE_URL.startswith('postgres://'):
-            DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+    if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
+        # Si Render proporciona PostgreSQL
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
         SQLALCHEMY_DATABASE_URI = DATABASE_URL
+        print("🗄️  Usando PostgreSQL (Render)")
     else:
-        # SQLite para desarrollo local
-        BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-        SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR, "instance", "cano_salao.db")}'
+        # SQLite para desarrollo y Render
+        instance_dir = os.path.join(basedir, 'instance')
+        os.makedirs(instance_dir, exist_ok=True)
+        db_path = os.path.join(instance_dir, 'cano_salao.db')
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
+        print(f"🗄️  Usando SQLite: {db_path}")
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
@@ -40,76 +47,61 @@ class Config:
     }
     
     # ========== CONFIGURACIÓN JWT ==========
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=int(os.environ.get('JWT_ACCESS_HOURS', 24)))
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=int(os.environ.get('JWT_REFRESH_DAYS', 30)))
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)  # 7 días para producción
     JWT_TOKEN_LOCATION = ['headers']
     JWT_HEADER_NAME = 'Authorization'
     JWT_HEADER_TYPE = 'Bearer'
     
     # ========== CONFIGURACIÓN CORS ==========
-    # Orígenes permitidos para desarrollo y producción
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', '').split(',') or [
-        'http://localhost:3000',      # React dev server
-        'http://127.0.0.1:3000',
-        'http://localhost:5500',      # Live Server VS Code
-        'http://127.0.0.1:5500',
-        'http://localhost:8080',      # Otros servidores locales
-        'http://127.0.0.1:8080',
-        'http://localhost:5000',      # Flask dev server
-        'http://127.0.0.1:5000',
-    ]
+    # Orígenes permitidos - GitHub Pages y localhost
+    CORS_ORIGINS_STRING = os.environ.get('CORS_ORIGINS', '')
     
-    # Agregar dominio de producción si existe
-    PRODUCTION_DOMAIN = os.environ.get('PRODUCTION_DOMAIN')
-    if PRODUCTION_DOMAIN:
+    if CORS_ORIGINS_STRING:
+        CORS_ORIGINS = [origin.strip() for origin in CORS_ORIGINS_STRING.split(',')]
+    else:
+        CORS_ORIGINS = [
+            'http://localhost:5500',      # VS Code Live Server
+            'http://127.0.0.1:5500',
+            'http://localhost:5000',      # Flask dev server
+            'http://127.0.0.1:5000',
+            'http://localhost:3000',      # React/Node dev
+            'http://127.0.0.1:3000',
+            'https://*.github.io',        # Cualquier GitHub Pages
+        ]
+    
+    # Agregar dominio específico si se proporciona
+    SPECIFIC_DOMAIN = os.environ.get('SPECIFIC_DOMAIN')
+    if SPECIFIC_DOMAIN:
         CORS_ORIGINS.extend([
-            f'https://{PRODUCTION_DOMAIN}',
-            f'http://{PRODUCTION_DOMAIN}',
+            f'https://{SPECIFIC_DOMAIN}',
+            f'http://{SPECIFIC_DOMAIN}',
         ])
     
     CORS_SUPPORTS_CREDENTIALS = True
     CORS_EXPOSE_HEADERS = ['Content-Type', 'Authorization', 'X-Total-Count']
     
     # ========== CONFIGURACIÓN DEL SERVIDOR ==========
-    HOST = os.environ.get('HOST', '0.0.0.0')
-    PORT = int(os.environ.get('PORT', 5000))
-    DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    HOST = os.environ.get('HOST', '0.0.0.0')  # Render usa 0.0.0.0
+    PORT = int(os.environ.get('PORT', 5000))  # Render asigna puerto automático
+    
+    # Entorno
     ENV = os.environ.get('FLASK_ENV', 'development')
+    DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     
     # ========== CONFIGURACIÓN DE LOGGING ==========
-    LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO').upper()
+    LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
     LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     
-    # ========== CONFIGURACIÓN DE LA APLICACIÓN ==========
-    APP_NAME = 'Caño Salao - Sistema de Turismo'
-    APP_VERSION = '1.0.0'
-    API_PREFIX = '/api'
-    
     # ========== LÍMITES Y CONFIGURACIONES ADICIONALES ==========
-    # Límite de tamaño para uploads (10MB)
-    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
-    
-    # Tiempo de caché para respuestas estáticas
-    SEND_FILE_MAX_AGE_DEFAULT = 300
-    
-    # Configuración para emails (opcional)
-    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'True').lower() == 'true'
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@canosalaotours.com')
-    
-    # Configuración para archivos
-    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'doc', 'docx'}
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB máximo para uploads
+    SEND_FILE_MAX_AGE_DEFAULT = 300  # 5 minutos caché
     
     # ========== CONFIGURACIONES ESPECÍFICAS DEL PROYECTO ==========
-    # Usuario administrador por defecto
-    DEFAULT_ADMIN_EMAIL = 'admin@canosalaotours.com'
-    DEFAULT_ADMIN_PASSWORD = 'admin123'  # Se debe cambiar en producción
+    # Credenciales por defecto (CAMBIAR EN PRODUCCIÓN)
+    DEFAULT_ADMIN_EMAIL = os.environ.get('DEFAULT_ADMIN_EMAIL', 'admin@canosalao.com')
+    DEFAULT_ADMIN_PASSWORD = os.environ.get('DEFAULT_ADMIN_PASSWORD', 'admin123')
     
-    # Configuración para reservas
+    # Configuración de reservas
     MAX_BOOKING_DAYS_AHEAD = 90
     MIN_BOOKING_HOURS_NOTICE = 24
     MAX_PEOPLE_PER_BOOKING = 20
@@ -132,100 +124,126 @@ class Config:
     
     @classmethod
     def print_config_summary(cls):
-        """Imprimir resumen de configuración (seguro)"""
-        import json
-        
-        config_summary = {
-            'environment': cls.ENV,
-            'debug': cls.DEBUG,
-            'host': cls.HOST,
-            'port': cls.PORT,
-            'database': 'PostgreSQL' if 'postgresql' in cls.SQLALCHEMY_DATABASE_URI else 'SQLite',
-            'cors_origins_count': len(cls.CORS_ORIGINS),
-            'jwt_expires_hours': cls.JWT_ACCESS_TOKEN_EXPIRES.total_seconds() / 3600,
-            'app_name': cls.APP_NAME,
-            'api_prefix': cls.API_PREFIX,
-        }
-        
+        """Imprimir resumen de configuración"""
         print("\n" + "="*60)
         print("📋 RESUMEN DE CONFIGURACIÓN - Caño Salao")
         print("="*60)
-        for key, value in config_summary.items():
-            print(f"  {key.replace('_', ' ').title()}: {value}")
-        print("="*60)
+        print(f"  Entorno: {cls.ENV}")
+        print(f"  Debug: {cls.DEBUG}")
+        print(f"  Host: {cls.HOST}")
+        print(f"  Puerto: {cls.PORT}")
+        print(f"  Base de datos: {'PostgreSQL' if 'postgresql' in cls.SQLALCHEMY_DATABASE_URI else 'SQLite'}")
+        print(f"  Orígenes CORS: {len(cls.CORS_ORIGINS)} configurados")
+        print(f"  Nombre App: {cls.APP_NAME}")
+        print(f"  Versión: {cls.APP_VERSION}")
         
-        # Advertencia de seguridad en desarrollo
-        if cls.is_development():
-            print("⚠️  MODO DESARROLLO - No usar en producción")
-            print("   Considera configurar variables de entorno para:")
-            print("   - SECRET_KEY")
-            print("   - JWT_SECRET_KEY")
-            print("   - DATABASE_URL (para PostgreSQL)")
-            print("="*60)
+        # Advertencias importantes
+        if cls.is_production():
+            print("\n⚠️  VERIFICACIONES DE PRODUCCIÓN:")
+            if cls.SECRET_KEY.startswith('dev-'):
+                print("  ❌ SECRET_KEY insegura - Cambia en variables de entorno")
+            if cls.JWT_SECRET_KEY.startswith('dev-'):
+                print("  ❌ JWT_SECRET_KEY insegura - Cambia en variables de entorno")
+            if cls.DEFAULT_ADMIN_PASSWORD == 'admin123':
+                print("  ⚠️  Contraseña admin por defecto - Cambia DEFAULT_ADMIN_PASSWORD")
+        else:
+            print(f"\n🔧 MODO DESARROLLO - Credenciales de prueba:")
+            print(f"  Email: {cls.DEFAULT_ADMIN_EMAIL}")
+            print(f"  Contraseña: {cls.DEFAULT_ADMIN_PASSWORD}")
+        
+        print("="*60)
 
 
-# Configuración de producción
+# Configuración de producción - Render.com
 class ProductionConfig(Config):
-    """Configuración para producción"""
+    """Configuración optimizada para producción en Render.com"""
     
     ENV = 'production'
     DEBUG = False
-    SESSION_COOKIE_SECURE = True
     
-    # En producción, se espera que todas las claves vengan de variables de entorno
+    # En producción, NO usar valores por defecto
     SECRET_KEY = os.environ.get('SECRET_KEY')
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     
-    # Validar configuraciones críticas en producción
+    # CORS más restrictivo en producción
+    @property
+    def CORS_ORIGINS(self):
+        origins = []
+        
+        # Tu dominio específico de GitHub Pages
+        github_pages = os.environ.get('GITHUB_PAGES_URL')
+        if github_pages:
+            origins.append(github_pages)
+        
+        # Render dashboard (opcional)
+        render_dashboard = os.environ.get('RENDER_DASHBOARD_URL')
+        if render_dashboard:
+            origins.append(render_dashboard)
+        
+        return origins if origins else ['https://*.github.io']
+    
     @classmethod
     def validate_production_config(cls):
+        """Validar configuración crítica para producción"""
         errors = []
         
-        if not cls.SECRET_KEY or cls.SECRET_KEY.startswith('dev-'):
-            errors.append("SECRET_KEY no configurada o insegura")
+        # Verificar claves secretas
+        if not cls.SECRET_KEY:
+            errors.append("SECRET_KEY no configurada en variables de entorno")
+        elif cls.SECRET_KEY.startswith('dev-') or len(cls.SECRET_KEY) < 32:
+            errors.append("SECRET_KEY insegura - debe tener al menos 32 caracteres")
         
-        if not cls.JWT_SECRET_KEY or cls.JWT_SECRET_KEY.startswith('dev-'):
-            errors.append("JWT_SECRET_KEY no configurada o insegura")
+        if not cls.JWT_SECRET_KEY:
+            errors.append("JWT_SECRET_KEY no configurada en variables de entorno")
+        elif cls.JWT_SECRET_KEY.startswith('dev-') or len(cls.JWT_SECRET_KEY) < 32:
+            errors.append("JWT_SECRET_KEY insegura - debe tener al menos 32 caracteres")
         
-        if not os.environ.get('DATABASE_URL'):
-            errors.append("DATABASE_URL no configurada")
+        # Verificar origen CORS para producción
+        if not cls.CORS_ORIGINS:
+            errors.append("CORS_ORIGINS no configurada para producción")
         
         if errors:
-            raise RuntimeError(f"Errores en configuración de producción: {', '.join(errors)}")
+            error_msg = "\n".join([f"  • {error}" for error in errors])
+            raise ValueError(f"Errores en configuración de producción:\n{error_msg}")
 
 
-# Configuración de testing
-class TestingConfig(Config):
-    """Configuración para testing"""
-    
-    ENV = 'testing'
-    DEBUG = True
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # Base de datos en memoria
-    CORS_ORIGINS = ['http://localhost:3000']
-    
-    # Desactivar JWT para testing
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=30)
-
-
-# Configuración de desarrollo (por defecto)
+# Configuración de desarrollo
 class DevelopmentConfig(Config):
-    """Configuración para desarrollo"""
+    """Configuración para desarrollo local"""
     
     ENV = 'development'
     DEBUG = True
     
-    # Habilitar logging SQL en desarrollo
+    # Mostrar consultas SQL en desarrollo
     SQLALCHEMY_ECHO = True
     
-    # Orígenes adicionales para desarrollo
-    CORS_ORIGINS = Config.CORS_ORIGINS + [
-        'http://localhost:8000',
-        'http://127.0.0.1:8000',
-    ]
+    # Más orígenes para desarrollo
+    @property
+    def CORS_ORIGINS(self):
+        return super().CORS_ORIGINS + [
+            'http://localhost:8080',
+            'http://127.0.0.1:8080',
+            'http://localhost:8000',
+            'http://127.0.0.1:8000',
+        ]
 
 
-# Diccionario de configuraciones disponibles
+# Configuración de testing
+class TestingConfig(Config):
+    """Configuración para pruebas"""
+    
+    ENV = 'testing'
+    DEBUG = True
+    TESTING = True
+    
+    # Base de datos en memoria para pruebas
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    
+    # CORS mínimo para pruebas
+    CORS_ORIGINS = ['http://localhost:3000']
+
+
+# Diccionario de configuraciones
 config_by_name = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
@@ -234,29 +252,36 @@ config_by_name = {
 }
 
 
-# Cargar configuración basada en FLASK_ENV
+# Función para obtener la configuración correcta
 def get_config():
-    """Obtener configuración basada en entorno"""
-    env = os.environ.get('FLASK_ENV', 'development')
+    """Obtener configuración basada en FLASK_ENV"""
+    env = os.environ.get('FLASK_ENV', 'development').lower()
+    
+    print(f"\n🌍 Entorno detectado: {env}")
+    
+    # Obtener clase de configuración
     config_class = config_by_name.get(env, DevelopmentConfig)
     
-    print(f"📁 Cargando configuración para entorno: {env}")
+    # Crear instancia de configuración
+    config_instance = config_class()
     
     # Validar configuración de producción
     if env == 'production':
         try:
             ProductionConfig.validate_production_config()
-        except RuntimeError as e:
-            print(f"❌ Error: {e}")
-            print("   Usando configuración de desarrollo como fallback")
-            config_class = DevelopmentConfig
+            print("✅ Configuración de producción validada")
+        except ValueError as e:
+            print(f"❌ ERROR en configuración de producción:")
+            print(e)
+            print("\n⚠️  Cambiando a configuración de desarrollo")
+            config_instance = DevelopmentConfig()
     
-    return config_class
+    return config_instance
 
 
-# Crear instancia de configuración
+# Configuración actual
 current_config = get_config()
 
-# Imprimir resumen al importar
+# Imprimir resumen al cargar el módulo
 if __name__ != '__main__':
     current_config.print_config_summary()
