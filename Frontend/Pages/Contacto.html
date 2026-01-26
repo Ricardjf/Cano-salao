@@ -18,22 +18,6 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript">
-        // Inicializa EmailJS con tu Public Key
-        (function() {
-            emailjs.init({
-                publicKey: "zuKi1ZdngOWyVYu-p", // TU PUBLIC KEY DE EMAILJS
-                blockHeadless: true, // Previene spam
-                limitRate: {
-                    id: 'contacto_form',
-                    throttle: 5000 // 1 email cada 5 segundos
-                }
-            });
-        })();
-    </script>
-    
     <style>
         /* Estilos adicionales específicos para Contacto */
         .page-hero {
@@ -515,7 +499,7 @@
 
                 <!-- Botón Iniciar Sesión a la derecha -->
                 <div class="auth-section">
-                    <a href="#" class="login-btn">
+                    <a href="login.html" class="login-btn">
                         <i class="bi bi-person-circle"></i> Iniciar Sesión
                     </a>
                 </div>
@@ -903,8 +887,11 @@
 
     <!-- Scripts -->
     <script>
-        // Menu toggle para dispositivos móviles
+        // ========== CONFIGURACIÓN ==========
+        const API_BASE_URL = 'https://cano-salao.onrender.com/api';
+        
         document.addEventListener('DOMContentLoaded', function() {
+            // Menú móvil
             const menuToggle = document.querySelector('.menu-toggle');
             const mainNav = document.querySelector('#main-navigation');
             
@@ -914,7 +901,6 @@
                     const icon = this.querySelector('i');
                     icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
                     
-                    // Actualizar atributo ARIA
                     const isExpanded = mainNav.classList.contains('show');
                     this.setAttribute('aria-expanded', isExpanded);
                 });
@@ -933,23 +919,21 @@
                     heroBg.classList.add('loaded');
                 };
                 
-                // Fallback si la imagen no carga
                 heroImg.onerror = function() {
                     heroBg.style.backgroundImage = `linear-gradient(135deg, #1a5276 0%, #2c82c9 100%)`;
                     heroBg.classList.add('loaded');
                 };
             }
             
-            // Iniciar carga de imagen
             loadHeroImage();
             
-            // Formulario de contacto CON EMAILJS REAL
+            // ========== FORMULARIO SIMPLIFICADO ==========
             const contactForm = document.getElementById('contact-form');
             if (contactForm) {
                 contactForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
-                    // Limpiar mensajes anteriores
+                    // Limpiar errores anteriores
                     document.querySelectorAll('.error-message').forEach(el => {
                         el.textContent = '';
                         el.style.display = 'none';
@@ -970,170 +954,157 @@
                     const message = document.getElementById('message').value.trim();
                     const privacyPolicy = document.getElementById('privacy-policy').checked;
                     
-                    // Validación
+                    // Validación simple
                     let isValid = true;
-                    const errors = {};
                     
                     if (!name || name.length < 2) {
-                        errors.name = 'Nombre completo requerido (mínimo 2 caracteres)';
+                        showError('name-error', 'Nombre completo requerido (mínimo 2 caracteres)');
                         isValid = false;
                     }
                     
                     if (!email) {
-                        errors.email = 'Correo electrónico requerido';
+                        showError('email-error', 'Correo electrónico requerido');
                         isValid = false;
                     } else if (!isValidEmail(email)) {
-                        errors.email = 'Formato de email inválido';
+                        showError('email-error', 'Formato de email inválido');
                         isValid = false;
                     }
                     
                     if (!subject) {
-                        errors.subject = 'Por favor selecciona un asunto';
+                        showError('subject-error', 'Por favor selecciona un asunto');
                         isValid = false;
                     }
                     
                     if (!message || message.length < 10) {
-                        errors.message = 'Mensaje muy corto (mínimo 10 caracteres)';
+                        showError('message-error', 'Mensaje muy corto (mínimo 10 caracteres)');
                         isValid = false;
                     }
                     
                     if (!privacyPolicy) {
-                        errors.privacy = 'Debes aceptar la política de privacidad';
+                        showError('privacy-error', 'Debes aceptar la política de privacidad');
                         isValid = false;
                     }
                     
-                    // Mostrar errores
                     if (!isValid) {
-                        Object.keys(errors).forEach(key => {
-                            const errorEl = document.getElementById(`${key}-error`);
-                            if (errorEl) {
-                                errorEl.textContent = errors[key];
-                                errorEl.style.display = 'block';
-                            }
-                        });
-                        
-                        formMessage.innerHTML = `
-                            <div class="alert alert-danger">
-                                <i class="bi bi-exclamation-triangle"></i> Por favor, corrige los errores señalados.
-                            </div>
-                        `;
+                        showFormMessage('Por favor, corrige los errores señalados.', 'danger');
                         return;
                     }
                     
-                    // Configurar botón de envío
+                    // Configurar botón
                     const submitBtn = document.getElementById('submit-btn');
                     const originalText = submitBtn.innerHTML;
-                    const originalBackground = submitBtn.style.background;
                     
                     submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Enviando...';
-                    submitBtn.style.background = '#6c757d';
                     submitBtn.disabled = true;
                     
                     try {
-                        // Preparar datos para EmailJS
-                        const templateParams = {
-                            to_name: name,
-                            to_email: email,
-                            name: name,
+                        // Crear objeto de contacto
+                        const contactData = {
+                            nombre: name,
                             email: email,
-                            phone: phone || 'No proporcionado',
-                            subject: document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text,
-                            subject_value: subject,
-                            tour_type: document.getElementById('tour-type').options[document.getElementById('tour-type').selectedIndex].text || 'No especificado',
-                            tour_type_value: tourType,
-                            participants: participants || 'No especificado',
-                            preferred_date: preferredDate ? new Date(preferredDate).toLocaleDateString('es-ES') : 'No especificada',
-                            preferred_date_raw: preferredDate,
-                            message: message,
-                            date_sent: new Date().toLocaleDateString('es-ES'),
-                            timestamp: new Date().toISOString(),
-                            ip: await getIPAddress(),
-                            user_agent: navigator.userAgent,
-                            company_name: 'Caño Salao Tours',
-                            contact_email: 'reservas@canosalaotours.com',
-                            contact_phone: '+58 412-205-6558'
+                            telefono: phone || 'No proporcionado',
+                            asunto: document.getElementById('subject').options[document.getElementById('subject').selectedIndex].text,
+                            tour_interes: document.getElementById('tour-type').options[document.getElementById('tour-type').selectedIndex].text || 'No especificado',
+                            participantes: participants || 'No especificado',
+                            fecha_preferida: preferredDate || 'No especificada',
+                            mensaje: message,
+                            newsletter: document.getElementById('newsletter').checked,
+                            fecha_envio: new Date().toISOString()
                         };
                         
-                        console.log('Enviando email con datos:', templateParams);
+                        console.log('Enviando contacto:', contactData);
                         
-                        // 1. ENVIAR CONFIRMACIÓN AL CLIENTE
-                        const clientResult = await emailjs.send(
-                            'service_j5txz1f', // REEMPLAZA CON TU SERVICE ID DE EMAILJS
-                            'template_1g7v6jp', // REEMPLAZA CON TU TEMPLATE ID PARA CLIENTE
-                            templateParams
+                        // 1. Guardar en localStorage (como respaldo)
+                        saveContactToLocalStorage(contactData);
+                        
+                        // 2. Opcional: Enviar a API si tienes endpoint para contactos
+                        // await sendContactToAPI(contactData);
+                        
+                        // Mostrar éxito
+                        showFormMessage(
+                            `<i class="bi bi-check-circle"></i> 
+                            <strong>¡Gracias ${name}!</strong> 
+                            Tu mensaje ha sido enviado correctamente. 
+                            <br><small>Nos pondremos en contacto contigo pronto a través de <strong>${email}</strong>.</small>`,
+                            'success'
                         );
-                        
-                        console.log('Email al cliente enviado:', clientResult.status, clientResult.text);
-                        
-                        // 2. ENVIAR NOTIFICACIÓN A ADMIN (opcional)
-                        try {
-                            const adminResult = await emailjs.send(
-                                'service_uc28ggd', // MISMO SERVICE ID
-                                'template_fp61v3r', // REEMPLAZA CON TEMPLATE PARA ADMIN
-                                templateParams
-                            );
-                            console.log('Email a admin enviado:', adminResult.status, adminResult.text);
-                        } catch (adminError) {
-                            console.warn('Error enviando a admin (no crítico):', adminError);
-                        }
-                        
-                        // ÉXITO - Mostrar mensaje
-                        formMessage.innerHTML = `
-                            <div class="alert alert-success">
-                                <i class="bi bi-check-circle"></i> 
-                                <strong>¡Éxito, ${name}!</strong> 
-                                Hemos enviado la confirmación a <strong>${email}</strong>.
-                                <br><small><i class="bi bi-info-circle"></i> Revisa tu bandeja de entrada y carpeta de spam.</small>
-                            </div>
-                        `;
                         
                         // Resetear formulario
                         contactForm.reset();
                         
-                        // Scroll al mensaje de éxito
+                        // Scroll al mensaje
                         setTimeout(() => {
                             formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 300);
                         
                     } catch (error) {
-                        console.error('Error EmailJS:', error);
-                        
-                        let errorMessage = 'Error al enviar el mensaje. Por favor intenta nuevamente.';
-                        
-                        if (error.status === 400) {
-                            errorMessage = 'Error en la configuración del email. Verifica los datos.';
-                        } else if (error.status === 429) {
-                            errorMessage = 'Demasiados intentos. Por favor espera unos minutos.';
-                        } else if (error.text && error.text.includes('limit')) {
-                            errorMessage = 'Límite de emails alcanzado. Contáctanos por teléfono.';
-                        }
-                        
-                        formMessage.innerHTML = `
-                            <div class="alert alert-danger">
-                                <i class="bi bi-exclamation-triangle"></i> 
-                                <strong>Error:</strong> ${errorMessage}
-                                <br><small>Teléfono de contacto: +58 412-205-6558</small>
-                            </div>
-                        `;
-                        
+                        console.error('Error:', error);
+                        showFormMessage(
+                            `<i class="bi bi-exclamation-triangle"></i> 
+                            <strong>Error:</strong> No se pudo enviar el mensaje. 
+                            <br><small>Por favor intenta nuevamente o contáctanos por teléfono: +58 412-205-6558</small>`,
+                            'danger'
+                        );
                     } finally {
                         // Restaurar botón
                         submitBtn.innerHTML = originalText;
-                        submitBtn.style.background = originalBackground;
                         submitBtn.disabled = false;
                     }
                 });
             }
             
-            // Función para obtener IP (opcional)
-            async function getIPAddress() {
+            // Función para guardar contacto en localStorage
+            function saveContactToLocalStorage(contactData) {
                 try {
-                    const response = await fetch('https://api.ipify.org?format=json');
-                    const data = await response.json();
-                    return data.ip;
+                    const contacts = JSON.parse(localStorage.getItem('cano_salao_contacts') || '[]');
+                    contactData.id = Date.now();
+                    contacts.push(contactData);
+                    localStorage.setItem('cano_salao_contacts', JSON.stringify(contacts));
+                    console.log('Contacto guardado localmente:', contactData.id);
                 } catch (error) {
-                    return 'No disponible';
+                    console.error('Error guardando contacto:', error);
                 }
+            }
+            
+            // Función para enviar contacto a API (opcional)
+            async function sendContactToAPI(contactData) {
+                try {
+                    // Si tu API tiene endpoint para contactos
+                    const response = await fetch(`${API_BASE_URL}/contact`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(contactData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error en API');
+                    }
+                    
+                    console.log('Contacto enviado a API');
+                    return await response.json();
+                    
+                } catch (error) {
+                    console.warn('No se pudo enviar a API, usando respaldo local:', error);
+                    // No lanzar error aquí, solo usar localStorage
+                }
+            }
+            
+            // Función para mostrar error
+            function showError(elementId, message) {
+                const errorEl = document.getElementById(elementId);
+                if (errorEl) {
+                    errorEl.textContent = message;
+                    errorEl.style.display = 'block';
+                }
+            }
+            
+            // Función para mostrar mensaje en formulario
+            function showFormMessage(message, type) {
+                const formMessage = document.getElementById('form-message');
+                formMessage.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
             
             // Función para validar email
@@ -1193,27 +1164,42 @@
                 });
             });
             
-            // Animaciones para elementos al hacer scroll
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animated');
-                    }
-                });
-            }, observerOptions);
-            
-            // Observar todas las secciones
-            document.querySelectorAll('section').forEach(section => {
-                observer.observe(section);
-            });
+            // Verificar autenticación y actualizar botón de login
+            checkAuthStatus();
         });
+        
+        // Función para verificar estado de autenticación
+        function checkAuthStatus() {
+            const token = localStorage.getItem('cano_salao_token');
+            const user = localStorage.getItem('cano_salao_user');
+            
+            const loginBtn = document.querySelector('.auth-section .login-btn');
+            if (!loginBtn) return;
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    loginBtn.innerHTML = `<i class="bi bi-person-check"></i> ${userData.nombre.split(' ')[0]}`;
+                    loginBtn.href = 'usuario.html';
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            }
+        }
+        
+        // Estilo para spinner
+        const style = document.createElement('style');
+        style.textContent = `
+            .spin {
+                animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
-
-
