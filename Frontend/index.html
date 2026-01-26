@@ -2,15 +2,24 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Caño Salao | Ruta Turística Marítima | Barcelona, Venezuela</title>
     <meta name="description" content="Descubre la Ruta Turística Marítima Caño Salao en Barcelona, Venezuela. Tours en barco por manglares, avistamiento de aves y turismo comunitario.">
     <meta name="keywords" content="Caño Salao, turismo Venezuela, Barcelona Anzoátegui, ruta marítima, manglares, tours en barco, turismo comunitario">
     <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
     
+    <!-- FAVICON con tu logo -->
+    <link rel="icon" type="image/png" sizes="32x32" href="media/Logo_cano_60.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="media/Logo_cano_60.png">
+    <link rel="apple-touch-icon" href="media/Logo_cano_120.png">
+    <meta name="theme-color" content="#0d3b66">
+    
     <!-- Preload de fuentes críticas -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+    
+    <!-- Preload del logo para mejor performance -->
+    <link rel="preload" href="media/Logo_cano_60.png" as="image">
     
     <!-- Estilos críticos inline -->
     <style>
@@ -19,6 +28,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0,0,0,0); /* Mejor experiencia táctil */
+            -webkit-touch-callout: none; /* Previene menú contextual en iOS */
         }
         
         body {
@@ -27,6 +38,8 @@
             overflow-x: hidden;
             opacity: 0;
             animation: fadeIn 0.3s ease-out forwards;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         @keyframes fadeIn {
@@ -47,8 +60,10 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            padding: 0.75rem 0;
+            padding: 0.5rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
         
         .header-content {
@@ -58,11 +73,33 @@
             gap: 1rem;
         }
         
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-shrink: 0;
+        }
+        
+        /* Estilos críticos para el logo - 35px constante */
+        .logo-img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+            border-radius: 50%;
+            display: block;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+            -webkit-user-select: none;
+            user-select: none;
+            pointer-events: none; /* Previene problemas táctiles */
+        }
+        
         .logo h1 {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: white;
             margin: 0;
+            white-space: nowrap;
         }
         
         .text-orange {
@@ -97,6 +134,7 @@
             align-items: center;
             gap: 10px;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .user-avatar {
@@ -110,6 +148,7 @@
             justify-content: center;
             font-weight: bold;
             font-size: 16px;
+            flex-shrink: 0;
         }
         
         .user-dropdown {
@@ -123,6 +162,7 @@
             z-index: 1001;
             display: none;
             overflow: hidden;
+            margin-top: 5px;
         }
         
         .user-dropdown.show {
@@ -139,6 +179,7 @@
             text-decoration: none;
             border-bottom: 1px solid #eee;
             transition: background 0.2s;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
         }
         
         .user-dropdown a:hover {
@@ -166,6 +207,57 @@
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Menu toggle para móvil */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Navegación móvil */
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+        }
+        
+        nav ul li {
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: rgba(255,255,255,0.95);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.1);
         }
         
         /* Preload de imagen del hero */
@@ -240,6 +332,93 @@
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+        
+        /* Responsive para móvil */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-center {
+                order: 3;
+                width: 100%;
+                margin-top: 1rem;
+                display: none;
+            }
+            
+            nav ul {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+                background: rgba(26, 127, 184, 0.98);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                padding: 0.5rem;
+                border-radius: 8px;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            nav ul.show {
+                display: flex !important;
+            }
+            
+            nav ul li {
+                width: 100%;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            nav ul li:last-child {
+                border-bottom: none;
+            }
+            
+            nav ul li a {
+                padding: 0.8rem 1rem;
+                justify-content: flex-start;
+                font-size: 1rem;
+                border-radius: 6px;
+                margin: 2px 0;
+            }
+            
+            .auth-section {
+                display: block;
+                order: 2;
+            }
+            
+            .header-content {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+            
+            /* Logo sigue igual en móvil */
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .logo h1 {
+                font-size: 1.3rem;
+            }
+            
+            .logo {
+                gap: 0.5rem;
+            }
+            
+            .header-content {
+                gap: 0.6rem;
+            }
+        }
     </style>
     
     <!-- Cargar CSS principal de forma no bloqueante -->
@@ -264,6 +443,17 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
+                    <!-- LOGO 35px constante -->
+                    <img 
+                        src="media/Logo_cano_60.png" 
+                        srcset="media/Logo_cano_60.png 1x, media/Logo_cano_120.png 2x" 
+                        alt="Logo Caño Salao - Ruta Turística Marítima" 
+                        class="logo-img"
+                        width="35" 
+                        height="35"
+                        loading="eager"
+                        aria-hidden="true"
+                    >
                     <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
                 </div>
 
@@ -271,12 +461,12 @@
                 <div class="nav-center">
                     <nav>
                         <ul id="main-navigation">
-                            <li><a href="index.html" class="active"><i class="bi bi-house"></i> Inicio</a></li>
-                            <li><a href="Pages/Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
-                            <li><a href="Pages/Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
-                            <li><a href="Pages/Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                            <li><a href="Pages/Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
-                            <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                            <li><a href="index.html" class="active"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
+                            <li><a href="Pages/Empresa.html"><i class="bi bi-building"></i> <span>Empresa</span></a></li>
+                            <li><a href="Pages/Historia.html"><i class="bi bi-journal-text"></i> <span>Historia</span></a></li>
+                            <li><a href="Pages/Servicios.html"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
+                            <li><a href="Pages/Atracciones.html"><i class="bi bi-star"></i> <span>Atracciones</span></a></li>
+                            <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
                         </ul>
                     </nav>
                 </div>
@@ -286,12 +476,12 @@
                     <div class="user-menu-container" id="user-menu-container">
                         <!-- Estado No Autenticado -->
                         <a href="Pages/login.html" class="login-btn" id="login-btn">
-                            <i class="bi bi-person-circle"></i> Iniciar Sesión
+                            <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
                         </a>
                         
                         <!-- Estado Autenticado (manejado por JavaScript) -->
                         <div class="logged-user" id="logged-user" style="display: none;">
-                            <div class="user-avatar" id="user-avatar">U</div>
+                            <div class="user-avatar" id="user-avatar" aria-label="Menú de usuario" role="button" tabindex="0">U</div>
                             <div class="user-dropdown" id="user-dropdown">
                                 <a href="Pages/usuario.html" id="user-profile-link">
                                     <i class="bi bi-person"></i> Mi Cuenta
@@ -308,7 +498,7 @@
                     </div>
                 </div>
 
-                <button class="menu-toggle" aria-label="Menú">
+                <button class="menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="main-navigation">
                     <i class="bi bi-list"></i>
                 </button>
             </div>
@@ -336,6 +526,7 @@
         </div>
     </section>
     
+    <!-- El resto del contenido HTML permanece exactamente igual que antes -->
     <!-- Empresa Factible CON CONTENIDO DINÁMICO -->
     <section id="empresa" class="non-critical">
         <div class="container">
@@ -684,7 +875,7 @@
         </div>
     </footer>
 
-    <!-- Scripts COMPLETOS -->
+    <!-- Scripts COMPLETOS Y CORREGIDOS PARA MÓVIL -->
     <script>
         // ========== SISTEMA DE AUTENTICACIÓN Y ADMIN ==========
         
@@ -700,10 +891,11 @@
         // Datos globales
         let currentUser = null;
         let websiteContent = {};
+        let isMobileMenuOpen = false;
         
         // ========== INICIALIZACIÓN ==========
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Inicializando sitio Caño Salao con sistema admin...');
+            console.log('🚀 Inicializando sitio Caño Salao...');
             
             // Remover loader
             hideLoader();
@@ -796,21 +988,37 @@
                 adminLink.style.display = 'none';
             }
             
-            // Configurar menú desplegable
+            // Configurar menú desplegable - CORREGIDO PARA TÁCTIL
             const avatarElement = document.getElementById('user-avatar');
             const dropdown = document.getElementById('user-dropdown');
             
-            avatarElement.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdown.classList.toggle('show');
-            });
+            // Usar evento touch para móvil y click para desktop
+            if ('ontouchstart' in window) {
+                avatarElement.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                }, { passive: false });
+            } else {
+                avatarElement.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                });
+            }
             
-            // Cerrar menú al hacer clic fuera
+            // Cerrar menú al hacer clic/touch fuera
             document.addEventListener('click', function(e) {
                 if (!avatarElement.contains(e.target) && !dropdown.contains(e.target)) {
                     dropdown.classList.remove('show');
                 }
             });
+            
+            // Cerrar menú al tocar fuera (para móvil)
+            document.addEventListener('touchstart', function(e) {
+                if (!avatarElement.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            }, { passive: true });
             
             // Configurar logout
             document.getElementById('logout-btn').addEventListener('click', function(e) {
@@ -1106,15 +1314,72 @@
         // ========== SISTEMA DE RESERVAS ==========
         
         function initFunctionality() {
-            // Menú móvil
+            // Menú móvil - COMPLETAMENTE CORREGIDO PARA ANDROID/iOS
             const menuToggle = document.querySelector('.menu-toggle');
             const mainNav = document.querySelector('#main-navigation');
             
             if (menuToggle && mainNav) {
-                menuToggle.addEventListener('click', function() {
+                // Función para alternar menú
+                function toggleMobileMenu() {
+                    isMobileMenuOpen = !isMobileMenuOpen;
                     mainNav.classList.toggle('show');
-                    const icon = this.querySelector('i');
-                    icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
+                    menuToggle.setAttribute('aria-expanded', isMobileMenuOpen);
+                    menuToggle.querySelector('i').className = isMobileMenuOpen ? 'bi bi-x-lg' : 'bi bi-list';
+                    
+                    // Prevenir scroll del body cuando el menú está abierto
+                    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+                }
+                
+                // Eventos táctiles para móvil
+                if ('ontouchstart' in window) {
+                    // Para dispositivos táctiles
+                    menuToggle.addEventListener('touchstart', function(e) {
+                        e.preventDefault();
+                        toggleMobileMenu();
+                    }, { passive: false });
+                    
+                    // Cerrar menú al tocar fuera
+                    document.addEventListener('touchstart', function(e) {
+                        if (isMobileMenuOpen && 
+                            !mainNav.contains(e.target) && 
+                            !menuToggle.contains(e.target) &&
+                            e.target.closest('.user-dropdown') === null) {
+                            toggleMobileMenu();
+                        }
+                    }, { passive: true });
+                    
+                    // Mejorar experiencia táctil en enlaces del menú
+                    mainNav.querySelectorAll('a').forEach(link => {
+                        link.addEventListener('touchstart', function() {
+                            this.style.backgroundColor = 'rgba(255,255,255,0.2)';
+                        }, { passive: true });
+                        
+                        link.addEventListener('touchend', function() {
+                            this.style.backgroundColor = '';
+                        }, { passive: true });
+                    });
+                } else {
+                    // Para desktop (ratón)
+                    menuToggle.addEventListener('click', toggleMobileMenu);
+                    
+                    // Cerrar menú al hacer clic fuera
+                    document.addEventListener('click', function(e) {
+                        if (isMobileMenuOpen && 
+                            !mainNav.contains(e.target) && 
+                            !menuToggle.contains(e.target) &&
+                            e.target.closest('.user-dropdown') === null) {
+                            toggleMobileMenu();
+                        }
+                    });
+                }
+                
+                // Cerrar menú al cambiar de página (click en enlace)
+                mainNav.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (isMobileMenuOpen && window.innerWidth <= 768) {
+                            toggleMobileMenu();
+                        }
+                    });
                 });
             }
             
@@ -1143,7 +1408,7 @@
                 });
             }
             
-            // Smooth scroll
+            // Smooth scroll mejorado para móvil
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
@@ -1156,8 +1421,41 @@
                             top: target.offsetTop - 80,
                             behavior: 'smooth'
                         });
+                        
+                        // Cerrar menú móvil si está abierto
+                        if (isMobileMenuOpen && window.innerWidth <= 768) {
+                            toggleMobileMenu();
+                        }
                     }
                 });
+            });
+            
+            // Prevenir zoom en inputs en iOS
+            if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+                const inputs = document.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        this.style.fontSize = '16px'; // Previene zoom automático de iOS
+                    });
+                });
+            }
+            
+            // Mejorar rendimiento en scroll
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        // Actualizar header en scroll
+                        const header = document.querySelector('header');
+                        if (window.scrollY > 50) {
+                            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        } else {
+                            header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
             });
         }
         
