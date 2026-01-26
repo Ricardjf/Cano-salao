@@ -566,16 +566,8 @@
                 <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
             </ul>
         </nav>
-        
-        <!-- Sección de autenticación en móvil -->
-        <div style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem;">
-            <a href="Pages/login.html" class="btn" style="width: 100%; justify-content: center;">
-                <i class="bi bi-person-circle"></i> Iniciar Sesión
-            </a>
-        </div>
     </div>
 
-    <!-- El resto del contenido HTML permanece igual... -->
     <!-- Hero Section CON CONTENIDO DINÁMICO -->
     <section class="hero">
         <div class="hero-bg" id="heroBackground"></div>
@@ -1301,7 +1293,7 @@
             // ... (código del modal del blog, igual que antes)
         }
         
-        // ========== SISTEMA DE MENÚ MÓVIL CORREGIDO PARA ANDROID ==========
+        // ========== SISTEMA DE MENÚ MÓVIL ==========
         
         function initFunctionality() {
             // ========== MENÚ MÓVIL - COMPLETAMENTE CORREGIDO ==========
@@ -1309,6 +1301,7 @@
             const mobileMenuClose = document.getElementById('mobile-menu-close');
             const mobileMenuContainer = document.getElementById('mobile-menu-container');
             const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            let isMobileMenuOpen = false;
             
             // Función para abrir el menú
             function openMobileMenu() {
@@ -1329,6 +1322,17 @@
                 mobileMenuToggle.setAttribute('aria-expanded', 'false');
                 mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
             }
+
+            // Eventos para abrir/cerrar menú
+            mobileMenuToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isMobileMenuOpen) {
+                    openMobileMenu();
+                } else {
+                    closeMobileMenu();
+                }
+            });
             
             // ========== EVENTOS PARA ANDROID - CORREGIDOS ==========
             
