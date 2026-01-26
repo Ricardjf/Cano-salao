@@ -23,10 +23,13 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-touch-callout: none;
 }
 
 html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -35,6 +38,9 @@ body {
     color: var(--color-dark);
     background-color: #fff;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* Clase para fuente Times New Roman - cargada progresivamente */
@@ -55,7 +61,7 @@ body {
     padding: 0 20px;
 }
 
-/* ========== HEADER OPTIMIZADO ========== */
+/* ========== HEADER OPTIMIZADO CON LOGO 35px ========== */
 header {
     background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
     color: white;
@@ -63,10 +69,11 @@ header {
     top: 0;
     z-index: 1000;
     box-shadow: var(--shadow-md);
-    padding: 0.75rem 0;
+    padding: 0.5rem 0;
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .header-content {
@@ -80,12 +87,33 @@ header {
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     flex-shrink: 0;
 }
 
+/* LOGO IMAGEN - 35px CONSTANTE EN TODOS LOS DISPOSITIVOS */
+.logo-img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    border-radius: 50%;
+    display: block;
+    transition: var(--transition-fast);
+    flex-shrink: 0;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Efecto hover opcional solo para desktop */
+@media (hover: hover) {
+    .logo:hover .logo-img {
+        transform: scale(1.05);
+    }
+}
+
 .logo h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: white;
     letter-spacing: -0.5px;
@@ -128,6 +156,7 @@ nav ul li a {
     transition: var(--transition-fast);
     font-size: 0.9rem;
     white-space: nowrap;
+    -webkit-tap-highlight-color: rgba(255,255,255,0.1);
 }
 
 nav ul li a:hover {
@@ -163,6 +192,7 @@ nav ul li a.active {
     border: 1px solid rgba(255,255,255,0.2);
     font-size: 0.85rem;
     white-space: nowrap;
+    -webkit-tap-highlight-color: rgba(255,255,255,0.2);
 }
 
 .login-btn:hover {
@@ -175,11 +205,12 @@ nav ul li a.active {
     background: none;
     border: none;
     color: white;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     cursor: pointer;
     padding: 0.3rem;
     transition: var(--transition-fast);
     flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ========== HERO ========== */
@@ -300,6 +331,7 @@ nav ul li a.active {
     transition: var(--transition-normal);
     font-size: 1rem;
     will-change: transform;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
 }
 
 .btn:hover {
@@ -794,6 +826,8 @@ section:nth-child(even) {
     font-size: 0.95rem;
     transition: var(--transition-fast);
     background: var(--color-light);
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .form-control:focus {
@@ -910,7 +944,7 @@ footer {
 .icon-historia { color: #795548 !important; }
 .icon-contacto { color: #FFFFFF !important; }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/* ========== RESPONSIVE DESIGN CORREGIDO ========== */
 @media (max-width: 1200px) {
     .factible-features,
     .caracteristicas-grid {
@@ -929,6 +963,16 @@ footer {
     
     .auth-section {
         display: none;
+    }
+    
+    /* Logo sigue igual */
+    .logo-img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logo h1 {
+        font-size: 1.5rem;
     }
 }
 
@@ -949,14 +993,29 @@ footer {
         flex-direction: column;
         width: 100%;
         gap: 0;
-        background: rgba(26, 127, 184, 0.95);
+        background: rgba(26, 127, 184, 0.98);
         backdrop-filter: blur(10px);
-        padding: 0.5rem;
+        -webkit-backdrop-filter: blur(10px);
+        padding: 0.8rem;
         border-radius: var(--radius-md);
+        border: 1px solid rgba(255,255,255,0.15);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
     
     nav ul.show {
-        display: flex;
+        display: flex !important;
+        animation: slideDownMobile 0.3s ease;
+    }
+    
+    @keyframes slideDownMobile {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     nav ul li {
@@ -969,9 +1028,16 @@ footer {
     }
     
     nav ul li a {
-        padding: 0.7rem;
+        padding: 0.9rem 1rem;
         justify-content: flex-start;
-        font-size: 0.95rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        margin: 2px 0;
+        transition: all 0.2s ease;
+    }
+    
+    nav ul li a:active {
+        background: rgba(255,255,255,0.2);
     }
     
     .auth-section {
@@ -980,13 +1046,27 @@ footer {
     }
     
     .login-btn {
-        padding: 0.3rem 0.6rem;
+        padding: 0.4rem 0.7rem;
         font-size: 0.8rem;
     }
     
     .header-content {
         flex-wrap: wrap;
         gap: 0.8rem;
+    }
+    
+    /* Logo sigue igual en móvil */
+    .logo-img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logo h1 {
+        font-size: 1.4rem;
+    }
+    
+    .logo {
+        gap: 0.6rem;
     }
     
     .hero {
@@ -1054,8 +1134,22 @@ footer {
 }
 
 @media (max-width: 576px) {
+    /* Logo constante */
+    .logo-img {
+        width: 35px;
+        height: 35px;
+    }
+    
     .logo h1 {
-        font-size: 1.8rem;
+        font-size: 1.3rem;
+    }
+    
+    .logo {
+        gap: 0.5rem;
+    }
+    
+    .header-content {
+        gap: 0.6rem;
     }
     
     .hero {
@@ -1097,7 +1191,15 @@ footer {
     }
     
     header {
-        padding: 0.5rem 0;
+        padding: 0.4rem 0;
+    }
+    
+    /* Mejorar botones táctiles */
+    .btn,
+    .carta-btn,
+    .social-icon,
+    .login-btn {
+        min-height: 44px; /* Tamaño mínimo para dedos */
     }
 }
 
@@ -1114,9 +1216,13 @@ footer {
     .hero-bg {
         animation: none;
     }
+    
+    .logo:hover .logo-img {
+        transform: none;
+    }
 }
 
-/* Optimización para dispositivos táctiles */
+/* Optimización para dispositivos táctiles - MEJORADO */
 @media (hover: none) {
     .btn:hover,
     .carta-btn:hover,
@@ -1126,12 +1232,65 @@ footer {
     .attraction-card:hover,
     .caracteristica-item:hover,
     .carta:hover,
-    .history-image:hover {
+    .history-image:hover,
+    .logo:hover .logo-img,
+    nav ul li a:hover,
+    .footer-links a:hover {
         transform: none !important;
     }
     
     .btn:active,
     .carta-btn:active {
         transform: scale(0.98) !important;
+    }
+    
+    .logo:active .logo-img {
+        transform: scale(0.95) !important;
+    }
+    
+    nav ul li a:active {
+        background: rgba(255,255,255,0.2) !important;
+    }
+    
+    .footer-links a:active {
+        transform: translateX(5px) !important;
+    }
+    
+    /* Mejorar experiencia táctil */
+    .btn,
+    .carta-btn,
+    .login-btn,
+    .social-icon,
+    .menu-toggle,
+    .user-avatar {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    }
+}
+
+/* Correcciones específicas para iOS */
+@supports (-webkit-touch-callout: none) {
+    .hero {
+        min-height: -webkit-fill-available;
+    }
+    
+    .menu-toggle,
+    .user-avatar {
+        cursor: pointer;
+    }
+    
+    input,
+    textarea,
+    select {
+        font-size: 16px !important; /* Previene zoom en iOS */
+    }
+}
+
+/* Correcciones específicas para Android */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    select,
+    input,
+    textarea {
+        font-size: 16px; /* Previene zoom en Android */
     }
 }
