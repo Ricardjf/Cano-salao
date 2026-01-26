@@ -221,7 +221,7 @@ nav ul li a.active {
     justify-content: center;
 }
 
-/* ========== MENÚ MÓVIL - SOLO NAVEGACIÓN ========== */
+/* ========== MENÚ MÓVIL - COMPLETAMENTE CORREGIDO ========== */
 .mobile-menu-overlay {
     display: none;
     position: fixed;
@@ -253,8 +253,6 @@ nav ul li a.active {
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -2px 0 10px rgba(0,0,0,0.3);
     -webkit-overflow-scrolling: touch;
-    display: flex;
-    flex-direction: column;
 }
 
 .mobile-menu-container.active {
@@ -268,7 +266,6 @@ nav ul li a.active {
     justify-content: space-between;
     align-items: center;
     background: rgba(0,0,0,0.1);
-    flex-shrink: 0;
 }
 
 .mobile-menu-close {
@@ -289,8 +286,6 @@ nav ul li a.active {
 
 .mobile-menu-nav {
     padding: 1rem 0;
-    flex: 1;
-    overflow-y: auto;
 }
 
 .mobile-menu-nav ul {
@@ -1365,5 +1360,44 @@ footer {
         select {
             font-size: 16px !important;
         }
+    }
+}
+
+/* ========== MEJORAS DE ACCESIBILIDAD ========== */
+@media (prefers-contrast: high) {
+    .btn,
+    .carta-btn,
+    .login-btn {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ========== DARK MODE (opcional) ========== */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #121212;
+        color: #e0e0e0;
+    }
+    
+    .factible-feature,
+    .attraction-card,
+    .caracteristica-item,
+    .contact-form,
+    .contact-item {
+        background: #1e1e1e;
+        color: #e0e0e0;
+    }
+    
+    .factible-feature h3,
+    .attraction-info h3,
+    .caracteristica-item h3,
+    .contact-item h4 {
+        color: #bb86fc;
+    }
+    
+    .factible-feature p,
+    .attraction-info p,
+    .caracteristica-item p {
+        color: #b0b0b0;
     }
 }
