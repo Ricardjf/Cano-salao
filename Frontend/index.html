@@ -505,6 +505,57 @@
                 border-radius: 50%;
             }
         }
+        
+        /* Estilos para la sección de tours */
+        .tour-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .tour-details span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .tour-loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .tour-loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        .api-status {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 1000;
+        }
+        
+        .api-status.connected {
+            background: rgba(46, 204, 113, 0.8);
+        }
+        
+        .api-status.disconnected {
+            background: rgba(231, 76, 60, 0.8);
+        }
     </style>
     
     <!-- Cargar CSS principal de forma no bloqueante -->
@@ -518,6 +569,9 @@
 <body>
     <!-- Alert para mensajes -->
     <div id="site-alert" class="site-alert"></div>
+    
+    <!-- Indicador de estado de API -->
+    <div id="api-status" class="api-status">🔌 Conectando con API...</div>
     
     <!-- Loader para experiencia inicial -->
     <div id="page-loader">
@@ -696,7 +750,24 @@
         </div>
     </section>
 
-    <!-- Sección: Últimos Artículos del Blog (CONTENIDO DINÁMICO) -->
+    <!-- Sección: Tours desde API -->
+    <section id="tours-api" class="non-critical">
+        <div class="container">
+            <div class="section-title">
+                <h2 class="times-font"><i class="bi bi-geo-alt"></i> Nuestros Tours Disponibles</h2>
+                <p>Descubre las experiencias que tenemos preparadas para ti (Cargando desde la API...)</p>
+            </div>
+            <div class="attractions-grid" id="tours-api-container">
+                <!-- Los tours se cargarán aquí desde la API -->
+                <div class="tour-loading">
+                    <div class="spinner"></div>
+                    <p>Cargando tours disponibles...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección: Últimos Artículos del Blog -->
     <section id="blog-preview" class="non-critical" style="display: none;">
         <div class="container">
             <div class="section-title">
@@ -705,6 +776,10 @@
             </div>
             <div class="attractions-grid" id="blog-posts-container">
                 <!-- Los artículos del blog se cargarán aquí dinámicamente -->
+                <div class="tour-loading">
+                    <div class="spinner"></div>
+                    <p>Cargando noticias del blog...</p>
+                </div>
             </div>
         </div>
     </section>
@@ -971,25 +1046,34 @@
 
     <!-- Scripts -->
     <script>
-        // ========== SISTEMA DE AUTENTICACIÓN Y ADMIN ==========
-        
+        // ========== CONFIGURACIÓN API ==========
+        const API_BASE_URL = 'https://cano-salao.onrender.com/api';
+        const IS_PRODUCTION = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+
         // Configuración global
         const STORAGE_KEYS = {
             USERS: 'cano_salao_users',
             SETTINGS: 'cano_salao_settings',
             BLOG: 'cano_salao_blog_posts',
             BOOKINGS: 'cano_salao_bookings',
-            CONTENT: 'cano_salao_website_content'
+            CONTENT: 'cano_salao_website_content',
+            TOKEN: 'cano_salao_token',
+            USER: 'cano_salao_user'
         };
         
         // Datos globales
         let currentUser = null;
         let websiteContent = {};
         let isMobileMenuOpen = false;
+        let toursData = [];
         
         // ========== INICIALIZACIÓN ==========
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Inicializando sitio Caño Salao...');
+            console.log('🌐 URL API:', API_BASE_URL);
+            
+            // Actualizar estado API
+            updateApiStatus('🔌 Conectando...', '');
             
             // Remover loader
             hideLoader();
@@ -1000,8 +1084,11 @@
             // Cargar contenido dinámico
             loadWebsiteContent();
             
-            // Cargar artículos del blog
-            loadBlogPosts();
+            // Cargar tours desde API
+            loadToursFromAPI();
+            
+            // Cargar artículos del blog desde API
+            loadBlogPostsFromAPI();
             
             // Inicializar funcionalidades
             initFunctionality();
@@ -1029,24 +1116,34 @@
             }
         }
         
-        function checkAuthentication() {
-            const authData = localStorage.getItem('admin_auth') || localStorage.getItem('user_auth');
+        // ========== SISTEMA DE AUTENTICACIÓN ==========
+        
+        async function checkAuthentication() {
+            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
             
-            if (!authData) {
-                // Usuario no autenticado
+            if (!token) {
                 showLoginButton();
                 return;
             }
             
             try {
-                currentUser = JSON.parse(authData);
-                updateUserUI();
+                // Verificar token con API
+                const response = await fetch(`${API_BASE_URL}/user/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 
-                // Log actividad
-                if (currentUser.rol === 'admin') {
-                    console.log('🔑 Administrador autenticado:', currentUser.nombre);
+                if (response.ok) {
+                    const userData = await response.json();
+                    currentUser = userData;
+                    updateUserUI();
+                    console.log('✅ Usuario autenticado:', currentUser.nombre);
                 } else {
-                    console.log('👤 Usuario autenticado:', currentUser.nombre);
+                    // Token inválido
+                    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+                    localStorage.removeItem(STORAGE_KEYS.USER);
+                    showLoginButton();
                 }
             } catch (error) {
                 console.error('Error de autenticación:', error);
@@ -1054,9 +1151,39 @@
             }
         }
         
+        // Función global para login (usar en Pages/login.html)
+        window.loginUser = async function(email, password) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Credenciales incorrectas');
+                }
+                
+                const data = await response.json();
+                
+                // Guardar token y datos de usuario
+                localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+                localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+                
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        };
+        
         function showLoginButton() {
-            document.getElementById('login-btn').style.display = 'flex';
-            document.getElementById('logged-user').style.display = 'none';
+            const loginBtn = document.getElementById('login-btn');
+            const loggedUser = document.getElementById('logged-user');
+            
+            if (loginBtn) loginBtn.style.display = 'flex';
+            if (loggedUser) loggedUser.style.display = 'none';
         }
         
         function updateUserUI() {
@@ -1067,11 +1194,16 @@
             const userAvatar = document.getElementById('user-avatar');
             
             // Mostrar usuario logueado
-            loginBtn.style.display = 'none';
-            loggedUser.style.display = 'flex';
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (loggedUser) loggedUser.style.display = 'flex';
             
             // Configurar avatar
-            userAvatar.textContent = currentUser.nombre.charAt(0).toUpperCase();
+            if (userAvatar) {
+                userAvatar.textContent = currentUser.nombre.charAt(0).toUpperCase();
+                userAvatar.style.background = currentUser.rol === 'admin' 
+                    ? 'linear-gradient(135deg, #e74c3c, #c0392b)' 
+                    : 'linear-gradient(135deg, #3498db, #2c3e50)';
+            }
             
             // Configurar menú desplegable
             setupUserMenu();
@@ -1113,7 +1245,7 @@
                 margin-top: 5px;
             `;
             
-            const isAdmin = currentUser.rol === 'admin';
+            const isAdmin = currentUser && currentUser.rol === 'admin';
             
             dropdown.innerHTML = `
                 <a href="Pages/usuario.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">
@@ -1151,12 +1283,211 @@
         
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
-                localStorage.removeItem('admin_auth');
-                localStorage.removeItem('user_auth');
+                localStorage.removeItem(STORAGE_KEYS.TOKEN);
+                localStorage.removeItem(STORAGE_KEYS.USER);
                 currentUser = null;
                 showLoginButton();
                 showAlert('Sesión cerrada correctamente', 'success');
             }
+        }
+        
+        // ========== CARGAR TOURS DESDE API ==========
+        
+        async function loadToursFromAPI() {
+            try {
+                updateApiStatus('🔄 Cargando tours...', '');
+                
+                const response = await fetch(`${API_BASE_URL}/tours`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+                
+                const tours = await response.json();
+                toursData = tours;
+                
+                // Actualizar estado API
+                updateApiStatus('✅ API Conectada', 'connected');
+                
+                // Renderizar tours
+                renderTours(tours);
+                
+                console.log('✅ Tours cargados desde API:', tours.length);
+                
+            } catch (error) {
+                console.error('❌ Error cargando tours:', error);
+                updateApiStatus('❌ Error API', 'disconnected');
+                
+                // Mostrar tours de respaldo
+                renderFallbackTours();
+                
+                // Mostrar error después de 5 segundos
+                setTimeout(() => {
+                    showAlert('No se pudieron cargar los tours. Mostrando información de respaldo.', 'error');
+                }, 3000);
+            }
+        }
+        
+        function renderTours(tours) {
+            const container = document.getElementById('tours-api-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (!tours || tours.length === 0) {
+                container.innerHTML = `
+                    <div class="tour-loading">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: #f39c12; margin-bottom: 1rem;"></i>
+                        <p>No hay tours disponibles en este momento.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Mostrar solo los primeros 3 tours
+            const toursToShow = tours.slice(0, 3);
+            
+            toursToShow.forEach(tour => {
+                const card = document.createElement('div');
+                card.className = 'attraction-card';
+                card.innerHTML = `
+                    <div class="attraction-img">
+                        <img src="${tour.imagen_url || 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}" 
+                             alt="${tour.nombre}" 
+                             loading="lazy"
+                             onerror="this.src='https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'">
+                    </div>
+                    <div class="attraction-info">
+                        <h3 class="times-font">
+                            <i class="bi bi-geo-alt" style="color: #3498db;"></i> ${tour.nombre}
+                        </h3>
+                        <p>${tour.descripcion || 'Descripción no disponible'}</p>
+                        <div class="tour-details">
+                            <span><i class="bi bi-clock"></i> ${tour.duracion || '2 horas'}</span>
+                            <span><i class="bi bi-currency-dollar"></i> $${tour.precio || '25.00'}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        function renderFallbackTours() {
+            const container = document.getElementById('tours-api-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const fallbackTours = [
+                {
+                    nombre: 'Tour Básico',
+                    descripcion: 'Recorrido por los manglares con guía local',
+                    duracion: '2 horas',
+                    precio: '25.00',
+                    imagen_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+                },
+                {
+                    nombre: 'Tour Completo',
+                    descripcion: 'Experiencia completa que incluye todas las atracciones',
+                    duracion: '4 horas',
+                    precio: '45.00',
+                    imagen_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+                },
+                {
+                    nombre: 'Tour Fotográfico',
+                    descripcion: 'Especial para fotografía de naturaleza y paisajes',
+                    duracion: '3 horas',
+                    precio: '35.00',
+                    imagen_url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+                }
+            ];
+            
+            renderTours(fallbackTours);
+        }
+        
+        // ========== CARGAR BLOG DESDE API ==========
+        
+        async function loadBlogPostsFromAPI() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/blog`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}`);
+                }
+                
+                const posts = await response.json();
+                
+                if (posts && posts.length > 0) {
+                    // Mostrar sección de blog
+                    document.getElementById('blog-preview').style.display = 'block';
+                    renderBlogPostsFromAPI(posts);
+                }
+                
+                console.log('✅ Blog cargado desde API:', posts.length);
+                
+            } catch (error) {
+                console.error('❌ Error cargando blog:', error);
+                // Ocultar sección si no hay posts
+                document.getElementById('blog-preview').style.display = 'none';
+            }
+        }
+        
+        function renderBlogPostsFromAPI(posts) {
+            const container = document.getElementById('blog-posts-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Mostrar solo los 3 posts más recientes
+            const recentPosts = posts.slice(0, 3);
+            
+            recentPosts.forEach(post => {
+                const postDate = new Date(post.created_at);
+                const formattedDate = postDate.toLocaleDateString('es-ES', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                });
+                
+                const card = document.createElement('div');
+                card.className = 'attraction-card';
+                card.innerHTML = `
+                    <div class="attraction-img">
+                        ${post.imagen_url ? 
+                            `<img src="${post.imagen_url}" alt="${post.titulo}" loading="lazy"
+                                 onerror="this.src='https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'">` : 
+                            `<div style="width:100%;height:180px;background:linear-gradient(135deg, #2c3e50, #3498db);display:flex;align-items:center;justify-content:center;">
+                                <i class="bi bi-newspaper" style="font-size:48px;color:white;"></i>
+                            </div>`
+                        }
+                    </div>
+                    <div class="attraction-info">
+                        <h3 class="times-font">
+                            <i class="bi bi-newspaper" style="color:#3498db;"></i> 
+                            ${post.titulo && post.titulo.length > 40 ? post.titulo.substring(0, 40) + '...' : post.titulo || 'Sin título'}
+                        </h3>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0;font-size:12px;color:#666;">
+                            <span><i class="bi bi-calendar"></i> ${formattedDate}</span>
+                            ${post.vistas ? `<span><i class="bi bi-eye"></i> ${post.vistas}</span>` : ''}
+                        </div>
+                        <p>${post.excerpt || (post.contenido ? post.contenido.substring(0, 100) + '...' : 'Sin contenido disponible')}</p>
+                        <a href="#" style="color:#3498db;text-decoration:none;font-size:14px;display:inline-flex;align-items:center;gap:5px;margin-top:10px;">
+                            <i class="bi bi-arrow-right"></i> Leer más
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        // ========== FUNCIONES DE UTILIDAD ==========
+        
+        function updateApiStatus(message, statusClass = '') {
+            const statusElement = document.getElementById('api-status');
+            if (!statusElement) return;
+            
+            statusElement.textContent = message;
+            statusElement.className = 'api-status ' + statusClass;
         }
         
         function showAlert(message, type = 'info') {
@@ -1171,8 +1502,6 @@
                 alertDiv.style.display = 'none';
             }, 4000);
         }
-        
-        // ========== SISTEMA DE CONTENIDO DINÁMICO ==========
         
         function loadWebsiteContent() {
             // Cargar contenido guardado
@@ -1215,7 +1544,6 @@
                 }
             };
             
-            // Guardar contenido por defecto
             localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(websiteContent));
         }
         
@@ -1251,86 +1579,9 @@
                 if (websiteContent.contacto.email) document.getElementById('contact-email').textContent = websiteContent.contacto.email;
                 if (websiteContent.contacto.hours) document.getElementById('contact-hours').textContent = websiteContent.contacto.hours;
             }
-            
-            console.log('📝 Contenido dinámico aplicado');
         }
         
-        // ========== SISTEMA DE BLOG ==========
-        
-        function loadBlogPosts() {
-            const blogData = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-            
-            // Filtrar solo artículos publicados
-            const publishedPosts = blogData.filter(post => post.status === 'published');
-            
-            if (publishedPosts.length === 0) {
-                // Ocultar sección de blog si no hay artículos
-                document.getElementById('blog-preview').style.display = 'none';
-                return;
-            }
-            
-            // Ordenar por fecha (más recientes primero)
-            publishedPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            
-            // Mostrar solo los 3 más recientes
-            const recentPosts = publishedPosts.slice(0, 3);
-            
-            // Mostrar sección
-            document.getElementById('blog-preview').style.display = 'block';
-            
-            // Renderizar artículos
-            renderBlogPosts(recentPosts);
-        }
-        
-        function renderBlogPosts(posts) {
-            const container = document.getElementById('blog-posts-container');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            posts.forEach(post => {
-                const postDate = new Date(post.created_at);
-                const formattedDate = postDate.toLocaleDateString('es-ES', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                });
-                
-                const card = document.createElement('div');
-                card.className = 'attraction-card';
-                card.innerHTML = `
-                    <div class="attraction-img">
-                        ${post.cover_image ? 
-                            `<img src="${post.cover_image}" alt="${post.title}" loading="lazy">` : 
-                            `<div style="width:100%;height:180px;background:linear-gradient(135deg, #2c3e50, #3498db);display:flex;align-items:center;justify-content:center;">
-                                <i class="bi bi-newspaper" style="font-size:48px;color:white;"></i>
-                            </div>`
-                        }
-                    </div>
-                    <div class="attraction-info">
-                        <h3 class="times-font">
-                            <i class="bi bi-newspaper" style="color:#3498db;"></i> 
-                            ${post.title.length > 40 ? post.title.substring(0, 40) + '...' : post.title}
-                        </h3>
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0;font-size:12px;color:#666;">
-                            <span><i class="bi bi-calendar"></i> ${formattedDate}</span>
-                            <span><i class="bi bi-eye"></i> ${post.views || 0}</span>
-                        </div>
-                        <p>${post.excerpt || post.content.substring(0, 100).replace(/<[^>]*>/g, '')}...</p>
-                        <a href="#" onclick="viewBlogPost(${post.id})" style="color:#3498db;text-decoration:none;font-size:14px;display:inline-flex;align-items:center;gap:5px;margin-top:10px;">
-                            <i class="bi bi-arrow-right"></i> Leer más
-                        </a>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-        
-        function viewBlogPost(postId) {
-            // ... (código del modal del blog)
-        }
-        
-        // ========== SISTEMA DE MENÚ MÓVIL CORREGIDO ==========
+        // ========== SISTEMA DE MENÚ MÓVIL ==========
         
         function initFunctionality() {
             // ========== MENÚ MÓVIL ==========
@@ -1339,7 +1590,6 @@
             const mobileMenuContainer = document.getElementById('mobile-menu-container');
             const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
             
-            // Función para abrir el menú
             function openMobileMenu() {
                 mobileMenuContainer.classList.add('active');
                 mobileMenuOverlay.classList.add('active');
@@ -1349,7 +1599,6 @@
                 mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
             }
             
-            // Función para cerrar el menú
             function closeMobileMenu() {
                 mobileMenuContainer.classList.remove('active');
                 mobileMenuOverlay.classList.remove('active');
@@ -1359,7 +1608,6 @@
                 mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
             }
             
-            // Eventos
             mobileMenuToggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1370,7 +1618,6 @@
                 }
             });
             
-            // También agregar touchstart para Android
             mobileMenuToggle.addEventListener('touchstart', function(e) {
                 e.preventDefault();
                 if (!isMobileMenuOpen) {
@@ -1380,14 +1627,12 @@
                 }
             }, { passive: false });
             
-            // Cerrar con el botón X
             mobileMenuClose.addEventListener('click', closeMobileMenu);
             mobileMenuClose.addEventListener('touchstart', function(e) {
                 e.preventDefault();
                 closeMobileMenu();
             }, { passive: false });
             
-            // Cerrar al hacer click/touch en el overlay
             mobileMenuOverlay.addEventListener('click', closeMobileMenu);
             mobileMenuOverlay.addEventListener('touchstart', function(e) {
                 if (e.target === mobileMenuOverlay) {
@@ -1396,7 +1641,6 @@
                 }
             }, { passive: false });
             
-            // Cerrar al hacer click/touch en los enlaces del menú
             const mobileMenuLinks = mobileMenuContainer.querySelectorAll('a');
             mobileMenuLinks.forEach(link => {
                 link.addEventListener('click', closeMobileMenu);
@@ -1405,7 +1649,6 @@
                 }, { passive: true });
             });
             
-            // Prevenir que el menú se cierre al tocar dentro del mismo
             mobileMenuContainer.addEventListener('click', function(e) {
                 e.stopPropagation();
             });
@@ -1414,7 +1657,6 @@
                 e.stopPropagation();
             }, { passive: true });
             
-            // Cerrar menú con la tecla ESC
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && isMobileMenuOpen) {
                     closeMobileMenu();
@@ -1456,7 +1698,6 @@
                     if (target) {
                         e.preventDefault();
                         
-                        // Cerrar menú móvil si está abierto
                         if (isMobileMenuOpen) {
                             closeMobileMenu();
                         }
@@ -1470,8 +1711,6 @@
             });
             
             // ========== MEJORAS PARA MÓVIL ==========
-            
-            // Prevenir zoom en inputs en iOS
             if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
                 const inputs = document.querySelectorAll('input, textarea, select');
                 inputs.forEach(input => {
@@ -1481,13 +1720,11 @@
                 });
             }
             
-            // Mejorar experiencia táctil en botones
             const allButtons = document.querySelectorAll('button, .btn, .carta-btn, .login-btn, .social-icon');
             allButtons.forEach(button => {
                 button.style.cursor = 'pointer';
                 button.style.webkitTapHighlightColor = 'rgba(0,0,0,0.1)';
                 
-                // Feedback táctil
                 button.addEventListener('touchstart', function() {
                     this.style.transform = 'scale(0.98)';
                 }, { passive: true });
@@ -1497,19 +1734,15 @@
                 }, { passive: true });
             });
             
-            // ========== DETECTAR ANDROID ESPECÍFICAMENTE ==========
+            // ========== DETECTAR ANDROID ==========
             const isAndroid = /Android/i.test(navigator.userAgent);
             if (isAndroid) {
-                console.log('📱 Android detectado - Aplicando correcciones específicas');
+                console.log('📱 Android detectado');
                 
-                // Mejorar rendimiento en Android
                 document.body.style.webkitTransform = 'translateZ(0)';
-                
-                // Corrección para menú táctil en Android
                 mobileMenuToggle.style.touchAction = 'manipulation';
                 mobileMenuClose.style.touchAction = 'manipulation';
                 
-                // Prevenir problemas de scroll en Android
                 let lastTouchY = 0;
                 document.addEventListener('touchstart', function(e) {
                     lastTouchY = e.touches[0].clientY;
@@ -1522,7 +1755,7 @@
                 }, { passive: false });
             }
             
-            // ========== MEJORAR HEADER EN SCROLL ==========
+            // ========== HEADER SCROLL EFFECT ==========
             let ticking = false;
             window.addEventListener('scroll', function() {
                 if (!ticking) {
@@ -1539,14 +1772,12 @@
                 }
             });
             
-            // ========== DETECTAR CAMBIOS DE ORIENTACIÓN ==========
+            // ========== ORIENTATION CHANGE ==========
             window.addEventListener('orientationchange', function() {
-                // Cerrar menú al cambiar orientación
                 if (isMobileMenuOpen) {
                     closeMobileMenu();
                 }
                 
-                // Forzar reflow para corregir layout
                 setTimeout(function() {
                     document.body.style.height = window.innerHeight + 'px';
                 }, 300);
@@ -1585,13 +1816,14 @@
                 return;
             }
             
-            // Mostrar carga
             const button = e.target.querySelector('button[type="submit"]');
             const originalText = button.innerHTML;
             button.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Enviando...';
             button.disabled = true;
             
-            // Crear reserva
+            // Aquí puedes agregar el código para enviar la reserva a tu API
+            // Por ahora solo se guarda en localStorage
+            
             const booking = {
                 id: Date.now(),
                 codigo: 'RES-' + Date.now().toString().slice(-6),
@@ -1606,34 +1838,21 @@
                 created_at: new Date().toISOString()
             };
             
-            // Guardar en localStorage
             const bookingsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || '[]');
             bookingsData.push(booking);
             localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookingsData));
             
-            // Simular envío
             setTimeout(() => {
-                // Enviar email de confirmación (simulación)
-                if (currentUser) {
-                    console.log(`📧 Email enviado a ${email} (simulación)`);
-                }
-                
-                // Mostrar confirmación
                 showAlert(`¡Gracias ${name}! Tu reserva ha sido enviada. Código: ${booking.codigo}`, 'success');
                 
-                // Resetear formulario
                 e.target.reset();
-                
-                // Restaurar botón
                 button.innerHTML = originalText;
                 button.disabled = false;
                 
-                // Log actividad
                 if (currentUser) {
                     console.log(`📝 Reserva creada por ${currentUser.nombre}: ${booking.codigo}`);
                 }
                 
-                // Redirigir a página de confirmación si existe
                 setTimeout(() => {
                     if (window.location.pathname.includes('contacto.html')) {
                         window.location.href = 'confirmacion.html';
@@ -1655,7 +1874,6 @@
                 100% { transform: rotate(360deg); }
             }
             
-            /* Estilos para el menú desplegable de usuario */
             .user-dropdown-menu {
                 position: absolute;
                 top: 100%;
@@ -1688,7 +1906,6 @@
                 border-bottom: none;
             }
             
-            /* Mejorar experiencia táctil en Android */
             @media (hover: none) and (pointer: coarse) {
                 button:active, 
                 .btn:active, 
@@ -1711,16 +1928,20 @@
         
         function debugAdminSystem() {
             console.log('=== DEBUG ADMIN SYSTEM ===');
+            console.log('API Base URL:', API_BASE_URL);
             console.log('Current User:', currentUser);
+            console.log('Tours Data:', toursData.length);
             console.log('Website Content:', websiteContent);
             console.log('Blog Posts:', JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]').length);
             console.log('Bookings:', JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || '[]').length);
-            console.log('Users:', JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]').length);
             console.log('=======================');
         }
         
         // Exponer funciones para debugging
         window.debugAdminSystem = debugAdminSystem;
+        window.API_BASE_URL = API_BASE_URL;
+        
+        console.log('✅ index.html: Script cargado correctamente');
         
     </script>
 </body>
