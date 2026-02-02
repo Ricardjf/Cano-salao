@@ -312,6 +312,62 @@
             font-weight: bold;
             font-size: 16px;
             flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Dropdown menu styles */
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 200px;
+            z-index: 1001;
+            overflow: hidden;
+            margin-top: 5px;
+            display: none;
+            animation: fadeInDown 0.2s ease;
+        }
+        
+        .user-dropdown-menu.show {
+            display: block;
+        }
+        
+        .user-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+        
+        .user-dropdown-menu a:hover {
+            background: #f5f5f5;
+        }
+        
+        .user-dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Sección de autenticación */
@@ -337,6 +393,10 @@
             border: 1px solid rgba(255,255,255,0.2);
             font-size: 0.85rem;
             white-space: nowrap;
+        }
+        
+        .login-btn:hover {
+            background: rgba(255,255,255,0.25);
         }
         
         /* Hero básico para render inicial */
@@ -425,6 +485,12 @@
             color: #721c24;
         }
         
+        .site-alert.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
         @keyframes slideInRight {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -463,6 +529,14 @@
             .mobile-menu-overlay {
                 z-index: 999;
             }
+            
+            .user-dropdown-menu {
+                position: fixed;
+                top: 60px;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+            }
         }
         
         @media (max-width: 576px) {
@@ -481,6 +555,12 @@
             
             .header-content {
                 gap: 0.5rem;
+            }
+            
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
             }
         }
         
@@ -503,6 +583,10 @@
             .mobile-menu-close:active {
                 background-color: rgba(255,255,255,0.2);
                 border-radius: 50%;
+            }
+            
+            .user-avatar:active {
+                transform: scale(0.95);
             }
         }
         
@@ -620,7 +704,7 @@
                         
                         <!-- Estado Autenticado (manejado por JavaScript) -->
                         <div class="logged-user" id="logged-user" style="display: none;">
-                            <div class="user-avatar" id="user-avatar" aria-label="Menú de usuario" role="button" tabindex="0">U</div>
+                            <div class="user-avatar" id="user-avatar" aria-label="Menú de usuario" role="button" tabindex="0" title="Menú de usuario">U</div>
                         </div>
                     </div>
                 </div>
@@ -1048,24 +1132,16 @@
     <script>
         // ========== CONFIGURACIÓN API ==========
         const API_BASE_URL = 'https://cano-salao.onrender.com/api';
-        const IS_PRODUCTION = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-
-        // Configuración global
         const STORAGE_KEYS = {
-            USERS: 'cano_salao_users',
-            SETTINGS: 'cano_salao_settings',
-            BLOG: 'cano_salao_blog_posts',
-            BOOKINGS: 'cano_salao_bookings',
-            CONTENT: 'cano_salao_website_content',
             TOKEN: 'cano_salao_token',
             USER: 'cano_salao_user'
         };
         
-        // Datos globales
+        // Variables globales
         let currentUser = null;
-        let websiteContent = {};
         let isMobileMenuOpen = false;
         let toursData = [];
+        let userDropdownOpen = false;
         
         // ========== INICIALIZACIÓN ==========
         document.addEventListener('DOMContentLoaded', function() {
@@ -1078,11 +1154,8 @@
             // Remover loader
             hideLoader();
             
-            // Cargar autenticación
+            // Verificar autenticación
             checkAuthentication();
-            
-            // Cargar contenido dinámico
-            loadWebsiteContent();
             
             // Cargar tours desde API
             loadToursFromAPI();
@@ -1120,8 +1193,10 @@
         
         async function checkAuthentication() {
             const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+            const userData = localStorage.getItem(STORAGE_KEYS.USER);
             
-            if (!token) {
+            if (!token || !userData) {
+                console.log('No hay token o datos de usuario');
                 showLoginButton();
                 return;
             }
@@ -1135,55 +1210,53 @@
                 });
                 
                 if (response.ok) {
-                    const userData = await response.json();
-                    currentUser = userData;
-                    updateUserUI();
+                    const user = await response.json();
+                    currentUser = user;
                     console.log('✅ Usuario autenticado:', currentUser.nombre);
+                    updateUserUI();
                 } else {
                     // Token inválido
-                    localStorage.removeItem(STORAGE_KEYS.TOKEN);
-                    localStorage.removeItem(STORAGE_KEYS.USER);
+                    console.log('Token inválido, limpiando sesión');
+                    clearUserSession();
                     showLoginButton();
                 }
             } catch (error) {
-                console.error('Error de autenticación:', error);
-                showLoginButton();
+                console.error('Error verificando autenticación:', error);
+                // Si hay error de red pero hay datos de usuario, usar esos datos
+                if (userData) {
+                    try {
+                        currentUser = JSON.parse(userData);
+                        console.log('Usando datos de usuario de localStorage:', currentUser.nombre);
+                        updateUserUI();
+                    } catch (e) {
+                        console.error('Error parseando datos de usuario:', e);
+                        showLoginButton();
+                    }
+                } else {
+                    showLoginButton();
+                }
             }
         }
         
-        // Función global para login (usar en Pages/login.html)
-        window.loginUser = async function(email, password) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Credenciales incorrectas');
-                }
-                
-                const data = await response.json();
-                
-                // Guardar token y datos de usuario
-                localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
-                localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
-                
-                return data;
-            } catch (error) {
-                throw error;
-            }
-        };
+        function clearUserSession() {
+            localStorage.removeItem(STORAGE_KEYS.TOKEN);
+            localStorage.removeItem(STORAGE_KEYS.USER);
+            sessionStorage.removeItem('user_session');
+            currentUser = null;
+        }
         
         function showLoginButton() {
             const loginBtn = document.getElementById('login-btn');
             const loggedUser = document.getElementById('logged-user');
             
-            if (loginBtn) loginBtn.style.display = 'flex';
+            if (loginBtn) {
+                loginBtn.style.display = 'flex';
+                loginBtn.href = 'Pages/login.html';
+            }
             if (loggedUser) loggedUser.style.display = 'none';
+            
+            // Cerrar dropdown si está abierto
+            closeUserDropdown();
         }
         
         function updateUserUI() {
@@ -1199,95 +1272,185 @@
             
             // Configurar avatar
             if (userAvatar) {
-                userAvatar.textContent = currentUser.nombre.charAt(0).toUpperCase();
-                userAvatar.style.background = currentUser.rol === 'admin' 
-                    ? 'linear-gradient(135deg, #e74c3c, #c0392b)' 
-                    : 'linear-gradient(135deg, #3498db, #2c3e50)';
+                // Usar la primera letra del nombre o email
+                const displayChar = currentUser.nombre 
+                    ? currentUser.nombre.charAt(0).toUpperCase()
+                    : currentUser.email.charAt(0).toUpperCase();
+                
+                userAvatar.textContent = displayChar;
+                
+                // Configurar color basado en rol
+                if (currentUser.rol === 'admin') {
+                    userAvatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    userAvatar.title = `Admin: ${currentUser.nombre}`;
+                } else {
+                    userAvatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
+                    userAvatar.title = `Usuario: ${currentUser.nombre}`;
+                }
+                
+                // Configurar eventos del avatar
+                setupUserAvatarEvents(userAvatar);
             }
             
-            // Configurar menú desplegable
-            setupUserMenu();
+            console.log('✅ UI actualizada para usuario:', currentUser.nombre);
+            
+            // Mostrar alerta de bienvenida si es la primera vez que se carga
+            const welcomeShown = sessionStorage.getItem('welcome_shown');
+            if (!welcomeShown) {
+                setTimeout(() => {
+                    showAlert(`¡Bienvenido/a de nuevo, ${currentUser.nombre}!`, 'success');
+                    sessionStorage.setItem('welcome_shown', 'true');
+                }, 1000);
+            }
         }
         
-        function setupUserMenu() {
-            const avatarElement = document.getElementById('user-avatar');
+        function setupUserAvatarEvents(avatarElement) {
             if (!avatarElement) return;
             
-            // Crear menú desplegable dinámico
-            avatarElement.addEventListener('click', function(e) {
+            // Limpiar eventos anteriores
+            const newAvatar = avatarElement.cloneNode(true);
+            avatarElement.parentNode.replaceChild(newAvatar, avatarElement);
+            
+            const updatedAvatar = document.getElementById('user-avatar');
+            
+            updatedAvatar.addEventListener('click', function(e) {
                 e.stopPropagation();
-                createUserDropdownMenu(this);
+                toggleUserDropdown();
+            });
+            
+            updatedAvatar.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleUserDropdown();
+                }
+            });
+            
+            // Cerrar dropdown al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                if (!updatedAvatar.contains(e.target)) {
+                    closeUserDropdown();
+                }
+            });
+            
+            // Cerrar dropdown con Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && userDropdownOpen) {
+                    closeUserDropdown();
+                }
             });
         }
         
-        function createUserDropdownMenu(avatarElement) {
-            // Remover menú existente si hay
-            const existingMenu = document.getElementById('user-dropdown-menu');
-            if (existingMenu) {
-                existingMenu.remove();
-                return;
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('user-dropdown-menu');
+            
+            if (!dropdown) {
+                createUserDropdown();
+            } else {
+                if (userDropdownOpen) {
+                    closeUserDropdown();
+                } else {
+                    dropdown.classList.add('show');
+                    userDropdownOpen = true;
+                }
+            }
+        }
+        
+        function closeUserDropdown() {
+            const dropdown = document.getElementById('user-dropdown-menu');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+                userDropdownOpen = false;
+            }
+        }
+        
+        function createUserDropdown() {
+            // Remover dropdown existente si hay
+            const existingDropdown = document.getElementById('user-dropdown-menu');
+            if (existingDropdown) {
+                existingDropdown.remove();
             }
             
-            // Crear menú
+            // Crear dropdown
             const dropdown = document.createElement('div');
             dropdown.id = 'user-dropdown-menu';
             dropdown.className = 'user-dropdown-menu';
-            dropdown.style.cssText = `
-                position: absolute;
-                top: 100%;
-                right: 0;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                min-width: 180px;
-                z-index: 1001;
-                overflow: hidden;
-                margin-top: 5px;
-            `;
             
             const isAdmin = currentUser && currentUser.rol === 'admin';
             
             dropdown.innerHTML = `
-                <a href="Pages/usuario.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">
+                <div style="padding: 12px 15px; border-bottom: 1px solid #eee; background: #f8f9fa;">
+                    <div style="font-weight: bold; color: #333;">${currentUser.nombre || currentUser.email}</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 2px;">${currentUser.email}</div>
+                    ${isAdmin ? '<div style="font-size: 11px; color: #e74c3c; margin-top: 4px; font-weight: bold;">Administrador</div>' : ''}
+                </div>
+                <a href="Pages/usuario.html" class="dropdown-item">
                     <i class="bi bi-person"></i> Mi Cuenta
                 </a>
                 ${isAdmin ? `
-                <a href="Pages/admin.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; transition: background 0.2s;">
-                    <i class="bi bi-shield-check"></i> Admin
-                    <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 5px;">ADMIN</span>
+                <a href="Pages/admin.html" class="dropdown-item">
+                    <i class="bi bi-shield-check"></i> Panel de Administración
+                    <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: auto;">ADMIN</span>
                 </a>
                 ` : ''}
-                <a href="#" id="dropdown-logout-btn" style="display: flex; align-items: center; gap: 10px; padding: 12px 15px; color: #333; text-decoration: none; transition: background 0.2s;">
+                <a href="Pages/reservas.html" class="dropdown-item">
+                    <i class="bi bi-calendar-check"></i> Mis Reservas
+                </a>
+                <a href="#" id="dropdown-logout-btn" class="dropdown-item">
                     <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                 </a>
             `;
             
-            avatarElement.parentElement.appendChild(dropdown);
+            // Añadir estilos inline
+            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+                item.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 12px 15px;
+                    color: #333;
+                    text-decoration: none;
+                    border-bottom: 1px solid #eee;
+                    transition: background 0.2s;
+                    font-size: 14px;
+                `;
+                item.addEventListener('mouseenter', function() {
+                    this.style.background = '#f5f5f5';
+                });
+                item.addEventListener('mouseleave', function() {
+                    this.style.background = '';
+                });
+            });
+            
+            // Añadir al DOM
+            const userMenuContainer = document.getElementById('user-menu-container');
+            userMenuContainer.appendChild(dropdown);
+            
+            // Mostrar dropdown
+            setTimeout(() => {
+                dropdown.classList.add('show');
+                userDropdownOpen = true;
+            }, 10);
             
             // Configurar logout
             document.getElementById('dropdown-logout-btn').addEventListener('click', function(e) {
                 e.preventDefault();
                 logout();
             });
-            
-            // Cerrar menú al hacer clic fuera
-            setTimeout(() => {
-                document.addEventListener('click', function closeMenu(e) {
-                    if (!avatarElement.contains(e.target) && !dropdown.contains(e.target)) {
-                        dropdown.remove();
-                        document.removeEventListener('click', closeMenu);
-                    }
-                });
-            }, 10);
         }
         
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
-                localStorage.removeItem(STORAGE_KEYS.TOKEN);
-                localStorage.removeItem(STORAGE_KEYS.USER);
-                currentUser = null;
+                clearUserSession();
                 showLoginButton();
-                showAlert('Sesión cerrada correctamente', 'success');
+                showAlert('Sesión cerrada correctamente', 'info');
+                
+                // Redirigir si está en páginas protegidas
+                if (window.location.pathname.includes('usuario.html') || 
+                    window.location.pathname.includes('admin.html')) {
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                }
             }
         }
         
@@ -1339,6 +1502,9 @@
                     <div class="tour-loading">
                         <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: #f39c12; margin-bottom: 1rem;"></i>
                         <p>No hay tours disponibles en este momento.</p>
+                        <button onclick="loadToursFromAPI()" style="margin-top: 1rem; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            <i class="bi bi-arrow-clockwise"></i> Reintentar
+                        </button>
                     </div>
                 `;
                 return;
@@ -1366,6 +1532,11 @@
                             <span><i class="bi bi-clock"></i> ${tour.duracion || '2 horas'}</span>
                             <span><i class="bi bi-currency-dollar"></i> $${tour.precio || '25.00'}</span>
                         </div>
+                        ${currentUser ? `
+                        <button onclick="bookTour('${tour.id}', '${tour.nombre}')" style="margin-top: 10px; padding: 8px 16px; background: var(--color-accent); color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
+                            <i class="bi bi-calendar-plus"></i> Reservar Ahora
+                        </button>
+                        ` : ''}
                     </div>
                 `;
                 container.appendChild(card);
@@ -1380,6 +1551,7 @@
             
             const fallbackTours = [
                 {
+                    id: 1,
                     nombre: 'Tour Básico',
                     descripcion: 'Recorrido por los manglares con guía local',
                     duracion: '2 horas',
@@ -1387,6 +1559,7 @@
                     imagen_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
                 },
                 {
+                    id: 2,
                     nombre: 'Tour Completo',
                     descripcion: 'Experiencia completa que incluye todas las atracciones',
                     duracion: '4 horas',
@@ -1394,6 +1567,7 @@
                     imagen_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
                 },
                 {
+                    id: 3,
                     nombre: 'Tour Fotográfico',
                     descripcion: 'Especial para fotografía de naturaleza y paisajes',
                     duracion: '3 horas',
@@ -1403,6 +1577,27 @@
             ];
             
             renderTours(fallbackTours);
+        }
+        
+        function bookTour(tourId, tourName) {
+            if (!currentUser) {
+                showAlert('Debes iniciar sesión para reservar tours', 'error');
+                window.location.href = 'Pages/login.html';
+                return;
+            }
+            
+            showAlert(`Redirigiendo para reservar: ${tourName}`, 'info');
+            
+            // Guardar el tour seleccionado en sessionStorage para usarlo en la página de reservas
+            sessionStorage.setItem('selected_tour', JSON.stringify({
+                id: tourId,
+                nombre: tourName
+            }));
+            
+            // Redirigir a la página de contacto/reservas
+            setTimeout(() => {
+                window.location.href = 'Pages/contacto.html';
+            }, 1500);
         }
         
         // ========== CARGAR BLOG DESDE API ==========
@@ -1503,84 +1698,6 @@
             }, 4000);
         }
         
-        function loadWebsiteContent() {
-            // Cargar contenido guardado
-            const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
-            if (savedContent) {
-                try {
-                    websiteContent = JSON.parse(savedContent);
-                    applyContentToPage();
-                } catch (error) {
-                    console.error('Error cargando contenido:', error);
-                    loadDefaultContent();
-                }
-            } else {
-                loadDefaultContent();
-            }
-        }
-        
-        function loadDefaultContent() {
-            // Contenido por defecto
-            websiteContent = {
-                hero: {
-                    title: '¡Descubre la Belleza Natural de <span class="text-orange">Caño</span> Salao!',
-                    subtitle: 'Embárcate en una aventura única por los manglares de Barcelona, Venezuela. <strong>Turismo comunitario</strong> que conecta naturaleza, historia y comunidad.',
-                    cta: '¡Reserva tu Tour Ahora!'
-                },
-                empresa: {
-                    desc1: 'La empresa de producción social de transporte turístico acuático "Caño Salao" se establece como una entidad jurídica con el propósito de ofrecer servicios turísticos acuáticos sostenibles en la comunidad de Caño Salao, ubicada en Barcelona, Municipio Simón Bolívar, estado Anzoátegui.',
-                    desc2: 'Su razón social refleja su compromiso con la protección del medio ambiente natural y el desarrollo socioeconómico de las comunidades locales.'
-                },
-                features: {
-                    1: { title: 'Sostenibilidad Ambiental', desc: 'Comprometidos con la protección del ecosistema único de manglares y especies marinas de Caño Salao.' },
-                    2: { title: 'Desarrollo Comunitario', desc: 'Generamos empleo local y reinvertimos utilidades en proyectos que benefician a la comunidad.' },
-                    3: { title: 'Turismo Responsable', desc: 'Ofrecemos experiencias auténticas que respetan la cultura local y el medio ambiente.' },
-                    4: { title: 'Modelo Económico Sólido', desc: 'Combinamos viabilidad económica con impacto social positivo para un desarrollo sostenible.' }
-                },
-                contacto: {
-                    phone: '+58 412-205-6558',
-                    email: 'info@canosalaotours.com',
-                    hours: 'Lunes a Domingo: 8:00 AM - 5:00 PM'
-                }
-            };
-            
-            localStorage.setItem(STORAGE_KEYS.CONTENT, JSON.stringify(websiteContent));
-        }
-        
-        function applyContentToPage() {
-            // Hero section
-            if (websiteContent.hero) {
-                document.getElementById('hero-title').innerHTML = websiteContent.hero.title || document.getElementById('hero-title').innerHTML;
-                document.getElementById('hero-subtitle').innerHTML = websiteContent.hero.subtitle || document.getElementById('hero-subtitle').innerHTML;
-                document.getElementById('hero-cta').innerHTML = `<i class="bi bi-calendar-check"></i> ${websiteContent.hero.cta || '¡Reserva tu Tour Ahora!'}`;
-            }
-            
-            // Empresa section
-            if (websiteContent.empresa) {
-                if (websiteContent.empresa.desc1) document.getElementById('empresa-desc-1').textContent = websiteContent.empresa.desc1;
-                if (websiteContent.empresa.desc2) document.getElementById('empresa-desc-2').textContent = websiteContent.empresa.desc2;
-            }
-            
-            // Features
-            if (websiteContent.features) {
-                Object.keys(websiteContent.features).forEach(key => {
-                    const feature = websiteContent.features[key];
-                    const titleElement = document.querySelector(`[data-content="feature-title-${key}"]`);
-                    const descElement = document.querySelector(`[data-content="feature-desc-${key}"]`);
-                    
-                    if (titleElement && feature.title) titleElement.textContent = feature.title;
-                    if (descElement && feature.desc) descElement.textContent = feature.desc;
-                });
-            }
-            
-            // Contacto
-            if (websiteContent.contacto) {
-                if (websiteContent.contacto.phone) document.getElementById('contact-phone').textContent = websiteContent.contacto.phone;
-                if (websiteContent.contacto.email) document.getElementById('contact-email').textContent = websiteContent.contacto.email;
-                if (websiteContent.contacto.hours) document.getElementById('contact-hours').textContent = websiteContent.contacto.hours;
-            }
-        }
-        
         // ========== SISTEMA DE MENÚ MÓVIL ==========
         
         function initFunctionality() {
@@ -1597,6 +1714,9 @@
                 isMobileMenuOpen = true;
                 mobileMenuToggle.setAttribute('aria-expanded', 'true');
                 mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
+                
+                // Cerrar dropdown de usuario si está abierto
+                closeUserDropdown();
             }
             
             function closeMobileMenu() {
@@ -1688,26 +1808,21 @@
                 });
             }
             
-            // ========== SMOOTH SCROLL MEJORADO ==========
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    if (href === '#') return;
-                    
-                    const target = document.querySelector(href);
-                    if (target) {
-                        e.preventDefault();
-                        
-                        if (isMobileMenuOpen) {
-                            closeMobileMenu();
+            // ========== HEADER SCROLL EFFECT ==========
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        const header = document.querySelector('header');
+                        if (window.scrollY > 50) {
+                            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        } else {
+                            header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
                         }
-                        
-                        window.scrollTo({
-                            top: target.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
             });
             
             // ========== MEJORAS PARA MÓVIL ==========
@@ -1754,34 +1869,6 @@
                     }
                 }, { passive: false });
             }
-            
-            // ========== HEADER SCROLL EFFECT ==========
-            let ticking = false;
-            window.addEventListener('scroll', function() {
-                if (!ticking) {
-                    window.requestAnimationFrame(function() {
-                        const header = document.querySelector('header');
-                        if (window.scrollY > 50) {
-                            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
-                        } else {
-                            header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-                        }
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            });
-            
-            // ========== ORIENTATION CHANGE ==========
-            window.addEventListener('orientationchange', function() {
-                if (isMobileMenuOpen) {
-                    closeMobileMenu();
-                }
-                
-                setTimeout(function() {
-                    document.body.style.height = window.innerHeight + 'px';
-                }, 300);
-            });
         }
         
         function loadHeroImage() {
@@ -1821,9 +1908,7 @@
             button.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Enviando...';
             button.disabled = true;
             
-            // Aquí puedes agregar el código para enviar la reserva a tu API
-            // Por ahora solo se guarda en localStorage
-            
+            // Crear objeto de reserva
             const booking = {
                 id: Date.now(),
                 codigo: 'RES-' + Date.now().toString().slice(-6),
@@ -1835,12 +1920,14 @@
                 fecha: new Date().toISOString().split('T')[0],
                 estado: 'pending',
                 source: 'website',
-                created_at: new Date().toISOString()
+                created_at: new Date().toISOString(),
+                usuario_id: currentUser ? currentUser.id : null
             };
             
-            const bookingsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || '[]');
+            // Guardar en localStorage
+            const bookingsData = JSON.parse(localStorage.getItem('cano_salao_bookings') || '[]');
             bookingsData.push(booking);
-            localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookingsData));
+            localStorage.setItem('cano_salao_bookings', JSON.stringify(bookingsData));
             
             setTimeout(() => {
                 showAlert(`¡Gracias ${name}! Tu reserva ha sido enviada. Código: ${booking.codigo}`, 'success');
@@ -1862,7 +1949,7 @@
             }, 1500);
         }
         
-        // Añadir estilo para spinner
+        // ========== ESTILOS ADICIONALES ==========
         const style = document.createElement('style');
         style.textContent = `
             .spin {
@@ -1872,38 +1959,6 @@
             @keyframes spin {
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
-            }
-            
-            .user-dropdown-menu {
-                position: absolute;
-                top: 100%;
-                right: 0;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                min-width: 180px;
-                z-index: 1001;
-                overflow: hidden;
-                margin-top: 5px;
-            }
-            
-            .user-dropdown-menu a {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 12px 15px;
-                color: #333;
-                text-decoration: none;
-                border-bottom: 1px solid #eee;
-                transition: background 0.2s;
-            }
-            
-            .user-dropdown-menu a:hover {
-                background: #f5f5f5;
-            }
-            
-            .user-dropdown-menu a:last-child {
-                border-bottom: none;
             }
             
             @media (hover: none) and (pointer: coarse) {
@@ -1920,26 +1975,48 @@
                 .mobile-menu-nav a:active {
                     background: rgba(255,255,255,0.2) !important;
                 }
+                
+                .user-avatar:active {
+                    transform: scale(0.95) !important;
+                }
+            }
+            
+            .user-dropdown-menu {
+                animation: fadeInDown 0.2s ease;
+            }
+            
+            .user-dropdown-menu a {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
             }
         `;
         document.head.appendChild(style);
         
         // ========== FUNCIONES PARA DEBUG ==========
         
-        function debugAdminSystem() {
+        window.debugAdminSystem = function() {
             console.log('=== DEBUG ADMIN SYSTEM ===');
             console.log('API Base URL:', API_BASE_URL);
             console.log('Current User:', currentUser);
+            console.log('Token:', localStorage.getItem(STORAGE_KEYS.TOKEN));
+            console.log('User Data:', localStorage.getItem(STORAGE_KEYS.USER));
             console.log('Tours Data:', toursData.length);
-            console.log('Website Content:', websiteContent);
-            console.log('Blog Posts:', JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]').length);
-            console.log('Bookings:', JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || '[]').length);
             console.log('=======================');
-        }
+        };
         
-        // Exponer funciones para debugging
-        window.debugAdminSystem = debugAdminSystem;
+        window.clearAllData = function() {
+            if (confirm('¿Borrar TODOS los datos locales?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                alert('Datos borrados. Recarga la página.');
+                location.reload();
+            }
+        };
+        
+        // Exponer funciones globales
         window.API_BASE_URL = API_BASE_URL;
+        window.currentUser = currentUser;
         
         console.log('✅ index.html: Script cargado correctamente');
         
