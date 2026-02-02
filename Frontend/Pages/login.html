@@ -28,6 +28,7 @@
             opacity: 0;
             animation: fadeIn 0.3s ease-out forwards;
             background: #fff;
+            position: relative;
         }
         
         @keyframes fadeIn {
@@ -102,6 +103,64 @@
         /* Prevenir scroll durante carga */
         body.loading {
             overflow: hidden;
+        }
+        
+        /* Estilos para el sistema de mensajes */
+        .notification-system {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+        }
+        
+        .notification {
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease;
+            transform-origin: top right;
+        }
+        
+        .notification.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .notification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .notification.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .notification.warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     </style>
     
@@ -355,6 +414,12 @@
             border: 1px solid #f5c6cb;
         }
         
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -373,6 +438,113 @@
         
         .terms-link:hover {
             text-decoration: underline;
+        }
+        
+        /* Panel de información de sesión */
+        .session-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+            font-size: 0.9rem;
+        }
+        
+        .session-info h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+        
+        .session-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .session-info td {
+            padding: 5px 0;
+            vertical-align: top;
+        }
+        
+        .session-info .label {
+            font-weight: 600;
+            color: #555;
+            width: 120px;
+        }
+        
+        .session-info .value {
+            color: #2c3e50;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        
+        .session-info .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .session-info .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .session-info .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Botones de debug */
+        .debug-actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .debug-btn {
+            padding: 8px 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .debug-btn:hover {
+            background: #5a6268;
+        }
+        
+        .debug-btn.test {
+            background: #17a2b8;
+        }
+        
+        .debug-btn.test:hover {
+            background: #138496;
+        }
+        
+        .debug-btn.clear {
+            background: #dc3545;
+        }
+        
+        .debug-btn.clear:hover {
+            background: #c82333;
+        }
+        
+        .debug-btn.demo {
+            background: #28a745;
+        }
+        
+        .debug-btn.demo:hover {
+            background: #218838;
         }
         
         /* Responsive para login */
@@ -402,6 +574,10 @@
                 padding: 1rem;
                 font-size: 1rem;
             }
+            
+            .debug-actions {
+                flex-direction: column;
+            }
         }
         
         @media (max-width: 576px) {
@@ -424,6 +600,9 @@
     </style>
 </head>
 <body class="loading">
+    <!-- Sistema de notificaciones -->
+    <div class="notification-system" id="notification-system"></div>
+    
     <!-- Loader para experiencia inicial -->
     <div id="page-loader">
         <div class="loader-spinner"></div>
@@ -570,6 +749,48 @@
                             <a href="#" id="show-login">Inicia sesión aquí</a>
                         </div>
                     </form>
+                    
+                    <!-- Panel de información de sesión (visible solo cuando hay sesión) -->
+                    <div class="session-info" id="session-info" style="display: none;">
+                        <h4><i class="bi bi-info-circle"></i> Información de Sesión</h4>
+                        <table id="session-details">
+                            <tr>
+                                <td class="label">Estado:</td>
+                                <td class="value"><span class="status-badge status-active" id="session-status">Activa</span></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Usuario:</td>
+                                <td class="value" id="session-user">Cargando...</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Email:</td>
+                                <td class="value" id="session-email">Cargando...</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Token:</td>
+                                <td class="value" id="session-token">Cargando...</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <!-- Acciones de debug -->
+                    <div class="debug-actions" id="debug-actions">
+                        <button class="debug-btn test" onclick="testAPIConnection()">
+                            <i class="bi bi-wifi"></i> Test API
+                        </button>
+                        <button class="debug-btn demo" onclick="loadDemoCredentials()">
+                            <i class="bi bi-person-check"></i> Cargar Demo
+                        </button>
+                        <button class="debug-btn clear" onclick="clearSession()">
+                            <i class="bi bi-trash"></i> Limpiar Sesión
+                        </button>
+                        <button class="debug-btn" onclick="showSessionInfo()">
+                            <i class="bi bi-eye"></i> Ver Sesión
+                        </button>
+                        <button class="debug-btn" onclick="redirectToIndex()">
+                            <i class="bi bi-house"></i> Ir al Inicio
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -619,70 +840,174 @@
     <!-- Scripts optimizados -->
     <script>
         (function() {
-            // ========== CONFIGURACIÓN API ==========
+            // ========== CONFIGURACIÓN ==========
             const API_BASE_URL = 'https://cano-salao.onrender.com/api';
             const STORAGE_KEYS = {
                 TOKEN: 'cano_salao_token',
-                USER: 'cano_salao_user'
+                USER: 'cano_salao_user',
+                SESSION_CHECK: 'cano_last_session_check'
             };
             
-            // Variables globales
+            // Estado global
             let currentUser = null;
+            let isAuthenticated = false;
             
-            // Remover loader cuando el DOM esté listo
-            function hideLoader() {
-                const loader = document.getElementById('page-loader');
-                if (loader) {
-                    loader.style.opacity = '0';
+            // ========== SISTEMA DE NOTIFICACIONES ==========
+            class NotificationSystem {
+                constructor() {
+                    this.container = document.getElementById('notification-system');
+                    if (!this.container) {
+                        this.container = document.createElement('div');
+                        this.container.className = 'notification-system';
+                        document.body.appendChild(this.container);
+                    }
+                }
+                
+                show(message, type = 'info', duration = 5000) {
+                    const notification = document.createElement('div');
+                    notification.className = `notification ${type}`;
+                    
+                    // Icono según tipo
+                    let icon = 'bi-info-circle';
+                    if (type === 'success') icon = 'bi-check-circle';
+                    if (type === 'error') icon = 'bi-exclamation-triangle';
+                    if (type === 'warning') icon = 'bi-exclamation-circle';
+                    
+                    notification.innerHTML = `
+                        <i class="bi ${icon}" style="font-size: 1.2rem;"></i>
+                        <div style="flex: 1;">${message}</div>
+                        <button class="close-btn" style="background: none; border: none; color: inherit; cursor: pointer;">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    `;
+                    
+                    this.container.appendChild(notification);
+                    
+                    // Configurar botón de cerrar
+                    const closeBtn = notification.querySelector('.close-btn');
+                    closeBtn.addEventListener('click', () => {
+                        this.remove(notification);
+                    });
+                    
+                    // Auto-remover después de duración
+                    if (duration > 0) {
+                        setTimeout(() => {
+                            this.remove(notification);
+                        }, duration);
+                    }
+                    
+                    return notification;
+                }
+                
+                remove(notification) {
+                    notification.style.animation = 'slideInRight 0.3s ease reverse';
                     setTimeout(() => {
-                        loader.style.display = 'none';
-                        document.body.classList.remove('loading');
-                        document.body.style.overflow = 'visible';
-                        initContent();
+                        if (notification.parentNode === this.container) {
+                            this.container.removeChild(notification);
+                        }
                     }, 300);
                 }
-            }
-            
-            // Inicializar contenido
-            function initContent() {
-                initBasicFunctionality();
-                initAuthForms();
                 
-                // Verificar si ya está autenticado
-                checkAuthentication();
-            }
-            
-            // Funcionalidad básica inmediata
-            function initBasicFunctionality() {
-                // Menú móvil
-                const menuToggle = document.querySelector('.menu-toggle');
-                const mainNav = document.querySelector('#main-navigation');
-                
-                if (menuToggle && mainNav) {
-                    menuToggle.addEventListener('click', function() {
-                        mainNav.classList.toggle('show');
-                        const icon = this.querySelector('i');
-                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
-                        
-                        // Actualizar atributo ARIA
-                        const isExpanded = mainNav.classList.contains('show');
-                        this.setAttribute('aria-expanded', isExpanded);
-                    });
+                clear() {
+                    this.container.innerHTML = '';
                 }
             }
             
-            // ========== VERIFICAR AUTENTICACIÓN ==========
+            const notifications = new NotificationSystem();
             
-            async function checkAuthentication() {
+            // ========== FUNCIONES DE UTILIDAD ==========
+            function showAlert(alertDiv, message, type) {
+                alertDiv.textContent = message;
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.style.display = 'block';
+                
+                // También mostrar notificación
+                notifications.show(message, type);
+                
+                // Auto-ocultar después de 5 segundos
+                if (type !== 'success') {
+                    setTimeout(() => {
+                        alertDiv.style.display = 'none';
+                    }, 5000);
+                }
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            // ========== MANEJO DE SESIÓN ==========
+            function saveSession(token, userData) {
+                try {
+                    localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
+                    localStorage.setItem(STORAGE_KEYS.SESSION_CHECK, Date.now().toString());
+                    
+                    currentUser = userData;
+                    isAuthenticated = true;
+                    
+                    console.log('✅ Sesión guardada:', userData.nombre);
+                    notifications.show(`Sesión guardada para ${userData.nombre}`, 'success');
+                    
+                    // Actualizar UI
+                    updateSessionUI();
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error guardando sesión:', error);
+                    notifications.show('Error guardando sesión', 'error');
+                    return false;
+                }
+            }
+            
+            function clearSession() {
+                localStorage.removeItem(STORAGE_KEYS.TOKEN);
+                localStorage.removeItem(STORAGE_KEYS.USER);
+                localStorage.removeItem(STORAGE_KEYS.SESSION_CHECK);
+                
+                currentUser = null;
+                isAuthenticated = false;
+                
+                console.log('✅ Sesión limpiada');
+                notifications.show('Sesión limpiada correctamente', 'info');
+                
+                // Actualizar UI
+                updateSessionUI();
+                
+                // Recargar para actualizar estado
+                setTimeout(() => location.reload(), 1000);
+            }
+            
+            function loadSession() {
+                const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                const userData = localStorage.getItem(STORAGE_KEYS.USER);
+                
+                if (token && userData) {
+                    try {
+                        currentUser = JSON.parse(userData);
+                        isAuthenticated = true;
+                        
+                        console.log('✅ Sesión cargada:', currentUser.nombre);
+                        return { success: true, user: currentUser };
+                    } catch (error) {
+                        console.error('Error parseando datos de usuario:', error);
+                        clearSession();
+                        return { success: false, error: 'Datos corruptos' };
+                    }
+                }
+                
+                return { success: false, error: 'No hay sesión' };
+            }
+            
+            async function validateSession() {
                 const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
                 
                 if (!token) {
-                    console.log('No hay token, usuario no autenticado');
-                    return;
+                    return { valid: false, reason: 'No hay token' };
                 }
                 
                 try {
-                    // Verificar token con API
                     const response = await fetch(`${API_BASE_URL}/user/profile`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -691,119 +1016,168 @@
                     
                     if (response.ok) {
                         const userData = await response.json();
+                        // Actualizar datos de usuario
+                        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
                         currentUser = userData;
-                        console.log('Usuario ya autenticado:', currentUser.nombre);
-                        
-                        // Si ya está autenticado, redirigir a index
-                        setTimeout(() => {
-                            window.location.href = '../index.html';
-                        }, 500);
+                        return { valid: true, user: userData };
                     } else {
-                        // Token inválido, limpiar
-                        localStorage.removeItem(STORAGE_KEYS.TOKEN);
-                        localStorage.removeItem(STORAGE_KEYS.USER);
+                        // Token inválido
+                        clearSession();
+                        return { valid: false, reason: 'Token inválido' };
                     }
                 } catch (error) {
-                    console.error('Error verificando autenticación:', error);
+                    console.error('Error validando sesión:', error);
+                    // Si hay error de red pero hay datos locales, usarlos
+                    const localData = loadSession();
+                    if (localData.success) {
+                        return { valid: true, user: localData.user, cached: true };
+                    }
+                    return { valid: false, reason: 'Error de red' };
                 }
             }
             
-            // ========== FUNCIONES DE AUTENTICACIÓN CON API ==========
+            function updateSessionUI() {
+                const sessionInfo = document.getElementById('session-info');
+                const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                const userData = localStorage.getItem(STORAGE_KEYS.USER);
+                
+                if (token && userData) {
+                    // Mostrar información de sesión
+                    sessionInfo.style.display = 'block';
+                    
+                    try {
+                        const user = JSON.parse(userData);
+                        document.getElementById('session-user').textContent = user.nombre || 'N/A';
+                        document.getElementById('session-email').textContent = user.email || 'N/A';
+                        document.getElementById('session-token').textContent = 
+                            token.substring(0, 20) + '...' + token.substring(token.length - 10);
+                        
+                        // Actualizar formularios
+                        document.getElementById('login-email').value = user.email || '';
+                    } catch (error) {
+                        console.error('Error mostrando información de sesión:', error);
+                    }
+                } else {
+                    // Ocultar información de sesión
+                    sessionInfo.style.display = 'none';
+                }
+            }
             
-            // Función para login con API
+            function showSessionInfo() {
+                const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                const userData = localStorage.getItem(STORAGE_KEYS.USER);
+                
+                let info = '=== INFORMACIÓN DE SESIÓN ===\n\n';
+                info += `Token: ${token ? 'PRESENTE' : 'AUSENTE'}\n`;
+                
+                if (token) {
+                    info += `Token (inicio): ${token.substring(0, 30)}...\n`;
+                    info += `Token (longitud): ${token.length} caracteres\n`;
+                }
+                
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        info += `\nUsuario:\n`;
+                        info += `  Nombre: ${user.nombre || 'N/A'}\n`;
+                        info += `  Email: ${user.email || 'N/A'}\n`;
+                        info += `  Rol: ${user.rol || 'user'}\n`;
+                        info += `  ID: ${user.id || 'N/A'}\n`;
+                    } catch (e) {
+                        info += `\nError parseando datos de usuario\n`;
+                    }
+                }
+                
+                console.log(info);
+                notifications.show('Información de sesión mostrada en consola', 'info');
+            }
+            
+            // ========== FUNCIONES DE API ==========
             async function loginWithAPI(email, password) {
                 try {
-                    console.log('Iniciando login con:', email);
+                    notifications.show('Conectando con el servidor...', 'info');
+                    
                     const response = await fetch(`${API_BASE_URL}/auth/login`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify({ email, password })
                     });
                     
                     const data = await response.json();
+                    console.log('Respuesta del servidor:', data);
                     
                     if (!response.ok) {
-                        throw new Error(data.error || 'Credenciales incorrectas');
+                        throw new Error(data.error || data.message || 'Credenciales incorrectas');
                     }
                     
-                    console.log('Login exitoso:', data);
+                    if (!data.token || !data.user) {
+                        throw new Error('Respuesta del servidor incompleta');
+                    }
+                    
                     return data;
                     
                 } catch (error) {
-                    console.error('Error en login:', error);
+                    console.error('Error en loginWithAPI:', error);
                     throw error;
                 }
             }
             
-            // Función para registro con API
             async function registerWithAPI(name, email, password) {
                 try {
-                    console.log('Registrando usuario:', email);
+                    notifications.show('Registrando usuario...', 'info');
+                    
                     const response = await fetch(`${API_BASE_URL}/auth/register`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify({ 
                             nombre: name,
                             email: email,
-                            password: password,
-                            telefono: '',
-                            rol: 'user'  // Asegurar que se registre como user
+                            password: password
                         })
                     });
                     
                     const data = await response.json();
+                    console.log('Respuesta del registro:', data);
                     
                     if (!response.ok) {
-                        throw new Error(data.error || 'Error en el registro');
+                        throw new Error(data.error || data.message || 'Error en el registro');
                     }
                     
-                    console.log('Registro exitoso:', data);
                     return data;
                     
                 } catch (error) {
-                    console.error('Error en registro:', error);
+                    console.error('Error en registerWithAPI:', error);
                     throw error;
                 }
             }
             
-            // Función para guardar sesión de usuario
-            function saveUserSession(token, userData, rememberMe = false) {
-                // Guardar token y datos de usuario
-                localStorage.setItem(STORAGE_KEYS.TOKEN, token);
-                localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
-                
-                // Si se marcó "Recordar sesión", guardar también en localStorage extendido
-                if (rememberMe) {
-                    localStorage.setItem('user_session', JSON.stringify({
-                        email: userData.email,
-                        nombre: userData.nombre,
-                        timestamp: new Date().getTime()
-                    }));
-                } else {
-                    sessionStorage.setItem('user_session', JSON.stringify({
-                        email: userData.email,
-                        nombre: userData.nombre,
-                        timestamp: new Date().getTime()
-                    }));
+            async function testAPIConnection() {
+                try {
+                    notifications.show('Probando conexión con API...', 'info');
+                    
+                    const response = await fetch(`${API_BASE_URL}/tours`);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        notifications.show(`✅ API conectada. ${data.length || 0} tours disponibles`, 'success');
+                        return true;
+                    } else {
+                        notifications.show(`❌ API error: ${response.status}`, 'error');
+                        return false;
+                    }
+                } catch (error) {
+                    notifications.show(`❌ Error de conexión: ${error.message}`, 'error');
+                    return false;
                 }
-                
-                console.log('Sesión guardada para:', userData.nombre);
             }
             
-            // Función para redirigir después de login/registro exitoso
-            function redirectAfterAuth() {
-                // Pequeña pausa para mostrar mensaje de éxito
-                setTimeout(() => {
-                    // Redirigir a la página principal
-                    window.location.href = '../index.html';
-                }, 1500);
-            }
-            
-            // Funcionalidad de formularios de autenticación
+            // ========== MANEJO DE FORMULARIOS ==========
             function initAuthForms() {
                 // Cambiar entre pestañas de login/registro
                 document.querySelectorAll('.auth-tab').forEach(tab => {
@@ -835,7 +1209,7 @@
                     document.querySelector('[data-tab="login"]').click();
                 });
                 
-                // ========== MANEJO DE LOGIN CON API ==========
+                // ========== FORMULARIO DE LOGIN ==========
                 document.getElementById('login-form').addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
@@ -866,13 +1240,16 @@
                         const loginData = await loginWithAPI(email, password);
                         
                         // Guardar sesión
-                        saveUserSession(loginData.token, loginData.user, rememberMe);
+                        const saved = saveSession(loginData.token, loginData.user);
                         
-                        // Mostrar mensaje de éxito
-                        showAlert(alertDiv, `¡Inicio de sesión exitoso! Bienvenido/a, ${loginData.user.nombre}`, 'success');
-                        
-                        // Redirigir
-                        redirectAfterAuth();
+                        if (saved) {
+                            showAlert(alertDiv, `¡Inicio de sesión exitoso! Bienvenido/a, ${loginData.user.nombre}`, 'success');
+                            
+                            // Esperar 2 segundos antes de redirigir para que el usuario vea el mensaje
+                            setTimeout(() => {
+                                redirectToIndex();
+                            }, 2000);
+                        }
                         
                     } catch (error) {
                         console.error('Error completo en login:', error);
@@ -882,9 +1259,7 @@
                         
                         // Si es error de red, sugerir usar credenciales demo
                         if (error.message.includes('Network') || error.message.includes('Failed to fetch')) {
-                            errorMessage = 'No se puede conectar al servidor. Usa credenciales demo: admin@canosalao.com / admin123';
-                            document.getElementById('login-email').value = 'admin@canosalao.com';
-                            document.getElementById('login-password').value = 'admin123';
+                            errorMessage = 'No se puede conectar al servidor. Usa credenciales demo o intenta más tarde.';
                         }
                         
                         showAlert(alertDiv, `Error: ${errorMessage}`, 'error');
@@ -895,7 +1270,7 @@
                     }
                 });
                 
-                // ========== MANEJO DE REGISTRO CON API ==========
+                // ========== FORMULARIO DE REGISTRO ==========
                 document.getElementById('register-form').addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
@@ -942,14 +1317,17 @@
                         // Intentar registro con API
                         const registerData = await registerWithAPI(name, email, password);
                         
-                        // IMPORTANTE: Guardar sesión inmediatamente después del registro
-                        saveUserSession(registerData.token, registerData.user, true);
+                        // Guardar sesión automáticamente después del registro
+                        const saved = saveSession(registerData.token, registerData.user);
                         
-                        // Mostrar mensaje de éxito
-                        showAlert(alertDiv, `¡Cuenta creada exitosamente! Bienvenido/a, ${name}. Te hemos logeado automáticamente.`, 'success');
-                        
-                        // Redirigir
-                        redirectAfterAuth();
+                        if (saved) {
+                            showAlert(alertDiv, `¡Cuenta creada exitosamente! Bienvenido/a, ${name}. Te hemos logeado automáticamente.`, 'success');
+                            
+                            // Esperar 2 segundos antes de redirigir
+                            setTimeout(() => {
+                                redirectToIndex();
+                            }, 2000);
+                        }
                         
                     } catch (error) {
                         console.error('Error completo en registro:', error);
@@ -959,10 +1337,7 @@
                         
                         // Si es error de red, sugerir usar login con demo
                         if (error.message.includes('Network') || error.message.includes('Failed to fetch')) {
-                            errorMessage = 'No se puede conectar al servidor. Usa el login con credenciales demo.';
-                            document.querySelector('[data-tab="login"]').click();
-                            document.getElementById('login-email').value = 'admin@canosalao.com';
-                            document.getElementById('login-password').value = 'admin123';
+                            errorMessage = 'No se puede conectar al servidor. Intenta más tarde o usa credenciales demo.';
                         }
                         
                         showAlert(alertDiv, `Error en el registro: ${errorMessage}`, 'error');
@@ -981,57 +1356,95 @@
                     confirmInput.addEventListener('input', function() {
                         if (passwordInput.value !== confirmInput.value && confirmInput.value.length > 0) {
                             confirmInput.style.borderColor = 'var(--color-accent)';
+                            confirmInput.style.boxShadow = '0 0 0 3px rgba(230, 43, 126, 0.1)';
                         } else {
                             confirmInput.style.borderColor = '';
+                            confirmInput.style.boxShadow = '';
                         }
                     });
                 }
+            }
+            
+            // ========== FUNCIONES DE DEBUG/HELPERS ==========
+            function loadDemoCredentials() {
+                document.getElementById('login-email').value = 'admin@canosalao.com';
+                document.getElementById('login-password').value = 'admin123';
+                document.getElementById('register-email').value = 'demo@canosalao.com';
+                document.getElementById('register-name').value = 'Usuario Demo';
+                document.getElementById('register-password').value = 'demodemo';
+                document.getElementById('register-confirm').value = 'demodemo';
+                document.getElementById('accept-terms').checked = true;
                 
-                // Prellenar con credenciales de demo para facilitar pruebas
-                const loginEmailField = document.getElementById('login-email');
-                if (loginEmailField) {
-                    loginEmailField.addEventListener('focus', function() {
-                        if (!this.value && localStorage.getItem(STORAGE_KEYS.TOKEN) === null) {
-                            this.value = 'admin@canosalao.com';
-                            document.getElementById('login-password').value = 'admin123';
-                            showAlert(document.getElementById('login-alert'), 'Credenciales de prueba cargadas. ¡Puedes probar el login!', 'success');
-                        }
-                    });
-                }
-                
-                // También prellenar en carga si no hay sesión
-                if (localStorage.getItem(STORAGE_KEYS.TOKEN) === null) {
+                notifications.show('Credenciales demo cargadas en ambos formularios', 'info');
+            }
+            
+            function redirectToIndex() {
+                notifications.show('Redirigiendo al inicio...', 'info');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1000);
+            }
+            
+            // ========== INICIALIZACIÓN ==========
+            function hideLoader() {
+                const loader = document.getElementById('page-loader');
+                if (loader) {
+                    loader.style.opacity = '0';
                     setTimeout(() => {
-                        const emailField = document.getElementById('login-email');
-                        if (emailField && !emailField.value) {
-                            emailField.value = 'admin@canosalao.com';
-                            document.getElementById('login-password').value = 'admin123';
-                            showAlert(document.getElementById('login-alert'), 'Credenciales de prueba precargadas. Usa: admin@canosalao.com / admin123', 'success');
-                        }
-                    }, 1000);
+                        loader.style.display = 'none';
+                        document.body.classList.remove('loading');
+                        document.body.style.overflow = 'visible';
+                        initContent();
+                    }, 300);
                 }
             }
             
-            // ========== FUNCIONES DE UTILIDAD ==========
-            function validateEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            }
-            
-            function showAlert(alertDiv, message, type) {
-                alertDiv.textContent = message;
-                alertDiv.className = `alert alert-${type}`;
-                alertDiv.style.display = 'block';
+            async function initContent() {
+                // Cargar sesión existente
+                const session = loadSession();
                 
-                // Auto-ocultar después de 5 segundos (excepto mensajes de éxito)
-                if (type !== 'success') {
-                    setTimeout(() => {
-                        alertDiv.style.display = 'none';
-                    }, 5000);
+                if (session.success) {
+                    console.log('✅ Sesión existente cargada:', currentUser.nombre);
+                    
+                    // Validar sesión con el servidor
+                    const validation = await validateSession();
+                    
+                    if (validation.valid) {
+                        notifications.show(`Bienvenido de nuevo, ${currentUser.nombre}`, 'success');
+                        
+                        // Si la sesión es válida, sugerir ir al inicio
+                        setTimeout(() => {
+                            if (confirm(`Ya tienes una sesión activa como ${currentUser.nombre}. ¿Quieres ir al inicio?`)) {
+                                redirectToIndex();
+                            }
+                        }, 1000);
+                    } else {
+                        notifications.show('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
+                    }
+                } else {
+                    console.log('ℹ️ No hay sesión activa');
                 }
+                
+                // Inicializar formularios
+                initAuthForms();
+                
+                // Actualizar UI de sesión
+                updateSessionUI();
+                
+                // Cargar credenciales demo si no hay sesión
+                if (!session.success) {
+                    setTimeout(() => {
+                        loadDemoCredentials();
+                    }, 500);
+                }
+                
+                // Testear conexión con API
+                setTimeout(() => {
+                    testAPIConnection();
+                }, 1000);
             }
             
-            // Cargar estilo para spinner y mejoras
+            // ========== ESTILOS ADICIONALES ==========
             const style = document.createElement('style');
             style.textContent = `
                 .spin {
@@ -1043,71 +1456,56 @@
                     100% { transform: rotate(360deg); }
                 }
                 
-                /* Estilos para mejorar la experiencia móvil */
+                /* Mejoras para móviles */
                 @media (max-width: 768px) {
-                    .auth-container {
-                        margin: 0 10px;
+                    .notification-system {
+                        top: 60px;
+                        right: 10px;
+                        left: 10px;
+                        max-width: none;
                     }
                     
-                    .auth-form-container {
-                        padding: 1rem;
-                    }
-                    
-                    .form-control {
-                        font-size: 16px; /* Evita zoom en iOS */
+                    .notification {
+                        padding: 12px 15px;
                     }
                 }
                 
-                /* Estilo para enlaces activos */
-                .auth-tabs {
-                    position: relative;
+                /* Mejoras para formularios */
+                .form-control:invalid {
+                    border-color: #dc3545;
                 }
                 
-                .auth-tab.active {
-                    position: relative;
-                }
-                
-                .auth-tab.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -1px;
-                    left: 0;
-                    width: 100%;
-                    height: 3px;
-                    background: var(--color-accent);
-                    border-radius: 3px 3px 0 0;
+                .form-control:valid {
+                    border-color: #28a745;
                 }
             `;
             document.head.appendChild(style);
             
-            // ========== INICIALIZAR ==========
+            // ========== EXPORTAR FUNCIONES PARA DEBUG ==========
+            window.CanoSalaoAuth = {
+                loginWithAPI,
+                registerWithAPI,
+                saveSession,
+                clearSession,
+                loadSession,
+                validateSession,
+                testAPIConnection,
+                showSessionInfo,
+                loadDemoCredentials,
+                getCurrentUser: () => currentUser,
+                isAuthenticated: () => isAuthenticated
+            };
+            
+            // ========== INICIAR APLICACIÓN ==========
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', function() {
-                    console.log('DOM cargado, iniciando login...');
+                    console.log('🚀 Iniciando sistema de autenticación Caño Salao');
                     hideLoader();
                 });
             } else {
-                console.log('DOM ya listo, iniciando login...');
+                console.log('🚀 Iniciando sistema de autenticación Caño Salao (DOM ya listo)');
                 hideLoader();
             }
-            
-            // Exponer funciones para debug
-            window.debugLogin = function() {
-                console.log('=== DEBUG LOGIN ===');
-                console.log('API Base URL:', API_BASE_URL);
-                console.log('Token en localStorage:', localStorage.getItem(STORAGE_KEYS.TOKEN));
-                console.log('User en localStorage:', localStorage.getItem(STORAGE_KEYS.USER));
-                console.log('User en sessionStorage:', sessionStorage.getItem('user_session'));
-                console.log('===================');
-            };
-            
-            // Función para limpiar sesión (útil para pruebas)
-            window.clearSession = function() {
-                localStorage.removeItem(STORAGE_KEYS.TOKEN);
-                localStorage.removeItem(STORAGE_KEYS.USER);
-                sessionStorage.removeItem('user_session');
-                alert('Sesión limpiada. Recarga la página.');
-            };
             
         })();
     </script>
