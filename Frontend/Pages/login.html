@@ -619,12 +619,11 @@
     <!-- Scripts optimizados -->
     <script>
         (function() {
-            // ========== CONFIGURACIÓN API ==========
+            // ========== CONFIGURACIÓN API (COMO EN index.html) ==========
             const API_BASE_URL = 'https://cano-salao.onrender.com/api';
             const STORAGE_KEYS = {
                 TOKEN: 'cano_salao_token',
-                USER: 'cano_salao_user',
-                USERS: 'cano_salao_users'
+                USER: 'cano_salao_user'
             };
             
             // Remover loader cuando el DOM esté listo
@@ -643,25 +642,8 @@
             
             // Inicializar contenido
             function initContent() {
-                // Inicializar funcionalidades básicas
                 initBasicFunctionality();
                 initAuthForms();
-                
-                // Animaciones para elementos al hacer scroll
-                if ('IntersectionObserver' in window) {
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                entry.target.classList.add('animated');
-                            }
-                        });
-                    }, { threshold: 0.1 });
-                    
-                    // Observar todas las secciones
-                    document.querySelectorAll('section').forEach(section => {
-                        observer.observe(section);
-                    });
-                }
             }
             
             // Funcionalidad básica inmediata
@@ -722,6 +704,7 @@
                     return data;
                     
                 } catch (error) {
+                    console.error('Error en login:', error);
                     throw error;
                 }
             }
@@ -751,6 +734,7 @@
                     return data;
                     
                 } catch (error) {
+                    console.error('Error en registro:', error);
                     throw error;
                 }
             }
@@ -815,7 +799,9 @@
                     
                     try {
                         // Intentar login con API
+                        console.log('Intentando login con API:', email);
                         const loginData = await loginWithAPI(email, password);
+                        console.log('Login exitoso:', loginData);
                         
                         // Guardar token y datos de usuario
                         localStorage.setItem(STORAGE_KEYS.TOKEN, loginData.token);
@@ -845,6 +831,7 @@
                         }, 1500);
                         
                     } catch (error) {
+                        console.error('Error completo en login:', error);
                         // Mostrar error
                         showAlert(alertDiv, `Error: ${error.message}`, 'error');
                         
@@ -853,8 +840,11 @@
                         loginBtn.innerHTML = originalText;
                         
                         // Intentar con usuario demo si falla la API
-                        if (error.message.includes('Credenciales incorrectas')) {
-                            showAlert(alertDiv, '¿Quieres probar con usuario demo? admin@canosalao.com / admin123', 'error');
+                        if (error.message.includes('Credenciales incorrectas') || error.message.includes('Network Error')) {
+                            // Mostrar credenciales demo
+                            document.getElementById('login-email').value = 'admin@canosalao.com';
+                            document.getElementById('login-password').value = 'admin123';
+                            showAlert(alertDiv, 'API no disponible. Usa: admin@canosalao.com / admin123', 'error');
                         }
                     }
                 });
@@ -904,7 +894,9 @@
                     
                     try {
                         // Intentar registro con API
+                        console.log('Intentando registro con API:', email);
                         const registerData = await registerWithAPI(name, email, password);
+                        console.log('Registro exitoso:', registerData);
                         
                         // Guardar token y datos de usuario automáticamente
                         localStorage.setItem(STORAGE_KEYS.TOKEN, registerData.token);
@@ -919,6 +911,7 @@
                         }, 1500);
                         
                     } catch (error) {
+                        console.error('Error completo en registro:', error);
                         // Mostrar error
                         showAlert(alertDiv, `Error en el registro: ${error.message}`, 'error');
                         
@@ -944,12 +937,24 @@
                 
                 // Prellenar con credenciales de demo para facilitar pruebas
                 document.getElementById('login-email').addEventListener('focus', function() {
-                    if (!this.value) {
+                    if (!this.value && localStorage.getItem(STORAGE_KEYS.TOKEN) === null) {
                         this.value = 'admin@canosalao.com';
                         document.getElementById('login-password').value = 'admin123';
                         showAlert(document.getElementById('login-alert'), 'Credenciales de prueba cargadas. ¡Puedes probar el login!', 'success');
                     }
                 });
+                
+                // También prellenar en carga si no hay sesión
+                if (localStorage.getItem(STORAGE_KEYS.TOKEN) === null) {
+                    setTimeout(() => {
+                        const emailField = document.getElementById('login-email');
+                        if (emailField && !emailField.value) {
+                            emailField.value = 'admin@canosalao.com';
+                            document.getElementById('login-password').value = 'admin123';
+                            showAlert(document.getElementById('login-alert'), 'Credenciales de prueba precargadas', 'success');
+                        }
+                    }, 1000);
+                }
             }
             
             // ========== FUNCIONES DE UTILIDAD ==========
@@ -975,6 +980,7 @@
                 const user = localStorage.getItem(STORAGE_KEYS.USER);
                 
                 if (token && user) {
+                    console.log('Sesión existente encontrada, redirigiendo...');
                     // Si ya está autenticado, redirigir a la página principal
                     setTimeout(() => {
                         window.location.href = '../index.html';
@@ -993,19 +999,45 @@
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
                 }
+                
+                /* Estilos para mejorar la experiencia móvil */
+                @media (max-width: 768px) {
+                    .auth-container {
+                        margin: 0 10px;
+                    }
+                    
+                    .auth-form-container {
+                        padding: 1rem;
+                    }
+                    
+                    .form-control {
+                        font-size: 16px; /* Evita zoom en iOS */
+                    }
+                }
             `;
             document.head.appendChild(style);
             
             // ========== INICIALIZAR ==========
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', function() {
+                    console.log('DOM cargado, iniciando login...');
                     hideLoader();
                     checkExistingSession();
                 });
             } else {
+                console.log('DOM ya listo, iniciando login...');
                 hideLoader();
                 checkExistingSession();
             }
+            
+            // Exponer funciones para debug
+            window.debugLogin = function() {
+                console.log('=== DEBUG LOGIN ===');
+                console.log('API Base URL:', API_BASE_URL);
+                console.log('Token en localStorage:', localStorage.getItem(STORAGE_KEYS.TOKEN));
+                console.log('User en localStorage:', localStorage.getItem(STORAGE_KEYS.USER));
+                console.log('===================');
+            };
             
         })();
     </script>
