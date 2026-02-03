@@ -25,14 +25,9 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.5;
             overflow-x: hidden;
-            opacity: 0;
-            animation: fadeIn 0.3s ease-out forwards;
             background: #fff;
-            position: relative;
-        }
-        
-        @keyframes fadeIn {
-            to { opacity: 1; }
+            opacity: 1 !important; /* IMPORTANTE: Forzar visibilidad */
+            visibility: visible !important; /* IMPORTANTE: Asegurar que sea visible */
         }
         
         .container {
@@ -71,7 +66,7 @@
             color: #FF8C42;
         }
         
-        /* Loader minimalista */
+        /* Loader minimalista - MODIFICADO */
         #page-loader {
             position: fixed;
             top: 0;
@@ -83,7 +78,15 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
         
         .loader-spinner {
@@ -103,6 +106,14 @@
         /* Prevenir scroll durante carga */
         body.loading {
             overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* Mostrar contenido siempre - MODIFICADO */
+        body:not(.loading) {
+            opacity: 1 !important;
+            visibility: visible !important;
+            overflow: visible;
         }
         
         /* Estilos para el sistema de mensajes */
@@ -185,6 +196,7 @@
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+            opacity: 1 !important; /* Asegurar visibilidad */
         }
         
         .page-hero .container {
@@ -199,6 +211,7 @@
             margin-bottom: 1.5rem;
             color: white;
             animation: fadeInDown 0.8s ease-out;
+            opacity: 1 !important; /* Asegurar visibilidad */
         }
         
         .page-hero .hero-subtitle {
@@ -209,6 +222,7 @@
             animation: fadeInUp 0.8s ease-out 0.2s both;
             line-height: 1.5;
             font-weight: 400;
+            opacity: 1 !important; /* Asegurar visibilidad */
         }
         
         @keyframes fadeInDown {
@@ -238,6 +252,7 @@
             padding: 1rem 0;
             font-size: 0.9rem;
             border-bottom: 1px solid rgba(0,0,0,0.05);
+            opacity: 1 !important; /* Asegurar visibilidad */
         }
         
         .breadcrumb a {
@@ -260,6 +275,7 @@
             padding: 4rem 0;
             background: #f8f9fa;
             min-height: 60vh;
+            opacity: 1 !important; /* Asegurar visibilidad */
         }
         
         .auth-container {
@@ -599,12 +615,12 @@
         }
     </style>
 </head>
-<body class="loading">
+<body>
     <!-- Sistema de notificaciones -->
     <div class="notification-system" id="notification-system"></div>
     
     <!-- Loader para experiencia inicial -->
-    <div id="page-loader">
+    <div id="page-loader" class="hidden">
         <div class="loader-spinner"></div>
     </div>
 
@@ -1389,17 +1405,24 @@
             function hideLoader() {
                 const loader = document.getElementById('page-loader');
                 if (loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                        document.body.classList.remove('loading');
-                        document.body.style.overflow = 'visible';
-                        initContent();
-                    }, 300);
+                    // Remover la clase loading del body primero
+                    document.body.classList.remove('loading');
+                    
+                    // Ocultar el loader con transición
+                    loader.classList.add('hidden');
+                    
+                    // Asegurar que el contenido sea visible
+                    document.body.style.opacity = '1';
+                    document.body.style.visibility = 'visible';
+                    document.body.style.overflow = 'visible';
+                    
+                    console.log('✅ Loader ocultado, contenido visible');
                 }
             }
             
             async function initContent() {
+                console.log('🚀 Iniciando sistema de autenticación Caño Salao');
+                
                 // Cargar sesión existente
                 const session = loadSession();
                 
@@ -1442,6 +1465,9 @@
                 setTimeout(() => {
                     testAPIConnection();
                 }, 1000);
+                
+                // Ocultar loader después de que todo esté listo
+                setTimeout(hideLoader, 500);
             }
             
             // ========== ESTILOS ADICIONALES ==========
@@ -1478,6 +1504,12 @@
                 .form-control:valid {
                     border-color: #28a745;
                 }
+                
+                /* Asegurar visibilidad del contenido */
+                main, section, footer, header {
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                }
             `;
             document.head.appendChild(style);
             
@@ -1497,15 +1529,14 @@
             };
             
             // ========== INICIAR APLICACIÓN ==========
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    console.log('🚀 Iniciando sistema de autenticación Caño Salao');
-                    hideLoader();
-                });
-            } else {
-                console.log('🚀 Iniciando sistema de autenticación Caño Salao (DOM ya listo)');
-                hideLoader();
-            }
+            // Inicializar inmediatamente sin esperar DOMContentLoaded
+            console.log('📄 DOM cargado, iniciando aplicación...');
+            initContent();
+            
+            // También escuchar DOMContentLoaded por si acaso
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('✅ DOM completamente cargado');
+            });
             
         })();
     </script>
