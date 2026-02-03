@@ -21,9 +21,9 @@
     <!-- Preload del logo para mejor performance -->
     <link rel="preload" href="media/Logo_cano_60.png" as="image">
     
-    <!-- Estilos críticos inline -->
+    <!-- Estilos críticos inline - COMPLETOS Y CORREGIDOS -->
     <style>
-        /* SOLO ESTILOS CRÍTICOS PARA RENDER INICIAL */
+        /* ===== RESET Y ESTILOS CRÍTICOS ===== */
         * {
             margin: 0;
             padding: 0;
@@ -41,10 +41,11 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.5;
-            opacity: 1; /* IMPORTANTE: Siempre visible */
+            background: #fff;
+            opacity: 1 !important;
+            visibility: visible !important;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            position: relative;
         }
         
         .container {
@@ -54,7 +55,42 @@
             padding: 0 20px;
         }
         
-        /* Header mínimo para render inicial */
+        /* ===== LOADER ===== */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ===== HEADER ===== */
         header {
             background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
             color: white;
@@ -82,7 +118,6 @@
             z-index: 1002;
         }
         
-        /* Estilos críticos para el logo */
         .logo-img {
             width: 35px;
             height: 35px;
@@ -106,27 +141,7 @@
             color: #FF8C42;
         }
         
-        /* Menu toggle para móvil */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-            z-index: 1002;
-            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
-            touch-action: manipulation;
-            min-width: 44px;
-            min-height: 44px;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Navegación desktop */
+        /* ===== NAVEGACIÓN DESKTOP ===== */
         .nav-center {
             flex: 1;
             display: flex;
@@ -176,7 +191,26 @@
             background: rgba(255,255,255,0.15);
         }
         
-        /* MENÚ MÓVIL - ESTILOS CRÍTICOS */
+        /* ===== MENÚ MÓVIL ===== */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            z-index: 1002;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
+            touch-action: manipulation;
+            min-width: 44px;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .mobile-menu-overlay {
             display: none;
             position: fixed;
@@ -281,7 +315,7 @@
             background: rgba(255,255,255,0.1);
         }
         
-        /* User menu styles - MEJORADO */
+        /* ===== SISTEMA DE USUARIO ===== */
         .user-menu-container {
             position: relative;
             z-index: 1002;
@@ -355,7 +389,7 @@
             font-weight: bold;
         }
         
-        /* Dropdown menu styles - FIXED */
+        /* Dropdown menu styles */
         .user-dropdown-menu {
             position: absolute;
             top: 100%;
@@ -466,7 +500,7 @@
             background: rgba(255,255,255,0.25);
         }
         
-        /* Hero básico para render inicial */
+        /* ===== HERO SECTION ===== */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -476,7 +510,22 @@
             color: white;
             padding: 2rem 1rem;
             position: relative;
-            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%) !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            z-index: 1;
         }
         
         .hero .container {
@@ -484,57 +533,569 @@
             z-index: 2;
         }
         
-        /* Preload de imagen del hero */
-        .hero-preload {
-            position: absolute;
-            width: 0;
-            height: 0;
-            opacity: 0;
-            pointer-events: none;
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            animation: fadeInDown 0.8s ease-out;
         }
         
-        /* Esconder contenido no crítico inicialmente */
+        .hero-subtitle {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-accent, #FF8C42);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* ===== ESTILOS PARA SECCIONES ===== */
         .non-critical {
             opacity: 0;
             transition: opacity 0.5s ease;
         }
         
-        /* Loader minimalista - MEJORADO */
-        #page-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0d3b66;
+        }
+        
+        .section-title p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Historia y Empresa */
+        .history-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        
+        .history-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .history-image img {
             width: 100%;
-            height: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Factible Features */
+        .factible-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .factible-feature {
             background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .factible-feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .factible-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #1a7fb8, #0d3b66);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            margin: 0 auto 1.5rem;
         }
         
-        #page-loader.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+        .factible-icon i {
+            font-size: 2rem;
+            color: white;
         }
         
-        .loader-spinner {
+        .factible-feature h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #0d3b66;
+        }
+        
+        .factible-feature p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Atracciones Grid */
+        .attractions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .attraction-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .attraction-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .attraction-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .attraction-card:hover .attraction-img img {
+            transform: scale(1.1);
+        }
+        
+        .attraction-info {
+            padding: 1.5rem;
+        }
+        
+        .attraction-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #0d3b66;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .attraction-info p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        /* La Ruta */
+        .programas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .carta {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .carta:hover {
+            transform: translateY(-10px);
+        }
+        
+        .carta-header {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .carta-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .carta:hover .carta-header img {
+            transform: scale(1.1);
+        }
+        
+        .carta-content {
+            padding: 2rem;
+        }
+        
+        .carta-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #0d3b66;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .carta-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .carta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1a7fb8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: gap 0.3s ease;
+        }
+        
+        .carta-btn:hover {
+            gap: 1rem;
+        }
+        
+        /* Características */
+        .caracteristicas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .caracteristica-item {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .caracteristica-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .caracteristica-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1a7fb8, #0d3b66);
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+        }
+        
+        .caracteristica-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .caracteristica-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #0d3b66;
+        }
+        
+        .caracteristica-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Preguntas */
+        #preguntas {
+            text-align: center;
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        #preguntas h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0d3b66;
+        }
+        
+        #preguntas .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn {
+            background: #FF8C42;
+            color: white;
+        }
+        
+        .cta-btn.secondary {
+            background: transparent;
+            color: #0d3b66;
+            border: 2px solid #0d3b66;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Contacto */
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #0d3b66;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .contact-details {
+            margin-bottom: 2rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+        
+        .contact-icon {
             width: 40px;
             height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0d3b66;
+            background: linear-gradient(135deg, #1a7fb8, #0d3b66);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .contact-icon i {
+            color: white;
+            font-size: 1.2rem;
         }
         
-        /* Alert styles */
+        .contact-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #0d3b66;
+        }
+        
+        .contact-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #0d3b66;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #1a7fb8;
+            box-shadow: 0 0 0 3px rgba(26, 127, 184, 0.1);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0d3b66 0%, #1a5276 100%);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-column p {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+        
+        /* ===== ALERTAS ===== */
         .site-alert {
             position: fixed;
             top: 80px;
@@ -570,7 +1131,7 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* Responsive para móvil */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .menu-toggle {
                 display: flex !important;
@@ -596,12 +1157,24 @@
                 order: 3;
             }
             
-            .mobile-menu-container {
-                z-index: 1000;
+            .hero-title {
+                font-size: 2.5rem;
             }
             
-            .mobile-menu-overlay {
-                z-index: 999;
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .history-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-info {
+                display: none;
             }
             
             .user-dropdown-menu {
@@ -612,12 +1185,24 @@
                 min-width: auto;
             }
             
-            .user-info {
-                display: none;
+            .section-title h2 {
+                font-size: 2rem;
             }
             
-            .logged-user {
-                padding: 4px;
+            .attractions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .programas {
+                grid-template-columns: 1fr;
+            }
+            
+            .caracteristicas-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .factible-features {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -631,12 +1216,17 @@
                 font-size: 1.3rem;
             }
             
-            .logo {
-                gap: 0.5rem;
+            .hero-title {
+                font-size: 2rem;
             }
             
-            .header-content {
-                gap: 0.5rem;
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
             }
             
             .user-avatar {
@@ -646,50 +1236,10 @@
             }
         }
         
-        /* CORRECCIÓN ESPECÍFICA PARA ANDROID */
-        @media (hover: none) and (pointer: coarse) {
-            .menu-toggle,
-            .mobile-menu-close,
-            .mobile-menu-nav a,
-            .btn,
-            .login-btn {
-                min-height: 44px;
-            }
-            
-            .menu-toggle,
-            .mobile-menu-close {
-                min-width: 44px;
-            }
-            
-            .menu-toggle:active,
-            .mobile-menu-close:active {
-                background-color: rgba(255,255,255,0.2);
-                border-radius: 50%;
-            }
-            
-            .user-avatar:active {
-                transform: scale(0.95);
-            }
-        }
-        
-        /* Estilos para la sección de tours */
-        .tour-details {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .tour-details span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
+        /* ===== TOURS LOADING ===== */
         .tour-loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
             color: #666;
         }
         
@@ -703,44 +1253,33 @@
             margin: 0 auto 1rem;
         }
         
-        .api-status {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            z-index: 1000;
-            display: none; /* Ocultado por defecto */
+        .tour-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9rem;
         }
         
-        .api-status.connected {
-            background: rgba(46, 204, 113, 0.8);
-        }
-        
-        .api-status.disconnected {
-            background: rgba(231, 76, 60, 0.8);
+        .tour-details span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
     </style>
     
-    <!-- Cargar CSS principal de forma no bloqueante -->
+    <!-- Cargar CSS principal -->
     <link rel="stylesheet" href="index.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="index.css"></noscript>
     
-    <!-- Bootstrap Icons diferido -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
-    <!-- Alert para mensajes -->
+    <!-- Sistema de alertas -->
     <div id="site-alert" class="site-alert"></div>
     
-    <!-- Indicador de estado de API (opcional) -->
-    <div id="api-status" class="api-status">🔌 Conectando con API...</div>
-    
-    <!-- Loader para experiencia inicial -->
+    <!-- Loader -->
     <div id="page-loader" class="hidden">
         <div class="loader-spinner"></div>
     </div>
@@ -763,7 +1302,7 @@
                     <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
                 </div>
 
-                <!-- Navegación desktop (oculta en móvil) -->
+                <!-- Navegación desktop -->
                 <div class="nav-center">
                     <nav>
                         <ul id="main-navigation">
@@ -777,15 +1316,13 @@
                     </nav>
                 </div>
 
-                <!-- Menú de usuario/autenticación -->
+                <!-- Sistema de usuario -->
                 <div class="auth-section">
                     <div class="user-menu-container" id="user-menu-container">
-                        <!-- Estado No Autenticado -->
                         <a href="Pages/login.html" class="login-btn" id="login-btn">
                             <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
                         </a>
                         
-                        <!-- Estado Autenticado (manejado por JavaScript) -->
                         <div class="logged-user" id="logged-user" style="display: none;">
                             <div class="user-avatar" id="user-avatar" aria-label="Menú de usuario" role="button" tabindex="0" title="Menú de usuario">U</div>
                             <div class="user-info">
@@ -796,7 +1333,7 @@
                     </div>
                 </div>
 
-                <!-- Botón hamburguesa para móvil -->
+                <!-- Menú móvil -->
                 <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
                     <i class="bi bi-list"></i>
                 </button>
@@ -804,10 +1341,10 @@
         </div>
     </header>
 
-    <!-- Menú móvil overlay (fondo oscuro) -->
+    <!-- Menú móvil overlay -->
     <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
 
-    <!-- Menú móvil (se abre desde la derecha) -->
+    <!-- Menú móvil container -->
     <div class="mobile-menu-container" id="mobile-menu-container">
         <div class="mobile-menu-header">
             <div class="logo">
@@ -827,33 +1364,29 @@
                 <li><a href="Pages/Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
                 <li><a href="Pages/Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
                 <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
-                <!-- Enlace de usuario si está autenticado -->
                 <li id="mobile-user-menu" style="display: none;">
                     <a href="Pages/usuario.html"><i class="bi bi-person-circle"></i> Mi Cuenta</a>
-                </li>
-                <li id="mobile-login-menu" style="display: none;">
-                    <a href="Pages/login.html"><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</a>
                 </li>
             </ul>
         </nav>
     </div>
 
-    <!-- Hero Section CON CONTENIDO DINÁMICO -->
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-bg" id="heroBackground"></div>
         <div class="container">
-            <h2 class="times-font hero-title" id="hero-title">¡Descubre la Belleza Natural de <span class="text-orange">Caño</span> Salao!</h2>
-            <p class="times-font hero-subtitle" id="hero-subtitle">
+            <h2 class="times-font hero-title">¡Descubre la Belleza Natural de <span class="text-orange">Caño</span> Salao!</h2>
+            <p class="times-font hero-subtitle">
                 Embárcate en una aventura única por los manglares de Barcelona, Venezuela. 
                 <strong>Turismo comunitario</strong> que conecta naturaleza, historia y comunidad.
             </p>
-            <a href="Pages/contacto.html" class="btn" id="hero-cta">
+            <a href="Pages/contacto.html" class="btn">
                 <i class="bi bi-calendar-check"></i> ¡Reserva tu Tour Ahora!
             </a>
         </div>
     </section>
     
-    <!-- Empresa Factible CON CONTENIDO DINÁMICO -->
+    <!-- Empresa Factible -->
     <section id="empresa" class="non-critical">
         <div class="container">
             <div class="section-title">
@@ -936,7 +1469,6 @@
                 <p>Descubre las experiencias que tenemos preparadas para ti (Cargando desde la API...)</p>
             </div>
             <div class="attractions-grid" id="tours-api-container">
-                <!-- Los tours se cargarán aquí desde la API -->
                 <div class="tour-loading">
                     <div class="spinner"></div>
                     <p>Cargando tours disponibles...</p>
@@ -953,7 +1485,6 @@
                 <p>Mantente informado sobre nuestros tours y actividades</p>
             </div>
             <div class="attractions-grid" id="blog-posts-container">
-                <!-- Los artículos del blog se cargarán aquí dinámicamente -->
                 <div class="tour-loading">
                     <div class="spinner"></div>
                     <p>Cargando noticias del blog...</p>
@@ -962,7 +1493,7 @@
         </div>
     </section>
 
-    <!-- Atracciones CON CONTENIDO DINÁMICO -->
+    <!-- Atracciones -->
     <section id="atracciones" class="non-critical">
         <div class="container">
             <div class="section-title">
@@ -1007,7 +1538,7 @@
         </div>
     </section>
 
-    <!-- Sección La Ruta CON CONTENIDO DINÁMICO -->
+    <!-- Sección La Ruta -->
     <section id="la-ruta" class="non-critical">
         <div class="container">
             <h2 class="times-font"><i class="bi bi-map"></i> <span id="la-ruta-title">Descubre Nuestra Ruta</span></h2>
@@ -1062,7 +1593,7 @@
         </div>
     </section>
 
-    <!-- Sección Características CON CONTENIDO DINÁMICO -->
+    <!-- Sección Características -->
     <section id="caracteristicas" class="non-critical">
         <div class="container">
             <div class="section-title">
@@ -1114,7 +1645,7 @@
         </div>
     </section>
 
-    <!-- Contacto CON SISTEMA DE RESERVAS -->
+    <!-- Contacto -->
     <section id="contacto" class="non-critical">
         <div class="container">
             <div class="section-title">
@@ -1222,9 +1753,9 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- JavaScript COMPLETO Y CORREGIDO -->
     <script>
-        // ========== CONFIGURACIÓN API ==========
+        // ========== CONFIGURACIÓN ==========
         const API_BASE_URL = 'https://cano-salao.onrender.com/api';
         const STORAGE_KEYS = {
             TOKEN: 'cano_salao_token',
@@ -1233,100 +1764,71 @@
         
         // Variables globales
         let currentUser = null;
-        let isMobileMenuOpen = false;
-        let toursData = [];
+        let userDropdown = null;
         let userDropdownOpen = false;
+        let isMobileMenuOpen = false;
         
         // ========== INICIALIZACIÓN ==========
-        // Iniciar inmediatamente
         (function init() {
-            console.log('🚀 Inicializando sitio Caño Salao...');
-            console.log('🌐 URL API:', API_BASE_URL);
+            console.log('🚀 Iniciando sistema Caño Salao...');
             
-            // Inicializar UI de usuario inmediatamente
-            initializeUserUI();
-            
-            // Ocultar loader
+            // Ocultar loader inmediatamente
             hideLoader();
             
-            // Inicializar funcionalidades
-            initFunctionality();
+            // Inicializar sistema de usuario
+            initializeUserSystem();
             
-            // Cargar contenido dinámico después de un breve delay
-            setTimeout(() => {
-                loadToursFromAPI();
-                loadBlogPostsFromAPI();
-            }, 500);
+            // Inicializar eventos
+            initializeEvents();
             
-            console.log('✅ Sitio inicializado');
+            // Mostrar contenido gradualmente
+            showContentGradually();
+            
+            // Cargar contenido dinámico
+            setTimeout(loadDynamicContent, 500);
+            
+            console.log('✅ Sistema inicializado');
         })();
         
-        function hideLoader() {
-            const loader = document.getElementById('page-loader');
-            if (loader) {
-                // Ocultar loader inmediatamente
-                loader.classList.add('hidden');
-                
-                // Mostrar contenido no crítico
-                const nonCritical = document.querySelectorAll('.non-critical');
-                nonCritical.forEach((el, index) => {
-                    setTimeout(() => {
-                        el.style.opacity = '1';
-                    }, index * 50);
-                });
-            }
-        }
+        // ========== SISTEMA DE USUARIO ==========
         
-        // ========== SISTEMA DE AUTENTICACIÓN ==========
-        
-        function initializeUserUI() {
-            // Verificar autenticación inmediatamente
-            const authStatus = checkAuthentication();
+        function initializeUserSystem() {
+            console.log('🔐 Verificando autenticación...');
             
-            if (authStatus.authenticated) {
-                console.log('✅ Usuario autenticado:', authStatus.user.nombre);
-                updateUserUI();
-                
-                // Verificar sesión con servidor en segundo plano
-                setTimeout(validateSessionWithServer, 1000);
+            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+            const userData = localStorage.getItem(STORAGE_KEYS.USER);
+            
+            if (token && userData) {
+                try {
+                    currentUser = JSON.parse(userData);
+                    console.log('✅ Usuario encontrado:', currentUser.nombre);
+                    showUserInterface();
+                    
+                    // Validar sesión con servidor en segundo plano
+                    setTimeout(validateSessionWithServer, 1000);
+                } catch (error) {
+                    console.error('❌ Error parseando datos de usuario:', error);
+                    clearUserSession();
+                    showLoginInterface();
+                }
             } else {
-                console.log('ℹ️ Usuario no autenticado');
-                showLoginButton();
+                console.log('ℹ️ No hay sesión activa');
+                showLoginInterface();
             }
             
             // Verificar si viene del login
             checkIfComingFromLogin();
         }
         
-        function checkAuthentication() {
-            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-            const userData = localStorage.getItem(STORAGE_KEYS.USER);
-            
-            if (!token || !userData) {
-                return { authenticated: false };
-            }
-            
-            try {
-                const user = JSON.parse(userData);
-                currentUser = user;
-                return { authenticated: true, user: user };
-            } catch (error) {
-                console.error('Error parseando datos de usuario:', error);
-                // Limpiar datos corruptos
-                localStorage.removeItem(STORAGE_KEYS.TOKEN);
-                localStorage.removeItem(STORAGE_KEYS.USER);
-                return { authenticated: false, error: error };
-            }
-        }
-        
         async function validateSessionWithServer() {
-            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+            if (!currentUser) return;
             
-            if (!token || !currentUser) {
-                return false;
-            }
+            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+            if (!token) return;
             
             try {
+                console.log('🔄 Validando sesión con servidor...');
+                
                 const response = await fetch(`${API_BASE_URL}/user/profile`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -1338,223 +1840,145 @@
                     // Actualizar datos de usuario
                     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
                     currentUser = user;
-                    updateUserUI();
-                    console.log('✅ Sesión validada con servidor');
-                    return true;
+                    updateUserInfo();
+                    console.log('✅ Sesión validada correctamente');
                 } else {
-                    console.log('Token inválido en servidor');
+                    console.log('❌ Sesión inválida, limpiando...');
                     clearUserSession();
-                    return false;
+                    showLoginInterface();
+                    showAlert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
                 }
             } catch (error) {
-                console.error('Error validando sesión con servidor:', error);
+                console.error('⚠️ Error validando sesión:', error);
                 // Si hay error de red, mantener sesión local
-                return true;
             }
         }
         
-        function clearUserSession() {
-            localStorage.removeItem(STORAGE_KEYS.TOKEN);
-            localStorage.removeItem(STORAGE_KEYS.USER);
-            currentUser = null;
-            showLoginButton();
-            console.log('✅ Sesión limpiada');
-        }
-        
-        function showLoginButton() {
+        function showUserInterface() {
             const loginBtn = document.getElementById('login-btn');
             const loggedUser = document.getElementById('logged-user');
             const mobileUserMenu = document.getElementById('mobile-user-menu');
-            const mobileLoginMenu = document.getElementById('mobile-login-menu');
             
-            if (loginBtn) {
-                loginBtn.style.display = 'flex';
-                loginBtn.href = 'Pages/login.html';
-            }
-            if (loggedUser) loggedUser.style.display = 'none';
-            if (mobileUserMenu) mobileUserMenu.style.display = 'none';
-            if (mobileLoginMenu) mobileLoginMenu.style.display = 'block';
-            
-            // Cerrar dropdown si está abierto
-            closeUserDropdown();
-        }
-        
-        function updateUserUI() {
-            if (!currentUser) return;
-            
-            const loginBtn = document.getElementById('login-btn');
-            const loggedUser = document.getElementById('logged-user');
-            const userAvatar = document.getElementById('user-avatar');
-            const userName = document.getElementById('user-name');
-            const userRole = document.getElementById('user-role');
-            const mobileUserMenu = document.getElementById('mobile-user-menu');
-            const mobileLoginMenu = document.getElementById('mobile-login-menu');
-            
-            // Mostrar usuario logueado
             if (loginBtn) loginBtn.style.display = 'none';
             if (loggedUser) loggedUser.style.display = 'flex';
             if (mobileUserMenu) mobileUserMenu.style.display = 'block';
-            if (mobileLoginMenu) mobileLoginMenu.style.display = 'none';
             
-            // Configurar información del usuario
+            updateUserInfo();
+            
+            // Configurar avatar
+            const avatar = document.getElementById('user-avatar');
+            if (avatar && currentUser) {
+                const letter = currentUser.nombre 
+                    ? currentUser.nombre.charAt(0).toUpperCase() 
+                    : currentUser.email.charAt(0).toUpperCase();
+                
+                avatar.textContent = letter;
+                
+                // Color según rol
+                if (currentUser.rol === 'admin') {
+                    avatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    avatar.title = `Administrador: ${currentUser.nombre}`;
+                } else {
+                    avatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
+                    avatar.title = `Usuario: ${currentUser.nombre}`;
+                }
+                
+                // Eventos del avatar
+                avatar.onclick = toggleUserDropdown;
+                avatar.onkeydown = function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleUserDropdown();
+                    }
+                };
+            }
+        }
+        
+        function showLoginInterface() {
+            const loginBtn = document.getElementById('login-btn');
+            const loggedUser = document.getElementById('logged-user');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            
+            if (loginBtn) loginBtn.style.display = 'flex';
+            if (loggedUser) loggedUser.style.display = 'none';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'none';
+            
+            // Cerrar dropdown si está abierto
+            if (userDropdown && userDropdownOpen) {
+                closeUserDropdown();
+            }
+        }
+        
+        function updateUserInfo() {
+            if (!currentUser) return;
+            
+            const userName = document.getElementById('user-name');
+            const userRole = document.getElementById('user-role');
+            
             if (userName) {
                 userName.textContent = currentUser.nombre || currentUser.email.split('@')[0];
             }
             
             if (userRole) {
                 userRole.textContent = currentUser.rol || 'user';
-                userRole.className = 'user-role ' + (currentUser.rol === 'admin' ? 'admin' : 'user');
+                userRole.className = 'user-role ' + (currentUser.rol === 'admin' ? 'admin' : '');
             }
-            
-            // Configurar avatar
-            if (userAvatar) {
-                // Usar la primera letra del nombre o email
-                const displayChar = currentUser.nombre 
-                    ? currentUser.nombre.charAt(0).toUpperCase()
-                    : currentUser.email.charAt(0).toUpperCase();
-                
-                userAvatar.textContent = displayChar;
-                
-                // Configurar color basado en rol
-                if (currentUser.rol === 'admin') {
-                    userAvatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
-                    userAvatar.title = `Admin: ${currentUser.nombre || currentUser.email}`;
-                } else {
-                    userAvatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
-                    userAvatar.title = `Usuario: ${currentUser.nombre || currentUser.email}`;
-                }
-                
-                // Configurar eventos del avatar
-                setupUserAvatarEvents(userAvatar);
-            }
-            
-            console.log('✅ UI actualizada para usuario:', currentUser.nombre || currentUser.email);
-        }
-        
-        function setupUserAvatarEvents(avatarElement) {
-            if (!avatarElement) return;
-            
-            // Configurar click para abrir dropdown
-            avatarElement.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleUserDropdown();
-            });
-            
-            // Configurar eventos de teclado
-            avatarElement.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleUserDropdown();
-                }
-            });
         }
         
         function toggleUserDropdown() {
-            const dropdown = document.getElementById('user-dropdown-menu');
+            if (!currentUser) return;
             
-            if (!dropdown) {
+            if (!userDropdown) {
                 createUserDropdown();
+            }
+            
+            if (userDropdownOpen) {
+                closeUserDropdown();
             } else {
-                if (userDropdownOpen) {
-                    closeUserDropdown();
-                } else {
-                    dropdown.classList.add('show');
-                    userDropdownOpen = true;
-                    
-                    // Configurar eventos para cerrar dropdown
-                    setupDropdownCloseEvents();
-                }
-            }
-        }
-        
-        function setupDropdownCloseEvents() {
-            // Cerrar al hacer clic fuera
-            const closeOnClickOutside = (e) => {
-                const dropdown = document.getElementById('user-dropdown-menu');
-                const avatar = document.getElementById('user-avatar');
-                if (dropdown && 
-                    !dropdown.contains(e.target) && 
-                    !avatar.contains(e.target) && 
-                    userDropdownOpen) {
-                    closeUserDropdown();
-                }
-            };
-            
-            // Cerrar con Escape
-            const closeOnEscape = (e) => {
-                if (e.key === 'Escape' && userDropdownOpen) {
-                    closeUserDropdown();
-                }
-            };
-            
-            // Agregar event listeners temporales
-            document.addEventListener('click', closeOnClickOutside);
-            document.addEventListener('keydown', closeOnEscape);
-            
-            // Guardar referencias para remover luego
-            window._closeOnClickOutside = closeOnClickOutside;
-            window._closeOnEscape = closeOnEscape;
-        }
-        
-        function removeDropdownCloseEvents() {
-            if (window._closeOnClickOutside) {
-                document.removeEventListener('click', window._closeOnClickOutside);
-            }
-            if (window._closeOnEscape) {
-                document.removeEventListener('keydown', window._closeOnEscape);
-            }
-        }
-        
-        function closeUserDropdown() {
-            const dropdown = document.getElementById('user-dropdown-menu');
-            if (dropdown) {
-                dropdown.classList.remove('show');
-                userDropdownOpen = false;
-                
-                // Remover event listeners
-                removeDropdownCloseEvents();
+                openUserDropdown();
             }
         }
         
         function createUserDropdown() {
-            // Remover dropdown existente si hay
-            const existingDropdown = document.getElementById('user-dropdown-menu');
-            if (existingDropdown) {
-                existingDropdown.remove();
-            }
+            // Remover dropdown existente
+            const existing = document.getElementById('user-dropdown-menu');
+            if (existing) existing.remove();
             
-            // Crear dropdown
-            const dropdown = document.createElement('div');
-            dropdown.id = 'user-dropdown-menu';
-            dropdown.className = 'user-dropdown-menu';
+            // Crear nuevo dropdown
+            userDropdown = document.createElement('div');
+            userDropdown.id = 'user-dropdown-menu';
+            userDropdown.className = 'user-dropdown-menu';
             
-            const isAdmin = currentUser && currentUser.rol === 'admin';
+            const isAdmin = currentUser.rol === 'admin';
             
-            dropdown.innerHTML = `
+            userDropdown.innerHTML = `
                 <div class="user-dropdown-header">
                     <div style="font-weight: bold; font-size: 16px;">${currentUser.nombre || 'Usuario'}</div>
                     <div class="user-dropdown-email">${currentUser.email}</div>
                     ${isAdmin ? '<div style="font-size: 12px; margin-top: 4px; padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; display: inline-block;">Administrador</div>' : ''}
                 </div>
-                <a href="Pages/usuario.html" class="dropdown-item" id="user-account-link">
+                <a href="Pages/usuario.html" class="user-dropdown-link" id="user-account-link">
                     <i class="bi bi-person"></i> Mi Cuenta
                     ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
                 </a>
                 ${isAdmin ? `
-                <a href="Pages/admin.html" class="dropdown-item">
+                <a href="Pages/admin.html" class="user-dropdown-link">
                     <i class="bi bi-shield-check"></i> Panel de Administración
                 </a>
                 ` : ''}
-                <a href="Pages/reservas.html" class="dropdown-item">
+                <a href="Pages/reservas.html" class="user-dropdown-link">
                     <i class="bi bi-calendar-check"></i> Mis Reservas
                 </a>
-                <a href="#" id="dropdown-logout-btn" class="dropdown-item">
+                <a href="#" class="user-dropdown-link" id="logout-link">
                     <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                 </a>
             `;
             
-            // Configurar eventos para los enlaces del dropdown
-            const accountLink = dropdown.querySelector('#user-account-link');
+            // Añadir al DOM
+            document.getElementById('user-menu-container').appendChild(userDropdown);
+            
+            // Configurar eventos de los enlaces
+            const accountLink = document.getElementById('user-account-link');
             if (accountLink) {
                 accountLink.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1564,44 +1988,71 @@
                 });
             }
             
-            const logoutBtn = dropdown.querySelector('#dropdown-logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function(e) {
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     logout();
                 });
             }
             
-            // Añadir estilos para hover
-            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
-                item.addEventListener('mouseenter', function() {
+            // Estilos hover
+            const links = userDropdown.querySelectorAll('.user-dropdown-link');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', function() {
                     this.style.background = '#f5f5f5';
                 });
-                item.addEventListener('mouseleave', function() {
+                link.addEventListener('mouseleave', function() {
                     this.style.background = '';
                 });
             });
+        }
+        
+        function openUserDropdown() {
+            if (!userDropdown) return;
             
-            // Añadir al DOM
-            const userMenuContainer = document.getElementById('user-menu-container');
-            userMenuContainer.appendChild(dropdown);
+            userDropdown.classList.add('show');
+            userDropdownOpen = true;
             
-            // Mostrar dropdown
+            // Configurar cierre al hacer clic fuera
             setTimeout(() => {
-                dropdown.classList.add('show');
-                userDropdownOpen = true;
-                
-                // Configurar eventos para cerrar dropdown
-                setupDropdownCloseEvents();
+                document.addEventListener('click', closeUserDropdownOnClickOutside);
+                document.addEventListener('keydown', closeUserDropdownOnEscape);
             }, 10);
+        }
+        
+        function closeUserDropdown() {
+            if (userDropdown) {
+                userDropdown.classList.remove('show');
+                userDropdownOpen = false;
+                
+                // Remover event listeners
+                document.removeEventListener('click', closeUserDropdownOnClickOutside);
+                document.removeEventListener('keydown', closeUserDropdownOnEscape);
+            }
+        }
+        
+        function closeUserDropdownOnClickOutside(e) {
+            if (userDropdown && 
+                !userDropdown.contains(e.target) && 
+                !document.getElementById('user-avatar').contains(e.target)) {
+                closeUserDropdown();
+            }
+        }
+        
+        function closeUserDropdownOnEscape(e) {
+            if (e.key === 'Escape' && userDropdownOpen) {
+                closeUserDropdown();
+            }
         }
         
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
                 clearUserSession();
-                showAlert('Sesión cerrada correctamente', 'info');
+                showLoginInterface();
+                showAlert('Sesión cerrada correctamente', 'success');
                 
-                // Redirigir al inicio si está en páginas protegidas
+                // Redirigir si está en página protegida
                 const currentPath = window.location.pathname;
                 if (currentPath.includes('usuario.html') || 
                     currentPath.includes('admin.html') ||
@@ -1613,6 +2064,13 @@
             }
         }
         
+        function clearUserSession() {
+            localStorage.removeItem(STORAGE_KEYS.TOKEN);
+            localStorage.removeItem(STORAGE_KEYS.USER);
+            currentUser = null;
+            console.log('✅ Sesión limpiada');
+        }
+        
         function checkIfComingFromLogin() {
             const urlParams = new URLSearchParams(window.location.search);
             const fromLogin = urlParams.get('fromLogin');
@@ -1621,7 +2079,7 @@
             if (fromLogin === 'true' || loginSuccess === 'true') {
                 console.log('🔑 Usuario viene del login');
                 
-                // Remover parámetros de la URL
+                // Limpiar URL
                 const cleanUrl = window.location.pathname;
                 window.history.replaceState({}, document.title, cleanUrl);
                 
@@ -1629,45 +2087,236 @@
                 if (currentUser) {
                     setTimeout(() => {
                         showAlert(`¡Bienvenido/a ${currentUser.nombre}! Has iniciado sesión correctamente.`, 'success');
-                    }, 1000);
+                    }, 500);
                 }
             }
         }
         
-        // ========== CARGAR TOURS DESDE API ==========
+        // ========== FUNCIONES DE UI ==========
+        
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+            }
+        }
+        
+        function showContentGradually() {
+            const nonCriticalElements = document.querySelectorAll('.non-critical');
+            nonCriticalElements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                }, index * 100);
+            });
+        }
+        
+        function showAlert(message, type = 'info') {
+            let alertDiv = document.getElementById('site-alert');
+            if (!alertDiv) {
+                alertDiv = document.createElement('div');
+                alertDiv.id = 'site-alert';
+                alertDiv.className = 'site-alert';
+                document.body.appendChild(alertDiv);
+            }
+            
+            alertDiv.textContent = message;
+            alertDiv.className = `site-alert ${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 4000);
+        }
+        
+        function loadHeroImage() {
+            const heroBg = document.getElementById('heroBackground');
+            if (!heroBg) return;
+            
+            const img = new Image();
+            img.onload = function() {
+                heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${this.src}')`;
+            };
+            img.onerror = function() {
+                heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`;
+            };
+            img.src = 'media/upscalemedia-transformed.jpeg';
+        }
+        
+        // ========== EVENTOS ==========
+        
+        function initializeEvents() {
+            console.log('🎮 Configurando eventos...');
+            
+            // Menú móvil
+            setupMobileMenu();
+            
+            // Formulario de reserva
+            setupReservationForm();
+            
+            // Cargar imagen del hero
+            loadHeroImage();
+            
+            console.log('✅ Eventos configurados');
+        }
+        
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const menuClose = document.getElementById('mobile-menu-close');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            const menuContainer = document.getElementById('mobile-menu-container');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                });
+            }
+            
+            if (menuClose) {
+                menuClose.addEventListener('click', closeMobileMenu);
+            }
+            
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', closeMobileMenu);
+            }
+            
+            // Cerrar menú al hacer clic en enlaces
+            const mobileLinks = document.querySelectorAll('.mobile-menu-nav a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+            
+            // Cerrar con Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isMobileMenuOpen) {
+                    closeMobileMenu();
+                }
+            });
+        }
+        
+        function openMobileMenu() {
+            const menuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            if (menuContainer && menuOverlay) {
+                menuContainer.classList.add('active');
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                isMobileMenuOpen = true;
+                
+                // Cerrar dropdown de usuario si está abierto
+                closeUserDropdown();
+            }
+        }
+        
+        function closeMobileMenu() {
+            const menuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            if (menuContainer && menuOverlay) {
+                menuContainer.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                isMobileMenuOpen = false;
+            }
+        }
+        
+        function setupReservationForm() {
+            const reservationForm = document.getElementById('reservation-form');
+            if (reservationForm) {
+                reservationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleReservationSubmit();
+                });
+            }
+        }
+        
+        function handleReservationSubmit() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const tour = document.getElementById('tour').value;
+            const message = document.getElementById('message').value.trim();
+            
+            if (!name || !email) {
+                showAlert('Por favor completa los campos requeridos (Nombre y Email)', 'error');
+                return;
+            }
+            
+            const button = document.querySelector('#reservation-form button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Enviando...';
+            button.disabled = true;
+            
+            const booking = {
+                id: Date.now(),
+                codigo: 'RES-' + Date.now().toString().slice(-6),
+                nombre: name,
+                email: email,
+                telefono: phone,
+                tour: tour,
+                mensaje: message,
+                fecha: new Date().toISOString().split('T')[0],
+                estado: 'pending',
+                source: 'website',
+                created_at: new Date().toISOString(),
+                usuario_id: currentUser ? currentUser.id : null
+            };
+            
+            // Simular envío
+            setTimeout(() => {
+                // Guardar en localStorage
+                const bookingsData = JSON.parse(localStorage.getItem('cano_salao_bookings') || '[]');
+                bookingsData.push(booking);
+                localStorage.setItem('cano_salao_bookings', JSON.stringify(bookingsData));
+                
+                showAlert(`¡Gracias ${name}! Tu reserva ha sido enviada. Código: ${booking.codigo}`, 'success');
+                
+                // Resetear formulario
+                document.getElementById('reservation-form').reset();
+                
+                // Restaurar botón
+                button.innerHTML = originalText;
+                button.disabled = false;
+                
+                if (currentUser) {
+                    console.log(`📝 Reserva creada por ${currentUser.nombre}: ${booking.codigo}`);
+                }
+            }, 1500);
+        }
+        
+        // ========== CARGAR CONTENIDO DINÁMICO ==========
+        
+        function loadDynamicContent() {
+            console.log('📡 Cargando contenido dinámico...');
+            
+            // Cargar tours desde API
+            loadToursFromAPI();
+            
+            // Cargar blog desde API
+            loadBlogPostsFromAPI();
+        }
         
         async function loadToursFromAPI() {
             try {
-                updateApiStatus('🔄 Cargando tours...', '');
+                console.log('🔄 Cargando tours desde API...');
                 
                 const response = await fetch(`${API_BASE_URL}/tours`);
                 
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                if (response.ok) {
+                    const tours = await response.json();
+                    renderTours(tours);
+                    console.log(`✅ ${tours.length} tours cargados`);
+                } else {
+                    console.error('❌ Error cargando tours:', response.status);
+                    renderFallbackTours();
                 }
-                
-                const tours = await response.json();
-                toursData = tours;
-                
-                // Actualizar estado API
-                updateApiStatus('✅ API Conectada', 'connected');
-                
-                // Renderizar tours
-                renderTours(tours);
-                
-                console.log('✅ Tours cargados desde API:', tours.length);
-                
             } catch (error) {
-                console.error('❌ Error cargando tours:', error);
-                updateApiStatus('❌ Error API', 'disconnected');
-                
-                // Mostrar tours de respaldo
+                console.error('❌ Error de conexión:', error);
                 renderFallbackTours();
-                
-                // Mostrar error
-                setTimeout(() => {
-                    showAlert('No se pudieron cargar los tours. Mostrando información de respaldo.', 'error');
-                }, 3000);
             }
         }
         
@@ -1675,16 +2324,11 @@
             const container = document.getElementById('tours-api-container');
             if (!container) return;
             
-            container.innerHTML = '';
-            
             if (!tours || tours.length === 0) {
                 container.innerHTML = `
                     <div class="tour-loading">
                         <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: #f39c12; margin-bottom: 1rem;"></i>
                         <p>No hay tours disponibles en este momento.</p>
-                        <button onclick="loadToursFromAPI()" style="margin-top: 1rem; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                            <i class="bi bi-arrow-clockwise"></i> Reintentar
-                        </button>
                     </div>
                 `;
                 return;
@@ -1693,15 +2337,16 @@
             // Mostrar solo los primeros 3 tours
             const toursToShow = tours.slice(0, 3);
             
+            container.innerHTML = '';
+            
             toursToShow.forEach(tour => {
                 const card = document.createElement('div');
                 card.className = 'attraction-card';
                 card.innerHTML = `
                     <div class="attraction-img">
-                        <img src="${tour.imagen_url || 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}" 
+                        <img src="${tour.imagen_url || 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'}" 
                              alt="${tour.nombre}" 
-                             loading="lazy"
-                             onerror="this.src='https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'">
+                             loading="lazy">
                     </div>
                     <div class="attraction-info">
                         <h3 class="times-font">
@@ -1713,7 +2358,7 @@
                             <span><i class="bi bi-currency-dollar"></i> $${tour.precio || '25.00'}</span>
                         </div>
                         ${currentUser ? `
-                        <button onclick="bookTour('${tour.id}', '${tour.nombre}')" style="margin-top: 10px; padding: 8px 16px; background: var(--color-accent); color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
+                        <button onclick="bookTour('${tour.id}', '${tour.nombre}')" style="margin-top: 10px; padding: 8px 16px; background: #FF8C42; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
                             <i class="bi bi-calendar-plus"></i> Reservar Ahora
                         </button>
                         ` : ''}
@@ -1724,16 +2369,11 @@
         }
         
         function renderFallbackTours() {
-            const container = document.getElementById('tours-api-container');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
             const fallbackTours = [
                 {
                     id: 1,
                     nombre: 'Tour Básico',
-                    descripcion: 'Recorrido por los manglares con guía local',
+                    descripcion: 'Recorrido por los manglares con guía local. Experiencia única en contacto con la naturaleza.',
                     duracion: '2 horas',
                     precio: '25.00',
                     imagen_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
@@ -1741,7 +2381,7 @@
                 {
                     id: 2,
                     nombre: 'Tour Completo',
-                    descripcion: 'Experiencia completa que incluye todas las atracciones',
+                    descripcion: 'Experiencia completa que incluye todas las atracciones principales de Caño Salao.',
                     duracion: '4 horas',
                     precio: '45.00',
                     imagen_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
@@ -1749,7 +2389,7 @@
                 {
                     id: 3,
                     nombre: 'Tour Fotográfico',
-                    descripcion: 'Especial para fotografía de naturaleza y paisajes',
+                    descripcion: 'Especial para fotografía de naturaleza y paisajes. Guía especializado en fotografía.',
                     duracion: '3 horas',
                     precio: '35.00',
                     imagen_url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
@@ -1780,38 +2420,31 @@
             }, 1500);
         }
         
-        // ========== CARGAR BLOG DESDE API ==========
-        
         async function loadBlogPostsFromAPI() {
             try {
                 const response = await fetch(`${API_BASE_URL}/blog`);
                 
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}`);
+                if (response.ok) {
+                    const posts = await response.json();
+                    
+                    if (posts && posts.length > 0) {
+                        document.getElementById('blog-preview').style.display = 'block';
+                        renderBlogPosts(posts);
+                    }
                 }
-                
-                const posts = await response.json();
-                
-                if (posts && posts.length > 0) {
-                    document.getElementById('blog-preview').style.display = 'block';
-                    renderBlogPostsFromAPI(posts);
-                }
-                
-                console.log('✅ Blog cargado desde API:', posts.length);
-                
             } catch (error) {
-                console.error('❌ Error cargando blog:', error);
+                // Ocultar sección de blog si hay error
                 document.getElementById('blog-preview').style.display = 'none';
             }
         }
         
-        function renderBlogPostsFromAPI(posts) {
+        function renderBlogPosts(posts) {
             const container = document.getElementById('blog-posts-container');
             if (!container) return;
             
-            container.innerHTML = '';
-            
             const recentPosts = posts.slice(0, 3);
+            
+            container.innerHTML = '';
             
             recentPosts.forEach(post => {
                 const postDate = new Date(post.created_at);
@@ -1826,8 +2459,7 @@
                 card.innerHTML = `
                     <div class="attraction-img">
                         ${post.imagen_url ? 
-                            `<img src="${post.imagen_url}" alt="${post.titulo}" loading="lazy"
-                                 onerror="this.src='https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'">` : 
+                            `<img src="${post.imagen_url}" alt="${post.titulo}" loading="lazy">` : 
                             `<div style="width:100%;height:180px;background:linear-gradient(135deg, #2c3e50, #3498db);display:flex;align-items:center;justify-content:center;">
                                 <i class="bi bi-newspaper" style="font-size:48px;color:white;"></i>
                             </div>`
@@ -1852,192 +2484,16 @@
             });
         }
         
-        // ========== FUNCIONES DE UTILIDAD ==========
-        
-        function updateApiStatus(message, statusClass = '') {
-            const statusElement = document.getElementById('api-status');
-            if (!statusElement) return;
-            
-            statusElement.textContent = message;
-            statusElement.className = 'api-status ' + statusClass;
-            statusElement.style.display = 'block';
-        }
-        
-        function showAlert(message, type = 'info') {
-            const alertDiv = document.getElementById('site-alert');
-            if (!alertDiv) return;
-            
-            alertDiv.textContent = message;
-            alertDiv.className = `site-alert ${type}`;
-            alertDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                alertDiv.style.display = 'none';
-            }, 4000);
-        }
-        
-        // ========== SISTEMA DE MENÚ MÓVIL ==========
-        
-        function initFunctionality() {
-            // ========== MENÚ MÓVIL ==========
-            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            const mobileMenuClose = document.getElementById('mobile-menu-close');
-            const mobileMenuContainer = document.getElementById('mobile-menu-container');
-            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-            
-            function openMobileMenu() {
-                mobileMenuContainer.classList.add('active');
-                mobileMenuOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                isMobileMenuOpen = true;
-                mobileMenuToggle.setAttribute('aria-expanded', 'true');
-                mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
-                
-                closeUserDropdown();
-            }
-            
-            function closeMobileMenu() {
-                mobileMenuContainer.classList.remove('active');
-                mobileMenuOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-                isMobileMenuOpen = false;
-                mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
-            }
-            
-            if (mobileMenuToggle) {
-                mobileMenuToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (!isMobileMenuOpen) {
-                        openMobileMenu();
-                    } else {
-                        closeMobileMenu();
-                    }
-                });
-            }
-            
-            if (mobileMenuClose) {
-                mobileMenuClose.addEventListener('click', closeMobileMenu);
-            }
-            
-            if (mobileMenuOverlay) {
-                mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-            }
-            
-            // Cerrar menú móvil al hacer clic en enlaces
-            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-nav a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', closeMobileMenu);
-            });
-            
-            // Cerrar menú móvil con Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && isMobileMenuOpen) {
-                    closeMobileMenu();
-                }
-            });
-            
-            // ========== CARGAR IMAGEN DEL HERO ==========
-            loadHeroImage();
-            
-            // ========== CONFIGURAR FORMULARIO DE RESERVAS ==========
-            const reservationForm = document.getElementById('reservation-form');
-            if (reservationForm) {
-                reservationForm.addEventListener('submit', handleReservationSubmit);
-            }
-            
-            // ========== MEJORAS PARA MÓVIL ==========
-            if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-                const inputs = document.querySelectorAll('input, textarea, select');
-                inputs.forEach(input => {
-                    input.addEventListener('focus', function() {
-                        this.style.fontSize = '16px';
-                    });
-                });
-            }
-        }
-        
-        function loadHeroImage() {
-            const heroBg = document.querySelector('.hero-bg');
-            if (!heroBg) return;
-            
-            const localImg = new Image();
-            localImg.src = 'media/upscalemedia-transformed.jpeg';
-            
-            localImg.onload = function() {
-                heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${this.src}')`;
-            };
-            
-            localImg.onerror = function() {
-                heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`;
-            };
-        }
-        
-        function handleReservationSubmit(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const tour = document.getElementById('tour').value;
-            const message = document.getElementById('message').value.trim();
-            
-            if (!name || !email) {
-                showAlert('Por favor completa los campos requeridos (Nombre y Email)', 'error');
-                return;
-            }
-            
-            const button = e.target.querySelector('button[type="submit"]');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Enviando...';
-            button.disabled = true;
-            
-            const booking = {
-                id: Date.now(),
-                codigo: 'RES-' + Date.now().toString().slice(-6),
-                nombre: name,
-                email: email,
-                telefono: phone,
-                tour: tour,
-                mensaje: message,
-                fecha: new Date().toISOString().split('T')[0],
-                estado: 'pending',
-                source: 'website',
-                created_at: new Date().toISOString(),
-                usuario_id: currentUser ? currentUser.id : null
-            };
-            
-            const bookingsData = JSON.parse(localStorage.getItem('cano_salao_bookings') || '[]');
-            bookingsData.push(booking);
-            localStorage.setItem('cano_salao_bookings', JSON.stringify(bookingsData));
-            
-            setTimeout(() => {
-                showAlert(`¡Gracias ${name}! Tu reserva ha sido enviada. Código: ${booking.codigo}`, 'success');
-                
-                e.target.reset();
-                button.innerHTML = originalText;
-                button.disabled = false;
-                
-                if (currentUser) {
-                    console.log(`📝 Reserva creada por ${currentUser.nombre}: ${booking.codigo}`);
-                }
-            }, 1500);
-        }
-        
         // ========== EXPORTAR FUNCIONES GLOBALES ==========
         window.CanoSalaoAuth = {
             currentUser: () => currentUser,
-            STORAGE_KEYS: STORAGE_KEYS,
-            API_BASE_URL: API_BASE_URL,
-            checkAuthentication: checkAuthentication,
             logout: logout,
             showAlert: showAlert,
-            validateSession: validateSessionWithServer
+            loadToursFromAPI: loadToursFromAPI,
+            loadBlogPostsFromAPI: loadBlogPostsFromAPI
         };
         
-        console.log('✅ index.html: Script cargado correctamente');
-        
+        console.log('✅ Sistema Caño Salao completamente cargado');
     </script>
 </body>
 </html>
