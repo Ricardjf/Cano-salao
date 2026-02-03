@@ -2,11 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Servicios | Ruta Turística Caño Salao | Proyecto Factible</title>
     <meta name="description" content="Descubre nuestros servicios turísticos en Caño Salao: tours por manglares, avistamiento de aves, experiencias pesqueras y más. Proyecto factible de turismo sostenible">
     <meta name="keywords" content="servicios turísticos Caño Salao, tours manglares Venezuela, ecoturismo Barcelona, proyecto factible, turismo sostenible, experiencias acuáticas">
     <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../media/Logo_cano_60.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../media/Logo_cano_60.png">
+    <link rel="apple-touch-icon" href="../media/Logo_cano_120.png">
+    <meta name="theme-color" content="#0d3b66">
     
     <!-- Preload de fuentes críticas -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -391,36 +397,74 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
+                    <img 
+                        src="../media/Logo_cano_60.png" 
+                        srcset="../media/Logo_cano_60.png 1x, ../media/Logo_cano_120.png 2x" 
+                        alt="Logo Caño Salao - Ruta Turística Marítima" 
+                        class="logo-img"
+                        width="35" 
+                        height="35"
+                        loading="eager"
+                        aria-hidden="true"
+                    >
                     <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
                 </div>
 
-                <!-- Contenedor para centrar la navegación -->
+                <!-- Navegación desktop (oculta en móvil) -->
                 <div class="nav-center">
                     <nav>
                         <ul id="main-navigation">
-                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
-                            <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
-                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
-                            <li><a href="Servicios.html" class="active"><i class="bi bi-list-check"></i> Servicios</a></li>
-                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
-                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                            <li><a href="../index.html"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
+                            <li><a href="Empresa.html"><i class="bi bi-building"></i> <span>Empresa</span></a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> <span>Historia</span></a></li>
+                            <li><a href="Servicios.html" class="active"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> <span>Atracciones</span></a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
                         </ul>
                     </nav>
                 </div>
 
-                <!-- Botón Iniciar Sesión a la derecha -->
+                <!-- Sección de autenticación -->
                 <div class="auth-section">
                     <a href="login.html" class="login-btn">
-                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                        <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
                     </a>
                 </div>
 
-                <button class="menu-toggle" aria-label="Menú">
+                <!-- Botón hamburguesa para móvil -->
+                <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
                     <i class="bi bi-list"></i>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- Menú móvil overlay (fondo oscuro) -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+    <!-- Menú móvil (se abre desde la derecha) -->
+    <div class="mobile-menu-container" id="mobile-menu-container">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
+                <h2 class="times-font" style="color: white; font-size: 1.2rem;">Caño <span class="text-orange">Salao</span></h2>
+            </div>
+            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Cerrar menú">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-menu-nav">
+            <ul>
+                <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                <li><a href="Servicios.html" class="active"><i class="bi bi-list-check"></i> Servicios</a></li>
+                <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+            </ul>
+        </nav>
+    </div>
 
     <!-- Indicador de estado de API -->
     <div id="api-status" class="api-status">🔌 Conectando con API...</div>
@@ -651,6 +695,13 @@
             const API_BASE_URL = 'https://cano-salao.onrender.com/api';
             let isLoadingTours = false;
             
+            // ========== VARIABLES DEL MENÚ MÓVIL ==========
+            let isMobileMenuOpen = false;
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const mobileMenuContainer = document.getElementById('mobile-menu-container');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            
             // ========== FUNCIONES PRINCIPALES ==========
             
             // Función para cargar tours desde la API
@@ -844,24 +895,84 @@
                 return tour.duracion || (tour.precio < 30 ? '2 horas' : tour.precio < 50 ? '4 horas' : '6 horas');
             }
             
+            // ========== SISTEMA DE MENÚ MÓVIL ==========
+            
+            function openMobileMenu() {
+                mobileMenuContainer.classList.add('active');
+                mobileMenuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                isMobileMenuOpen = true;
+                mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
+            }
+            
+            function closeMobileMenu() {
+                mobileMenuContainer.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                isMobileMenuOpen = false;
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
+            }
+            
             // ========== INICIALIZACIÓN ==========
             
-            // Menu toggle para dispositivos móviles
             document.addEventListener('DOMContentLoaded', function() {
-                const menuToggle = document.querySelector('.menu-toggle');
-                const mainNav = document.querySelector('#main-navigation');
+                // Configurar menú móvil
+                mobileMenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                });
                 
-                if (menuToggle && mainNav) {
-                    menuToggle.addEventListener('click', function() {
-                        mainNav.classList.toggle('show');
-                        const icon = this.querySelector('i');
-                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
-                        
-                        // Actualizar atributo ARIA
-                        const isExpanded = mainNav.classList.contains('show');
-                        this.setAttribute('aria-expanded', isExpanded);
-                    });
-                }
+                mobileMenuToggle.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                }, { passive: false });
+                
+                mobileMenuClose.addEventListener('click', closeMobileMenu);
+                mobileMenuClose.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    closeMobileMenu();
+                }, { passive: false });
+                
+                mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+                mobileMenuOverlay.addEventListener('touchstart', function(e) {
+                    if (e.target === mobileMenuOverlay) {
+                        e.preventDefault();
+                        closeMobileMenu();
+                    }
+                }, { passive: false });
+                
+                const mobileMenuLinks = mobileMenuContainer.querySelectorAll('a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', closeMobileMenu);
+                    link.addEventListener('touchstart', function(e) {
+                        setTimeout(closeMobileMenu, 100);
+                    }, { passive: true });
+                });
+                
+                mobileMenuContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                mobileMenuContainer.addEventListener('touchstart', function(e) {
+                    e.stopPropagation();
+                }, { passive: true });
+                
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && isMobileMenuOpen) {
+                        closeMobileMenu();
+                    }
+                });
                 
                 // Cargar imagen de fondo del hero
                 function loadHeroImage() {
@@ -909,6 +1020,11 @@
                                 top: target.offsetTop - 100,
                                 behavior: 'smooth'
                             });
+                            
+                            // Cerrar menú móvil si está abierto
+                            if (isMobileMenuOpen) {
+                                closeMobileMenu();
+                            }
                         }
                     });
                 });
@@ -934,6 +1050,23 @@
                     });
                 }
                 
+                // ========== HEADER SCROLL EFFECT ==========
+                let ticking = false;
+                window.addEventListener('scroll', function() {
+                    if (!ticking) {
+                        window.requestAnimationFrame(function() {
+                            const header = document.querySelector('header');
+                            if (window.scrollY > 50) {
+                                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                            } else {
+                                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                            }
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+                
                 // Verificar autenticación del usuario
                 checkAuthentication();
             });
@@ -949,7 +1082,7 @@
                         const userData = JSON.parse(user);
                         const loginBtn = document.querySelector('.login-btn');
                         if (loginBtn) {
-                            loginBtn.innerHTML = `<i class="bi bi-person-check"></i> ${userData.nombre}`;
+                            loginBtn.innerHTML = `<i class="bi bi-person-check"></i> <span class="login-text">${userData.nombre}</span>`;
                             loginBtn.href = "usuario.html";
                         }
                     } catch (error) {
