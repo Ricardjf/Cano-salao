@@ -41,7 +41,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.5;
-            opacity: 1; /* Cambiado de 0 a 1 para visibilidad inmediata */
+            opacity: 1; /* IMPORTANTE: Siempre visible */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             position: relative;
@@ -54,7 +54,7 @@
             padding: 0 20px;
         }
         
-        /* Header mínimo para render inicial - CORREGIDO */
+        /* Header mínimo para render inicial */
         header {
             background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
             color: white;
@@ -82,7 +82,7 @@
             z-index: 1002;
         }
         
-        /* Estilos críticos para el logo - 35px constante */
+        /* Estilos críticos para el logo */
         .logo-img {
             width: 35px;
             height: 35px;
@@ -106,7 +106,7 @@
             color: #FF8C42;
         }
         
-        /* Menu toggle para móvil - OCULTO POR DEFECTO */
+        /* Menu toggle para móvil */
         .menu-toggle {
             display: none;
             background: none;
@@ -126,7 +126,7 @@
             justify-content: center;
         }
         
-        /* Navegación desktop - VISIBLE POR DEFECTO */
+        /* Navegación desktop */
         .nav-center {
             flex: 1;
             display: flex;
@@ -355,7 +355,7 @@
             font-weight: bold;
         }
         
-        /* Dropdown menu styles */
+        /* Dropdown menu styles - FIXED */
         .user-dropdown-menu {
             position: absolute;
             top: 100%;
@@ -369,6 +369,7 @@
             margin-top: 5px;
             display: none;
             animation: fadeInDown 0.2s ease;
+            border: 1px solid #eee;
         }
         
         .user-dropdown-menu.show {
@@ -398,6 +399,7 @@
             border-bottom: 1px solid #eee;
             transition: background 0.2s;
             font-size: 14px;
+            cursor: pointer;
         }
         
         .user-dropdown-menu a:hover {
@@ -411,6 +413,16 @@
         
         .user-dropdown-menu a:last-child:hover {
             background: #ffeaea;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: auto;
         }
         
         @keyframes fadeInDown {
@@ -484,9 +496,10 @@
         /* Esconder contenido no crítico inicialmente */
         .non-critical {
             opacity: 0;
+            transition: opacity 0.5s ease;
         }
         
-        /* Loader minimalista - MODIFICADO */
+        /* Loader minimalista - MEJORADO */
         #page-loader {
             position: fixed;
             top: 0;
@@ -498,7 +511,13 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
         
         .loader-spinner {
@@ -551,7 +570,7 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* Responsive para móvil - CORREGIDO */
+        /* Responsive para móvil */
         @media (max-width: 768px) {
             .menu-toggle {
                 display: flex !important;
@@ -694,6 +713,7 @@
             border-radius: 4px;
             font-size: 0.8rem;
             z-index: 1000;
+            display: none; /* Ocultado por defecto */
         }
         
         .api-status.connected {
@@ -717,11 +737,11 @@
     <!-- Alert para mensajes -->
     <div id="site-alert" class="site-alert"></div>
     
-    <!-- Indicador de estado de API -->
+    <!-- Indicador de estado de API (opcional) -->
     <div id="api-status" class="api-status">🔌 Conectando con API...</div>
     
     <!-- Loader para experiencia inicial -->
-    <div id="page-loader" style="opacity: 1; display: flex;">
+    <div id="page-loader" class="hidden">
         <div class="loader-spinner"></div>
     </div>
 
@@ -810,6 +830,9 @@
                 <!-- Enlace de usuario si está autenticado -->
                 <li id="mobile-user-menu" style="display: none;">
                     <a href="Pages/usuario.html"><i class="bi bi-person-circle"></i> Mi Cuenta</a>
+                </li>
+                <li id="mobile-login-menu" style="display: none;">
+                    <a href="Pages/login.html"><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</a>
                 </li>
             </ul>
         </nav>
@@ -1215,73 +1238,83 @@
         let userDropdownOpen = false;
         
         // ========== INICIALIZACIÓN ==========
-        document.addEventListener('DOMContentLoaded', function() {
+        // Iniciar inmediatamente
+        (function init() {
             console.log('🚀 Inicializando sitio Caño Salao...');
             console.log('🌐 URL API:', API_BASE_URL);
             
-            // Ocultar loader inmediatamente
+            // Inicializar UI de usuario inmediatamente
+            initializeUserUI();
+            
+            // Ocultar loader
             hideLoader();
-            
-            // Actualizar estado API
-            updateApiStatus('🔌 Conectando...', '');
-            
-            // Verificar autenticación inmediatamente
-            const authStatus = checkAuthenticationImmediately();
-            console.log('Estado autenticación inicial:', authStatus);
-            
-            // Cargar tours desde API
-            loadToursFromAPI();
-            
-            // Cargar artículos del blog desde API
-            loadBlogPostsFromAPI();
             
             // Inicializar funcionalidades
             initFunctionality();
             
-            console.log('✅ Sitio completamente inicializado');
-        });
+            // Cargar contenido dinámico después de un breve delay
+            setTimeout(() => {
+                loadToursFromAPI();
+                loadBlogPostsFromAPI();
+            }, 500);
+            
+            console.log('✅ Sitio inicializado');
+        })();
         
         function hideLoader() {
             const loader = document.getElementById('page-loader');
             if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    document.body.style.overflow = 'visible';
-                    
-                    // Mostrar contenido no crítico gradualmente
-                    const nonCritical = document.querySelectorAll('.non-critical');
-                    nonCritical.forEach((el, index) => {
-                        setTimeout(() => {
-                            el.style.opacity = '1';
-                            el.style.transition = 'opacity 0.5s ease';
-                        }, index * 100);
-                    });
-                }, 300);
+                // Ocultar loader inmediatamente
+                loader.classList.add('hidden');
+                
+                // Mostrar contenido no crítico
+                const nonCritical = document.querySelectorAll('.non-critical');
+                nonCritical.forEach((el, index) => {
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                    }, index * 50);
+                });
             }
         }
         
         // ========== SISTEMA DE AUTENTICACIÓN ==========
         
-        function checkAuthenticationImmediately() {
+        function initializeUserUI() {
+            // Verificar autenticación inmediatamente
+            const authStatus = checkAuthentication();
+            
+            if (authStatus.authenticated) {
+                console.log('✅ Usuario autenticado:', authStatus.user.nombre);
+                updateUserUI();
+                
+                // Verificar sesión con servidor en segundo plano
+                setTimeout(validateSessionWithServer, 1000);
+            } else {
+                console.log('ℹ️ Usuario no autenticado');
+                showLoginButton();
+            }
+            
+            // Verificar si viene del login
+            checkIfComingFromLogin();
+        }
+        
+        function checkAuthentication() {
             const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
             const userData = localStorage.getItem(STORAGE_KEYS.USER);
             
             if (!token || !userData) {
-                console.log('No hay token o datos de usuario en localStorage');
-                showLoginButton();
                 return { authenticated: false };
             }
             
             try {
                 const user = JSON.parse(userData);
                 currentUser = user;
-                console.log('✅ Usuario cargado de localStorage:', currentUser.nombre);
-                updateUserUI();
                 return { authenticated: true, user: user };
             } catch (error) {
                 console.error('Error parseando datos de usuario:', error);
-                showLoginButton();
+                // Limpiar datos corruptos
+                localStorage.removeItem(STORAGE_KEYS.TOKEN);
+                localStorage.removeItem(STORAGE_KEYS.USER);
                 return { authenticated: false, error: error };
             }
         }
@@ -1289,8 +1322,7 @@
         async function validateSessionWithServer() {
             const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
             
-            if (!token) {
-                console.log('No hay token para validar con servidor');
+            if (!token || !currentUser) {
                 return false;
             }
             
@@ -1307,12 +1339,11 @@
                     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
                     currentUser = user;
                     updateUserUI();
-                    console.log('✅ Sesión validada con servidor:', user.nombre);
+                    console.log('✅ Sesión validada con servidor');
                     return true;
                 } else {
                     console.log('Token inválido en servidor');
                     clearUserSession();
-                    showLoginButton();
                     return false;
                 }
             } catch (error) {
@@ -1325,7 +1356,6 @@
         function clearUserSession() {
             localStorage.removeItem(STORAGE_KEYS.TOKEN);
             localStorage.removeItem(STORAGE_KEYS.USER);
-            sessionStorage.removeItem('user_session');
             currentUser = null;
             showLoginButton();
             console.log('✅ Sesión limpiada');
@@ -1335,6 +1365,7 @@
             const loginBtn = document.getElementById('login-btn');
             const loggedUser = document.getElementById('logged-user');
             const mobileUserMenu = document.getElementById('mobile-user-menu');
+            const mobileLoginMenu = document.getElementById('mobile-login-menu');
             
             if (loginBtn) {
                 loginBtn.style.display = 'flex';
@@ -1342,6 +1373,7 @@
             }
             if (loggedUser) loggedUser.style.display = 'none';
             if (mobileUserMenu) mobileUserMenu.style.display = 'none';
+            if (mobileLoginMenu) mobileLoginMenu.style.display = 'block';
             
             // Cerrar dropdown si está abierto
             closeUserDropdown();
@@ -1356,11 +1388,13 @@
             const userName = document.getElementById('user-name');
             const userRole = document.getElementById('user-role');
             const mobileUserMenu = document.getElementById('mobile-user-menu');
+            const mobileLoginMenu = document.getElementById('mobile-login-menu');
             
             // Mostrar usuario logueado
             if (loginBtn) loginBtn.style.display = 'none';
             if (loggedUser) loggedUser.style.display = 'flex';
             if (mobileUserMenu) mobileUserMenu.style.display = 'block';
+            if (mobileLoginMenu) mobileLoginMenu.style.display = 'none';
             
             // Configurar información del usuario
             if (userName) {
@@ -1395,50 +1429,22 @@
             }
             
             console.log('✅ UI actualizada para usuario:', currentUser.nombre || currentUser.email);
-            
-            // Mostrar alerta de bienvenida si es la primera vez que se carga
-            const welcomeShown = sessionStorage.getItem('welcome_shown');
-            if (!welcomeShown) {
-                setTimeout(() => {
-                    showAlert(`¡Bienvenido/a de nuevo, ${currentUser.nombre || currentUser.email}!`, 'success');
-                    sessionStorage.setItem('welcome_shown', 'true');
-                }, 1000);
-            }
         }
         
         function setupUserAvatarEvents(avatarElement) {
             if (!avatarElement) return;
             
-            // Limpiar eventos anteriores
-            const newAvatar = avatarElement.cloneNode(true);
-            avatarElement.parentNode.replaceChild(newAvatar, avatarElement);
-            
-            const updatedAvatar = document.getElementById('user-avatar');
-            
-            updatedAvatar.addEventListener('click', function(e) {
+            // Configurar click para abrir dropdown
+            avatarElement.addEventListener('click', function(e) {
                 e.stopPropagation();
                 toggleUserDropdown();
             });
             
-            updatedAvatar.addEventListener('keydown', function(e) {
+            // Configurar eventos de teclado
+            avatarElement.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     toggleUserDropdown();
-                }
-            });
-            
-            // Cerrar dropdown al hacer clic fuera
-            document.addEventListener('click', function(e) {
-                const dropdown = document.getElementById('user-dropdown-menu');
-                if (dropdown && !dropdown.contains(e.target) && !updatedAvatar.contains(e.target)) {
-                    closeUserDropdown();
-                }
-            });
-            
-            // Cerrar dropdown con Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && userDropdownOpen) {
-                    closeUserDropdown();
                 }
             });
         }
@@ -1454,7 +1460,48 @@
                 } else {
                     dropdown.classList.add('show');
                     userDropdownOpen = true;
+                    
+                    // Configurar eventos para cerrar dropdown
+                    setupDropdownCloseEvents();
                 }
+            }
+        }
+        
+        function setupDropdownCloseEvents() {
+            // Cerrar al hacer clic fuera
+            const closeOnClickOutside = (e) => {
+                const dropdown = document.getElementById('user-dropdown-menu');
+                const avatar = document.getElementById('user-avatar');
+                if (dropdown && 
+                    !dropdown.contains(e.target) && 
+                    !avatar.contains(e.target) && 
+                    userDropdownOpen) {
+                    closeUserDropdown();
+                }
+            };
+            
+            // Cerrar con Escape
+            const closeOnEscape = (e) => {
+                if (e.key === 'Escape' && userDropdownOpen) {
+                    closeUserDropdown();
+                }
+            };
+            
+            // Agregar event listeners temporales
+            document.addEventListener('click', closeOnClickOutside);
+            document.addEventListener('keydown', closeOnEscape);
+            
+            // Guardar referencias para remover luego
+            window._closeOnClickOutside = closeOnClickOutside;
+            window._closeOnEscape = closeOnEscape;
+        }
+        
+        function removeDropdownCloseEvents() {
+            if (window._closeOnClickOutside) {
+                document.removeEventListener('click', window._closeOnClickOutside);
+            }
+            if (window._closeOnEscape) {
+                document.removeEventListener('keydown', window._closeOnEscape);
             }
         }
         
@@ -1463,6 +1510,9 @@
             if (dropdown) {
                 dropdown.classList.remove('show');
                 userDropdownOpen = false;
+                
+                // Remover event listeners
+                removeDropdownCloseEvents();
             }
         }
         
@@ -1486,8 +1536,9 @@
                     <div class="user-dropdown-email">${currentUser.email}</div>
                     ${isAdmin ? '<div style="font-size: 12px; margin-top: 4px; padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; display: inline-block;">Administrador</div>' : ''}
                 </div>
-                <a href="Pages/usuario.html" class="dropdown-item">
+                <a href="Pages/usuario.html" class="dropdown-item" id="user-account-link">
                     <i class="bi bi-person"></i> Mi Cuenta
+                    ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
                 </a>
                 ${isAdmin ? `
                 <a href="Pages/admin.html" class="dropdown-item">
@@ -1502,28 +1553,32 @@
                 </a>
             `;
             
-            // Añadir estilos inline para los items
+            // Configurar eventos para los enlaces del dropdown
+            const accountLink = dropdown.querySelector('#user-account-link');
+            if (accountLink) {
+                accountLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Guardar en sessionStorage que vamos a usuario.html
+                    sessionStorage.setItem('redirecting_to_user', 'true');
+                    window.location.href = 'Pages/usuario.html';
+                });
+            }
+            
+            const logoutBtn = dropdown.querySelector('#dropdown-logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            // Añadir estilos para hover
             dropdown.querySelectorAll('.dropdown-item').forEach(item => {
-                item.style.cssText = `
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    padding: 12px 15px;
-                    color: #333;
-                    text-decoration: none;
-                    border-bottom: 1px solid #eee;
-                    transition: background 0.2s;
-                    font-size: 14px;
-                    cursor: pointer;
-                `;
                 item.addEventListener('mouseenter', function() {
                     this.style.background = '#f5f5f5';
                 });
                 item.addEventListener('mouseleave', function() {
                     this.style.background = '';
-                });
-                item.addEventListener('click', function(e) {
-                    e.stopPropagation();
                 });
             });
             
@@ -1535,13 +1590,10 @@
             setTimeout(() => {
                 dropdown.classList.add('show');
                 userDropdownOpen = true;
+                
+                // Configurar eventos para cerrar dropdown
+                setupDropdownCloseEvents();
             }, 10);
-            
-            // Configurar logout
-            document.getElementById('dropdown-logout-btn').addEventListener('click', function(e) {
-                e.preventDefault();
-                logout();
-            });
         }
         
         function logout() {
@@ -1549,11 +1601,34 @@
                 clearUserSession();
                 showAlert('Sesión cerrada correctamente', 'info');
                 
-                // Redirigir si está en páginas protegidas
-                if (window.location.pathname.includes('usuario.html') || 
-                    window.location.pathname.includes('admin.html')) {
+                // Redirigir al inicio si está en páginas protegidas
+                const currentPath = window.location.pathname;
+                if (currentPath.includes('usuario.html') || 
+                    currentPath.includes('admin.html') ||
+                    currentPath.includes('reservas.html')) {
                     setTimeout(() => {
                         window.location.href = '../index.html';
+                    }, 1000);
+                }
+            }
+        }
+        
+        function checkIfComingFromLogin() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromLogin = urlParams.get('fromLogin');
+            const loginSuccess = urlParams.get('loginSuccess');
+            
+            if (fromLogin === 'true' || loginSuccess === 'true') {
+                console.log('🔑 Usuario viene del login');
+                
+                // Remover parámetros de la URL
+                const cleanUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+                
+                // Mostrar mensaje de bienvenida
+                if (currentUser) {
+                    setTimeout(() => {
+                        showAlert(`¡Bienvenido/a ${currentUser.nombre}! Has iniciado sesión correctamente.`, 'success');
                     }, 1000);
                 }
             }
@@ -1577,9 +1652,6 @@
                 // Actualizar estado API
                 updateApiStatus('✅ API Conectada', 'connected');
                 
-                // Validar sesión con servidor
-                setTimeout(validateSessionWithServer, 1000);
-                
                 // Renderizar tours
                 renderTours(tours);
                 
@@ -1592,7 +1664,7 @@
                 // Mostrar tours de respaldo
                 renderFallbackTours();
                 
-                // Mostrar error después de 5 segundos
+                // Mostrar error
                 setTimeout(() => {
                     showAlert('No se pudieron cargar los tours. Mostrando información de respaldo.', 'error');
                 }, 3000);
@@ -1696,13 +1768,13 @@
             
             showAlert(`Redirigiendo para reservar: ${tourName}`, 'info');
             
-            // Guardar el tour seleccionado en sessionStorage para usarlo en la página de reservas
+            // Guardar el tour seleccionado
             sessionStorage.setItem('selected_tour', JSON.stringify({
                 id: tourId,
                 nombre: tourName
             }));
             
-            // Redirigir a la página de contacto/reservas
+            // Redirigir
             setTimeout(() => {
                 window.location.href = 'Pages/contacto.html';
             }, 1500);
@@ -1721,7 +1793,6 @@
                 const posts = await response.json();
                 
                 if (posts && posts.length > 0) {
-                    // Mostrar sección de blog
                     document.getElementById('blog-preview').style.display = 'block';
                     renderBlogPostsFromAPI(posts);
                 }
@@ -1730,7 +1801,6 @@
                 
             } catch (error) {
                 console.error('❌ Error cargando blog:', error);
-                // Ocultar sección si no hay posts
                 document.getElementById('blog-preview').style.display = 'none';
             }
         }
@@ -1741,7 +1811,6 @@
             
             container.innerHTML = '';
             
-            // Mostrar solo los 3 posts más recientes
             const recentPosts = posts.slice(0, 3);
             
             recentPosts.forEach(post => {
@@ -1791,6 +1860,7 @@
             
             statusElement.textContent = message;
             statusElement.className = 'api-status ' + statusClass;
+            statusElement.style.display = 'block';
         }
         
         function showAlert(message, type = 'info') {
@@ -1823,7 +1893,6 @@
                 mobileMenuToggle.setAttribute('aria-expanded', 'true');
                 mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
                 
-                // Cerrar dropdown de usuario si está abierto
                 closeUserDropdown();
             }
             
@@ -1836,55 +1905,33 @@
                 mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
             }
             
-            mobileMenuToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!isMobileMenuOpen) {
-                    openMobileMenu();
-                } else {
-                    closeMobileMenu();
-                }
-            });
-            
-            mobileMenuToggle.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                if (!isMobileMenuOpen) {
-                    openMobileMenu();
-                } else {
-                    closeMobileMenu();
-                }
-            }, { passive: false });
-            
-            mobileMenuClose.addEventListener('click', closeMobileMenu);
-            mobileMenuClose.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                closeMobileMenu();
-            }, { passive: false });
-            
-            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-            mobileMenuOverlay.addEventListener('touchstart', function(e) {
-                if (e.target === mobileMenuOverlay) {
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', function(e) {
                     e.preventDefault();
-                    closeMobileMenu();
-                }
-            }, { passive: false });
+                    e.stopPropagation();
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                });
+            }
             
-            const mobileMenuLinks = mobileMenuContainer.querySelectorAll('a');
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', closeMobileMenu);
+            }
+            
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+            }
+            
+            // Cerrar menú móvil al hacer clic en enlaces
+            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-nav a');
             mobileMenuLinks.forEach(link => {
                 link.addEventListener('click', closeMobileMenu);
-                link.addEventListener('touchstart', function(e) {
-                    setTimeout(closeMobileMenu, 100);
-                }, { passive: true });
             });
             
-            mobileMenuContainer.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-            
-            mobileMenuContainer.addEventListener('touchstart', function(e) {
-                e.stopPropagation();
-            }, { passive: true });
-            
+            // Cerrar menú móvil con Escape
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && isMobileMenuOpen) {
                     closeMobileMenu();
@@ -1900,39 +1947,6 @@
                 reservationForm.addEventListener('submit', handleReservationSubmit);
             }
             
-            // ========== OBSERVER PARA ANIMACIONES ==========
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('animated');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.1 });
-                
-                document.querySelectorAll('section').forEach(section => {
-                    observer.observe(section);
-                });
-            }
-            
-            // ========== HEADER SCROLL EFFECT ==========
-            let ticking = false;
-            window.addEventListener('scroll', function() {
-                if (!ticking) {
-                    window.requestAnimationFrame(function() {
-                        const header = document.querySelector('header');
-                        if (window.scrollY > 50) {
-                            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
-                        } else {
-                            header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-                        }
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            });
-            
             // ========== MEJORAS PARA MÓVIL ==========
             if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
                 const inputs = document.querySelectorAll('input, textarea, select');
@@ -1941,64 +1955,6 @@
                         this.style.fontSize = '16px';
                     });
                 });
-            }
-            
-            const allButtons = document.querySelectorAll('button, .btn, .carta-btn, .login-btn, .social-icon');
-            allButtons.forEach(button => {
-                button.style.cursor = 'pointer';
-                button.style.webkitTapHighlightColor = 'rgba(0,0,0,0.1)';
-                
-                button.addEventListener('touchstart', function() {
-                    this.style.transform = 'scale(0.98)';
-                }, { passive: true });
-                
-                button.addEventListener('touchend', function() {
-                    this.style.transform = '';
-                }, { passive: true });
-            });
-            
-            // ========== DETECTAR ANDROID ==========
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            if (isAndroid) {
-                console.log('📱 Android detectado');
-                
-                document.body.style.webkitTransform = 'translateZ(0)';
-                mobileMenuToggle.style.touchAction = 'manipulation';
-                mobileMenuClose.style.touchAction = 'manipulation';
-                
-                let lastTouchY = 0;
-                document.addEventListener('touchstart', function(e) {
-                    lastTouchY = e.touches[0].clientY;
-                }, { passive: true });
-                
-                document.addEventListener('touchmove', function(e) {
-                    if (isMobileMenuOpen) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-            }
-            
-            // ========== VERIFICAR SI VIENE DEL LOGIN ==========
-            checkIfComingFromLogin();
-        }
-        
-        function checkIfComingFromLogin() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const fromLogin = urlParams.get('fromLogin');
-            
-            if (fromLogin === 'true') {
-                console.log('🔑 Usuario viene del login, verificando sesión...');
-                
-                // Verificar autenticación nuevamente
-                setTimeout(() => {
-                    const authStatus = checkAuthenticationImmediately();
-                    if (authStatus.authenticated) {
-                        showAlert(`¡Bienvenido/a ${authStatus.user.nombre}! Has iniciado sesión correctamente.`, 'success');
-                        
-                        // Remover parámetro de la URL
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    }
-                }, 500);
             }
         }
         
@@ -2011,12 +1967,10 @@
             
             localImg.onload = function() {
                 heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${this.src}')`;
-                heroBg.classList.add('loaded');
             };
             
             localImg.onerror = function() {
                 heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')`;
-                heroBg.classList.add('loaded');
             };
         }
         
@@ -2039,7 +1993,6 @@
             button.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Enviando...';
             button.disabled = true;
             
-            // Crear objeto de reserva
             const booking = {
                 id: Date.now(),
                 codigo: 'RES-' + Date.now().toString().slice(-6),
@@ -2055,7 +2008,6 @@
                 usuario_id: currentUser ? currentUser.id : null
             };
             
-            // Guardar en localStorage
             const bookingsData = JSON.parse(localStorage.getItem('cano_salao_bookings') || '[]');
             bookingsData.push(booking);
             localStorage.setItem('cano_salao_bookings', JSON.stringify(bookingsData));
@@ -2070,87 +2022,15 @@
                 if (currentUser) {
                     console.log(`📝 Reserva creada por ${currentUser.nombre}: ${booking.codigo}`);
                 }
-                
-                setTimeout(() => {
-                    if (window.location.pathname.includes('contacto.html')) {
-                        window.location.href = 'confirmacion.html';
-                    }
-                }, 1000);
-                
             }, 1500);
         }
         
-        // ========== ESTILOS ADICIONALES ==========
-        const style = document.createElement('style');
-        style.textContent = `
-            .spin {
-                animation: spin 1s linear infinite;
-            }
-            
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            
-            @media (hover: none) and (pointer: coarse) {
-                button:active, 
-                .btn:active, 
-                .carta-btn:active, 
-                .login-btn:active,
-                .menu-toggle:active,
-                .mobile-menu-close:active {
-                    transform: scale(0.98) !important;
-                    transition: transform 0.1s ease !important;
-                }
-                
-                .mobile-menu-nav a:active {
-                    background: rgba(255,255,255,0.2) !important;
-                }
-                
-                .user-avatar:active {
-                    transform: scale(0.95) !important;
-                }
-            }
-            
-            .user-dropdown-menu {
-                animation: fadeInDown 0.2s ease;
-            }
-            
-            .user-dropdown-menu a {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // ========== FUNCIONES PARA DEBUG ==========
-        
-        window.debugAdminSystem = function() {
-            console.log('=== DEBUG ADMIN SYSTEM ===');
-            console.log('API Base URL:', API_BASE_URL);
-            console.log('Current User:', currentUser);
-            console.log('Token:', localStorage.getItem(STORAGE_KEYS.TOKEN));
-            console.log('User Data:', localStorage.getItem(STORAGE_KEYS.USER));
-            console.log('Tours Data:', toursData.length);
-            console.log('=======================');
-        };
-        
-        window.clearAllData = function() {
-            if (confirm('¿Borrar TODOS los datos locales?')) {
-                localStorage.clear();
-                sessionStorage.clear();
-                alert('Datos borrados. Recarga la página.');
-                location.reload();
-            }
-        };
-        
         // ========== EXPORTAR FUNCIONES GLOBALES ==========
         window.CanoSalaoAuth = {
-            currentUser: currentUser,
+            currentUser: () => currentUser,
             STORAGE_KEYS: STORAGE_KEYS,
             API_BASE_URL: API_BASE_URL,
-            checkAuthentication: checkAuthenticationImmediately,
+            checkAuthentication: checkAuthentication,
             logout: logout,
             showAlert: showAlert,
             validateSession: validateSessionWithServer
