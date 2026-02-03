@@ -2,123 +2,32 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atracciones - Ruta Turística Caño Salao | Manglares, Historia y Naturaleza</title>
-    <meta name="description" content="Descubre las principales atracciones de Caño Salao: manglares, puentes históricos, ruinas coloniales, observación de aves y playas vírgenes en Barcelona, Venezuela">
-    <meta name="keywords" content="atracciones Caño Salao, manglares Venezuela, turismo Barcelona, puente Una Luz, ruinas aduana, observación aves, ecoturismo">
-    <meta property="og:title" content="Atracciones - Ruta Turística Caño Salao">
-    <meta property="og:description" content="Descubre los tesornos naturales y culturales de Caño Salao en Barcelona, Venezuela">
-    <meta property="og:type" content="website">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Atracciones - Caño Salao | Tesoros Naturales y Culturales</title>
+    <meta name="description" content="Descubre las principales atracciones turísticas de Caño Salao: manglares, avistamiento de aves, puentes históricos y patrimonio cultural en Barcelona, Venezuela">
+    <meta name="keywords" content="atracciones Caño Salao, manglares Venezuela, turismo natural, avistamiento de aves, patrimonio histórico, Barcelona Anzoátegui">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../media/Logo_cano_60.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../media/Logo_cano_60.png">
+    <link rel="apple-touch-icon" href="../media/Logo_cano_120.png">
+    <meta name="theme-color" content="#0d3b66">
     
     <!-- Preload de fuentes críticas -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
     
-    <!-- Estilos críticos inline -->
-    <style>
-        /* SOLO ESTILOS CRÍTICOS PARA RENDER INICIAL */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            line-height: 1.5;
-            overflow-x: hidden;
-            opacity: 0;
-            animation: fadeIn 0.3s ease-out forwards;
-            background: #fff;
-        }
-        
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header mínimo para render inicial */
-        header {
-            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 0.75rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .logo h1 {
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
-            margin: 0;
-        }
-        
-        .text-orange {
-            color: #FF8C42;
-        }
-        
-        /* Loader minimalista */
-        #page-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.3s ease;
-        }
-        
-        .loader-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0d3b66;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Prevenir scroll durante carga */
-        body.loading {
-            overflow: hidden;
-        }
-    </style>
+    <!-- Cargar CSS principal -->
+    <link rel="stylesheet" href="../index.css">
     
-    <!-- Cargar CSS principal de forma no bloqueante -->
-    <link rel="stylesheet" href="../index.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="../index.css"></noscript>
-    
-    <!-- Bootstrap Icons diferido -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <style>
-        /* Estilos específicos para la página Atracciones */
+        /* Estilos adicionales específicos para Atracciones */
         .page-hero {
-            min-height: 60vh;
+            min-height: 70vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -127,7 +36,25 @@
             padding: 4rem 0;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .hero-bg.loaded {
+            opacity: 1;
         }
         
         .page-hero .container {
@@ -180,7 +107,6 @@
             background: var(--color-light);
             padding: 1rem 0;
             font-size: 0.9rem;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
         .breadcrumb a {
@@ -198,44 +124,12 @@
             font-weight: 500;
         }
         
-        /* Contenido principal */
-        .page-content {
-            padding: 4rem 0;
-            background: #f8f9fa;
-        }
-        
-        .content-block {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 3rem;
-            margin-bottom: 3rem;
-            box-shadow: var(--shadow-md);
-        }
-        
-        .content-block h2 {
-            color: var(--color-primary);
-            margin-bottom: 2rem;
-            font-size: 2.2rem;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-        
-        .content-block h2:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--color-accent);
-        }
-        
-        /* Grid de atracciones */
-        .content-grid {
+        /* Atracciones Styles */
+        .attractions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
+            margin: 3rem 0;
         }
         
         .attraction-card {
@@ -244,19 +138,17 @@
             overflow: hidden;
             box-shadow: var(--shadow-md);
             transition: var(--transition-normal);
-            border: 1px solid rgba(0,0,0,0.05);
         }
         
         .attraction-card:hover {
             transform: translateY(-10px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--color-accent);
         }
         
         .attraction-img {
-            height: 250px;
-            overflow: hidden;
+            height: 220px;
             position: relative;
+            overflow: hidden;
         }
         
         .attraction-img img {
@@ -270,111 +162,98 @@
             transform: scale(1.1);
         }
         
-        .attraction-info {
-            padding: 2rem;
+        .attraction-category {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.8rem;
         }
         
-        .attraction-info h3 {
+        .attraction-content {
+            padding: 1.5rem;
+        }
+        
+        .attraction-content h3 {
             color: var(--color-primary);
             margin-bottom: 1rem;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        .attraction-details {
-            margin: 1.5rem 0;
-            padding: 1.5rem;
+        .attraction-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        
+        .feature-tag {
             background: var(--color-light);
+            color: var(--color-dark);
+            padding: 0.3rem 0.6rem;
             border-radius: var(--radius-sm);
-            border-left: 3px solid var(--color-accent);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
         }
         
-        .attraction-details p {
-            margin-bottom: 0.5rem;
+        .attraction-description {
             color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
         }
         
-        .attraction-btn {
+        .attraction-link {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            width: 100%;
-            padding: 0.8rem;
-            background: var(--color-primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
+            color: var(--color-primary);
+            text-decoration: none;
             font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-normal);
+            transition: var(--transition-fast);
         }
         
-        .attraction-btn:hover {
-            background: #0c3254;
-            transform: translateY(-2px);
-        }
-        
-        /* Mapa */
-        .map-full-container {
-            width: 100%;
-            height: 500px;
-            margin: 2rem 0;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .attractions-map-info {
-            background: linear-gradient(135deg, var(--color-light) 0%, #e9ecef 100%);
-            padding: 1.5rem;
-            border-radius: var(--radius-md);
-            margin: 1.5rem 0;
-            border-left: 4px solid var(--color-primary);
-        }
-        
-        .attractions-map-legend {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            margin: 1.5rem 0;
+        .attraction-link:hover {
+            color: var(--color-accent);
+            transform: translateX(5px);
         }
         
         /* Galería */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
-            margin-top: 2rem;
+            margin: 2rem 0;
         }
         
         .gallery-item {
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             overflow: hidden;
-            height: 200px;
+            height: 150px;
+            cursor: pointer;
             transition: var(--transition-normal);
         }
         
         .gallery-item:hover {
             transform: scale(1.05);
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-md);
         }
         
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s ease;
         }
         
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-        
-        /* Modal */
+        /* Modal para imágenes */
         .modal {
             display: none;
             position: fixed;
@@ -382,62 +261,125 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 1000;
-            align-items: center;
+            background: rgba(0,0,0,0.9);
+            z-index: 1001;
             justify-content: center;
-            animation: fadeIn 0.3s ease;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .modal.active {
+            display: flex;
         }
         
         .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--radius-lg);
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+            max-width: 90%;
+            max-height: 90%;
             position: relative;
-            box-shadow: var(--shadow-xl);
+        }
+        
+        .modal-img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-sm);
         }
         
         .modal-close {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: -40px;
+            right: 0;
             background: none;
             border: none;
-            font-size: 1.5rem;
+            color: white;
+            font-size: 2rem;
             cursor: pointer;
-            color: var(--color-dark);
-            transition: var(--transition-fast);
         }
         
-        .modal-close:hover {
-            color: var(--color-accent);
-        }
-        
-        .modal-attraction-info img {
-            width: 100%;
-            border-radius: var(--radius-md);
-            margin-bottom: 1.5rem;
-        }
-        
-        .attraction-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .detail-item {
-            padding: 1rem;
-            background: var(--color-light);
-            border-radius: var(--radius-sm);
+        .modal-caption {
+            color: white;
             text-align: center;
+            margin-top: 1rem;
+            font-size: 1rem;
         }
         
-        /* Responsive para atracciones */
+        /* Mapa interactivo */
+        .map-section {
+            margin: 3rem 0;
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .map-container {
+            margin-top: 1.5rem;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            height: 300px;
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Tabla de actividades */
+        .activities-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .activities-table th,
+        .activities-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activities-table th {
+            background: var(--color-primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .activities-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .activity-icon {
+            color: var(--color-accent);
+            margin-right: 0.5rem;
+        }
+        
+        .best-time {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .best-time.morning {
+            background: #ffeaa7;
+            color: #856404;
+        }
+        
+        .best-time.afternoon {
+            background: #a7c5ff;
+            color: #0c4c8c;
+        }
+        
+        .best-time.all-day {
+            background: #d4edda;
+            color: #155724;
+        }
+        
         @media (max-width: 992px) {
             .page-hero h1 {
                 font-size: 2.8rem;
@@ -447,22 +389,14 @@
                 font-size: 1.3rem;
             }
             
-            .content-block {
-                padding: 2rem;
-            }
-            
-            .content-block h2 {
-                font-size: 1.8rem;
-            }
-            
-            .content-grid {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            .attractions-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
         @media (max-width: 768px) {
             .page-hero {
-                min-height: 50vh;
+                min-height: 60vh;
                 padding: 3rem 0;
             }
             
@@ -474,16 +408,17 @@
                 font-size: 1.1rem;
             }
             
-            .map-full-container {
-                height: 300px;
-            }
-            
-            .content-grid {
+            .attractions-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
             
             .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .activities-table {
+                font-size: 0.9rem;
             }
         }
         
@@ -496,69 +431,98 @@
                 font-size: 1rem;
             }
             
-            .content-block {
-                padding: 1.5rem;
-            }
-            
-            .content-block h2 {
-                font-size: 1.5rem;
-            }
-            
             .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
-<body class="loading">
-    <!-- Loader para experiencia inicial -->
-    <div id="page-loader">
-        <div class="loader-spinner"></div>
-    </div>
-
+<body>
     <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
                 <div class="logo">
+                    <img 
+                        src="../media/Logo_cano_60.png" 
+                        srcset="../media/Logo_cano_60.png 1x, ../media/Logo_cano_120.png 2x" 
+                        alt="Logo Caño Salao - Ruta Turística Marítima" 
+                        class="logo-img"
+                        width="35" 
+                        height="35"
+                        loading="eager"
+                        aria-hidden="true"
+                    >
                     <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
                 </div>
 
-                <!-- Contenedor para centrar la navegación -->
+                <!-- Navegación desktop (oculta en móvil) -->
                 <div class="nav-center">
                     <nav>
                         <ul id="main-navigation">
-                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
-                            <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
-                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
-                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                            <li><a href="Atracciones.html" class="active"><i class="bi bi-star"></i> Atracciones</a></li>
-                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                            <li><a href="../index.html"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
+                            <li><a href="Empresa.html"><i class="bi bi-building"></i> <span>Empresa</span></a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> <span>Historia</span></a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
+                            <li><a href="Atracciones.html" class="active"><i class="bi bi-star"></i> <span>Atracciones</span></a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
                         </ul>
                     </nav>
                 </div>
 
-                <!-- Botón Iniciar Sesión a la derecha -->
+                <!-- Sección de autenticación -->
                 <div class="auth-section">
                     <a href="login.html" class="login-btn">
-                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                        <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
                     </a>
                 </div>
 
-                <button class="menu-toggle" aria-label="Menú">
+                <!-- Botón hamburguesa para móvil -->
+                <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
                     <i class="bi bi-list"></i>
                 </button>
             </div>
         </div>
     </header>
 
+    <!-- Menú móvil overlay (fondo oscuro) -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+    <!-- Menú móvil (se abre desde la derecha) -->
+    <div class="mobile-menu-container" id="mobile-menu-container">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
+                <h2 class="times-font" style="color: white; font-size: 1.2rem;">Caño <span class="text-orange">Salao</span></h2>
+            </div>
+            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Cerrar menú">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-menu-nav">
+            <ul>
+                <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                <li><a href="Atracciones.html" class="active"><i class="bi bi-star"></i> Atracciones</a></li>
+                <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+            </ul>
+        </nav>
+    </div>
+
     <!-- Hero Section -->
     <section class="page-hero">
+        <div class="hero-bg" id="heroBackgroundAtracciones"></div>
         <div class="container">
-            <h1 class="times-font">Atracciones Turísticas</h1>
+            <h1 class="times-font">Atracciones de Caño Salao</h1>
             <p class="times-font hero-subtitle">
-                Descubre los tesoros naturales y culturales de Caño Salao
+                Descubre los tesoros naturales y culturales que hacen única a nuestra comunidad en el corazón de los manglares venezolanos
             </p>
+            <a href="#atracciones" class="btn" style="background: var(--color-accent); padding: 1rem 2.5rem; font-size: 1.1rem;">
+                <i class="bi bi-arrow-down-circle"></i> Explorar Atracciones
+            </a>
         </div>
     </section>
 
@@ -571,257 +535,325 @@
         </div>
     </section>
 
-    <!-- Page Content -->
-    <section class="page-content">
+    <!-- Main Content -->
+    <section style="padding: 4rem 0; background: #f8f9fa;">
         <div class="container">
             <!-- Introducción -->
-            <div class="content-block">
-                <h2 class="times-font"><i class="bi bi-compass"></i> Nuestras Principales Atracciones</h2>
-                <p>Caño Salao ofrece una combinación única de patrimonio natural y cultural que te transportará a través del tiempo mientras disfrutas de paisajes impresionantes. Cada atracción cuenta una historia y ofrece una experiencia inolvidable.</p>
+            <div class="section-title" style="margin-bottom: 3rem;">
+                <h2 class="times-font" id="atracciones"><i class="bi bi-stars"></i> Principales Atracciones</h2>
+                <p>Explora los lugares más emblemáticos y actividades imperdibles durante tu visita a Caño Salao</p>
             </div>
 
-            <!-- Grid de Atracciones -->
-            <div class="content-grid">
-                <!-- Manglares -->
-                <div class="attraction-card">
-                    <div class="attraction-img">
-                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Manglares de Caño Salao con raíces aéreas y aguas tranquilas" loading="lazy">
-                    </div>
-                    <div class="attraction-info">
-                        <h3 class="times-font"><i class="bi bi-tree"></i> Recorrido por Manglares</h3>
-                        <p>Navega entre los impresionantes manglares que albergan una rica biodiversidad de aves y especies marinas. Estos ecosistemas costeros son vitales para la protección contra la erosión y sirven como criaderos naturales para muchas especies.</p>
-                        <div class="attraction-details">
-                            <p><strong>Duración:</strong> 2 horas</p>
-                            <p><strong>Estado:</strong> Bien conservado</p>
-                            <p><strong>Recomendado para:</strong> Todos los públicos</p>
-                        </div>
-                        <button class="attraction-btn" data-attraction="manglares">
-                            <i class="bi bi-info-circle"></i> Más Información
-                        </button>
-                    </div>
+            <!-- Atracciones Naturales -->
+            <div style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h3 class="times-font"><i class="bi bi-tree-fill"></i> Maravillas Naturales</h3>
+                    <p>Los ecosistemas únicos que caracterizan a nuestra región</p>
                 </div>
-
-                <!-- Puente Una Luz -->
-                <div class="attraction-card">
-                    <div class="attraction-img">
-                        <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Puente Una Luz, estructura histórica sobre el caño" loading="lazy">
-                    </div>
-                    <div class="attraction-info">
-                        <h3 class="times-font"><i class="bi bi-bridge"></i> Puente Una Luz</h3>
-                        <p>Visita este histórico puente construido hace muchos años, testigo del desarrollo de la comunidad. Esta estructura representa la ingeniería de su época y ha sido parte fundamental de las conexiones terrestres en la región.</p>
-                        <div class="attraction-details">
-                            <p><strong>Época de construcción:</strong> Mediados del siglo XX</p>
-                            <p><strong>Estado:</strong> Bien conservado</p>
-                            <p><strong>Tipo:</strong> Patrimonio histórico</p>
-                        </div>
-                        <button class="attraction-btn" data-attraction="puente">
-                            <i class="bi bi-info-circle"></i> Más Información
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Ruinas Aduana -->
-                <div class="attraction-card">
-                    <div class="attraction-img">
-                        <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Ruinas de la antigua aduana colonial española" loading="lazy">
-                    </div>
-                    <div class="attraction-info">
-                        <h3 class="times-font"><i class="bi bi-buildings"></i> Ruinas de la Antigua Aduana</h3>
-                        <p>Explora los restos de un edificio importante de la época colonial española que controlaba el comercio marítimo. Estas ruinas nos hablan del pasado comercial de la región y su importancia estratégica durante la colonia.</p>
-                        <div class="attraction-details">
-                            <p><strong>Época:</strong> Colonial</p>
-                            <p><strong>Importancia:</strong> Patrimonial</p>
-                            <p><strong>Acceso:</strong> Terrestre y acuático</p>
-                        </div>
-                        <button class="attraction-btn" data-attraction="ruinas">
-                            <i class="bi bi-info-circle"></i> Más Información
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Observación de Aves -->
-                <div class="attraction-card">
-                    <div class="attraction-img">
-                        <img src="https://images.unsplash.com/photo-1459262838948-3e2de6c1ec80?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Garzas y otras aves en los manglares de Caño Salao" loading="lazy">
-                    </div>
-                    <div class="attraction-info">
-                        <h3 class="times-font"><i class="bi bi-bird"></i> Observación de Aves</h3>
-                        <p>Disfruta del avistamiento de más de 50 especies de aves migratorias y residentes. Nuestros guías especializados te ayudarán a identificar las diferentes especies y te contarán sobre sus comportamientos y hábitats.</p>
-                        <div class="attraction-details">
-                            <p><strong>Especies destacadas:</strong> Garzas, pelícanos, flamencos</p>
-                            <p><strong>Mejor época:</strong> Todo el año</p>
-                            <p><strong>Equipo recomendado:</strong> Binoculares, cámara</p>
-                        </div>
-                        <button class="attraction-btn" data-attraction="aves">
-                            <i class="bi bi-info-circle"></i> Más Información
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Puesta de Sol -->
-                <div class="attraction-card">
-                    <div class="attraction-img">
-                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Puesta de sol sobre el Mar Caribe desde Caño Salao" loading="lazy">
-                    </div>
-                    <div class="attraction-info">
-                        <h3 class="times-font"><i class="bi bi-sunset"></i> Puesta de Sol en el Mar Caribe</h3>
-                        <p>Vive la experiencia única de presenciar la puesta de sol sobre las aguas del Mar Caribe. Un espectáculo natural que combina colores vibrantes con la serenidad del océano, creando momentos inolvidables.</p>
-                        <div class="attraction-details">
-                            <p><strong>Horario recomendado:</strong> 5:00 PM - 6:30 PM</p>
-                            <p><strong>Fotografía:</strong> Permitida</p>
-                            <p><strong>Tours especiales:</strong> Disponibles</p>
-                        </div>
-                        <button class="attraction-btn" data-attraction="atardecer">
-                            <i class="bi bi-info-circle"></i> Más Información
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Playas Vírgenes -->
-                <div class="attraction-card">
-                    <div class="attraction-img">
-                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="Playas vírgenes de arena blanca en Caño Salao" loading="lazy">
-                    </div>
-                    <div class="attraction-info">
-                        <h3 class="times-font"><i class="bi bi-beach"></i> Playas Vírgenes</h3>
-                        <p>Descubre playas prácticamente vírgenes donde podrás relajarte y conectar con la naturaleza. Arenas blancas, aguas cristalinas y un ambiente de tranquilidad absoluta te esperan en estos paraísos escondidos.</p>
-                        <div class="attraction-details">
-                            <p><strong>Acceso:</strong> Solo por mar</p>
-                            <p><strong>Servicios:</strong> Básicos</p>
-                            <p><strong>Privacidad:</strong> Alta</p>
-                        </div>
-                        <button class="attraction-btn" data-attraction="playas">
-                            <i class="bi bi-info-circle"></i> Más Información
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mapa Interactivo -->
-            <div class="content-block">
-                <h2 class="times-font"><i class="bi bi-map"></i> Ubicación de las Atracciones</h2>
                 
-                <div class="map-full-container">
+                <div class="attractions-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-img">
+                            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Bosque de Manglares" loading="lazy">
+                            <div class="attraction-category">Naturaleza</div>
+                        </div>
+                        <div class="attraction-content">
+                            <h3 class="times-font"><i class="bi bi-tree"></i> Bosque de Manglares</h3>
+                            <p class="attraction-description">
+                                Explora el impresionante sistema de manglares que alberga una rica biodiversidad. Estos árboles adaptados al agua salada son esenciales para la protección costera y el sustento de numerosas especies marinas.
+                            </p>
+                            <div class="attraction-features">
+                                <span class="feature-tag"><i class="bi bi-clock"></i> 2-3 horas</span>
+                                <span class="feature-tag"><i class="bi bi-people"></i> Familiar</span>
+                                <span class="feature-tag"><i class="bi bi-camera"></i> Fotografía</span>
+                            </div>
+                            <a href="Servicios.html#tours" class="attraction-link">
+                                <i class="bi bi-arrow-right-circle"></i> Ver Tours Disponibles
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-img">
+                            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Avistamiento de Aves" loading="lazy">
+                            <div class="attraction-category">Fauna</div>
+                        </div>
+                        <div class="attraction-content">
+                            <h3 class="times-font"><i class="bi bi-bird"></i> Avistamiento de Aves</h3>
+                            <p class="attraction-description">
+                                Observa más de 50 especies de aves migratorias y residentes. Desde garzas y pelícanos hasta águilas pescadoras, el santuario de aves de Caño Salao es un paraíso para ornitólogos y amantes de la naturaleza.
+                            </p>
+                            <div class="attraction-features">
+                                <span class="feature-tag"><i class="bi bi-binoculars"></i> Binoculares</span>
+                                <span class="feature-tag"><i class="bi bi-sun"></i> Mañanas</span>
+                                <span class="feature-tag"><i class="bi bi-journal-text"></i> Guía Especializado</span>
+                            </div>
+                            <a href="Servicios.html#tours" class="attraction-link">
+                                <i class="bi bi-arrow-right-circle"></i> Reservar Tour
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-img">
+                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Paseo en Bote" loading="lazy">
+                            <div class="attraction-category">Aventura</div>
+                        </div>
+                        <div class="attraction-content">
+                            <h3 class="times-font"><i class="bi bi-ship"></i> Paseo en Bote por los Canales</h3>
+                            <p class="attraction-description">
+                                Navega por los serenos canales de agua rodeados de vegetación exuberante. Una experiencia tranquila que te permite conectar con la naturaleza y descubrir rincones escondidos del ecosistema.
+                            </p>
+                            <div class="attraction-features">
+                                <span class="feature-tag"><i class="bi bi-water"></i> Tranquilo</span>
+                                <span class="feature-tag"><i class="bi bi-shield-check"></i> Seguro</span>
+                                <span class="feature-tag"><i class="bi bi-person"></i> Todos los niveles</span>
+                            </div>
+                            <a href="Servicios.html#tours" class="attraction-link">
+                                <i class="bi bi-arrow-right-circle"></i> Elegir Paseo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atracciones Históricas y Culturales -->
+            <div style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h3 class="times-font"><i class="bi bi-buildings"></i> Patrimonio Histórico y Cultural</h3>
+                    <p>Testimonios del rico pasado y presente de nuestra comunidad</p>
+                </div>
+                
+                <div class="attractions-grid">
+                    <div class="attraction-card">
+                        <div class="attraction-img">
+                            <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Puente Una Luz" loading="lazy">
+                            <div class="attraction-category">Historia</div>
+                        </div>
+                        <div class="attraction-content">
+                            <h3 class="times-font"><i class="bi bi-bridge"></i> Puente "Una Luz"</h3>
+                            <p class="attraction-description">
+                                Este histórico puente construido a mediados del siglo XX fue un punto crucial para el desarrollo de la comunidad. Conectaba las áreas de pesca con las viviendas y simboliza la resiliencia de los primeros habitantes.
+                            </p>
+                            <div class="attraction-features">
+                                <span class="feature-tag"><i class="bi bi-clock-history"></i> Años 1950</span>
+                                <span class="feature-tag"><i class="bi bi-geo-alt"></i> Punto central</span>
+                                <span class="feature-tag"><i class="bi bi-camera"></i> Icono fotográfico</span>
+                            </div>
+                            <a href="Historia.html" class="attraction-link">
+                                <i class="bi bi-arrow-right-circle"></i> Conocer Historia
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-img">
+                            <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Ruinas de la Aduana" loading="lazy">
+                            <div class="attraction-category">Arqueología</div>
+                        </div>
+                        <div class="attraction-content">
+                            <h3 class="times-font"><i class="bi bi-building"></i> Ruinas de la Antigua Aduana</h3>
+                            <p class="attraction-description">
+                                Vestigios de la época colonial española cuando esta zona era un importante punto de control comercial. Las ruinas cuentan la historia del intercambio marítimo que caracterizó a la región durante siglos.
+                            </p>
+                            <div class="attraction-features">
+                                <span class="feature-tag"><i class="bi bi-clock-history"></i> Colonial</span>
+                                <span class="feature-tag"><i class="bi bi-shield-lock"></i> Protegido</span>
+                                <span class="feature-tag"><i class="bi bi-book"></i> Educativo</span>
+                            </div>
+                            <a href="Historia.html" class="attraction-link">
+                                <i class="bi bi-arrow-right-circle"></i> Más Información
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="attraction-card">
+                        <div class="attraction-img">
+                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Comunidad de Pescadores" loading="lazy">
+                            <div class="attraction-category">Cultura Viva</div>
+                        </div>
+                        <div class="attraction-content">
+                            <h3 class="times-font"><i class="bi bi-people-fill"></i> Comunidad de Pescadores</h3>
+                            <p class="attraction-description">
+                                Conoce de cerca la vida cotidiana de las familias pescadoras que han habitado estas tierras por generaciones. Observa técnicas tradicionales de pesca y aprende sobre su relación armoniosa con el medio ambiente.
+                            </p>
+                            <div class="attraction-features">
+                                <span class="feature-tag"><i class="bi bi-people"></i> Interactivo</span>
+                                <span class="feature-tag"><i class="bi bi-heart"></i> Auténtico</span>
+                                <span class="feature-tag"><i class="bi bi-chat"></i> Cultural</span>
+                            </div>
+                            <a href="Empresa.html" class="attraction-link">
+                                <i class="bi bi-arrow-right-circle"></i> Conocer Proyecto
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Actividades -->
+            <div style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h3 class="times-font"><i class="bi bi-calendar-check"></i> Actividades y Mejor Época</h3>
+                    <p>Planifica tu visita según tus intereses y la temporada ideal</p>
+                </div>
+                
+                <table class="activities-table">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-activity"></i> Actividad</th>
+                            <th><i class="bi bi-calendar-month"></i> Mejor Época</th>
+                            <th><i class="bi bi-clock"></i> Mejor Horario</th>
+                            <th><i class="bi bi-info-circle"></i> Recomendaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="bi bi-tree activity-icon"></i> Recorrido por Manglares</td>
+                            <td>Noviembre - Abril (temporada seca)</td>
+                            <td><span class="best-time morning">Mañana (8AM - 11AM)</span></td>
+                            <td>Usar repelente y protector solar</td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-binoculars activity-icon"></i> Avistamiento de Aves</td>
+                            <td>Diciembre - Marzo (aves migratorias)</td>
+                            <td><span class="best-time morning">Mañana Temprano (6AM - 9AM)</span></td>
+                            <td>Traer binoculares y cámara</td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-camera activity-icon"></i> Fotografía de Paisajes</td>
+                            <td>Todo el año</td>
+                            <td><span class="best-time all-day">Todo el día</span></td>
+                            <td>"Hora dorada" al amanecer/atardecer</td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-ship activity-icon"></i> Paseos en Bote</td>
+                            <td>Diciembre - Mayo</td>
+                            <td><span class="best-time afternoon">Tarde (3PM - 6PM)</span></td>
+                            <td>Ropa ligera y sombrero</td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-book activity-icon"></i> Visitas Educativas</td>
+                            <td>Enero - Julio</td>
+                            <td><span class="best-time morning">Mañana (9AM - 12PM)</span></td>
+                            <td>Reservar con anticipación para grupos</td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-moon-stars activity-icon"></i> Tours Nocturnos</td>
+                            <td>Junio - Agosto</td>
+                            <td><span class="best-time afternoon">Noche (7PM - 10PM)</span></td>
+                            <td>Reservación obligatoria, linterna</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Galería de Imágenes -->
+            <div style="margin-bottom: 4rem;">
+                <div class="section-title">
+                    <h3 class="times-font"><i class="bi bi-images"></i> Galería Fotográfica</h3>
+                    <p>Un vistazo visual a las bellezas que te esperan en Caño Salao</p>
+                </div>
+                
+                <div class="gallery-grid" id="gallery-container">
+                    <div class="gallery-item" data-index="0">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Manglares al atardecer" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-index="1">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Botes en el canal" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-index="2">
+                        <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Puente histórico" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-index="3">
+                        <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Ruinas coloniales" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-index="4">
+                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Comunidad local" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-index="5">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Aves migratorias" loading="lazy">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa de Atracciones -->
+            <div class="map-section">
+                <div class="section-title">
+                    <h3 class="times-font"><i class="bi bi-map"></i> Mapa de Atracciones</h3>
+                    <p>Ubicación geográfica de los principales puntos de interés en Caño Salao</p>
+                </div>
+                
+                <div class="map-container">
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3927.1234567890123!2d-64.699987!3d10.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c2e63e1b5f5b5a5%3A0x5c2e63e1b5f5b5a5!2sCa%C3%B1o%20Salao%2C%20Barcelona%2C%20Anzo%C3%A1tegui%2C%20Venezuela!5e0!3m2!1ses!2sve!4v1234567890123" 
-                        width="100%" 
-                        height="100%" 
-                        style="border:0; display: block;" 
                         allowfullscreen="" 
                         loading="lazy" 
                         referrerpolicy="no-referrer-when-downgrade"
-                        title="Ubicación de Caño Salao en Google Maps"
-                        aria-label="Mapa interactivo mostrando la ubicación de Caño Salao en Barcelona, Venezuela">
+                        title="Mapa de atracciones de Caño Salao"
+                        aria-label="Mapa interactivo con las principales atracciones de Caño Salao">
                     </iframe>
                 </div>
-
-                <div class="attractions-map-info">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                        <div>
-                            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;"><i class="bi bi-geo-alt"></i> Punto de Encuentro</h4>
-                            <p style="margin: 0; font-size: 0.95rem;"><strong>Muelle Principal de Caño Salao</strong><br>
-                            Sector Caño Salao, Barcelona<br>
-                            Estado Anzoátegui, Venezuela</p>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;"><i class="bi bi-car-front"></i> Cómo Llegar</h4>
-                            <p style="margin: 0; font-size: 0.95rem;">Desde Barcelona: Tomar la avenida Costanera hacia el noreste. Aproximadamente 15 minutos desde el centro.</p>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--color-primary); margin-bottom: 0.5rem;"><i class="bi bi-clock"></i> Horarios</h4>
-                            <p style="margin: 0; font-size: 0.95rem;">Lunes a Domingo<br>8:00 AM - 5:00 PM</p>
-                        </div>
+                
+                <div style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 20px; height: 20px; background: var(--color-accent); border-radius: 50%;"></div>
+                        <span><strong>1.</strong> Muelle principal y punto de partida</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 20px; height: 20px; background: #4CAF50; border-radius: 50%;"></div>
+                        <span><strong>2.</strong> Bosque de manglares (recorrido principal)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 20px; height: 20px; background: #2196F3; border-radius: 50%;"></div>
+                        <span><strong>3.</strong> Puente histórico "Una Luz"</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 20px; height: 20px; background: #FF9800; border-radius: 50%;"></div>
+                        <span><strong>4.</strong> Ruinas de la antigua aduana</span>
                     </div>
                 </div>
+            </div>
 
-                <div class="attractions-map-legend">
-                    <h4 style="text-align: center; color: var(--color-primary); margin-bottom: 1rem;"><i class="bi bi-key"></i> Leyenda de Atracciones</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                        <div style="display: flex; align-items: center; padding: 0.5rem; background: #f8f9fa; border-radius: 6px;">
-                            <span style="display: inline-block; width: 16px; height: 16px; background: #1a5276; border-radius: 50%; margin-right: 0.75rem; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></span>
-                            <div>
-                                <strong style="display: block; font-size: 0.9rem;">Muelle Principal</strong>
-                                <small style="color: #666;">Punto de partida</small>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; padding: 0.5rem; background: #f8f9fa; border-radius: 6px;">
-                            <span style="display: inline-block; width: 16px; height: 16px; background: #e62b7e; border-radius: 50%; margin-right: 0.75rem; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></span>
-                            <div>
-                                <strong style="display: block; font-size: 0.9rem;">Recorrido Manglares</strong>
-                                <small style="color: #666;">Zona de biodiversidad</small>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; padding: 0.5rem; background: #f8f9fa; border-radius: 6px;">
-                            <span style="display: inline-block; width: 16px; height: 16px; background: #27ae60; border-radius: 50%; margin-right: 0.75rem; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></span>
-                            <div>
-                                <strong style="display: block; font-size: 0.9rem;">Puente Una Luz</strong>
-                                <small style="color: #666;">Patrimonio histórico</small>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; padding: 0.5rem; background: #f8f9fa; border-radius: 6px;">
-                            <span style="display: inline-block; width: 16px; height: 16px; background: #f39c12; border-radius: 50%; margin-right: 0.75rem; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></span>
-                            <div>
-                                <strong style="display: block; font-size: 0.9rem;">Ruinas Aduana</strong>
-                                <small style="color: #666;">Sitio colonial</small>
-                            </div>
-                        </div>
+            <!-- Consejos para Visitantes -->
+            <div style="background: white; border-radius: var(--radius-md); padding: 2rem; margin: 3rem 0; box-shadow: var(--shadow-md);">
+                <div class="section-title">
+                    <h3 class="times-font"><i class="bi bi-lightbulb"></i> Consejos para tu Visita</h3>
+                    <p>Recomendaciones para aprovechar al máximo tu experiencia en Caño Salao</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                    <div>
+                        <h4 class="times-font" style="color: var(--color-primary); margin-bottom: 0.5rem;"><i class="bi bi-sun"></i> Mejor Tiempo</h4>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5;">La temporada seca (diciembre a abril) ofrece las mejores condiciones para los tours. Las mañanas son ideales para actividades al aire libre.</p>
+                    </div>
+                    <div>
+                        <h4 class="times-font" style="color: var(--color-primary); margin-bottom: 0.5rem;"><i class="bi bi-bag-check"></i> Qué Llevar</h4>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5;">Protector solar, repelente de insectos, ropa ligera, calzado cómodo, gorra o sombrero, cámara fotográfica y una botella de agua reutilizable.</p>
+                    </div>
+                    <div>
+                        <h4 class="times-font" style="color: var(--color-primary); margin-bottom: 0.5rem;"><i class="bi bi-shield-check"></i> Seguridad</h4>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5;">Siempre sigue las instrucciones de los guías locales. Usa el chaleco salvavidas durante los paseos en bote y mantente en los senderos designados.</p>
+                    </div>
+                    <div>
+                        <h4 class="times-font" style="color: var(--color-primary); margin-bottom: 0.5rem;"><i class="bi bi-heart"></i> Turismo Responsable</h4>
+                        <p style="color: #666; font-size: 0.9rem; line-height: 1.5;">Respeta la flora y fauna local, no dejes basura, y apoya a la comunidad comprando productos locales y respetando sus costumbres.</p>
                     </div>
                 </div>
+            </div>
 
-                <div style="text-align: center; margin-top: 2rem;">
-                    <a href="Contacto.html" class="btn" style="background: var(--color-accent); padding: 0.8rem 2rem; font-size: 1.1rem;">
-                        <i class="bi bi-geo-alt"></i> ¿Necesitas ayuda con direcciones?
+            <!-- Llamada a la Acción -->
+            <div style="background: var(--color-primary); color: white; padding: 3rem; border-radius: var(--radius-lg); text-align: center; margin-top: 4rem;">
+                <h2 class="times-font" style="color: white; margin-bottom: 1rem;"><i class="bi bi-compass"></i> ¿Listo para la Aventura?</h2>
+                <p style="margin-bottom: 2rem; opacity: 0.9; max-width: 700px; margin-left: auto; margin-right: auto;">
+                    Reserva tu tour hoy mismo y descubre la magia de Caño Salao con nuestros guías expertos
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="Servicios.html" class="btn" style="background: var(--color-accent);">
+                        <i class="bi bi-list-check"></i> Ver Tours Disponibles
                     </a>
-                </div>
-            </div>
-
-            <!-- Galería -->
-            <div class="content-block">
-                <h2 class="times-font"><i class="bi bi-images"></i> Galería de Atracciones</h2>
-                <div class="gallery-grid">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Vista de los manglares de Caño Salao" loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Puente Una Luz histórico" loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Ruinas coloniales" loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1459262838948-3e2de6c1ec80?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Aves en vuelo" loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w-400&q=80" alt="Atardecer en el mar" loading="lazy">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=60" alt="Playas vírgenes" loading="lazy">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Planificación de Visita -->
-            <div class="content-block">
-                <h2 class="times-font"><i class="bi bi-calendar-check"></i> Planifica Tu Visita</h2>
-                <div class="content-grid">
-                    <div class="attraction-card">
-                        <div class="attraction-info">
-                            <h3 class="times-font"><i class="bi bi-calendar-month"></i> Mejor Época para Visitar</h3>
-                            <p>Caño Salao es hermoso todo el año, pero los meses de <strong>diciembre a abril</strong> ofrecen el mejor clima con menos lluvias. La temporada de aves migratorias va de <strong>octubre a marzo</strong>.</p>
-                        </div>
-                    </div>
-                    <div class="attraction-card">
-                        <div class="attraction-info">
-                            <h3 class="times-font"><i class="bi bi-bag-check"></i> Qué Llevar</h3>
-                            <p>Recomendamos: protector solar, gorra, ropa cómoda, calzado adecuado para caminar, cámara fotográfica, binoculares para observación de aves y repelente de insectos.</p>
-                        </div>
-                    </div>
-                    <div class="attraction-card">
-                        <div class="attraction-info">
-                            <h3 class="times-font"><i class="bi bi-universal-access"></i> Accesibilidad</h3>
-                            <p>La mayoría de las atracciones son accesibles. Contamos con botes adaptados para personas con movilidad reducida. Consulta por tours especializados según tus necesidades.</p>
-                        </div>
-                    </div>
+                    <a href="Contacto.html" class="btn" style="background: white; color: var(--color-primary);">
+                        <i class="bi bi-calendar-check"></i> Contactar para Reservar
+                    </a>
                 </div>
             </div>
         </div>
@@ -844,7 +876,6 @@
                         <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
                         <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
                         <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
-                        <li><a href="login.html"><i class="bi bi-person-circle"></i> Login</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -868,224 +899,253 @@
         </div>
     </footer>
 
-    <!-- Modal para información detallada -->
-    <div id="attraction-modal" class="modal">
+    <!-- Modal para imágenes -->
+    <div class="modal" id="imageModal">
+        <button class="modal-close" id="modalClose">&times;</button>
         <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h2 id="modal-title">Información Detallada</h2>
-            <div id="modal-content">
-                <!-- Contenido dinámico se insertará aquí -->
-            </div>
+            <img class="modal-img" id="modalImage" src="" alt="">
+            <div class="modal-caption" id="modalCaption"></div>
         </div>
     </div>
 
-    <!-- Scripts optimizados -->
+    <!-- Scripts -->
     <script>
-        (function() {
-            // Remover loader cuando el DOM esté listo
-            function hideLoader() {
-                const loader = document.getElementById('page-loader');
-                if (loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                        document.body.classList.remove('loading');
-                        document.body.style.overflow = 'visible';
-                        initContent();
-                    }, 300);
-                }
+        document.addEventListener('DOMContentLoaded', function() {
+            // ========== VARIABLES DEL MENÚ MÓVIL ==========
+            let isMobileMenuOpen = false;
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const mobileMenuContainer = document.getElementById('mobile-menu-container');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            // ========== FUNCIONES DEL MENÚ MÓVIL ==========
+            
+            function openMobileMenu() {
+                mobileMenuContainer.classList.add('active');
+                mobileMenuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                isMobileMenuOpen = true;
+                mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
             }
             
-            // Inicializar contenido
-            function initContent() {
-                // Inicializar funcionalidades básicas
-                initBasicFunctionality();
-                initModal();
-                
-                // Animaciones para elementos al hacer scroll
-                if ('IntersectionObserver' in window) {
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                entry.target.classList.add('animated');
-                            }
-                        });
-                    }, { threshold: 0.1 });
-                    
-                    // Observar todas las secciones
-                    document.querySelectorAll('section').forEach(section => {
-                        observer.observe(section);
-                    });
-                }
+            function closeMobileMenu() {
+                mobileMenuContainer.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                isMobileMenuOpen = false;
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
             }
             
-            // Funcionalidad básica inmediata
-            function initBasicFunctionality() {
-                // Menú móvil
-                const menuToggle = document.querySelector('.menu-toggle');
-                const mainNav = document.querySelector('#main-navigation');
-                
-                if (menuToggle && mainNav) {
-                    menuToggle.addEventListener('click', function() {
-                        mainNav.classList.toggle('show');
-                        const icon = this.querySelector('i');
-                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
-                        
-                        // Actualizar atributo ARIA
-                        const isExpanded = mainNav.classList.contains('show');
-                        this.setAttribute('aria-expanded', isExpanded);
-                    });
+            // Configurar eventos del menú móvil
+            mobileMenuToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isMobileMenuOpen) {
+                    openMobileMenu();
+                } else {
+                    closeMobileMenu();
                 }
-                
-                // Smooth scroll para enlaces internos
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function(e) {
-                        const href = this.getAttribute('href');
-                        if (href === '#') return;
-                        
-                        const target = document.querySelector(href);
-                        if (target) {
-                            e.preventDefault();
-                            window.scrollTo({
-                                top: target.offsetTop - 80,
-                                behavior: 'smooth'
-                            });
-                        }
-                    });
-                });
-            }
+            });
             
-            // Funcionalidad del modal
-            function initModal() {
-                const modal = document.getElementById('attraction-modal');
-                const closeBtn = document.querySelector('.modal-close');
-                const modalTitle = document.getElementById('modal-title');
-                const modalContent = document.getElementById('modal-content');
+            mobileMenuToggle.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (!isMobileMenuOpen) {
+                    openMobileMenu();
+                } else {
+                    closeMobileMenu();
+                }
+            }, { passive: false });
+            
+            mobileMenuClose.addEventListener('click', closeMobileMenu);
+            mobileMenuClose.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                closeMobileMenu();
+            }, { passive: false });
+            
+            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay.addEventListener('touchstart', function(e) {
+                if (e.target === mobileMenuOverlay) {
+                    e.preventDefault();
+                    closeMobileMenu();
+                }
+            }, { passive: false });
+            
+            const mobileMenuLinks = mobileMenuContainer.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+                link.addEventListener('touchstart', function(e) {
+                    setTimeout(closeMobileMenu, 100);
+                }, { passive: true });
+            });
+            
+            mobileMenuContainer.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            mobileMenuContainer.addEventListener('touchstart', function(e) {
+                e.stopPropagation();
+            }, { passive: true });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isMobileMenuOpen) {
+                    closeMobileMenu();
+                }
+            });
+            
+            // ========== FUNCIONES PRINCIPALES ==========
+            
+            // Cargar imagen de fondo del hero
+            function loadHeroImage() {
+                const heroBg = document.getElementById('heroBackgroundAtracciones');
+                if (!heroBg) return;
                 
-                // Datos de las atracciones para el modal
-                const attractionData = {
-                    manglares: {
-                        title: "Recorrido por Manglares",
-                        content: `
-                            <div class="modal-attraction-info">
-                                <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Manglares de Caño Salao" loading="lazy" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                                <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Experiencia Completa en los Manglares</h3>
-                                <p>Navega a través de un laberinto natural de manglares que albergan una biodiversidad única en la región. Durante el recorrido podrás observar:</p>
-                                <ul style="margin: 1rem 0 1rem 1.5rem; color: #666;">
-                                    <li>Especies de mangle rojo, blanco y negro</li>
-                                    <li>Aves residentes y migratorias</li>
-                                    <li>Peces y crustáceos endémicos</li>
-                                    <li>Ecosistemas de raíces aéreas</li>
-                                </ul>
-                                <div class="attraction-details-grid">
-                                    <div class="detail-item">
-                                        <strong>Duración:</strong> 2 horas
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Precio:</strong> $25 por persona
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Incluye:</strong> Guía especializado, chaleco salvavidas
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Grupo máximo:</strong> 8 personas
-                                    </div>
-                                </div>
-                                <a href="Contacto.html" class="btn" style="margin-top: 1.5rem; background: var(--color-accent);">
-                                    <i class="bi bi-calendar-check"></i> Reservar este Tour
-                                </a>
-                            </div>
-                        `
-                    },
-                    puente: {
-                        title: "Puente Una Luz",
-                        content: `
-                            <div class="modal-attraction-info">
-                                <img src="https://images.unsplash.com/photo-1597076953441-3197b7c9c9b8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Puente Una Luz" loading="lazy" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                                <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Historia Viva de Caño Salao</h3>
-                                <p>El Puente Una Luz es un testimonio de la ingeniería local y ha sido testigo del desarrollo de la comunidad desde mediados del siglo XX.</p>
-                                <p><strong>Características destacadas:</strong></p>
-                                <ul style="margin: 1rem 0 1rem 1.5rem; color: #666;">
-                                    <li>Construcción en madera y concreto</li>
-                                    <li>Arquitectura tradicional costera</li>
-                                    <li>Punto estratégico para fotografías</li>
-                                    <li>Vista panorámica del caño</li>
-                                </ul>
-                                <p><em>Incluido en todos nuestros tours históricos</em></p>
-                                <a href="Servicios.html" class="btn" style="margin-top: 1.5rem; background: var(--color-primary);">
-                                    <i class="bi bi-signpost"></i> Ver Tours Disponibles
-                                </a>
-                            </div>
-                        `
-                    },
-                    ruinas: {
-                        title: "Ruinas de la Antigua Aduana",
-                        content: `
-                            <div class="modal-attraction-info">
-                                <img src="https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Ruinas de la Aduana" loading="lazy" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                                <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Vestigios Coloniales</h3>
-                                <p>Estas ruinas nos transportan al periodo colonial español, cuando la aduana controlaba el comercio marítimo en la región.</p>
-                                <p><strong>Aspectos históricos:</strong></p>
-                                <ul style="margin: 1rem 0 1rem 1.5rem; color: #666;">
-                                    <li>Construida en el siglo XVIII</li>
-                                    <li>Controlaba el comercio de cacao y cueros</li>
-                                    <li>Arquitectura colonial típica</li>
-                                    <li>Estrategia defensiva costera</li>
-                                </ul>
-                                <a href="Historia.html" class="btn" style="margin-top: 1.5rem; background: var(--color-primary);">
-                                    <i class="bi bi-book"></i> Conoce Nuestra Historia
-                                </a>
-                            </div>
-                        `
-                    }
+                const heroImg = new Image();
+                heroImg.src = 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80';
+                
+                heroImg.onload = function() {
+                    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${this.src}')`;
+                    heroBg.classList.add('loaded');
                 };
                 
-                // Configurar botones de atracciones
-                document.querySelectorAll('.attraction-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const attraction = this.getAttribute('data-attraction');
-                        const data = attractionData[attraction];
+                heroImg.onerror = function() {
+                    heroBg.style.backgroundImage = `linear-gradient(135deg, #1a5276 0%, #2c82c9 100%)`;
+                    heroBg.classList.add('loaded');
+                };
+            }
+            
+            loadHeroImage();
+            
+            // ========== GALERÍA INTERACTIVA ==========
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            const modalClose = document.getElementById('modalClose');
+            
+            const imageCaptions = [
+                "Manglares de Caño Salao al atardecer",
+                "Paseo en bote por los canales naturales",
+                "Puente histórico 'Una Luz'",
+                "Ruinas de la antigua aduana colonial",
+                "Comunidad local de pescadores",
+                "Avistamiento de aves migratorias"
+            ];
+            
+            galleryItems.forEach((item, index) => {
+                item.addEventListener('click', function() {
+                    const imgSrc = this.querySelector('img').src;
+                    modalImage.src = imgSrc;
+                    modalCaption.textContent = imageCaptions[index] || "Imagen de Caño Salao";
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            modalClose.addEventListener('click', function() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // ========== ANIMACIONES ==========
+            
+            // Animación de scroll para enlaces internos
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: target.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
                         
-                        if (data) {
-                            modalTitle.textContent = data.title;
-                            modalContent.innerHTML = data.content;
-                            modal.style.display = 'flex';
-                            document.body.style.overflow = 'hidden';
+                        // Cerrar menú móvil si está abierto
+                        if (isMobileMenuOpen) {
+                            closeMobileMenu();
+                        }
+                    }
+                });
+            });
+            
+            // ========== HEADER SCROLL EFFECT ==========
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        const header = document.querySelector('header');
+                        if (window.scrollY > 50) {
+                            header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        } else {
+                            header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+            
+            // ========== OBSERVER PARA ANIMACIONES ==========
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animated');
                         }
                     });
+                }, { threshold: 0.1 });
+                
+                // Observar todas las secciones
+                document.querySelectorAll('section').forEach(section => {
+                    observer.observe(section);
                 });
                 
-                // Cerrar modal
-                closeBtn.addEventListener('click', () => {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                });
-                
-                // Cerrar modal al hacer clic fuera
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-                
-                // Cerrar modal con tecla Escape
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && modal.style.display === 'flex') {
-                        modal.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                    }
+                // Observar tarjetas de atracciones
+                document.querySelectorAll('.attraction-card').forEach(card => {
+                    observer.observe(card);
                 });
             }
             
-            // Iniciar
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', hideLoader);
-            } else {
-                hideLoader();
-            }
+            // Verificar autenticación y actualizar botón de login
+            checkAuthStatus();
+        });
+        
+        // Función para verificar estado de autenticación
+        function checkAuthStatus() {
+            const token = localStorage.getItem('cano_salao_token');
+            const user = localStorage.getItem('cano_salao_user');
             
-        })();
+            const loginBtn = document.querySelector('.auth-section .login-btn');
+            if (!loginBtn) return;
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    loginBtn.innerHTML = `<i class="bi bi-person-check"></i> <span class="login-text">${userData.nombre.split(' ')[0]}</span>`;
+                    loginBtn.href = 'usuario.html';
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            }
+        }
     </script>
 </body>
 </html>
