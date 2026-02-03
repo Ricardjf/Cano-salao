@@ -103,6 +103,64 @@
         body.loading {
             overflow: hidden;
         }
+        
+        /* Sistema de notificaciones */
+        .notification-system {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+        }
+        
+        .notification {
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease;
+            transform-origin: top right;
+        }
+        
+        .notification.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .notification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .notification.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .notification.warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
     </style>
     
     <!-- Cargar CSS principal de forma no bloqueante -->
@@ -875,6 +933,9 @@
     </style>
 </head>
 <body class="loading">
+    <!-- Sistema de notificaciones -->
+    <div class="notification-system" id="notification-system"></div>
+    
     <!-- Loader para experiencia inicial -->
     <div id="page-loader">
         <div class="loader-spinner"></div>
@@ -1641,7 +1702,16 @@
     <script>
         (function() {
             // ========== CONFIGURACIÓN ==========
+            const API_BASE_URL = 'https://cano-salao.onrender.com/api';
+            const STORAGE_KEYS = {
+                TOKEN: 'cano_salao_token',
+                USER: 'cano_salao_user'
+            };
+            
+            // Estado global
             let currentUser = null;
+            let isAuthenticated = false;
+            let isAdmin = false;
             let userData = null;
             let userBookings = [];
             let allUsers = [];
@@ -1651,21 +1721,109 @@
             const bookingsPerPage = 10;
             const usersPerPage = 10;
             let currentModalAction = null;
-            let isAdmin = false;
             
-            // ========== INICIALIZACIÓN ==========
-            function init() {
-                hideLoader();
-                if (checkAuthentication()) {
-                    initEventListeners();
-                    loadUserData();
-                    setupUIByRole();
-                    loadUserBookings();
-                    if (isAdmin) {
-                        loadAdminData();
+            // ========== SISTEMA DE NOTIFICACIONES ==========
+            class NotificationSystem {
+                constructor() {
+                    this.container = document.getElementById('notification-system');
+                    if (!this.container) {
+                        this.container = document.createElement('div');
+                        this.container.className = 'notification-system';
+                        document.body.appendChild(this.container);
                     }
-                    updateDashboard();
-                    loadUserPreferences();
+                }
+                
+                show(message, type = 'info', duration = 5000) {
+                    const notification = document.createElement('div');
+                    notification.className = `notification ${type}`;
+                    
+                    // Icono según tipo
+                    let icon = 'bi-info-circle';
+                    if (type === 'success') icon = 'bi-check-circle';
+                    if (type === 'error') icon = 'bi-exclamation-triangle';
+                    if (type === 'warning') icon = 'bi-exclamation-circle';
+                    
+                    notification.innerHTML = `
+                        <i class="bi ${icon}" style="font-size: 1.2rem;"></i>
+                        <div style="flex: 1;">${message}</div>
+                        <button class="close-btn" style="background: none; border: none; color: inherit; cursor: pointer;">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    `;
+                    
+                    this.container.appendChild(notification);
+                    
+                    // Configurar botón de cerrar
+                    const closeBtn = notification.querySelector('.close-btn');
+                    closeBtn.addEventListener('click', () => {
+                        this.remove(notification);
+                    });
+                    
+                    // Auto-remover después de duración
+                    if (duration > 0) {
+                        setTimeout(() => {
+                            this.remove(notification);
+                        }, duration);
+                    }
+                    
+                    return notification;
+                }
+                
+                remove(notification) {
+                    notification.style.animation = 'slideInRight 0.3s ease reverse';
+                    setTimeout(() => {
+                        if (notification.parentNode === this.container) {
+                            this.container.removeChild(notification);
+                        }
+                    }, 300);
+                }
+                
+                clear() {
+                    this.container.innerHTML = '';
+                }
+            }
+            
+            const notifications = new NotificationSystem();
+            
+            // ========== FUNCIONES DE UTILIDAD ==========
+            function showAlert(alertDiv, message, type) {
+                const alertElement = document.getElementById(alertDiv);
+                if (!alertElement) return;
+                
+                alertElement.textContent = message;
+                alertElement.className = `alert alert-${type}`;
+                alertElement.style.display = 'block';
+                
+                // También mostrar notificación
+                notifications.show(message, type);
+                
+                // Auto-ocultar después de 5 segundos
+                if (type !== 'success') {
+                    setTimeout(() => {
+                        alertElement.style.display = 'none';
+                    }, 5000);
+                }
+            }
+            
+            function showUserAlert(message, type = 'info') {
+                showAlert('user-alert', message, type);
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function formatDate(dateString) {
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                } catch (error) {
+                    return 'Fecha inválida';
                 }
             }
             
@@ -1681,49 +1839,120 @@
                 }
             }
             
-            function checkAuthentication() {
-                const authData = localStorage.getItem('admin_auth');
-                const userSession = localStorage.getItem('user_session') || sessionStorage.getItem('user_session');
+            // ========== MANEJO DE SESIÓN ==========
+            async function checkAuthentication() {
+                const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                const userData = localStorage.getItem(STORAGE_KEYS.USER);
                 
-                if (!authData && !userSession) {
-                    showAlert('Por favor inicia sesión para acceder a esta página', 'error');
-                    setTimeout(() => window.location.href = 'login.html', 2000);
+                if (!token || !userData) {
+                    console.log('❌ No hay sesión activa');
+                    redirectToLogin();
                     return false;
                 }
                 
                 try {
-                    if (authData) {
-                        currentUser = JSON.parse(authData);
-                        isAdmin = currentUser.rol === 'admin';
-                    } else if (userSession) {
-                        const sessionData = JSON.parse(userSession);
-                        currentUser = {
-                            nombre: sessionData.nombre,
-                            email: sessionData.email,
-                            rol: 'user'
-                        };
-                        isAdmin = false;
-                    }
+                    // Verificar sesión con el servidor
+                    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
                     
-                    if (!currentUser) {
-                        window.location.href = 'login.html';
+                    if (response.ok) {
+                        const user = await response.json();
+                        currentUser = user;
+                        isAuthenticated = true;
+                        isAdmin = user.rol === 'admin';
+                        
+                        console.log('✅ Sesión válida:', currentUser.nombre);
+                        
+                        // Actualizar UI según rol
+                        setupUIByRole();
+                        loadUserData();
+                        loadUserBookings();
+                        if (isAdmin) {
+                            loadAdminData();
+                        }
+                        updateDashboard();
+                        
+                        return true;
+                    } else {
+                        // Token inválido
+                        console.log('❌ Token inválido');
+                        clearSession();
+                        redirectToLogin();
                         return false;
                     }
-                    
-                    return true;
                 } catch (error) {
-                    console.error('Error en autenticación:', error);
-                    window.location.href = 'login.html';
-                    return false;
+                    console.error('Error verificando autenticación:', error);
+                    
+                    // Si hay error de red pero hay datos de usuario, usar esos datos
+                    if (userData) {
+                        try {
+                            currentUser = JSON.parse(userData);
+                            isAuthenticated = true;
+                            isAdmin = currentUser.rol === 'admin';
+                            
+                            console.log('⚠️ Usando datos de usuario de localStorage (modo offline):', currentUser.nombre);
+                            
+                            // Actualizar UI según rol
+                            setupUIByRole();
+                            loadUserDataFromLocalStorage();
+                            loadUserBookingsFromLocalStorage();
+                            if (isAdmin) {
+                                loadAdminDataFromLocalStorage();
+                            }
+                            updateDashboard();
+                            
+                            notifications.show('⚠️ Modo offline - usando datos locales', 'warning');
+                            return true;
+                        } catch (e) {
+                            console.error('Error parseando datos de usuario:', e);
+                            clearSession();
+                            redirectToLogin();
+                            return false;
+                        }
+                    } else {
+                        clearSession();
+                        redirectToLogin();
+                        return false;
+                    }
                 }
             }
             
+            function clearSession() {
+                localStorage.removeItem(STORAGE_KEYS.TOKEN);
+                localStorage.removeItem(STORAGE_KEYS.USER);
+                currentUser = null;
+                isAuthenticated = false;
+                isAdmin = false;
+            }
+            
+            function redirectToLogin() {
+                notifications.show('Por favor inicia sesión para acceder a esta página', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+            
+            function logout() {
+                if (confirm('¿Estás seguro de cerrar sesión?')) {
+                    clearSession();
+                    notifications.show('Sesión cerrada correctamente', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
+                }
+            }
+            
+            // ========== UI FUNCTIONS ==========
             function setupUIByRole() {
                 if (isAdmin) {
                     setupAdminUI();
                 } else {
                     setupNormalUserUI();
                 }
+                updateUserUI();
             }
             
             function setupAdminUI() {
@@ -1762,24 +1991,77 @@
                 showSection('dashboard');
             }
             
-            // ========== UI FUNCTIONS ==========
+            function updateUserUI() {
+                if (!currentUser) return;
+                
+                // Actualizar información del usuario
+                document.getElementById('user-name').textContent = currentUser.nombre || 'Usuario';
+                document.getElementById('user-email').textContent = currentUser.email || 'usuario@ejemplo.com';
+                document.getElementById('user-avatar').textContent = (currentUser.nombre?.charAt(0) || 'U').toUpperCase();
+                document.getElementById('user-role-badge').textContent = isAdmin ? 'Administrador' : 'Usuario';
+                
+                // Actualizar formularios según el rol
+                if (isAdmin) {
+                    document.getElementById('admin-profile-name').value = currentUser.nombre || '';
+                    document.getElementById('admin-profile-email').value = currentUser.email || '';
+                    document.getElementById('admin-profile-phone').value = currentUser.telefono || '';
+                    document.getElementById('admin-profile-notes').value = currentUser.notas || '';
+                } else {
+                    document.getElementById('profile-name').value = currentUser.nombre || '';
+                    document.getElementById('profile-email').value = currentUser.email || '';
+                    document.getElementById('profile-phone').value = currentUser.telefono || '';
+                    document.getElementById('profile-birthdate').value = currentUser.fecha_nacimiento || '';
+                    document.getElementById('profile-address').value = currentUser.direccion || '';
+                    document.getElementById('profile-bio').value = currentUser.bio || '';
+                }
+            }
+            
+            function showSection(sectionId) {
+                // Ocultar todas las secciones
+                document.querySelectorAll('.user-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Actualizar menú activo
+                document.querySelectorAll('.user-menu-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Activar menú correspondiente
+                const menuItem = document.querySelector(`[data-section="${sectionId}"]`);
+                if (menuItem) menuItem.classList.add('active');
+                
+                // Mostrar sección seleccionada
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    
+                    // Cargar datos específicos si es necesario
+                    switch(sectionId) {
+                        case 'bookings':
+                            loadUserBookings();
+                            break;
+                        case 'profile':
+                            loadProfileForm();
+                            break;
+                        case 'admin-dashboard':
+                            loadAdminDashboardData();
+                            break;
+                        case 'admin-users':
+                            loadSystemUsers();
+                            break;
+                        case 'admin-profile':
+                            loadAdminProfileForm();
+                            break;
+                    }
+                }
+            }
+            
             function initEventListeners() {
                 // Navegación del menú
                 document.querySelectorAll('.user-menu-item').forEach(item => {
                     item.addEventListener('click', function(e) {
-                        if (this.hasAttribute('href') && this.getAttribute('href') !== '#') {
-                            return; // Dejar que los enlaces externos funcionen normalmente
-                        }
-                        
                         e.preventDefault();
-                        
-                        // Actualizar menú activo
-                        document.querySelectorAll('.user-menu-item').forEach(i => {
-                            i.classList.remove('active');
-                        });
-                        this.classList.add('active');
-                        
-                        // Mostrar sección correspondiente
                         const sectionId = this.getAttribute('data-section');
                         if (sectionId) {
                             showSection(sectionId);
@@ -1815,108 +2097,39 @@
                     document.getElementById('preferences-form').addEventListener('submit', savePreferences);
                 }
                 
-                // Menú móvil
-                const menuToggle = document.querySelector('.menu-toggle');
-                const mainNav = document.querySelector('#main-navigation');
-                
-                if (menuToggle && mainNav) {
-                    menuToggle.addEventListener('click', function() {
-                        mainNav.classList.toggle('show');
-                        const icon = this.querySelector('i');
-                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
-                    });
-                }
-                
-                // Validación en tiempo real de contraseñas
-                const passwordInputs = [
-                    { new: 'new-password', confirm: 'confirm-password' },
-                    { new: 'admin-new-password', confirm: 'admin-confirm-password' }
-                ];
-                
-                passwordInputs.forEach(input => {
-                    const newInput = document.getElementById(input.new);
-                    const confirmInput = document.getElementById(input.confirm);
-                    
-                    if (newInput && confirmInput) {
-                        confirmInput.addEventListener('input', function() {
-                            const newPassword = newInput.value;
-                            const confirmPassword = this.value;
-                            
-                            if (confirmPassword && newPassword !== confirmPassword) {
-                                this.style.borderColor = '#e74c3c';
-                                this.style.boxShadow = '0 0 0 3px rgba(231, 76, 60, 0.1)';
-                            } else if (confirmPassword && newPassword === confirmPassword) {
-                                this.style.borderColor = '#27ae60';
-                                this.style.boxShadow = '0 0 0 3px rgba(39, 174, 96, 0.1)';
-                            } else {
-                                this.style.borderColor = '';
-                                this.style.boxShadow = '';
-                            }
-                        });
+                // Configurar modal de confirmación
+                document.getElementById('confirm-action-btn').addEventListener('click', function() {
+                    if (currentModalAction) {
+                        currentModalAction();
                     }
                 });
-            }
-            
-            function showSection(sectionId) {
-                // Ocultar todas las secciones
-                document.querySelectorAll('.user-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-                
-                // Mostrar sección seleccionada
-                const targetSection = document.getElementById(sectionId);
-                if (targetSection) {
-                    targetSection.classList.add('active');
-                    
-                    // Cargar datos específicos si es necesario
-                    switch(sectionId) {
-                        case 'bookings':
-                            loadUserBookings();
-                            break;
-                        case 'profile':
-                            loadProfileForm();
-                            break;
-                        case 'admin-dashboard':
-                            loadAdminDashboardData();
-                            break;
-                        case 'admin-users':
-                            loadSystemUsers();
-                            break;
-                        case 'admin-profile':
-                            loadAdminProfileForm();
-                            break;
-                    }
-                }
-            }
-            
-            function updateUserUI() {
-                if (!currentUser) return;
-                
-                // Actualizar información del usuario
-                document.getElementById('user-name').textContent = currentUser.nombre || 'Usuario';
-                document.getElementById('user-email').textContent = currentUser.email || 'usuario@ejemplo.com';
-                document.getElementById('user-avatar').textContent = (currentUser.nombre?.charAt(0) || 'U').toUpperCase();
-                document.getElementById('user-role-badge').textContent = isAdmin ? 'Administrador' : 'Usuario';
-                
-                // Actualizar formularios según el rol
-                if (isAdmin) {
-                    document.getElementById('admin-profile-name').value = currentUser.nombre || '';
-                    document.getElementById('admin-profile-email').value = currentUser.email || '';
-                    document.getElementById('admin-profile-phone').value = currentUser.telefono || '';
-                    document.getElementById('admin-profile-notes').value = currentUser.notas || '';
-                } else {
-                    document.getElementById('profile-name').value = currentUser.nombre || '';
-                    document.getElementById('profile-email').value = currentUser.email || '';
-                    document.getElementById('profile-phone').value = currentUser.telefono || '';
-                    document.getElementById('profile-birthdate').value = currentUser.fecha_nacimiento || '';
-                    document.getElementById('profile-address').value = currentUser.direccion || '';
-                    document.getElementById('profile-bio').value = currentUser.bio || '';
-                }
             }
             
             // ========== USER DATA ==========
-            function loadUserData() {
-                // Cargar datos del usuario desde localStorage
+            async function loadUserData() {
+                if (!currentUser) return;
+                
+                try {
+                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        userData = await response.json();
+                        currentUser = userData;
+                        updateUserUI();
+                        console.log('✅ Datos de usuario cargados desde API');
+                    }
+                } catch (error) {
+                    console.error('Error cargando datos de usuario:', error);
+                    loadUserDataFromLocalStorage();
+                }
+            }
+            
+            function loadUserDataFromLocalStorage() {
                 const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
                 const user = users.find(u => u.email === currentUser.email);
                 
@@ -1924,14 +2137,6 @@
                     userData = user;
                     currentUser = { ...currentUser, ...user };
                     updateUserUI();
-                }
-                
-                // Cargar preferencias para usuarios normales
-                if (!isAdmin) {
-                    const userPrefs = JSON.parse(localStorage.getItem(`user_prefs_${currentUser.email}`) || '{}');
-                    if (Object.keys(userPrefs).length > 0) {
-                        userData = { ...userData, ...userPrefs };
-                    }
                 }
             }
             
@@ -1949,8 +2154,6 @@
                 document.getElementById('current-password').value = '';
                 document.getElementById('new-password').value = '';
                 document.getElementById('confirm-password').value = '';
-                document.getElementById('confirm-password').style.borderColor = '';
-                document.getElementById('confirm-password').style.boxShadow = '';
             }
             
             function loadAdminProfileForm() {
@@ -1965,31 +2168,84 @@
                 document.getElementById('admin-current-password').value = '';
                 document.getElementById('admin-new-password').value = '';
                 document.getElementById('admin-confirm-password').value = '';
-                document.getElementById('admin-confirm-password').style.borderColor = '';
-                document.getElementById('admin-confirm-password').style.boxShadow = '';
             }
             
             // ========== ADMIN FUNCTIONS ==========
-            function loadAdminData() {
-                // Cargar todos los usuarios
-                allUsers = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                
-                // Cargar todas las reservas
-                systemBookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
-                
-                // Cargar estadísticas del sistema
-                updateAdminDashboard();
-            }
-            
-            function loadAdminDashboardData() {
-                updateAdminDashboard();
-                loadRecentSystemBookings();
-            }
-            
-            function updateAdminDashboard() {
+            async function loadAdminData() {
                 if (!isAdmin) return;
                 
-                // Estadísticas del sistema
+                try {
+                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                    
+                    // Cargar usuarios
+                    const usersResponse = await fetch(`${API_BASE_URL}/admin/users`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (usersResponse.ok) {
+                        allUsers = await usersResponse.json();
+                    }
+                    
+                    // Cargar reservas
+                    const bookingsResponse = await fetch(`${API_BASE_URL}/admin/bookings`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (bookingsResponse.ok) {
+                        systemBookings = await bookingsResponse.json();
+                    }
+                    
+                    console.log('✅ Datos administrativos cargados');
+                    
+                } catch (error) {
+                    console.error('Error cargando datos administrativos:', error);
+                    loadAdminDataFromLocalStorage();
+                }
+            }
+            
+            function loadAdminDataFromLocalStorage() {
+                allUsers = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
+                systemBookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
+                console.log('⚠️ Datos administrativos cargados desde localStorage');
+            }
+            
+            async function loadAdminDashboardData() {
+                if (!isAdmin) return;
+                
+                try {
+                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                    
+                    // Cargar estadísticas
+                    const statsResponse = await fetch(`${API_BASE_URL}/admin/stats`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (statsResponse.ok) {
+                        const stats = await statsResponse.json();
+                        
+                        // Actualizar UI
+                        document.getElementById('admin-total-users').textContent = stats.totalUsers || allUsers.length;
+                        document.getElementById('admin-total-bookings').textContent = stats.totalBookings || systemBookings.length;
+                        document.getElementById('admin-pending-bookings').textContent = stats.pendingBookings || systemBookings.filter(b => b.estado === 'pending').length;
+                        document.getElementById('admin-total-revenue').textContent = `$${(stats.totalRevenue || 0).toFixed(2)}`;
+                    }
+                    
+                    // Cargar reservas recientes
+                    loadRecentSystemBookings();
+                    
+                } catch (error) {
+                    console.error('Error cargando dashboard administrativo:', error);
+                    updateAdminDashboardFromLocalStorage();
+                }
+            }
+            
+            function updateAdminDashboardFromLocalStorage() {
                 const totalUsers = allUsers.length;
                 const totalBookings = systemBookings.length;
                 const pendingBookings = systemBookings.filter(b => b.estado === 'pending').length;
@@ -2002,13 +2258,13 @@
                 document.getElementById('admin-total-bookings').textContent = totalBookings;
                 document.getElementById('admin-pending-bookings').textContent = pendingBookings;
                 document.getElementById('admin-total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
+                
+                loadRecentSystemBookings();
             }
             
             function loadRecentSystemBookings() {
                 const tbody = document.getElementById('admin-recent-bookings');
                 const recentBookings = systemBookings.slice(0, 5);
-                const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
-                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
                 
                 if (recentBookings.length === 0) {
                     tbody.innerHTML = `
@@ -2022,14 +2278,11 @@
                 } else {
                     tbody.innerHTML = '';
                     recentBookings.forEach(booking => {
-                        const tour = tours.find(t => t.id == booking.tour_id);
-                        const user = users.find(u => u.id == booking.usuario_id || u.email === booking.usuario_email);
-                        
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td><strong>${booking.codigo || 'N/A'}</strong></td>
-                            <td>${user?.nombre || booking.usuario_email || 'Usuario'}</td>
-                            <td>${tour?.nombre || 'Tour no disponible'}</td>
+                            <td>${booking.usuario_nombre || booking.usuario_email || 'Usuario'}</td>
+                            <td>${booking.tour_nombre || 'Tour no disponible'}</td>
                             <td>${formatDate(booking.fecha)}</td>
                             <td>$${booking.total || '0.00'}</td>
                             <td><span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></td>
@@ -2039,9 +2292,27 @@
                 }
             }
             
-            function loadSystemUsers() {
+            async function loadSystemUsers() {
+                if (!isAdmin) return;
+                
                 const tbody = document.getElementById('admin-users-table-body');
                 const searchTerm = document.getElementById('user-search')?.value?.toLowerCase() || '';
+                
+                try {
+                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                    const response = await fetch(`${API_BASE_URL}/admin/users`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        allUsers = await response.json();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error cargando usuarios:', error);
+                }
                 
                 // Filtrar usuarios
                 let filteredUsers = [...allUsers];
@@ -2079,7 +2350,7 @@
                             <td>${user.nombre || 'Sin nombre'}</td>
                             <td>${user.email || 'Sin email'}</td>
                             <td><span class="role-badge ${user.rol === 'admin' ? 'role-admin' : 'role-user'}">${user.rol === 'admin' ? 'Administrador' : 'Usuario'}</span></td>
-                            <td>${formatDate(user.fecha_registro)}</td>
+                            <td>${formatDate(user.created_at || user.fecha_registro)}</td>
                             <td><span class="status-badge ${user.activo ? 'status-confirmed' : 'status-cancelled'}">${user.activo ? 'Activo' : 'Inactivo'}</span></td>
                             <td>
                                 <div style="display: flex; gap: 5px;">
@@ -2103,363 +2374,43 @@
                 }
             }
             
-            function searchUsers() {
-                currentUsersPage = 1;
-                loadSystemUsers();
-            }
-            
-            function prevUsersPage() {
-                if (currentUsersPage > 1) {
-                    currentUsersPage--;
-                    loadSystemUsers();
-                }
-            }
-            
-            function nextUsersPage() {
-                const searchTerm = document.getElementById('user-search')?.value?.toLowerCase() || '';
-                let filteredUsers = [...allUsers];
-                
-                if (searchTerm) {
-                    filteredUsers = filteredUsers.filter(user => 
-                        user.nombre?.toLowerCase().includes(searchTerm) ||
-                        user.email?.toLowerCase().includes(searchTerm) ||
-                        user.rol?.toLowerCase().includes(searchTerm)
-                    );
-                }
-                
-                const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-                if (currentUsersPage < totalPages) {
-                    currentUsersPage++;
-                    loadSystemUsers();
-                }
-            }
-            
-            // ========== COMMON FUNCTIONS ==========
-            function saveProfile(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('profile-name').value.trim();
-                const email = document.getElementById('profile-email').value.trim().toLowerCase();
-                const phone = document.getElementById('profile-phone').value.trim();
-                const birthdate = document.getElementById('profile-birthdate').value;
-                const address = document.getElementById('profile-address').value.trim();
-                const bio = document.getElementById('profile-bio').value.trim();
-                const saveBtn = document.getElementById('save-profile-btn');
-                
-                // Validación
-                if (!name || !email) {
-                    showAlert('Por favor completa los campos obligatorios', 'error');
-                    return;
-                }
-                
-                if (!validateEmail(email)) {
-                    showAlert('Email inválido', 'error');
-                    return;
-                }
-                
-                // Verificar si el email ya existe (si cambió)
-                if (email !== currentUser.email) {
-                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                    const emailExists = users.some(u => u.email === email && u.id !== userData.id);
-                    
-                    if (emailExists) {
-                        showAlert('Este email ya está registrado', 'error');
-                        return;
-                    }
-                }
-                
-                // Deshabilitar botón y mostrar loading
-                saveBtn.disabled = true;
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
-                
-                // Actualizar usuario en localStorage
-                setTimeout(() => {
-                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                    const userIndex = users.findIndex(u => u.id === userData.id);
-                    
-                    if (userIndex !== -1) {
-                        users[userIndex] = {
-                            ...users[userIndex],
-                            nombre: name,
-                            email: email,
-                            telefono: phone,
-                            fecha_nacimiento: birthdate,
-                            direccion: address,
-                            bio: bio
-                        };
-                        
-                        localStorage.setItem('cano_salao_users', JSON.stringify(users));
-                        
-                        // Actualizar sesión actual
-                        currentUser.nombre = name;
-                        currentUser.email = email;
-                        
-                        // Actualizar admin_auth si existe
-                        const authData = localStorage.getItem('admin_auth');
-                        if (authData) {
-                            const auth = JSON.parse(authData);
-                            auth.nombre = name;
-                            auth.email = email;
-                            localStorage.setItem('admin_auth', JSON.stringify(auth));
-                        }
-                        
-                        // Actualizar user_session si existe
-                        const userSession = localStorage.getItem('user_session') || sessionStorage.getItem('user_session');
-                        if (userSession) {
-                            const sessionData = JSON.parse(userSession);
-                            sessionData.nombre = name;
-                            sessionData.email = email;
-                            if (localStorage.getItem('user_session')) {
-                                localStorage.setItem('user_session', JSON.stringify(sessionData));
-                            } else {
-                                sessionStorage.setItem('user_session', JSON.stringify(sessionData));
-                            }
-                        }
-                        
-                        showAlert('✅ Perfil actualizado exitosamente', 'success');
-                        updateUserUI();
-                    }
-                    
-                    // Re-enable button
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = originalText;
-                }, 1500);
-            }
-            
-            function saveAdminProfile(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('admin-profile-name').value.trim();
-                const email = document.getElementById('admin-profile-email').value.trim().toLowerCase();
-                const phone = document.getElementById('admin-profile-phone').value.trim();
-                const notes = document.getElementById('admin-profile-notes').value.trim();
-                const saveBtn = document.getElementById('save-admin-profile-btn');
-                
-                // Validación
-                if (!name || !email) {
-                    showAlert('Por favor completa los campos obligatorios', 'error');
-                    return;
-                }
-                
-                if (!validateEmail(email)) {
-                    showAlert('Email inválido', 'error');
-                    return;
-                }
-                
-                // Verificar si el email ya existe (si cambió)
-                if (email !== currentUser.email) {
-                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                    const emailExists = users.some(u => u.email === email && u.id !== userData.id);
-                    
-                    if (emailExists) {
-                        showAlert('Este email ya está registrado', 'error');
-                        return;
-                    }
-                }
-                
-                // Deshabilitar botón y mostrar loading
-                saveBtn.disabled = true;
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
-                
-                // Actualizar usuario en localStorage
-                setTimeout(() => {
-                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                    const userIndex = users.findIndex(u => u.id === userData.id);
-                    
-                    if (userIndex !== -1) {
-                        users[userIndex] = {
-                            ...users[userIndex],
-                            nombre: name,
-                            email: email,
-                            telefono: phone,
-                            notas: notes
-                        };
-                        
-                        localStorage.setItem('cano_salao_users', JSON.stringify(users));
-                        
-                        // Actualizar sesión actual
-                        currentUser.nombre = name;
-                        currentUser.email = email;
-                        currentUser.telefono = phone;
-                        currentUser.notas = notes;
-                        
-                        // Actualizar admin_auth
-                        const authData = localStorage.getItem('admin_auth');
-                        if (authData) {
-                            const auth = JSON.parse(authData);
-                            auth.nombre = name;
-                            auth.email = email;
-                            localStorage.setItem('admin_auth', JSON.stringify(auth));
-                        }
-                        
-                        showAlert('✅ Perfil de administrador actualizado exitosamente', 'success');
-                        updateUserUI();
-                    }
-                    
-                    // Re-enable button
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = originalText;
-                }, 1500);
-            }
-            
-            function changePassword(e) {
-                e.preventDefault();
-                
-                const currentPassword = document.getElementById('current-password').value;
-                const newPassword = document.getElementById('new-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-                const saveBtn = document.getElementById('save-password-btn');
-                
-                // Validación
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    showAlert('Por favor completa todos los campos', 'error');
-                    return;
-                }
-                
-                if (newPassword.length < 6) {
-                    showAlert('La nueva contraseña debe tener al menos 6 caracteres', 'error');
-                    return;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    showAlert('Las contraseñas no coinciden', 'error');
-                    return;
-                }
-                
-                // Verificar contraseña actual
-                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                const user = users.find(u => u.id === userData.id);
-                
-                if (!user) {
-                    showAlert('Usuario no encontrado', 'error');
-                    return;
-                }
-                
-                if (user.password !== btoa(currentPassword)) {
-                    showAlert('Contraseña actual incorrecta', 'error');
-                    return;
-                }
-                
-                // Deshabilitar botón y mostrar loading
-                saveBtn.disabled = true;
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
-                
-                // Cambiar contraseña
-                setTimeout(() => {
-                    user.password = btoa(newPassword);
-                    localStorage.setItem('cano_salao_users', JSON.stringify(users));
-                    
-                    showAlert('✅ Contraseña cambiada exitosamente', 'success');
-                    document.getElementById('password-form').reset();
-                    document.getElementById('confirm-password').style.borderColor = '';
-                    document.getElementById('confirm-password').style.boxShadow = '';
-                    
-                    // Re-enable button
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = originalText;
-                }, 1500);
-            }
-            
-            function changeAdminPassword(e) {
-                e.preventDefault();
-                
-                const currentPassword = document.getElementById('admin-current-password').value;
-                const newPassword = document.getElementById('admin-new-password').value;
-                const confirmPassword = document.getElementById('admin-confirm-password').value;
-                const saveBtn = document.getElementById('save-admin-password-btn');
-                
-                // Validación
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    showAlert('Por favor completa todos los campos', 'error');
-                    return;
-                }
-                
-                if (newPassword.length < 8) {
-                    showAlert('La nueva contraseña debe tener al menos 8 caracteres', 'error');
-                    return;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    showAlert('Las contraseñas no coinciden', 'error');
-                    return;
-                }
-                
-                // Verificar contraseña actual
-                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                const user = users.find(u => u.id === userData.id);
-                
-                if (!user) {
-                    showAlert('Usuario no encontrado', 'error');
-                    return;
-                }
-                
-                if (user.password !== btoa(currentPassword)) {
-                    showAlert('Contraseña actual incorrecta', 'error');
-                    return;
-                }
-                
-                // Deshabilitar botón y mostrar loading
-                saveBtn.disabled = true;
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
-                
-                // Cambiar contraseña
-                setTimeout(() => {
-                    user.password = btoa(newPassword);
-                    localStorage.setItem('cano_salao_users', JSON.stringify(users));
-                    
-                    showAlert('✅ Contraseña de administrador cambiada exitosamente', 'success');
-                    document.getElementById('admin-password-form').reset();
-                    document.getElementById('admin-confirm-password').style.borderColor = '';
-                    document.getElementById('admin-confirm-password').style.boxShadow = '';
-                    
-                    // Re-enable button
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = originalText;
-                }, 1500);
-            }
-            
-            function loadUserPreferences() {
-                if (isAdmin) return;
-                
-                const prefs = JSON.parse(localStorage.getItem(`user_prefs_${currentUser.email}`) || '{}');
-                
-                document.getElementById('pref-newsletter').checked = prefs.newsletter !== false;
-                document.getElementById('pref-notifications').checked = prefs.notifications !== false;
-                document.getElementById('pref-sms').checked = prefs.sms !== false;
-                document.getElementById('pref-language').value = prefs.language || 'es';
-                document.getElementById('pref-currency').value = prefs.currency || 'USD';
-            }
-            
-            function savePreferences(e) {
-                e.preventDefault();
-                
-                const prefs = {
-                    newsletter: document.getElementById('pref-newsletter').checked,
-                    notifications: document.getElementById('pref-notifications').checked,
-                    sms: document.getElementById('pref-sms').checked,
-                    language: document.getElementById('pref-language').value,
-                    currency: document.getElementById('pref-currency').value,
-                    updated: new Date().toISOString()
-                };
-                
-                localStorage.setItem(`user_prefs_${currentUser.email}`, JSON.stringify(prefs));
-                showAlert('✅ Preferencias guardadas exitosamente', 'success');
-            }
-            
             // ========== BOOKINGS MANAGEMENT ==========
-            function loadUserBookings() {
+            async function loadUserBookings() {
+                if (!currentUser) return;
+                
+                try {
+                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                    const response = await fetch(`${API_BASE_URL}/bookings/my-bookings`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        userBookings = await response.json();
+                        console.log('✅ Reservas del usuario cargadas desde API:', userBookings.length);
+                        updateBookingsTable();
+                        updateDashboard();
+                    } else {
+                        throw new Error('Error cargando reservas');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error cargando reservas:', error);
+                    loadUserBookingsFromLocalStorage();
+                }
+            }
+            
+            function loadUserBookingsFromLocalStorage() {
                 const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
                 
                 // Filtrar reservas del usuario actual
                 userBookings = bookings.filter(booking => 
-                    booking.usuario_id == userData?.id || 
+                    booking.usuario_id == currentUser?.id || 
                     booking.usuario_email === currentUser.email
                 );
                 
+                console.log('⚠️ Reservas del usuario cargadas desde localStorage:', userBookings.length);
                 updateBookingsTable();
                 updateDashboard();
             }
@@ -2490,9 +2441,6 @@
                 const endIndex = Math.min(startIndex + bookingsPerPage, filteredBookings.length);
                 const pageBookings = filteredBookings.slice(startIndex, endIndex);
                 
-                // Obtener tours para mostrar nombres
-                const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
-                
                 // Renderizar tabla
                 if (pageBookings.length === 0) {
                     tbody.innerHTML = `
@@ -2512,11 +2460,10 @@
                 } else {
                     tbody.innerHTML = '';
                     pageBookings.forEach(booking => {
-                        const tour = tours.find(t => t.id == booking.tour_id);
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td><strong>${booking.codigo || 'N/A'}</strong></td>
-                            <td>${tour?.nombre || 'Tour no disponible'}</td>
+                            <td>${booking.tour_nombre || 'Tour no disponible'}</td>
                             <td>${formatDate(booking.fecha)}</td>
                             <td>${booking.hora || 'N/A'}</td>
                             <td>${booking.personas || '1'}</td>
@@ -2550,7 +2497,6 @@
             function updateRecentBookingsTable() {
                 const tbody = document.getElementById('recent-bookings');
                 const recentBookings = userBookings.slice(0, 5);
-                const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
                 
                 if (recentBookings.length === 0) {
                     tbody.innerHTML = `
@@ -2564,11 +2510,10 @@
                 } else {
                     tbody.innerHTML = '';
                     recentBookings.forEach(booking => {
-                        const tour = tours.find(t => t.id == booking.tour_id);
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td><strong>${booking.codigo || 'N/A'}</strong></td>
-                            <td>${tour?.nombre || 'Tour no disponible'}</td>
+                            <td>${booking.tour_nombre || 'Tour no disponible'}</td>
                             <td>${formatDate(booking.fecha)}</td>
                             <td>${booking.personas || '1'}</td>
                             <td>$${booking.total || '0.00'}</td>
@@ -2599,114 +2544,6 @@
                 }
             }
             
-            function filterBookings() {
-                currentBookingsPage = 1;
-                updateBookingsTable();
-            }
-            
-            function searchBookings() {
-                currentBookingsPage = 1;
-                updateBookingsTable();
-            }
-            
-            function prevBookingsPage() {
-                if (currentBookingsPage > 1) {
-                    currentBookingsPage--;
-                    updateBookingsTable();
-                }
-            }
-            
-            function nextBookingsPage() {
-                const filteredBookings = getFilteredBookings();
-                const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
-                if (currentBookingsPage < totalPages) {
-                    currentBookingsPage++;
-                    updateBookingsTable();
-                }
-            }
-            
-            function getFilteredBookings() {
-                let filtered = [...userBookings];
-                const filter = document.getElementById('booking-filter')?.value || 'all';
-                const searchTerm = document.getElementById('booking-search')?.value?.toLowerCase() || '';
-                
-                if (filter !== 'all') {
-                    filtered = filtered.filter(b => b.estado === filter);
-                }
-                
-                if (searchTerm) {
-                    filtered = filtered.filter(b => 
-                        b.codigo?.toLowerCase().includes(searchTerm) ||
-                        b.tour_nombre?.toLowerCase().includes(searchTerm) ||
-                        b.tour_id?.toString().includes(searchTerm)
-                    );
-                }
-                
-                return filtered;
-            }
-            
-            function verDetallesReserva(bookingId) {
-                const booking = userBookings.find(b => b.id == bookingId);
-                if (booking) {
-                    const tours = JSON.parse(localStorage.getItem('admin_tours_cache') || '[]');
-                    const tour = tours.find(t => t.id == booking.tour_id);
-                    
-                    const detalles = `
-                        <h3>Detalles de la Reserva</h3>
-                        <div style="margin-top: 20px;">
-                            <p><strong>Código:</strong> ${booking.codigo || 'N/A'}</p>
-                            <p><strong>Tour:</strong> ${tour?.nombre || 'N/A'}</p>
-                            <p><strong>Descripción:</strong> ${tour?.descripcion || 'Sin descripción'}</p>
-                            <p><strong>Fecha:</strong> ${formatDate(booking.fecha)}</p>
-                            <p><strong>Hora:</strong> ${booking.hora || 'N/A'}</p>
-                            <p><strong>Personas:</strong> ${booking.personas || '1'}</p>
-                            <p><strong>Total:</strong> $${booking.total || '0.00'}</p>
-                            <p><strong>Estado:</strong> <span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></p>
-                            ${booking.notas ? `<p><strong>Notas:</strong> ${booking.notas}</p>` : ''}
-                            <p><strong>Fecha de creación:</strong> ${formatDate(booking.fecha_creacion)}</p>
-                        </div>
-                    `;
-                    
-                    showAlert(detalles, 'info');
-                }
-            }
-            
-            function cancelarReserva(bookingId) {
-                const booking = userBookings.find(b => b.id == bookingId);
-                if (!booking) {
-                    showAlert('Reserva no encontrada', 'error');
-                    return;
-                }
-                
-                if (booking.estado !== 'pending') {
-                    showAlert('Solo se pueden cancelar reservas pendientes', 'error');
-                    return;
-                }
-                
-                // Configurar modal de confirmación
-                document.getElementById('confirm-message').textContent = 
-                    `¿Estás seguro de cancelar la reserva ${booking.codigo}?\n\nEsta acción no se puede deshacer.`;
-                
-                currentModalAction = () => {
-                    // Cancelar reserva
-                    const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
-                    const bookingIndex = bookings.findIndex(b => b.id == bookingId);
-                    
-                    if (bookingIndex !== -1) {
-                        bookings[bookingIndex].estado = 'cancelled';
-                        localStorage.setItem('admin_bookings_cache', JSON.stringify(bookings));
-                        
-                        showAlert(`✅ Reserva ${booking.codigo} cancelada exitosamente', 'success`);
-                        loadUserBookings();
-                        updateDashboard();
-                    }
-                    
-                    closeModal();
-                };
-                
-                openModal('confirm-modal');
-            }
-            
             // ========== DASHBOARD ==========
             function updateDashboard() {
                 if (isAdmin) return;
@@ -2726,81 +2563,133 @@
                 document.getElementById('total-spent').textContent = `$${totalSpent.toFixed(2)}`;
             }
             
-            function refreshDashboard() {
-                if (isAdmin) {
-                    loadAdminDashboardData();
-                    showAlert('Panel administrativo actualizado', 'success');
-                } else {
-                    loadUserBookings();
-                    showAlert('Dashboard actualizado', 'success');
+            // ========== FORM HANDLERS ==========
+            async function saveProfile(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('profile-name').value.trim();
+                const email = document.getElementById('profile-email').value.trim().toLowerCase();
+                const phone = document.getElementById('profile-phone').value.trim();
+                const birthdate = document.getElementById('profile-birthdate').value;
+                const address = document.getElementById('profile-address').value.trim();
+                const bio = document.getElementById('profile-bio').value.trim();
+                const saveBtn = document.getElementById('save-profile-btn');
+                
+                // Validación
+                if (!name || !email) {
+                    showUserAlert('Por favor completa los campos obligatorios', 'error');
+                    return;
                 }
-            }
-            
-            function refreshAdminDashboard() {
-                loadAdminData();
-                showAlert('Panel administrativo actualizado', 'success');
-            }
-            
-            // ========== UTILITY FUNCTIONS ==========
-            function logout() {
-                if (confirm('¿Estás seguro de cerrar sesión?')) {
-                    // Limpiar sesiones
-                    localStorage.removeItem('admin_auth');
-                    localStorage.removeItem('user_session');
-                    sessionStorage.removeItem('user_session');
-                    
-                    // Redirigir al login
-                    window.location.href = 'login.html';
+                
+                if (!validateEmail(email)) {
+                    showUserAlert('Email inválido', 'error');
+                    return;
                 }
-            }
-            
-            function validateEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            }
-            
-            function formatDate(dateString) {
+                
+                // Deshabilitar botón y mostrar loading
+                saveBtn.disabled = true;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                
                 try {
-                    const date = new Date(dateString);
-                    return date.toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
+                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            nombre: name,
+                            email: email,
+                            telefono: phone,
+                            fecha_nacimiento: birthdate,
+                            direccion: address,
+                            bio: bio
+                        })
                     });
+                    
+                    if (response.ok) {
+                        const updatedUser = await response.json();
+                        currentUser = updatedUser;
+                        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+                        
+                        showUserAlert('✅ Perfil actualizado exitosamente', 'success');
+                        updateUserUI();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Error actualizando perfil');
+                    }
+                    
                 } catch (error) {
-                    return 'Fecha inválida';
+                    console.error('Error actualizando perfil:', error);
+                    showUserAlert(`Error: ${error.message}`, 'error');
+                } finally {
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
                 }
             }
             
-            function showAlert(message, type = 'info') {
-                const alertDiv = document.getElementById('user-alert');
-                if (!alertDiv) return;
+            async function changePassword(e) {
+                e.preventDefault();
                 
-                alertDiv.innerHTML = message;
-                alertDiv.className = `alert alert-${type}`;
-                alertDiv.style.display = 'block';
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                const saveBtn = document.getElementById('save-password-btn');
                 
-                // Auto-ocultar después de 5 segundos
-                setTimeout(() => {
-                    alertDiv.style.display = 'none';
-                }, 5000);
-            }
-            
-            function openModal(modalId) {
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
+                // Validación
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showUserAlert('Por favor completa todos los campos', 'error');
+                    return;
                 }
-            }
-            
-            function closeModal() {
-                const modals = document.querySelectorAll('.modal.active');
-                modals.forEach(modal => {
-                    modal.classList.remove('active');
-                });
-                document.body.style.overflow = '';
-                currentModalAction = null;
+                
+                if (newPassword.length < 6) {
+                    showUserAlert('La nueva contraseña debe tener al menos 6 caracteres', 'error');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showUserAlert('Las contraseñas no coinciden', 'error');
+                    return;
+                }
+                
+                // Deshabilitar botón y mostrar loading
+                saveBtn.disabled = true;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                
+                try {
+                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+                    const response = await fetch(`${API_BASE_URL}/user/change-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            currentPassword: currentPassword,
+                            newPassword: newPassword
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        showUserAlert('✅ Contraseña cambiada exitosamente', 'success');
+                        document.getElementById('password-form').reset();
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.message || 'Error cambiando contraseña');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error cambiando contraseña:', error);
+                    showUserAlert(`Error: ${error.message}`, 'error');
+                } finally {
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                }
             }
             
             // ========== ACCIONES RÁPIDAS ==========
@@ -2819,22 +2708,37 @@
             function enviarMensajeSoporte() {
                 const message = document.getElementById('support-message').value.trim();
                 if (!message) {
-                    showAlert('Por favor escribe un mensaje', 'error');
+                    showUserAlert('Por favor escribe un mensaje', 'error');
                     return;
                 }
                 
-                showAlert('Mensaje enviado al soporte. Te contactaremos pronto.', 'success');
+                showUserAlert('Mensaje enviado al soporte. Te contactaremos pronto.', 'success');
                 document.getElementById('support-message').value = '';
             }
             
             function cancelarEdicion() {
                 loadProfileForm();
-                showAlert('Edición cancelada', 'info');
+                showUserAlert('Edición cancelada', 'info');
             }
             
             function cancelarEdicionAdmin() {
                 loadAdminProfileForm();
-                showAlert('Edición cancelada', 'info');
+                showUserAlert('Edición cancelada', 'info');
+            }
+            
+            function refreshDashboard() {
+                if (isAdmin) {
+                    loadAdminDashboardData();
+                    notifications.show('Panel administrativo actualizado', 'success');
+                } else {
+                    loadUserBookings();
+                    notifications.show('Dashboard actualizado', 'success');
+                }
+            }
+            
+            function refreshAdminDashboard() {
+                loadAdminData();
+                notifications.show('Panel administrativo actualizado', 'success');
             }
             
             function irAlPanelCompleto() {
@@ -2846,87 +2750,30 @@
             }
             
             function generarReporte() {
-                showAlert('Función de generación de reportes en desarrollo', 'info');
+                notifications.show('Función de generación de reportes en desarrollo', 'info');
             }
             
             function exportarUsuarios() {
-                showAlert('Función de exportación de usuarios en desarrollo', 'info');
+                notifications.show('Función de exportación de usuarios en desarrollo', 'info');
             }
             
-            function verUsuario(userId) {
-                const user = allUsers.find(u => u.id == userId);
-                if (user) {
-                    const detalles = `
-                        <h3>Detalles del Usuario</h3>
-                        <div style="margin-top: 20px;">
-                            <p><strong>Nombre:</strong> ${user.nombre || 'Sin nombre'}</p>
-                            <p><strong>Email:</strong> ${user.email || 'Sin email'}</p>
-                            <p><strong>Rol:</strong> <span class="role-badge ${user.rol === 'admin' ? 'role-admin' : 'role-user'}">${user.rol === 'admin' ? 'Administrador' : 'Usuario'}</span></p>
-                            <p><strong>Fecha de registro:</strong> ${formatDate(user.fecha_registro)}</p>
-                            <p><strong>Estado:</strong> <span class="status-badge ${user.activo ? 'status-confirmed' : 'status-cancelled'}">${user.activo ? 'Activo' : 'Inactivo'}</span></p>
-                            ${user.telefono ? `<p><strong>Teléfono:</strong> ${user.telefono}</p>` : ''}
-                            ${user.direccion ? `<p><strong>Dirección:</strong> ${user.direccion}</p>` : ''}
-                        </div>
-                    `;
-                    
-                    showAlert(detalles, 'info');
+            // ========== MODAL FUNCTIONS ==========
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
                 }
             }
             
-            function eliminarUsuario(userId) {
-                const user = allUsers.find(u => u.id == userId);
-                if (!user) {
-                    showAlert('Usuario no encontrado', 'error');
-                    return;
-                }
-                
-                if (user.rol === 'admin') {
-                    showAlert('No se pueden eliminar cuentas de administrador', 'error');
-                    return;
-                }
-                
-                // Configurar modal de confirmación
-                document.getElementById('confirm-message').textContent = 
-                    `¿Estás seguro de eliminar al usuario "${user.nombre}" (${user.email})?\n\nEsta acción no se puede deshacer y se perderán todas sus reservas.`;
-                
-                currentModalAction = () => {
-                    // Eliminar usuario
-                    const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                    const userIndex = users.findIndex(u => u.id == userId);
-                    
-                    if (userIndex !== -1) {
-                        users.splice(userIndex, 1);
-                        localStorage.setItem('cano_salao_users', JSON.stringify(users));
-                        
-                        // Actualizar lista de usuarios
-                        allUsers = users;
-                        
-                        // Eliminar reservas del usuario
-                        const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
-                        const userBookings = bookings.filter(b => b.usuario_id == userId || b.usuario_email === user.email);
-                        
-                        if (userBookings.length > 0) {
-                            const updatedBookings = bookings.filter(b => b.usuario_id != userId && b.usuario_email !== user.email);
-                            localStorage.setItem('admin_bookings_cache', JSON.stringify(updatedBookings));
-                        }
-                        
-                        showAlert(`✅ Usuario "${user.nombre}" eliminado exitosamente', 'success`);
-                        loadSystemUsers();
-                        updateAdminDashboard();
-                    }
-                    
-                    closeModal();
-                };
-                
-                openModal('confirm-modal');
+            function closeModal() {
+                const modals = document.querySelectorAll('.modal.active');
+                modals.forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+                currentModalAction = null;
             }
-            
-            // Configurar modal de confirmación
-            document.getElementById('confirm-action-btn').addEventListener('click', function() {
-                if (currentModalAction) {
-                    currentModalAction();
-                }
-            });
             
             // Cerrar modal al hacer clic fuera
             document.querySelectorAll('.modal').forEach(modal => {
@@ -2944,12 +2791,43 @@
                 }
             });
             
+            // ========== INICIALIZACIÓN ==========
+            function init() {
+                console.log('🚀 Inicializando página de usuario...');
+                console.log('🌐 URL API:', API_BASE_URL);
+                
+                hideLoader();
+                initEventListeners();
+                
+                if (checkAuthentication()) {
+                    console.log('✅ Autenticación verificada');
+                }
+                
+                console.log('✅ Página de usuario inicializada correctamente');
+            }
+            
             // Inicializar cuando el DOM esté listo
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {
                 init();
             }
+            
+            // Exportar funciones globales
+            window.showSection = showSection;
+            window.refreshDashboard = refreshDashboard;
+            window.refreshAdminDashboard = refreshAdminDashboard;
+            window.nuevaReserva = nuevaReserva;
+            window.verMisReservas = verMisReservas;
+            window.contactarSoporte = contactarSoporte;
+            window.enviarMensajeSoporte = enviarMensajeSoporte;
+            window.cancelarEdicion = cancelarEdicion;
+            window.cancelarEdicionAdmin = cancelarEdicionAdmin;
+            window.irAlPanelCompleto = irAlPanelCompleto;
+            window.verTodasLasReservas = verTodasLasReservas;
+            window.generarReporte = generarReporte;
+            window.exportarUsuarios = exportarUsuarios;
+            window.closeModal = closeModal;
             
         })();
     </script>
