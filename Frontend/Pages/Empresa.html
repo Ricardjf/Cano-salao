@@ -2,13 +2,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Empresa de Producción Social - Ruta Turística Caño Salao | Turismo Sostenible</title>
     <meta name="description" content="Conoce nuestra empresa de producción social de transporte turístico acuático en Caño Salao, Barcelona, Venezuela. Modelo de negocio sostenible que beneficia a la comunidad.">
     <meta name="keywords" content="empresa Caño Salao, producción social, turismo sostenible, desarrollo comunitario, Barcelona Venezuela, empresa social turismo">
     <meta property="og:title" content="Empresa de Producción Social - Ruta Turística Caño Salao">
     <meta property="og:description" content="Modelo de negocio sostenible que combina desarrollo económico, protección ambiental y beneficio comunitario">
     <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../media/Logo_cano_60.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../media/Logo_cano_60.png">
+    <link rel="apple-touch-icon" href="../media/Logo_cano_120.png">
+    <meta name="theme-color" content="#0d3b66">
     
     <!-- Preload de fuentes críticas -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -21,14 +27,24 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            -webkit-touch-callout: none;
+        }
+        
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            touch-action: manipulation;
         }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.5;
-            overflow-x: hidden;
             opacity: 0;
             animation: fadeIn 0.3s ease-out forwards;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
             background: #fff;
         }
         
@@ -50,8 +66,10 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            padding: 0.75rem 0;
+            padding: 0.5rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
         
         .header-content {
@@ -61,62 +79,243 @@
             gap: 1rem;
         }
         
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+        
+        /* Estilos críticos para el logo - 35px constante */
+        .logo-img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+            border-radius: 50%;
+            display: block;
+            flex-shrink: 0;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
         .logo h1 {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: white;
             margin: 0;
+            white-space: nowrap;
         }
         
         .text-orange {
             color: #FF8C42;
         }
         
-        /* Loader minimalista */
-        #page-loader {
+        /* Menu toggle para móvil - OCULTO POR DEFECTO */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            z-index: 1002;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
+            touch-action: manipulation;
+            min-width: 44px;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Navegación desktop - VISIBLE POR DEFECTO */
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        nav {
+            width: 100%;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+        }
+        
+        nav ul li {
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: rgba(255,255,255,0.95);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.1);
+            touch-action: manipulation;
+        }
+        
+        nav ul li a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        nav ul li a.active {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        /* MENÚ MÓVIL - ESTILOS CRÍTICOS */
+        .mobile-menu-overlay {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
             transition: opacity 0.3s ease;
         }
         
-        .loader-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0d3b66;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .mobile-menu-overlay.active {
+            display: block;
+            opacity: 1;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .mobile-menu-container {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
         }
         
-        /* Prevenir scroll durante carga */
-        body.loading {
-            overflow: hidden;
+        .mobile-menu-container.active {
+            right: 0;
         }
-    </style>
-    
-    <!-- Cargar CSS principal de forma no bloqueante -->
-    <link rel="stylesheet" href="../index.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="../index.css"></noscript>
-    
-    <!-- Bootstrap Icons diferido -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
-    
-    <style>
-        /* Estilos específicos para la página Empresa */
+        
+        .mobile-menu-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
+            touch-action: manipulation;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-menu-nav {
+            padding: 1rem 0;
+        }
+        
+        .mobile-menu-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-menu-nav li {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+        
+        .mobile-menu-nav li:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-menu-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s ease;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.2);
+            touch-action: manipulation;
+            width: 100%;
+        }
+        
+        .mobile-menu-nav a.active {
+            background: rgba(255,255,255,0.15);
+            font-weight: 600;
+        }
+        
+        .mobile-menu-nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Sección de autenticación */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+        
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        .login-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        /* Hero básico para render inicial */
         .page-hero {
             min-height: 60vh;
             display: flex;
@@ -176,28 +375,123 @@
             }
         }
         
+        /* Breadcrumb */
         .breadcrumb {
-            background: var(--color-light);
+            background: #f8f9fa;
             padding: 1rem 0;
             font-size: 0.9rem;
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
         .breadcrumb a {
-            color: var(--color-primary);
+            color: #0d3b66;
             text-decoration: none;
-            transition: var(--transition-fast);
+            transition: all 0.2s ease;
         }
         
         .breadcrumb a:hover {
-            color: var(--color-accent);
+            color: #e62b7e;
         }
         
         .breadcrumb span {
-            color: var(--color-dark);
+            color: #212529;
             font-weight: 500;
         }
         
+        /* Responsive para móvil - CORREGIDO */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex !important;
+            }
+            
+            .nav-center {
+                display: none !important;
+            }
+            
+            .header-content {
+                flex-wrap: nowrap;
+            }
+            
+            .logo {
+                flex: 1;
+            }
+            
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+            
+            .auth-section {
+                order: 3;
+            }
+            
+            .mobile-menu-container {
+                z-index: 1000;
+            }
+            
+            .mobile-menu-overlay {
+                z-index: 999;
+            }
+            
+            /* Hero responsive */
+            .page-hero {
+                min-height: 50vh;
+                padding: 3rem 0;
+            }
+            
+            .page-hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .page-hero .hero-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Loader minimalista */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Prevenir scroll durante carga */
+        body.loading {
+            overflow: hidden;
+        }
+    </style>
+    
+    <!-- Cargar CSS principal de forma no bloqueante -->
+    <link rel="stylesheet" href="../index.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../index.css"></noscript>
+    
+    <!-- Bootstrap Icons diferido -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"></noscript>
+    
+    <style>
+        /* Estilos específicos para la página Empresa */
         /* Contenido principal */
         .page-content {
             padding: 4rem 0;
@@ -206,14 +500,14 @@
         
         .content-block {
             background: white;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             padding: 3rem;
             margin-bottom: 3rem;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
         }
         
         .content-block h2 {
-            color: var(--color-primary);
+            color: #0d3b66;
             margin-bottom: 2rem;
             font-size: 2.2rem;
             position: relative;
@@ -227,7 +521,7 @@
             left: 0;
             width: 60px;
             height: 3px;
-            background: var(--color-accent);
+            background: #e62b7e;
         }
         
         .history-content {
@@ -245,10 +539,10 @@
         }
         
         .history-image {
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            transition: var(--transition-normal);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
         
         .history-image:hover {
@@ -275,27 +569,27 @@
         }
         
         .service-item {
-            background: var(--color-light);
-            border-radius: var(--radius-md);
+            background: #f8f9fa;
+            border-radius: 8px;
             padding: 2rem;
-            transition: var(--transition-normal);
-            border-left: 4px solid var(--color-primary);
+            transition: all 0.3s ease;
+            border-left: 4px solid #0d3b66;
         }
         
         .service-item:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-            border-left-color: var(--color-accent);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            border-left-color: #e62b7e;
         }
         
         .service-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            color: var(--color-primary);
+            color: #0d3b66;
         }
         
         .service-item h3 {
-            color: var(--color-primary);
+            color: #0d3b66;
             margin-bottom: 1rem;
             font-size: 1.3rem;
         }
@@ -322,14 +616,14 @@
         }
         
         .objective-card {
-            background: linear-gradient(135deg, var(--color-light), #e9ecef);
-            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
             padding: 2rem;
             border: 1px solid rgba(0,0,0,0.1);
         }
         
         .objective-card h3 {
-            color: var(--color-primary);
+            color: #0d3b66;
             margin-bottom: 1.5rem;
             font-size: 1.4rem;
         }
@@ -346,32 +640,32 @@
             text-align: center;
             padding: 2rem 1.5rem;
             background: white;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition-normal);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
             border: 1px solid rgba(0,0,0,0.05);
         }
         
         .factible-feature:hover {
             transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--color-accent);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #e62b7e;
         }
         
         .factible-icon {
             font-size: 2.8rem;
             margin-bottom: 1.5rem;
-            color: var(--color-primary);
-            transition: var(--transition-normal);
+            color: #0d3b66;
+            transition: all 0.3s ease;
         }
         
         .factible-feature:hover .factible-icon {
             transform: scale(1.1) rotate(5deg);
-            color: var(--color-accent);
+            color: #e62b7e;
         }
         
         .factible-feature h3 {
-            color: var(--color-primary);
+            color: #0d3b66;
             margin-bottom: 1rem;
             font-size: 1.2rem;
         }
@@ -379,15 +673,42 @@
         /* Llamada a la acción */
         .cta-block {
             text-align: center;
-            background: linear-gradient(135deg, var(--color-light), #e9ecef);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             padding: 4rem;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             margin-top: 3rem;
         }
         
         .cta-block h2 {
-            color: var(--color-primary);
+            color: #0d3b66;
             margin-bottom: 1.5rem;
+        }
+        
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #e62b7e;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            will-change: transform;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+        
+        .btn:hover {
+            background: #d81b60;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
         
         /* Responsive para empresa */
@@ -468,19 +789,29 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
+                    <img 
+                        src="../media/Logo_cano_60.png" 
+                        srcset="../media/Logo_cano_60.png 1x, ../media/Logo_cano_120.png 2x" 
+                        alt="Logo Caño Salao - Ruta Turística Marítima" 
+                        class="logo-img"
+                        width="35" 
+                        height="35"
+                        loading="eager"
+                        aria-hidden="true"
+                    >
                     <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
                 </div>
 
-                <!-- Contenedor para centrar la navegación -->
+                <!-- Navegación desktop (oculta en móvil) -->
                 <div class="nav-center">
                     <nav>
                         <ul id="main-navigation">
-                            <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
-                            <li><a href="Empresa.html" class="active"><i class="bi bi-building"></i> Empresa</a></li>
-                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
-                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
-                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                            <li><a href="../index.html"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
+                            <li><a href="Empresa.html" class="active"><i class="bi bi-building"></i> <span>Empresa</span></a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> <span>Historia</span></a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> <span>Atracciones</span></a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
                         </ul>
                     </nav>
                 </div>
@@ -488,16 +819,45 @@
                 <!-- Botón Iniciar Sesión a la derecha -->
                 <div class="auth-section">
                     <a href="login.html" class="login-btn">
-                        <i class="bi bi-person-circle"></i> Iniciar Sesión
+                        <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
                     </a>
                 </div>
 
-                <button class="menu-toggle" aria-label="Menú">
+                <!-- Botón hamburguesa para móvil -->
+                <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
                     <i class="bi bi-list"></i>
                 </button>
             </div>
         </div>
     </header>
+
+    <!-- Menú móvil overlay (fondo oscuro) -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+    <!-- Menú móvil (se abre desde la derecha) -->
+    <div class="mobile-menu-container" id="mobile-menu-container">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
+                <h2 class="times-font" style="color: white; font-size: 1.2rem;">Caño <span class="text-orange">Salao</span></h2>
+            </div>
+            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Cerrar menú">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-menu-nav">
+            <ul>
+                <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                <li><a href="Empresa.html" class="active"><i class="bi bi-building"></i> Empresa</a></li>
+                <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                <li><a href="login.html"><i class="bi bi-person-circle"></i> Iniciar Sesión</a></li>
+            </ul>
+        </nav>
+    </div>
 
     <!-- Hero Section -->
     <section class="page-hero">
@@ -716,10 +1076,10 @@
                     Descubre cómo nuestro modelo de empresa de producción social puede inspirar proyectos similares o cómo puedes apoyar nuestra iniciativa.
                 </p>
                 <div>
-                    <a href="Contacto.html" class="btn" style="margin: 0.5rem; background: var(--color-accent);">
+                    <a href="Contacto.html" class="btn" style="margin: 0.5rem; background: #e62b7e;">
                         <i class="bi bi-telephone"></i> Contáctanos
                     </a>
-                    <a href="Servicios.html" class="btn" style="margin: 0.5rem; background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary);">
+                    <a href="Servicios.html" class="btn" style="margin: 0.5rem; background: transparent; border: 2px solid #0d3b66; color: #0d3b66;">
                         <i class="bi bi-signpost"></i> Ver Servicios
                     </a>
                 </div>
@@ -785,6 +1145,9 @@
                 }
             }
             
+            // Variables globales para menú móvil
+            let isMobileMenuOpen = false;
+            
             // Inicializar contenido
             function initContent() {
                 // Inicializar funcionalidades básicas
@@ -809,21 +1172,84 @@
             
             // Funcionalidad básica inmediata
             function initBasicFunctionality() {
-                // Menú móvil
-                const menuToggle = document.querySelector('.menu-toggle');
-                const mainNav = document.querySelector('#main-navigation');
+                // ========== MENÚ MÓVIL ==========
+                const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+                const mobileMenuClose = document.getElementById('mobile-menu-close');
+                const mobileMenuContainer = document.getElementById('mobile-menu-container');
+                const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
                 
-                if (menuToggle && mainNav) {
-                    menuToggle.addEventListener('click', function() {
-                        mainNav.classList.toggle('show');
-                        const icon = this.querySelector('i');
-                        icon.className = mainNav.classList.contains('show') ? 'bi bi-x-lg' : 'bi bi-list';
-                        
-                        // Actualizar atributo ARIA
-                        const isExpanded = mainNav.classList.contains('show');
-                        this.setAttribute('aria-expanded', isExpanded);
-                    });
+                function openMobileMenu() {
+                    mobileMenuContainer.classList.add('active');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    isMobileMenuOpen = true;
+                    mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                    mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
                 }
+                
+                function closeMobileMenu() {
+                    mobileMenuContainer.classList.remove('active');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    isMobileMenuOpen = false;
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                    mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
+                }
+                
+                mobileMenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                });
+                
+                mobileMenuToggle.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                }, { passive: false });
+                
+                mobileMenuClose.addEventListener('click', closeMobileMenu);
+                mobileMenuClose.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    closeMobileMenu();
+                }, { passive: false });
+                
+                mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+                mobileMenuOverlay.addEventListener('touchstart', function(e) {
+                    if (e.target === mobileMenuOverlay) {
+                        e.preventDefault();
+                        closeMobileMenu();
+                    }
+                }, { passive: false });
+                
+                const mobileMenuLinks = mobileMenuContainer.querySelectorAll('a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', closeMobileMenu);
+                    link.addEventListener('touchstart', function(e) {
+                        setTimeout(closeMobileMenu, 100);
+                    }, { passive: true });
+                });
+                
+                mobileMenuContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                mobileMenuContainer.addEventListener('touchstart', function(e) {
+                    e.stopPropagation();
+                }, { passive: true });
+                
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && isMobileMenuOpen) {
+                        closeMobileMenu();
+                    }
+                });
                 
                 // Smooth scroll para enlaces internos
                 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -841,6 +1267,68 @@
                         }
                     });
                 });
+                
+                // Header scroll effect
+                let ticking = false;
+                window.addEventListener('scroll', function() {
+                    if (!ticking) {
+                        window.requestAnimationFrame(function() {
+                            const header = document.querySelector('header');
+                            if (window.scrollY > 50) {
+                                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                            } else {
+                                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                            }
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+                
+                // Mejoras para móvil
+                if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+                    const inputs = document.querySelectorAll('input, textarea, select');
+                    inputs.forEach(input => {
+                        input.addEventListener('focus', function() {
+                            this.style.fontSize = '16px';
+                        });
+                    });
+                }
+                
+                const allButtons = document.querySelectorAll('button, .btn, .login-btn, .social-icon');
+                allButtons.forEach(button => {
+                    button.style.cursor = 'pointer';
+                    button.style.webkitTapHighlightColor = 'rgba(0,0,0,0.1)';
+                    
+                    button.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.98)';
+                    }, { passive: true });
+                    
+                    button.addEventListener('touchend', function() {
+                        this.style.transform = '';
+                    }, { passive: true });
+                });
+                
+                // Detectar Android
+                const isAndroid = /Android/i.test(navigator.userAgent);
+                if (isAndroid) {
+                    console.log('📱 Android detectado');
+                    
+                    document.body.style.webkitTransform = 'translateZ(0)';
+                    mobileMenuToggle.style.touchAction = 'manipulation';
+                    mobileMenuClose.style.touchAction = 'manipulation';
+                    
+                    let lastTouchY = 0;
+                    document.addEventListener('touchstart', function(e) {
+                        lastTouchY = e.touches[0].clientY;
+                    }, { passive: true });
+                    
+                    document.addEventListener('touchmove', function(e) {
+                        if (isMobileMenuOpen) {
+                            e.preventDefault();
+                        }
+                    }, { passive: false });
+                }
             }
             
             // Iniciar
