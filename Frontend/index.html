@@ -41,15 +41,10 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.5;
-            opacity: 0;
-            animation: fadeIn 0.3s ease-out forwards;
+            opacity: 1; /* Cambiado de 0 a 1 para visibilidad inmediata */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             position: relative;
-        }
-        
-        @keyframes fadeIn {
-            to { opacity: 1; }
         }
         
         .container {
@@ -286,7 +281,7 @@
             background: rgba(255,255,255,0.1);
         }
         
-        /* User menu styles */
+        /* User menu styles - MEJORADO */
         .user-menu-container {
             position: relative;
             z-index: 1002;
@@ -295,9 +290,17 @@
         .logged-user {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
             -webkit-tap-highlight-color: transparent;
+            min-height: 44px;
+        }
+        
+        .logged-user:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
         .user-avatar {
@@ -313,10 +316,43 @@
             font-size: 16px;
             flex-shrink: 0;
             transition: transform 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         .user-avatar:hover {
             transform: scale(1.05);
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        
+        .user-role.admin {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            font-weight: bold;
         }
         
         /* Dropdown menu styles */
@@ -327,7 +363,7 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            min-width: 200px;
+            min-width: 220px;
             z-index: 1001;
             overflow: hidden;
             margin-top: 5px;
@@ -337,6 +373,19 @@
         
         .user-dropdown-menu.show {
             display: block;
+        }
+        
+        .user-dropdown-header {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #1a7fb8, #0d3b66);
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 2px;
         }
         
         .user-dropdown-menu a {
@@ -357,6 +406,11 @@
         
         .user-dropdown-menu a:last-child {
             border-bottom: none;
+            color: #e74c3c;
+        }
+        
+        .user-dropdown-menu a:last-child:hover {
+            background: #ffeaea;
         }
         
         @keyframes fadeInDown {
@@ -393,6 +447,7 @@
             border: 1px solid rgba(255,255,255,0.2);
             font-size: 0.85rem;
             white-space: nowrap;
+            min-height: 44px;
         }
         
         .login-btn:hover {
@@ -431,7 +486,7 @@
             opacity: 0;
         }
         
-        /* Loader minimalista */
+        /* Loader minimalista - MODIFICADO */
         #page-loader {
             position: fixed;
             top: 0;
@@ -536,6 +591,14 @@
                 right: 10px;
                 left: 10px;
                 min-width: auto;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .logged-user {
+                padding: 4px;
             }
         }
         
@@ -658,7 +721,7 @@
     <div id="api-status" class="api-status">🔌 Conectando con API...</div>
     
     <!-- Loader para experiencia inicial -->
-    <div id="page-loader">
+    <div id="page-loader" style="opacity: 1; display: flex;">
         <div class="loader-spinner"></div>
     </div>
 
@@ -705,6 +768,10 @@
                         <!-- Estado Autenticado (manejado por JavaScript) -->
                         <div class="logged-user" id="logged-user" style="display: none;">
                             <div class="user-avatar" id="user-avatar" aria-label="Menú de usuario" role="button" tabindex="0" title="Menú de usuario">U</div>
+                            <div class="user-info">
+                                <div class="user-name" id="user-name">Usuario</div>
+                                <div class="user-role" id="user-role">user</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -740,6 +807,10 @@
                 <li><a href="Pages/Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
                 <li><a href="Pages/Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
                 <li><a href="Pages/Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                <!-- Enlace de usuario si está autenticado -->
+                <li id="mobile-user-menu" style="display: none;">
+                    <a href="Pages/usuario.html"><i class="bi bi-person-circle"></i> Mi Cuenta</a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -1148,14 +1219,15 @@
             console.log('🚀 Inicializando sitio Caño Salao...');
             console.log('🌐 URL API:', API_BASE_URL);
             
+            // Ocultar loader inmediatamente
+            hideLoader();
+            
             // Actualizar estado API
             updateApiStatus('🔌 Conectando...', '');
             
-            // Remover loader
-            hideLoader();
-            
-            // Verificar autenticación
-            checkAuthentication();
+            // Verificar autenticación inmediatamente
+            const authStatus = checkAuthenticationImmediately();
+            console.log('Estado autenticación inicial:', authStatus);
             
             // Cargar tours desde API
             loadToursFromAPI();
@@ -1191,18 +1263,38 @@
         
         // ========== SISTEMA DE AUTENTICACIÓN ==========
         
-        async function checkAuthentication() {
+        function checkAuthenticationImmediately() {
             const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
             const userData = localStorage.getItem(STORAGE_KEYS.USER);
             
             if (!token || !userData) {
-                console.log('No hay token o datos de usuario');
+                console.log('No hay token o datos de usuario en localStorage');
                 showLoginButton();
-                return;
+                return { authenticated: false };
             }
             
             try {
-                // Verificar token con API
+                const user = JSON.parse(userData);
+                currentUser = user;
+                console.log('✅ Usuario cargado de localStorage:', currentUser.nombre);
+                updateUserUI();
+                return { authenticated: true, user: user };
+            } catch (error) {
+                console.error('Error parseando datos de usuario:', error);
+                showLoginButton();
+                return { authenticated: false, error: error };
+            }
+        }
+        
+        async function validateSessionWithServer() {
+            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+            
+            if (!token) {
+                console.log('No hay token para validar con servidor');
+                return false;
+            }
+            
+            try {
                 const response = await fetch(`${API_BASE_URL}/user/profile`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -1211,30 +1303,22 @@
                 
                 if (response.ok) {
                     const user = await response.json();
+                    // Actualizar datos de usuario
+                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
                     currentUser = user;
-                    console.log('✅ Usuario autenticado:', currentUser.nombre);
                     updateUserUI();
+                    console.log('✅ Sesión validada con servidor:', user.nombre);
+                    return true;
                 } else {
-                    // Token inválido
-                    console.log('Token inválido, limpiando sesión');
+                    console.log('Token inválido en servidor');
                     clearUserSession();
                     showLoginButton();
+                    return false;
                 }
             } catch (error) {
-                console.error('Error verificando autenticación:', error);
-                // Si hay error de red pero hay datos de usuario, usar esos datos
-                if (userData) {
-                    try {
-                        currentUser = JSON.parse(userData);
-                        console.log('Usando datos de usuario de localStorage:', currentUser.nombre);
-                        updateUserUI();
-                    } catch (e) {
-                        console.error('Error parseando datos de usuario:', e);
-                        showLoginButton();
-                    }
-                } else {
-                    showLoginButton();
-                }
+                console.error('Error validando sesión con servidor:', error);
+                // Si hay error de red, mantener sesión local
+                return true;
             }
         }
         
@@ -1243,17 +1327,21 @@
             localStorage.removeItem(STORAGE_KEYS.USER);
             sessionStorage.removeItem('user_session');
             currentUser = null;
+            showLoginButton();
+            console.log('✅ Sesión limpiada');
         }
         
         function showLoginButton() {
             const loginBtn = document.getElementById('login-btn');
             const loggedUser = document.getElementById('logged-user');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
             
             if (loginBtn) {
                 loginBtn.style.display = 'flex';
                 loginBtn.href = 'Pages/login.html';
             }
             if (loggedUser) loggedUser.style.display = 'none';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'none';
             
             // Cerrar dropdown si está abierto
             closeUserDropdown();
@@ -1265,10 +1353,24 @@
             const loginBtn = document.getElementById('login-btn');
             const loggedUser = document.getElementById('logged-user');
             const userAvatar = document.getElementById('user-avatar');
+            const userName = document.getElementById('user-name');
+            const userRole = document.getElementById('user-role');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
             
             // Mostrar usuario logueado
             if (loginBtn) loginBtn.style.display = 'none';
             if (loggedUser) loggedUser.style.display = 'flex';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'block';
+            
+            // Configurar información del usuario
+            if (userName) {
+                userName.textContent = currentUser.nombre || currentUser.email.split('@')[0];
+            }
+            
+            if (userRole) {
+                userRole.textContent = currentUser.rol || 'user';
+                userRole.className = 'user-role ' + (currentUser.rol === 'admin' ? 'admin' : 'user');
+            }
             
             // Configurar avatar
             if (userAvatar) {
@@ -1282,23 +1384,23 @@
                 // Configurar color basado en rol
                 if (currentUser.rol === 'admin') {
                     userAvatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
-                    userAvatar.title = `Admin: ${currentUser.nombre}`;
+                    userAvatar.title = `Admin: ${currentUser.nombre || currentUser.email}`;
                 } else {
                     userAvatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
-                    userAvatar.title = `Usuario: ${currentUser.nombre}`;
+                    userAvatar.title = `Usuario: ${currentUser.nombre || currentUser.email}`;
                 }
                 
                 // Configurar eventos del avatar
                 setupUserAvatarEvents(userAvatar);
             }
             
-            console.log('✅ UI actualizada para usuario:', currentUser.nombre);
+            console.log('✅ UI actualizada para usuario:', currentUser.nombre || currentUser.email);
             
             // Mostrar alerta de bienvenida si es la primera vez que se carga
             const welcomeShown = sessionStorage.getItem('welcome_shown');
             if (!welcomeShown) {
                 setTimeout(() => {
-                    showAlert(`¡Bienvenido/a de nuevo, ${currentUser.nombre}!`, 'success');
+                    showAlert(`¡Bienvenido/a de nuevo, ${currentUser.nombre || currentUser.email}!`, 'success');
                     sessionStorage.setItem('welcome_shown', 'true');
                 }, 1000);
             }
@@ -1327,7 +1429,8 @@
             
             // Cerrar dropdown al hacer clic fuera
             document.addEventListener('click', function(e) {
-                if (!updatedAvatar.contains(e.target)) {
+                const dropdown = document.getElementById('user-dropdown-menu');
+                if (dropdown && !dropdown.contains(e.target) && !updatedAvatar.contains(e.target)) {
                     closeUserDropdown();
                 }
             });
@@ -1378,10 +1481,10 @@
             const isAdmin = currentUser && currentUser.rol === 'admin';
             
             dropdown.innerHTML = `
-                <div style="padding: 12px 15px; border-bottom: 1px solid #eee; background: #f8f9fa;">
-                    <div style="font-weight: bold; color: #333;">${currentUser.nombre || currentUser.email}</div>
-                    <div style="font-size: 12px; color: #666; margin-top: 2px;">${currentUser.email}</div>
-                    ${isAdmin ? '<div style="font-size: 11px; color: #e74c3c; margin-top: 4px; font-weight: bold;">Administrador</div>' : ''}
+                <div class="user-dropdown-header">
+                    <div style="font-weight: bold; font-size: 16px;">${currentUser.nombre || 'Usuario'}</div>
+                    <div class="user-dropdown-email">${currentUser.email}</div>
+                    ${isAdmin ? '<div style="font-size: 12px; margin-top: 4px; padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; display: inline-block;">Administrador</div>' : ''}
                 </div>
                 <a href="Pages/usuario.html" class="dropdown-item">
                     <i class="bi bi-person"></i> Mi Cuenta
@@ -1389,7 +1492,6 @@
                 ${isAdmin ? `
                 <a href="Pages/admin.html" class="dropdown-item">
                     <i class="bi bi-shield-check"></i> Panel de Administración
-                    <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: auto;">ADMIN</span>
                 </a>
                 ` : ''}
                 <a href="Pages/reservas.html" class="dropdown-item">
@@ -1400,7 +1502,7 @@
                 </a>
             `;
             
-            // Añadir estilos inline
+            // Añadir estilos inline para los items
             dropdown.querySelectorAll('.dropdown-item').forEach(item => {
                 item.style.cssText = `
                     display: flex;
@@ -1412,12 +1514,16 @@
                     border-bottom: 1px solid #eee;
                     transition: background 0.2s;
                     font-size: 14px;
+                    cursor: pointer;
                 `;
                 item.addEventListener('mouseenter', function() {
                     this.style.background = '#f5f5f5';
                 });
                 item.addEventListener('mouseleave', function() {
                     this.style.background = '';
+                });
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
                 });
             });
             
@@ -1441,7 +1547,6 @@
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
                 clearUserSession();
-                showLoginButton();
                 showAlert('Sesión cerrada correctamente', 'info');
                 
                 // Redirigir si está en páginas protegidas
@@ -1471,6 +1576,9 @@
                 
                 // Actualizar estado API
                 updateApiStatus('✅ API Conectada', 'connected');
+                
+                // Validar sesión con servidor
+                setTimeout(validateSessionWithServer, 1000);
                 
                 // Renderizar tours
                 renderTours(tours);
@@ -1869,6 +1977,29 @@
                     }
                 }, { passive: false });
             }
+            
+            // ========== VERIFICAR SI VIENE DEL LOGIN ==========
+            checkIfComingFromLogin();
+        }
+        
+        function checkIfComingFromLogin() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromLogin = urlParams.get('fromLogin');
+            
+            if (fromLogin === 'true') {
+                console.log('🔑 Usuario viene del login, verificando sesión...');
+                
+                // Verificar autenticación nuevamente
+                setTimeout(() => {
+                    const authStatus = checkAuthenticationImmediately();
+                    if (authStatus.authenticated) {
+                        showAlert(`¡Bienvenido/a ${authStatus.user.nombre}! Has iniciado sesión correctamente.`, 'success');
+                        
+                        // Remover parámetro de la URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }, 500);
+            }
         }
         
         function loadHeroImage() {
@@ -2014,9 +2145,16 @@
             }
         };
         
-        // Exponer funciones globales
-        window.API_BASE_URL = API_BASE_URL;
-        window.currentUser = currentUser;
+        // ========== EXPORTAR FUNCIONES GLOBALES ==========
+        window.CanoSalaoAuth = {
+            currentUser: currentUser,
+            STORAGE_KEYS: STORAGE_KEYS,
+            API_BASE_URL: API_BASE_URL,
+            checkAuthentication: checkAuthenticationImmediately,
+            logout: logout,
+            showAlert: showAlert,
+            validateSession: validateSessionWithServer
+        };
         
         console.log('✅ index.html: Script cargado correctamente');
         
