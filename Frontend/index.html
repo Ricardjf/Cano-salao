@@ -90,6 +90,11 @@
             100% { transform: rotate(360deg); }
         }
         
+        /* Estilo para spinners giratorios */
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        
         /* ===== HEADER ===== */
         header {
             background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
@@ -1126,6 +1131,12 @@
             color: #0c5460;
         }
         
+        .site-alert.warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
         @keyframes slideInRight {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -1759,7 +1770,9 @@
         const API_BASE_URL = 'https://cano-salao.onrender.com/api';
         const STORAGE_KEYS = {
             TOKEN: 'cano_salao_token',
-            USER: 'cano_salao_user'
+            USER: 'cano_salao_user',
+            REFRESH_TOKEN: 'cano_salao_refresh_token',
+            SESSION_EXPIRES: 'cano_salao_expires'
         };
         
         // Variables globales
@@ -1767,6 +1780,7 @@
         let userDropdown = null;
         let userDropdownOpen = false;
         let isMobileMenuOpen = false;
+        let isRefreshingToken = false;
         
         // ========== INICIALIZACIÓN ==========
         (function init() {
@@ -1787,25 +1801,41 @@
             // Cargar contenido dinámico
             setTimeout(loadDynamicContent, 500);
             
+            // Iniciar verificación periódica de sesión
+            startSessionMonitoring();
+            
             console.log('✅ Sistema inicializado');
         })();
         
-        // ========== SISTEMA DE USUARIO ==========
+        // ========== SISTEMA DE SESIÓN PERSISTENTE ==========
         
         function initializeUserSystem() {
-            console.log('🔐 Verificando autenticación...');
+            console.log('🔐 Verificando sesión del usuario...');
             
-            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-            const userData = localStorage.getItem(STORAGE_KEYS.USER);
+            // Primero verificar si la sesión no ha expirado
+            if (isSessionExpired()) {
+                console.log('⚠️ Sesión expirada, limpiando...');
+                clearUserSession();
+                showLoginInterface();
+                return;
+            }
+            
+            const token = getStorageItem(STORAGE_KEYS.TOKEN);
+            const userData = getStorageItem(STORAGE_KEYS.USER);
             
             if (token && userData) {
                 try {
                     currentUser = JSON.parse(userData);
                     console.log('✅ Usuario encontrado:', currentUser.nombre);
+                    
+                    // Mostrar interfaz de usuario
                     showUserInterface();
                     
                     // Validar sesión con servidor en segundo plano
                     setTimeout(validateSessionWithServer, 1000);
+                    
+                    // Actualizar fecha de expiración si está cerca de vencer
+                    updateSessionExpiration();
                 } catch (error) {
                     console.error('❌ Error parseando datos de usuario:', error);
                     clearUserSession();
@@ -1820,38 +1850,193 @@
             checkIfComingFromLogin();
         }
         
+        // Funciones mejoradas de almacenamiento
+        function getStorageItem(key) {
+            // Intentar obtener de localStorage primero (sesión persistente)
+            const item = localStorage.getItem(key);
+            if (item) return item;
+            
+            // Si no hay en localStorage, intentar sessionStorage (sesión de navegador)
+            return sessionStorage.getItem(key);
+        }
+        
+        function setStorageItem(key, value, persistent = false) {
+            if (persistent) {
+                localStorage.setItem(key, value);
+            } else {
+                sessionStorage.setItem(key, value);
+            }
+        }
+        
+        function removeStorageItem(key) {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        }
+        
+        // Sistema de expiración de sesión
+        function isSessionExpired() {
+            const expiresStr = getStorageItem(STORAGE_KEYS.SESSION_EXPIRES);
+            if (!expiresStr) return true;
+            
+            try {
+                const expires = new Date(expiresStr);
+                const now = new Date();
+                return now > expires;
+            } catch (error) {
+                console.error('Error verificando expiración:', error);
+                return true;
+            }
+        }
+        
+        function updateSessionExpiration() {
+            // Establecer expiración a 24 horas desde ahora
+            const expires = new Date();
+            expires.setHours(expires.getHours() + 24);
+            
+            // Guardar en el mismo tipo de almacenamiento que el token
+            const token = getStorageItem(STORAGE_KEYS.TOKEN);
+            const isPersistent = localStorage.getItem(STORAGE_KEYS.TOKEN) === token;
+            
+            setStorageItem(
+                STORAGE_KEYS.SESSION_EXPIRES, 
+                expires.toISOString(), 
+                isPersistent
+            );
+        }
+        
+        function startSessionMonitoring() {
+            // Verificar cada 5 minutos si la sesión está por expirar
+            setInterval(() => {
+                if (currentUser && !isSessionExpired()) {
+                    // Si queda menos de 1 hora, intentar refrescar
+                    const expiresStr = getStorageItem(STORAGE_KEYS.SESSION_EXPIRES);
+                    if (expiresStr) {
+                        const expires = new Date(expiresStr);
+                        const now = new Date();
+                        const hoursLeft = (expires - now) / (1000 * 60 * 60);
+                        
+                        if (hoursLeft < 1) {
+                            console.log('🔄 Sesión cerca de expirar, refrescando...');
+                            refreshTokenSilently();
+                        }
+                    }
+                }
+            }, 5 * 60 * 1000); // 5 minutos
+        }
+        
+        async function refreshTokenSilently() {
+            if (isRefreshingToken) return;
+            
+            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+            if (!refreshToken) return;
+            
+            isRefreshingToken = true;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${refreshToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Determinar si es sesión persistente
+                    const isPersistent = localStorage.getItem(STORAGE_KEYS.TOKEN) !== null;
+                    
+                    // Guardar nuevo token
+                    setStorageItem(STORAGE_KEYS.TOKEN, data.access_token, isPersistent);
+                    
+                    // Actualizar datos de usuario si vienen
+                    if (data.user) {
+                        setStorageItem(STORAGE_KEYS.USER, JSON.stringify(data.user), isPersistent);
+                        currentUser = data.user;
+                        updateUserInfo();
+                    }
+                    
+                    // Actualizar expiración
+                    updateSessionExpiration();
+                    
+                    console.log('✅ Token refrescado automáticamente');
+                } else {
+                    console.warn('⚠️ No se pudo refrescar el token');
+                }
+            } catch (error) {
+                console.error('Error refrescando token:', error);
+            } finally {
+                isRefreshingToken = false;
+            }
+        }
+        
         async function validateSessionWithServer() {
             if (!currentUser) return;
             
-            const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+            const token = getStorageItem(STORAGE_KEYS.TOKEN);
             if (!token) return;
             
             try {
                 console.log('🔄 Validando sesión con servidor...');
                 
-                const response = await fetch(`${API_BASE_URL}/user/profile`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const response = await fetchWithAuth(`${API_BASE_URL}/user/profile`);
                 
                 if (response.ok) {
                     const user = await response.json();
+                    
                     // Actualizar datos de usuario
-                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+                    const isPersistent = localStorage.getItem(STORAGE_KEYS.TOKEN) === token;
+                    setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user), isPersistent);
                     currentUser = user;
                     updateUserInfo();
+                    updateSessionExpiration();
+                    
                     console.log('✅ Sesión validada correctamente');
+                } else if (response.status === 401) {
+                    // Intentar refrescar el token
+                    await refreshTokenSilently();
                 } else {
-                    console.log('❌ Sesión inválida, limpiando...');
-                    clearUserSession();
-                    showLoginInterface();
-                    showAlert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
+                    console.log('❌ Error validando sesión');
                 }
             } catch (error) {
                 console.error('⚠️ Error validando sesión:', error);
                 // Si hay error de red, mantener sesión local
             }
+        }
+        
+        // Fetch con manejo automático de token expirado
+        async function fetchWithAuth(url, options = {}) {
+            const token = getStorageItem(STORAGE_KEYS.TOKEN);
+            
+            if (token) {
+                options.headers = {
+                    ...options.headers,
+                    'Authorization': `Bearer ${token}`
+                };
+            }
+            
+            options.credentials = 'include';
+            
+            const response = await fetch(url, options);
+            
+            // Si el token expiró (401), intentar refrescar
+            if (response.status === 401 && !isRefreshingToken) {
+                await refreshTokenSilently();
+                
+                // Reintentar con nuevo token
+                const newToken = getStorageItem(STORAGE_KEYS.TOKEN);
+                if (newToken && newToken !== token) {
+                    options.headers = {
+                        ...options.headers,
+                        'Authorization': `Bearer ${newToken}`
+                    };
+                    return fetch(url, options);
+                }
+            }
+            
+            return response;
         }
         
         function showUserInterface() {
@@ -2065,10 +2250,14 @@
         }
         
         function clearUserSession() {
-            localStorage.removeItem(STORAGE_KEYS.TOKEN);
-            localStorage.removeItem(STORAGE_KEYS.USER);
+            // Limpiar todos los almacenamientos
+            Object.values(STORAGE_KEYS).forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+            
             currentUser = null;
-            console.log('✅ Sesión limpiada');
+            console.log('✅ Sesión completamente limpiada');
         }
         
         function checkIfComingFromLogin() {
@@ -2304,7 +2493,7 @@
             try {
                 console.log('🔄 Cargando tours desde API...');
                 
-                const response = await fetch(`${API_BASE_URL}/tours`);
+                const response = await fetchWithAuth(`${API_BASE_URL}/tours`);
                 
                 if (response.ok) {
                     const tours = await response.json();
@@ -2401,7 +2590,7 @@
         
         function bookTour(tourId, tourName) {
             if (!currentUser) {
-                showAlert('Debes iniciar sesión para reservar tours', 'error');
+                showAlert('Debes iniciar sesión para reservar tours', 'warning');
                 window.location.href = 'Pages/login.html';
                 return;
             }
@@ -2422,7 +2611,7 @@
         
         async function loadBlogPostsFromAPI() {
             try {
-                const response = await fetch(`${API_BASE_URL}/blog`);
+                const response = await fetchWithAuth(`${API_BASE_URL}/blog`);
                 
                 if (response.ok) {
                     const posts = await response.json();
@@ -2490,7 +2679,8 @@
             logout: logout,
             showAlert: showAlert,
             loadToursFromAPI: loadToursFromAPI,
-            loadBlogPostsFromAPI: loadBlogPostsFromAPI
+            loadBlogPostsFromAPI: loadBlogPostsFromAPI,
+            fetchWithAuth: fetchWithAuth
         };
         
         console.log('✅ Sistema Caño Salao completamente cargado');
