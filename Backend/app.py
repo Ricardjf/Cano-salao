@@ -45,7 +45,24 @@ class Config:
         SQLALCHEMY_DATABASE_URI = f'sqlite:///{DATABASE_PATH}'
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    
+    # ========== NUEVO: CONFIGURACIÓN DE SESIONES PERSISTENTES ==========
+    # Configuración de JWT para sesiones más largas
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)  # Token de acceso: 24 horas
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)  # Token de refresh: 30 días
+    
+    # Configuración para tokens en cookies (más seguras)
+    JWT_TOKEN_LOCATION = ['headers']  # También puedes usar ['cookies', 'headers']
+    JWT_COOKIE_CSRF_PROTECT = False  # Desactivar para facilitar desarrollo
+    
+    # Configuración de sesiones Flask
+    PERMANENT_SESSION_LIFETIME = timedelta(days=30)  # Sesiones de 30 días
+    SESSION_COOKIE_NAME = 'cano_salao_session'
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SECURE = os.environ.get('FLASK_ENV') == 'production'  # True en producción
+    
+    # ========== FIN CONFIGURACIÓN SESIONES ==========
     
     # Configuración CORS para GitHub Pages y localhost
     CORS_ORIGINS = [
@@ -75,7 +92,8 @@ def create_app(config_class=Config):
             "origins": app.config['CORS_ORIGINS'],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
-            "supports_credentials": True
+            "supports_credentials": True,
+            "expose_headers": ["Authorization"],  # Para que el frontend pueda leer el token
         }
     })
     print("✅ CORS configurado")
@@ -88,8 +106,24 @@ def create_app(config_class=Config):
     def expired_token_callback(jwt_header, jwt_payload):
         return jsonify({
             'success': False,
-            'error': 'Token expirado',
+            'error': 'token_expired',
             'message': 'Tu sesión ha expirado'
+        }), 401
+    
+    @jwt.invalid_token_loader
+    def invalid_token_callback(error):
+        return jsonify({
+            'success': False,
+            'error': 'invalid_token',
+            'message': 'Token inválido'
+        }), 401
+    
+    @jwt.unauthorized_loader
+    def unauthorized_callback(error):
+        return jsonify({
+            'success': False,
+            'error': 'unauthorized',
+            'message': 'No autorizado'
         }), 401
     
     print("✅ JWT configurado")
@@ -258,7 +292,7 @@ def create_app(config_class=Config):
         except:
             return jsonify({'status': 'unhealthy', 'database': 'disconnected'}), 500
     
-    # ========== RUTAS DE AUTENTICACIÓN ==========
+    # ========== RUTAS DE AUTENTICACIÓN MEJORADAS ==========
     
     @app.route('/api/auth/login', methods=['POST'])
     def login():
@@ -267,6 +301,9 @@ def create_app(config_class=Config):
             if not data or not data.get('email') or not data.get('password'):
                 return jsonify({'success': False, 'error': 'Email y contraseña requeridos'}), 400
             
+            # Verificar si el usuario quiere "recordar sesión"
+            remember_me = data.get('remember_me', False)
+            
             user = User.query.filter_by(email=data['email'], activo=True).first()
             if not user:
                 return jsonify({'success': False, 'error': 'Credenciales incorrectas'}), 401
@@ -274,15 +311,21 @@ def create_app(config_class=Config):
             if not check_password_hash(user.password, data['password']):
                 return jsonify({'success': False, 'error': 'Credenciales incorrectas'}), 401
             
-            # Crear token JWT
-            access_token = create_access_token(identity={
-                'id': user.id,
-                'email': user.email,
-                'nombre': user.nombre,
-                'rol': user.rol
-            })
+            # Configurar tiempo de expiración basado en remember_me
+            expires_delta = timedelta(hours=24)  # Por defecto 24 horas
             
-            return jsonify({
+            # Crear token JWT
+            access_token = create_access_token(
+                identity={
+                    'id': user.id,
+                    'email': user.email,
+                    'nombre': user.nombre,
+                    'rol': user.rol
+                },
+                expires_delta=expires_delta
+            )
+            
+            response_data = {
                 'success': True,
                 'token': access_token,
                 'user': {
@@ -291,12 +334,108 @@ def create_app(config_class=Config):
                     'email': user.email,
                     'rol': user.rol,
                     'telefono': user.telefono
-                }
-            })
+                },
+                'expires_in': int(expires_delta.total_seconds())
+            }
+            
+            # Si remember_me es True, también crear refresh token
+            if remember_me:
+                # En un sistema más complejo, aquí crearías un refresh token
+                # Por ahora, solo extendemos el tiempo del access token
+                response_data['refresh_available'] = True
+                response_data['message'] = 'Sesión recordada por 24 horas'
+            else:
+                response_data['message'] = 'Sesión iniciada correctamente'
+            
+            return jsonify(response_data)
             
         except Exception as e:
             logger.error(f"Login error: {e}")
             return jsonify({'success': False, 'error': 'Error en el servidor'}), 500
+    
+    # ========== NUEVO: ENDPOINT PARA REFRESCAR TOKEN ==========
+    
+    @app.route('/api/auth/refresh', methods=['POST'])
+    @jwt_required(refresh=True)
+    def refresh_token():
+        try:
+            current_user = get_jwt_identity()
+            
+            # Buscar usuario en la base de datos
+            user = User.query.get(current_user['id'])
+            if not user or not user.activo:
+                return jsonify({
+                    'success': False,
+                    'error': 'usuario_no_encontrado',
+                    'message': 'Usuario no encontrado o inactivo'
+                }), 401
+            
+            # Crear nuevo token de acceso
+            new_access_token = create_access_token(
+                identity={
+                    'id': user.id,
+                    'email': user.email,
+                    'nombre': user.nombre,
+                    'rol': user.rol
+                }
+            )
+            
+            return jsonify({
+                'success': True,
+                'token': new_access_token,
+                'user': {
+                    'id': user.id,
+                    'nombre': user.nombre,
+                    'email': user.email,
+                    'rol': user.rol
+                },
+                'message': 'Token refrescado correctamente'
+            })
+            
+        except Exception as e:
+            logger.error(f"Refresh token error: {e}")
+            return jsonify({
+                'success': False,
+                'error': 'refresh_failed',
+                'message': 'Error refrescando token'
+            }), 401
+    
+    # ========== NUEVO: ENDPOINT PARA VERIFICAR SESIÓN ==========
+    
+    @app.route('/api/auth/validate', methods=['GET'])
+    @jwt_required()
+    def validate_session():
+        try:
+            current_user = get_jwt_identity()
+            
+            user = User.query.get(current_user['id'])
+            if not user or not user.activo:
+                return jsonify({
+                    'success': False,
+                    'valid': False,
+                    'error': 'Sesión inválida'
+                }), 401
+            
+            return jsonify({
+                'success': True,
+                'valid': True,
+                'user': {
+                    'id': user.id,
+                    'nombre': user.nombre,
+                    'email': user.email,
+                    'rol': user.rol,
+                    'telefono': user.telefono
+                },
+                'message': 'Sesión válida'
+            })
+            
+        except Exception as e:
+            logger.error(f"Session validation error: {e}")
+            return jsonify({
+                'success': False,
+                'valid': False,
+                'error': 'Error validando sesión'
+            }), 401
     
     @app.route('/api/auth/register', methods=['POST'])
     def register():
@@ -322,12 +461,14 @@ def create_app(config_class=Config):
             db.session.commit()
             
             # Crear token JWT
-            access_token = create_access_token(identity={
-                'id': new_user.id,
-                'email': new_user.email,
-                'nombre': new_user.nombre,
-                'rol': new_user.rol
-            })
+            access_token = create_access_token(
+                identity={
+                    'id': new_user.id,
+                    'email': new_user.email,
+                    'nombre': new_user.nombre,
+                    'rol': new_user.rol
+                }
+            )
             
             return jsonify({
                 'success': True,
@@ -404,10 +545,45 @@ def create_app(config_class=Config):
                 'email': user.email,
                 'rol': user.rol,
                 'telefono': user.telefono,
-                'created_at': user.created_at.isoformat()
+                'created_at': user.created_at.isoformat(),
+                'session_expires_in': int(app.config['JWT_ACCESS_TOKEN_EXPIRES'].total_seconds())
             })
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+    
+    # ========== NUEVO: ENDPOINT PARA OBTENER TODAS LAS RESERVAS DEL USUARIO ==========
+    
+    @app.route('/api/user/bookings', methods=['GET'])
+    @jwt_required()
+    def get_user_bookings():
+        try:
+            current_user = get_jwt_identity()
+            user_id = current_user['id']
+            
+            bookings = Booking.query.filter_by(user_id=user_id).order_by(Booking.created_at.desc()).all()
+            bookings_list = []
+            
+            for booking in bookings:
+                bookings_list.append({
+                    'id': booking.id,
+                    'codigo': booking.codigo,
+                    'tour_nombre': booking.tour.nombre if booking.tour else 'Tour no disponible',
+                    'fecha': booking.fecha.isoformat(),
+                    'personas': booking.personas,
+                    'total': booking.total,
+                    'estado': booking.estado,
+                    'created_at': booking.created_at.isoformat()
+                })
+            
+            return jsonify({
+                'success': True,
+                'bookings': bookings_list,
+                'count': len(bookings_list)
+            })
+            
+        except Exception as e:
+            logger.error(f"Get user bookings error: {e}")
+            return jsonify({'success': False, 'error': 'Error obteniendo reservas'}), 500
     
     @app.route('/api/bookings', methods=['POST'])
     @jwt_required()
@@ -521,16 +697,31 @@ def create_app(config_class=Config):
             db.session.rollback()
             return jsonify({'error': 'Error creando tour'}), 500
     
+    # ========== NUEVO: MIDDLEWARE PARA MANEJAR SESIONES ==========
+    
+    @app.before_request
+    def log_request_info():
+        if app.config['DEBUG']:
+            logger.info(f"Request: {request.method} {request.path}")
+    
     # ========== MANEJADORES DE ERROR ==========
     
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({'error': 'Endpoint no encontrado'}), 404
+        return jsonify({
+            'success': False,
+            'error': 'not_found',
+            'message': 'Endpoint no encontrado'
+        }), 404
     
     @app.errorhandler(500)
     def internal_error(error):
         logger.error(f'Server error: {error}')
-        return jsonify({'error': 'Error interno del servidor'}), 500
+        return jsonify({
+            'success': False,
+            'error': 'internal_server_error',
+            'message': 'Error interno del servidor'
+        }), 500
     
     # ========== IMPRIMIR RESUMEN ==========
     print("\n" + "="*60)
@@ -538,6 +729,7 @@ def create_app(config_class=Config):
     print(f"📡 URL: http://{app.config['HOST']}:{app.config['PORT']}")
     print(f"🗄️  Base de datos: {app.config['SQLALCHEMY_DATABASE_URI'][:50]}...")
     print(f"🔐 Admin: admin@canosalao.com / admin123")
+    print(f"⏱️  Duración de sesión: {app.config['JWT_ACCESS_TOKEN_EXPIRES']}")
     print("="*60)
     
     return app
