@@ -1764,15 +1764,16 @@
         </div>
     </footer>
 
-    <!-- JavaScript COMPLETO Y CORREGIDO -->
+    <!-- JavaScript COMPLETO Y CORREGIDO CON SESIONES PERSISTENTES -->
     <script>
         // ========== CONFIGURACIÓN ==========
         const API_BASE_URL = 'https://cano-salao.onrender.com/api';
         const STORAGE_KEYS = {
             TOKEN: 'cano_salao_token',
-            USER: 'cano_salao_user',
             REFRESH_TOKEN: 'cano_salao_refresh_token',
-            SESSION_EXPIRES: 'cano_salao_expires'
+            USER: 'cano_salao_user',
+            SESSION_EXPIRES: 'cano_salao_expires',
+            LAST_ACTIVITY: 'cano_salao_last_activity'
         };
         
         // Variables globales
@@ -1781,6 +1782,7 @@
         let userDropdownOpen = false;
         let isMobileMenuOpen = false;
         let isRefreshingToken = false;
+        let failedRequestsQueue = [];
         
         // ========== INICIALIZACIÓN ==========
         (function init() {
@@ -1801,18 +1803,183 @@
             // Cargar contenido dinámico
             setTimeout(loadDynamicContent, 500);
             
-            // Iniciar verificación periódica de sesión
+            // Iniciar monitoreo de sesión
             startSessionMonitoring();
             
             console.log('✅ Sistema inicializado');
         })();
+        
+        // ========== SISTEMA DE GESTIÓN DE TOKENS ==========
+        
+        // Sistema de cola para peticiones fallidas
+        const processFailedQueue = (error, token = null) => {
+            failedRequestsQueue.forEach(prom => {
+                if (error) {
+                    prom.reject(error);
+                } else {
+                    prom.resolve(token);
+                }
+            });
+            failedRequestsQueue = [];
+        };
+        
+        // Función principal para hacer peticiones con manejo automático de tokens
+        async function fetchWithAuth(url, options = {}) {
+            // Obtener token de acceso
+            const accessToken = getStorageItem(STORAGE_KEYS.TOKEN);
+            
+            if (!accessToken) {
+                console.warn('⚠️ No hay token de acceso disponible');
+                return fetch(url, options);
+            }
+            
+            // Añadir encabezado de autorización
+            options.headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${accessToken}`
+            };
+            
+            try {
+                const response = await fetch(url, options);
+                
+                // Si la respuesta es 401 (token expirado o inválido)
+                if (response.status === 401) {
+                    const responseData = await response.json().catch(() => ({}));
+                    
+                    // Si el error es de token expirado, intentar refrescar
+                    if (responseData.error === 'token_expired' || responseData.error === 'invalid_token') {
+                        console.log('🔄 Token expirado, intentando refrescar...');
+                        
+                        // Si ya estamos refrescando, encolar esta petición
+                        if (isRefreshingToken) {
+                            return new Promise((resolve, reject) => {
+                                failedRequestsQueue.push({ resolve, reject });
+                            }).then(newToken => {
+                                // Reintentar con nuevo token
+                                options.headers = {
+                                    ...options.headers,
+                                    'Authorization': `Bearer ${newToken}`
+                                };
+                                return fetch(url, options);
+                            }).catch(err => {
+                                console.error('Error en cola de refresco:', err);
+                                return response; // Devolver respuesta original
+                            });
+                        }
+                        
+                        // Marcar que estamos refrescando
+                        isRefreshingToken = true;
+                        
+                        try {
+                            // Intentar refrescar el token
+                            const newTokens = await refreshTokens();
+                            
+                            if (newTokens && newTokens.access_token) {
+                                // Actualizar token en la petición
+                                options.headers = {
+                                    ...options.headers,
+                                    'Authorization': `Bearer ${newTokens.access_token}`
+                                };
+                                
+                                // Procesar cola de espera
+                                processFailedQueue(null, newTokens.access_token);
+                                
+                                // Reintentar la petición original
+                                const retryResponse = await fetch(url, options);
+                                isRefreshingToken = false;
+                                return retryResponse;
+                            } else {
+                                // No se pudo refrescar, limpiar sesión
+                                throw new Error('No se pudo refrescar el token');
+                            }
+                        } catch (refreshError) {
+                            console.error('❌ Error refrescando token:', refreshError);
+                            
+                            // Procesar cola con error
+                            processFailedQueue(refreshError, null);
+                            isRefreshingToken = false;
+                            
+                            // Limpiar sesión y mostrar login
+                            clearUserSession();
+                            showLoginInterface();
+                            showAlert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
+                            
+                            return response; // Devolver respuesta original
+                        }
+                    }
+                }
+                
+                // Si la respuesta es exitosa, actualizar actividad
+                if (response.ok && currentUser) {
+                    updateLastActivity();
+                }
+                
+                return response;
+                
+            } catch (error) {
+                console.error('❌ Error en fetchWithAuth:', error);
+                throw error;
+            }
+        }
+        
+        // Función para refrescar tokens
+        async function refreshTokens() {
+            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+            
+            if (!refreshToken) {
+                console.warn('⚠️ No hay refresh token disponible');
+                return null;
+            }
+            
+            try {
+                console.log('🔄 Refrescando tokens...');
+                
+                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${refreshToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Guardar nuevos tokens
+                    saveTokens(data.access_token, data.refresh_token);
+                    
+                    // Actualizar usuario si viene en la respuesta
+                    if (data.user) {
+                        saveUserData(data.user);
+                        currentUser = data.user;
+                        updateUserInfo();
+                    }
+                    
+                    // Actualizar expiración
+                    updateSessionExpiration();
+                    
+                    console.log('✅ Tokens refrescados exitosamente');
+                    return {
+                        access_token: data.access_token,
+                        refresh_token: data.refresh_token
+                    };
+                } else {
+                    console.error('❌ Error en respuesta de refresh:', response.status);
+                    return null;
+                }
+            } catch (error) {
+                console.error('❌ Error en refreshTokens:', error);
+                return null;
+            }
+        }
         
         // ========== SISTEMA DE SESIÓN PERSISTENTE ==========
         
         function initializeUserSystem() {
             console.log('🔐 Verificando sesión del usuario...');
             
-            // Primero verificar si la sesión no ha expirado
+            // Verificar si la sesión ha expirado
             if (isSessionExpired()) {
                 console.log('⚠️ Sesión expirada, limpiando...');
                 clearUserSession();
@@ -1820,10 +1987,12 @@
                 return;
             }
             
-            const token = getStorageItem(STORAGE_KEYS.TOKEN);
+            // Cargar datos del usuario
             const userData = getStorageItem(STORAGE_KEYS.USER);
+            const token = getStorageItem(STORAGE_KEYS.TOKEN);
+            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
             
-            if (token && userData) {
+            if (token && userData && refreshToken) {
                 try {
                     currentUser = JSON.parse(userData);
                     console.log('✅ Usuario encontrado:', currentUser.nombre);
@@ -1834,8 +2003,9 @@
                     // Validar sesión con servidor en segundo plano
                     setTimeout(validateSessionWithServer, 1000);
                     
-                    // Actualizar fecha de expiración si está cerca de vencer
-                    updateSessionExpiration();
+                    // Actualizar actividad
+                    updateLastActivity();
+                    
                 } catch (error) {
                     console.error('❌ Error parseando datos de usuario:', error);
                     clearUserSession();
@@ -1850,27 +2020,26 @@
             checkIfComingFromLogin();
         }
         
-        // Funciones mejoradas de almacenamiento
+        // Funciones de almacenamiento mejoradas
         function getStorageItem(key) {
-            // Intentar obtener de localStorage primero (sesión persistente)
-            const item = localStorage.getItem(key);
-            if (item) return item;
-            
-            // Si no hay en localStorage, intentar sessionStorage (sesión de navegador)
-            return sessionStorage.getItem(key);
+            return localStorage.getItem(key);
         }
         
-        function setStorageItem(key, value, persistent = false) {
-            if (persistent) {
-                localStorage.setItem(key, value);
-            } else {
-                sessionStorage.setItem(key, value);
-            }
+        function setStorageItem(key, value) {
+            localStorage.setItem(key, value);
         }
         
         function removeStorageItem(key) {
             localStorage.removeItem(key);
-            sessionStorage.removeItem(key);
+        }
+        
+        function saveTokens(accessToken, refreshToken) {
+            setStorageItem(STORAGE_KEYS.TOKEN, accessToken);
+            setStorageItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+        }
+        
+        function saveUserData(user) {
+            setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user));
         }
         
         // Sistema de expiración de sesión
@@ -1889,87 +2058,39 @@
         }
         
         function updateSessionExpiration() {
-            // Establecer expiración a 24 horas desde ahora
+            // Establecer expiración a 30 días desde ahora
             const expires = new Date();
-            expires.setHours(expires.getHours() + 24);
-            
-            // Guardar en el mismo tipo de almacenamiento que el token
-            const token = getStorageItem(STORAGE_KEYS.TOKEN);
-            const isPersistent = localStorage.getItem(STORAGE_KEYS.TOKEN) === token;
-            
-            setStorageItem(
-                STORAGE_KEYS.SESSION_EXPIRES, 
-                expires.toISOString(), 
-                isPersistent
-            );
+            expires.setDate(expires.getDate() + 30);
+            setStorageItem(STORAGE_KEYS.SESSION_EXPIRES, expires.toISOString());
+        }
+        
+        function updateLastActivity() {
+            const now = new Date().toISOString();
+            setStorageItem(STORAGE_KEYS.LAST_ACTIVITY, now);
         }
         
         function startSessionMonitoring() {
-            // Verificar cada 5 minutos si la sesión está por expirar
+            // Verificar cada minuto si la sesión está por expirar
             setInterval(() => {
                 if (currentUser && !isSessionExpired()) {
-                    // Si queda menos de 1 hora, intentar refrescar
+                    // Si queda menos de 1 día, intentar refrescar preventivamente
                     const expiresStr = getStorageItem(STORAGE_KEYS.SESSION_EXPIRES);
                     if (expiresStr) {
                         const expires = new Date(expiresStr);
                         const now = new Date();
                         const hoursLeft = (expires - now) / (1000 * 60 * 60);
                         
-                        if (hoursLeft < 1) {
-                            console.log('🔄 Sesión cerca de expirar, refrescando...');
-                            refreshTokenSilently();
+                        if (hoursLeft < 24 && !isRefreshingToken) {
+                            console.log('🔄 Sesión cerca de expirar, refrescando preventivamente...');
+                            refreshTokens().then(() => {
+                                console.log('✅ Refresco preventivo completado');
+                            }).catch(error => {
+                                console.error('❌ Error en refresco preventivo:', error);
+                            });
                         }
                     }
                 }
-            }, 5 * 60 * 1000); // 5 minutos
-        }
-        
-        async function refreshTokenSilently() {
-            if (isRefreshingToken) return;
-            
-            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
-            if (!refreshToken) return;
-            
-            isRefreshingToken = true;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${refreshToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Determinar si es sesión persistente
-                    const isPersistent = localStorage.getItem(STORAGE_KEYS.TOKEN) !== null;
-                    
-                    // Guardar nuevo token
-                    setStorageItem(STORAGE_KEYS.TOKEN, data.access_token, isPersistent);
-                    
-                    // Actualizar datos de usuario si vienen
-                    if (data.user) {
-                        setStorageItem(STORAGE_KEYS.USER, JSON.stringify(data.user), isPersistent);
-                        currentUser = data.user;
-                        updateUserInfo();
-                    }
-                    
-                    // Actualizar expiración
-                    updateSessionExpiration();
-                    
-                    console.log('✅ Token refrescado automáticamente');
-                } else {
-                    console.warn('⚠️ No se pudo refrescar el token');
-                }
-            } catch (error) {
-                console.error('Error refrescando token:', error);
-            } finally {
-                isRefreshingToken = false;
-            }
+            }, 60 * 1000); // 1 minuto
         }
         
         async function validateSessionWithServer() {
@@ -1981,62 +2102,20 @@
             try {
                 console.log('🔄 Validando sesión con servidor...');
                 
-                const response = await fetchWithAuth(`${API_BASE_URL}/user/profile`);
+                const response = await fetchWithAuth(`${API_BASE_URL}/auth/verify`);
                 
                 if (response.ok) {
-                    const user = await response.json();
-                    
-                    // Actualizar datos de usuario
-                    const isPersistent = localStorage.getItem(STORAGE_KEYS.TOKEN) === token;
-                    setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user), isPersistent);
-                    currentUser = user;
-                    updateUserInfo();
-                    updateSessionExpiration();
-                    
-                    console.log('✅ Sesión validada correctamente');
-                } else if (response.status === 401) {
-                    // Intentar refrescar el token
-                    await refreshTokenSilently();
-                } else {
-                    console.log('❌ Error validando sesión');
+                    const data = await response.json();
+                    if (data.valid) {
+                        console.log('✅ Sesión válida');
+                        updateSessionExpiration();
+                        updateLastActivity();
+                    }
                 }
             } catch (error) {
                 console.error('⚠️ Error validando sesión:', error);
-                // Si hay error de red, mantener sesión local
+                // No limpiar sesión por error de red
             }
-        }
-        
-        // Fetch con manejo automático de token expirado
-        async function fetchWithAuth(url, options = {}) {
-            const token = getStorageItem(STORAGE_KEYS.TOKEN);
-            
-            if (token) {
-                options.headers = {
-                    ...options.headers,
-                    'Authorization': `Bearer ${token}`
-                };
-            }
-            
-            options.credentials = 'include';
-            
-            const response = await fetch(url, options);
-            
-            // Si el token expiró (401), intentar refrescar
-            if (response.status === 401 && !isRefreshingToken) {
-                await refreshTokenSilently();
-                
-                // Reintentar con nuevo token
-                const newToken = getStorageItem(STORAGE_KEYS.TOKEN);
-                if (newToken && newToken !== token) {
-                    options.headers = {
-                        ...options.headers,
-                        'Authorization': `Bearer ${newToken}`
-                    };
-                    return fetch(url, options);
-                }
-            }
-            
-            return response;
         }
         
         function showUserInterface() {
@@ -2678,12 +2757,12 @@
             currentUser: () => currentUser,
             logout: logout,
             showAlert: showAlert,
-            loadToursFromAPI: loadToursFromAPI,
-            loadBlogPostsFromAPI: loadBlogPostsFromAPI,
-            fetchWithAuth: fetchWithAuth
+            fetchWithAuth: fetchWithAuth,
+            refreshTokens: refreshTokens,
+            clearUserSession: clearUserSession
         };
         
-        console.log('✅ Sistema Caño Salao completamente cargado');
+        console.log('✅ Sistema Caño Salao completamente cargado con sesiones persistentes');
     </script>
 </body>
 </html>
