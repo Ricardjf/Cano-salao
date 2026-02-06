@@ -1148,6 +1148,48 @@
             background: rgba(44, 130, 201, 0.1);
             color: var(--user-secondary);
         }
+        
+        /* Estadísticas de usuario normal */
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card i {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--user-primary);
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--user-dark);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -1308,7 +1350,7 @@
                         </div>
                         
                         <!-- Estadísticas -->
-                        <div class="user-stats" id="user-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="user-stats" id="user-stats">
                             <div class="stat-card">
                                 <i class="bi bi-calendar-check"></i>
                                 <div class="stat-number" id="total-bookings">0</div>
@@ -2159,7 +2201,10 @@
                 if (!currentUser) return;
                 
                 const token = getStorageItem(STORAGE_KEYS.TOKEN);
-                if (!token) return;
+                if (!token) {
+                    console.warn('⚠️ No hay token almacenado');
+                    return;
+                }
                 
                 try {
                     console.log('🔄 Validando sesión con servidor...');
@@ -2176,27 +2221,45 @@
                         const data = await response.json();
                         console.log('✅ Sesión válida en servidor:', data);
                         
-                        // Actualizar datos del usuario si están disponibles
-                        if (data.user) {
+                        if (data.success && data.valid && data.user) {
+                            // Actualizar datos del usuario
                             currentUser = { ...currentUser, ...data.user };
                             saveUserData(currentUser);
                             updateUserUI();
+                            
+                            // Actualizar interfaz si es admin
+                            if (data.user.rol === 'admin') {
+                                isAdmin = true;
+                                setupAdminUI();
+                            }
                         }
                         
-                        // Actualizar interfaz si es admin
-                        if (data.user?.rol === 'admin') {
-                            isAdmin = true;
-                            setupAdminUI();
+                    } else if (response.status === 401) {
+                        console.warn('⚠️ Token inválido o expirado');
+                        const errorData = await response.json();
+                        
+                        if (errorData.can_refresh) {
+                            // Intentar refresh
+                            const refreshed = await tryRefreshToken();
+                            if (refreshed) {
+                                await validateSessionWithServer(); // Reintentar
+                            }
+                        } else {
+                            showAlert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
+                            setTimeout(() => {
+                                logout();
+                            }, 3000);
                         }
                         
                     } else {
-                        console.warn('⚠️ Sesión no válida en servidor');
-                        // Intentar usar refresh token
-                        await tryRefreshToken();
+                        console.warn('⚠️ Error validando sesión:', response.status);
+                        // Continuar con datos locales
+                        showAlert('Usando datos locales (modo offline)', 'info');
                     }
                     
                 } catch (error) {
                     console.error('❌ Error validando sesión:', error);
+                    showAlert('No se pudo conectar con el servidor. Usando datos locales.', 'warning');
                     // Continuar en modo offline con datos locales
                 }
             }
@@ -2395,6 +2458,12 @@
                     
                     // Cargar datos específicos si es necesario
                     switch(sectionId) {
+                        case 'dashboard':
+                            loadUserDashboardData();
+                            break;
+                        case 'bookings':
+                            loadUserBookings();
+                            break;
                         case 'admin-dashboard':
                             loadAdminDashboardData();
                             break;
@@ -2413,7 +2482,10 @@
                 
                 try {
                     const token = getStorageItem(STORAGE_KEYS.TOKEN);
-                    if (!token) return;
+                    if (!token) {
+                        showAlert('No hay token de sesión', 'error');
+                        return;
+                    }
                     
                     // Cargar estadísticas
                     const statsResponse = await fetch(`${API_BASE_URL}/admin/dashboard`, {
@@ -2431,9 +2503,28 @@
                         document.getElementById('admin-total-bookings').textContent = stats.total_bookings || '0';
                         document.getElementById('admin-pending-bookings').textContent = stats.pending_bookings || '0';
                         
-                        if (stats.total_revenue) {
+                        if (stats.total_revenue !== undefined) {
                             document.getElementById('admin-total-revenue').textContent = `$${stats.total_revenue.toFixed(2)}`;
+                        } else {
+                            // Calcular ingresos si no viene del backend
+                            const bookingsResponse = await fetch(`${API_BASE_URL}/user/bookings`, {
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            
+                            if (bookingsResponse.ok) {
+                                const bookingsData = await bookingsResponse.json();
+                                if (bookingsData.success && bookingsData.bookings) {
+                                    const total = bookingsData.bookings.reduce((sum, booking) => sum + (booking.total || 0), 0);
+                                    document.getElementById('admin-total-revenue').textContent = `$${total.toFixed(2)}`;
+                                }
+                            }
                         }
+                        
+                        // Cargar reservas recientes
+                        await loadAdminRecentBookings();
                         
                         console.log('✅ Estadísticas cargadas:', stats);
                     } else {
@@ -2444,19 +2535,55 @@
                     
                 } catch (error) {
                     console.error('❌ Error cargando dashboard administrativo:', error);
+                    showAlert('Error cargando datos del dashboard', 'error');
                     showSampleAdminData();
                 }
             }
             
-            function showSampleAdminData() {
-                // Datos de ejemplo para desarrollo
-                document.getElementById('admin-total-users').textContent = '15';
-                document.getElementById('admin-total-bookings').textContent = '42';
-                document.getElementById('admin-pending-bookings').textContent = '8';
-                document.getElementById('admin-total-revenue').textContent = '$1,250.00';
-                
-                // Mostrar notificación
-                showAlert('Usando datos de ejemplo para desarrollo', 'info');
+            async function loadAdminRecentBookings() {
+                try {
+                    const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                    if (!token) return;
+                    
+                    const response = await fetch(`${API_BASE_URL}/user/bookings?limit=5`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const tbody = document.getElementById('admin-recent-bookings');
+                        
+                        if (data.success && data.bookings && data.bookings.length > 0) {
+                            tbody.innerHTML = '';
+                            data.bookings.forEach(booking => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${booking.codigo || 'N/A'}</td>
+                                    <td>${booking.user_name || 'Usuario'}</td>
+                                    <td>${booking.tour_nombre || 'Tour'}</td>
+                                    <td>${formatDate(booking.fecha)}</td>
+                                    <td>$${booking.total?.toFixed(2) || '0.00'}</td>
+                                    <td><span class="status-badge status-${booking.estado || 'pending'}">${booking.estado || 'Pendiente'}</span></td>
+                                `;
+                                tbody.appendChild(row);
+                            });
+                        } else {
+                            tbody.innerHTML = `
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <i class="bi bi-calendar-x"></i>
+                                        <p>No hay reservas recientes</p>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error cargando reservas recientes:', error);
+                }
             }
             
             async function loadSystemUsers() {
@@ -2534,40 +2661,177 @@
                 }
             }
             
-            // ========== EVENT LISTENERS ==========
-            function initEventListeners() {
-                // Navegación del menú
-                document.querySelectorAll('.user-menu-item').forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const sectionId = this.getAttribute('data-section');
-                        if (sectionId) {
-                            showSection(sectionId);
+            function showSampleAdminData() {
+                // Datos de ejemplo para desarrollo
+                document.getElementById('admin-total-users').textContent = '15';
+                document.getElementById('admin-total-bookings').textContent = '42';
+                document.getElementById('admin-pending-bookings').textContent = '8';
+                document.getElementById('admin-total-revenue').textContent = '$1,250.00';
+                
+                // Mostrar notificación
+                showAlert('Usando datos de ejemplo para desarrollo', 'info');
+            }
+            
+            // ========== USER FUNCTIONS ==========
+            async function loadUserDashboardData() {
+                console.log('📊 Cargando datos del dashboard del usuario...');
+                
+                try {
+                    const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                    if (!token) {
+                        showAlert('No hay token de sesión', 'error');
+                        return;
+                    }
+                    
+                    // Cargar reservas del usuario
+                    const response = await fetch(`${API_BASE_URL}/user/bookings`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
                         }
                     });
-                });
-                
-                // Botón de logout
-                document.getElementById('logout-btn').addEventListener('click', logout);
-                
-                // Formulario de perfil normal
-                if (document.getElementById('profile-form')) {
-                    document.getElementById('profile-form').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        saveProfile();
-                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        if (data.success && data.bookings) {
+                            const bookings = data.bookings;
+                            
+                            // Calcular estadísticas
+                            const totalBookings = bookings.length;
+                            const pendingBookings = bookings.filter(b => b.estado === 'pending').length;
+                            const confirmedBookings = bookings.filter(b => b.estado === 'confirmed').length;
+                            const totalSpent = bookings.reduce((sum, booking) => sum + (booking.total || 0), 0);
+                            
+                            // Actualizar UI
+                            document.getElementById('total-bookings').textContent = totalBookings;
+                            document.getElementById('pending-bookings').textContent = pendingBookings;
+                            document.getElementById('confirmed-bookings').textContent = confirmedBookings;
+                            document.getElementById('total-spent').textContent = `$${totalSpent.toFixed(2)}`;
+                            
+                            // Mostrar reservas recientes (últimas 5)
+                            const recentBookings = bookings.slice(0, 5);
+                            renderRecentBookings(recentBookings);
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando datos del usuario:', error);
+                    showAlert('Error cargando datos del dashboard', 'error');
                 }
+            }
+            
+            async function loadUserBookings() {
+                try {
+                    const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                    if (!token) {
+                        showAlert('No hay token de sesión', 'error');
+                        return;
+                    }
+                    
+                    const response = await fetch(`${API_BASE_URL}/user/bookings`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        renderUserBookings(data.bookings || []);
+                    } else {
+                        console.warn('⚠️ No se pudieron cargar las reservas');
+                        renderUserBookings([]);
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando reservas:', error);
+                    showAlert('Error cargando tus reservas', 'error');
+                    renderUserBookings([]);
+                }
+            }
+            
+            function renderRecentBookings(bookings) {
+                const tbody = document.getElementById('recent-bookings');
+                if (!tbody) return;
                 
-                // Formulario de perfil admin
-                if (document.getElementById('admin-profile-form')) {
-                    document.getElementById('admin-profile-form').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        saveAdminProfile();
+                if (!bookings || bookings.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                <i class="bi bi-calendar-x"></i>
+                                <p>No tienes reservas recientes</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = '';
+                    bookings.forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${booking.codigo || 'N/A'}</td>
+                            <td>${booking.tour_nombre || 'Tour'}</td>
+                            <td>${formatDate(booking.fecha)}</td>
+                            <td>${booking.personas || 1}</td>
+                            <td>$${booking.total?.toFixed(2) || '0.00'}</td>
+                            <td><span class="status-badge status-${booking.estado || 'pending'}">${booking.estado || 'Pendiente'}</span></td>
+                        `;
+                        tbody.appendChild(row);
                     });
                 }
             }
             
-            // ========== FUNCIONES DE FORMULARIOS ==========
+            function renderUserBookings(bookings) {
+                const tbody = document.getElementById('bookings-table-body');
+                if (!tbody) return;
+                
+                if (!bookings || bookings.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <i class="bi bi-calendar-x"></i>
+                                <h3>No tienes reservas</h3>
+                                <p>¡Aún no has realizado ninguna reserva!</p>
+                                <button class="btn-user" onclick="nuevaReserva()" style="margin-top: 15px;">
+                                    <i class="bi bi-calendar-plus"></i> Crear mi primera reserva
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    document.getElementById('bookings-pagination').style.display = 'none';
+                } else {
+                    tbody.innerHTML = '';
+                    bookings.forEach(booking => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${booking.codigo || 'N/A'}</td>
+                            <td>${booking.tour_nombre || 'Tour'}</td>
+                            <td>${formatDate(booking.fecha)}</td>
+                            <td>${booking.hora || '--:--'}</td>
+                            <td>${booking.personas || 1}</td>
+                            <td>$${booking.total?.toFixed(2) || '0.00'}</td>
+                            <td><span class="status-badge status-${booking.estado || 'pending'}">${booking.estado || 'Pendiente'}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <button class="btn-user" style="padding: 5px 10px; font-size: 0.8rem;" onclick="verReserva('${booking.id}')" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    ${booking.estado === 'pending' ? `
+                                        <button class="btn-user btn-user-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="cancelarReserva('${booking.id}')" title="Cancelar reserva">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    document.getElementById('bookings-pagination').style.display = 'flex';
+                }
+            }
+            
+            // ========== FORM FUNCTIONS ==========
             async function saveProfile() {
                 const name = document.getElementById('profile-name').value.trim();
                 const email = document.getElementById('profile-email').value.trim().toLowerCase();
@@ -2694,12 +2958,169 @@
                 }
             }
             
+            // ========== DROPDOWN FUNCTIONS ==========
+            function initUserDropdown() {
+                const avatar = document.getElementById('header-user-avatar');
+                const dropdown = document.querySelector('.user-dropdown-menu');
+                
+                if (avatar && dropdown) {
+                    // Crear dropdown si no existe
+                    if (!dropdown.innerHTML.trim()) {
+                        dropdown.innerHTML = `
+                            <div class="user-dropdown-header">
+                                <strong id="dropdown-user-name">${currentUser?.nombre || 'Usuario'}</strong>
+                                <div class="user-dropdown-email" id="dropdown-user-email">${currentUser?.email || ''}</div>
+                            </div>
+                            <a href="#" onclick="showSection('dashboard')"><i class="bi bi-speedometer2"></i> Mi Panel</a>
+                            <a href="#" onclick="showSection('profile')"><i class="bi bi-person"></i> Mi Perfil</a>
+                            <a href="#" onclick="showSection('bookings')"><i class="bi bi-calendar-check"></i> Mis Reservas</a>
+                            ${isAdmin ? '<a href="admin.html"><i class="bi bi-gear"></i> Panel Admin</a>' : ''}
+                            <a href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
+                        `;
+                    }
+                    
+                    // Click en avatar
+                    avatar.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdown.classList.toggle('show');
+                    });
+                    
+                    // Click fuera para cerrar
+                    document.addEventListener('click', function(e) {
+                        if (!avatar.contains(e.target) && !dropdown.contains(e.target)) {
+                            dropdown.classList.remove('show');
+                        }
+                    });
+                    
+                    // Cerrar con ESC
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            dropdown.classList.remove('show');
+                        }
+                    });
+                }
+            }
+            
+            // ========== EVENT LISTENERS ==========
+            function initEventListeners() {
+                // Navegación del menú
+                document.querySelectorAll('.user-menu-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const sectionId = this.getAttribute('data-section');
+                        if (sectionId) {
+                            showSection(sectionId);
+                        }
+                    });
+                });
+                
+                // Botón de logout
+                document.getElementById('logout-btn').addEventListener('click', logout);
+                
+                // Formulario de perfil normal
+                if (document.getElementById('profile-form')) {
+                    document.getElementById('profile-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        saveProfile();
+                    });
+                }
+                
+                // Formulario de perfil admin
+                if (document.getElementById('admin-profile-form')) {
+                    document.getElementById('admin-profile-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        saveAdminProfile();
+                    });
+                }
+                
+                // Inicializar dropdown
+                initUserDropdown();
+            }
+            
+            // ========== FUNCIONES DE FILTRO Y BÚSQUEDA ==========
+            function filterBookings() {
+                const filterValue = document.getElementById('booking-filter').value;
+                console.log('Filtrando por:', filterValue);
+                showAlert(`Filtrando reservas por: ${getFilterText(filterValue)}`, 'info');
+                // Aquí iría la lógica real de filtrado
+            }
+            
+            function getFilterText(value) {
+                const filters = {
+                    'all': 'Todas las reservas',
+                    'pending': 'Pendientes',
+                    'confirmed': 'Confirmadas',
+                    'cancelled': 'Canceladas',
+                    'completed': 'Completadas'
+                };
+                return filters[value] || value;
+            }
+            
+            function searchBookings() {
+                const searchTerm = document.getElementById('booking-search').value;
+                if (searchTerm.length > 2) {
+                    console.log('Buscando:', searchTerm);
+                    showAlert(`Buscando: "${searchTerm}"`, 'info');
+                }
+            }
+            
+            function searchUsers() {
+                const searchTerm = document.getElementById('user-search').value;
+                if (searchTerm.length > 2) {
+                    console.log('Buscando usuario:', searchTerm);
+                    showAlert(`Buscando usuario: "${searchTerm}"`, 'info');
+                }
+            }
+            
+            // ========== FUNCIONES DE PAGINACIÓN ==========
+            function prevBookingsPage() {
+                showAlert('Página anterior de reservas', 'info');
+            }
+            
+            function nextBookingsPage() {
+                showAlert('Página siguiente de reservas', 'info');
+            }
+            
+            function prevUsersPage() {
+                showAlert('Página anterior de usuarios', 'info');
+            }
+            
+            function nextUsersPage() {
+                showAlert('Página siguiente de usuarios', 'info');
+            }
+            
+            // ========== FUNCIONES DE ACCIÓN ==========
+            function verUsuario(userId) {
+                showAlert(`Ver detalles del usuario ID: ${userId}`, 'info');
+                // Aquí iría la navegación a detalles del usuario
+            }
+            
+            function eliminarUsuario(userId) {
+                if (confirm(`¿Estás seguro de eliminar al usuario ${userId}?\nEsta acción no se puede deshacer.`)) {
+                    showAlert(`Usuario ${userId} eliminado (demo)`, 'success');
+                    // Aquí iría la llamada a la API para eliminar
+                }
+            }
+            
+            function verReserva(bookingId) {
+                showAlert(`Ver detalles de reserva ID: ${bookingId}`, 'info');
+                // Aquí iría la navegación a detalles de reserva
+            }
+            
+            function cancelarReserva(bookingId) {
+                if (confirm('¿Estás seguro de cancelar esta reserva?\nPuede aplicar una penalización según la política de cancelación.')) {
+                    showAlert(`Reserva ${bookingId} cancelada (demo)`, 'success');
+                    // Aquí iría la llamada a la API para cancelar
+                }
+            }
+            
             // ========== ACCIONES RÁPIDAS ==========
             function refreshDashboard() {
                 if (isAdmin) {
                     loadAdminDashboardData();
                     showAlert('Panel administrativo actualizado', 'success');
                 } else {
+                    loadUserDashboardData();
                     showAlert('Dashboard actualizado', 'success');
                 }
             }
@@ -2738,10 +3159,14 @@
             
             function cancelarEdicion() {
                 showAlert('Edición cancelada', 'info');
+                // Restaurar valores originales
+                updateUserUI();
             }
             
             function cancelarEdicionAdmin() {
                 showAlert('Edición cancelada', 'info');
+                // Restaurar valores originales
+                updateUserUI();
             }
             
             function verTodasLasReservas() {
@@ -2782,7 +3207,7 @@
                 init();
             }
             
-            // Exportar funciones globales
+            // ========== EXPORTAR FUNCIONES GLOBALES ==========
             window.showSection = showSection;
             window.refreshDashboard = refreshDashboard;
             window.refreshAdminDashboard = refreshAdminDashboard;
@@ -2796,6 +3221,17 @@
             window.verTodasLasReservas = verTodasLasReservas;
             window.generarReporte = generarReporte;
             window.exportarUsuarios = exportarUsuarios;
+            window.filterBookings = filterBookings;
+            window.searchBookings = searchBookings;
+            window.searchUsers = searchUsers;
+            window.prevBookingsPage = prevBookingsPage;
+            window.nextBookingsPage = nextBookingsPage;
+            window.prevUsersPage = prevUsersPage;
+            window.nextUsersPage = nextUsersPage;
+            window.verUsuario = verUsuario;
+            window.eliminarUsuario = eliminarUsuario;
+            window.verReserva = verReserva;
+            window.cancelarReserva = cancelarReserva;
             
         })();
     </script>
