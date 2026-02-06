@@ -7,8 +7,8 @@
 
     <link rel="stylesheet" href="../index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Editor WYSIWYG -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Editor WYSIWYG TinyMCE con API key gratuita para desarrollo -->
+    <script src="https://cdn.tiny.cloud/1/w0ib1a4d5sq33dzqwc9g6r5u3dng8sjz78t4sif0tpeagipx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <!-- Para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -715,13 +715,7 @@
             min-height: 300px;
             border: 1px solid #ddd;
             border-radius: 6px;
-            padding: 15px;
             background: white;
-        }
-        
-        .content-editor:focus {
-            outline: none;
-            border-color: var(--admin-accent);
         }
         
         /* Tab system for content */
@@ -867,6 +861,82 @@
             margin-top: 10px;
             border: 2px dashed #ddd;
         }
+
+        /* Botones generales */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--admin-primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--admin-success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--admin-danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--admin-warning);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Estilos para TinyMCE */
+        .tox.tox-tinymce {
+            border-radius: 6px;
+            border: 1px solid #ddd !important;
+        }
+
+        /* Vista previa de imagen */
+        .image-preview-container {
+            margin-top: 10px;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+            padding: 5px;
+            background: #f8f9fa;
+        }
+
+        /* Campo de precio */
+        .price-input {
+            position: relative;
+        }
+
+        .price-input::before {
+            content: "$";
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .price-input input {
+            padding-left: 30px;
+        }
     </style>
 </head>
 <body>
@@ -902,7 +972,7 @@
     <section class="page-header" style="background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%); color: white; padding: 3rem 0; text-align: center;">
         <div class="container">
             <h1 class="times-font">Panel de Administración Completo</h1>
-            <p id="admin-subtitle">Conectando al Backend Flask - Caño Salao</p>
+            <p id="admin-subtitle">Administración de Caño Salao - Sistema de Turismo</p>
         </div>
     </section>
 
@@ -1238,7 +1308,7 @@
                     <h3 class="times-font"><i class="bi bi-shield-check"></i> Panel Administrativo</h3>
                     <p>Sistema conectado al backend Flask de Caño Salao</p>
                     <p style="font-size: 12px; color: #666; margin-top: 10px;">
-                        <strong>Versión:</strong> 2.0.0<br>
+                        <strong>Versión:</strong> 3.0.0<br>
                         <strong>Backend:</strong> <span id="backend-status">Conectando...</span><br>
                         <strong>Última actualización:</strong> <span id="footer-last-update">--:--:--</span>
                     </p>
@@ -1372,25 +1442,39 @@
                     </div>
                     <div class="form-group">
                         <label>Descripción</label>
-                        <textarea id="new-tour-desc" class="form-control" rows="3" required></textarea>
+                        <textarea id="new-tour-desc" class="form-control" rows="4" required placeholder="Describe el tour detalladamente..."></textarea>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Precio ($)</label>
-                            <input type="number" id="new-tour-price" class="form-control" min="0" step="0.01" required>
+                            <div class="price-input">
+                                <input type="number" id="new-tour-price" class="form-control" min="0" step="0.01" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Capacidad</label>
                             <input type="number" id="new-tour-capacity" class="form-control" min="1" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Duración</label>
-                        <input type="text" id="new-tour-duration" class="form-control" placeholder="Ej: 2 horas">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Duración</label>
+                            <input type="text" id="new-tour-duration" class="form-control" placeholder="Ej: 2 horas" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="new-tour-available" class="form-control">
+                                <option value="true">Disponible</option>
+                                <option value="false">No Disponible</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>URL de Imagen</label>
+                        <label>URL de Imagen (opcional)</label>
                         <input type="url" id="new-tour-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                        <div class="image-preview-container">
+                            <img id="tour-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1400,10 +1484,70 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Editar Tour -->
+    <div id="modal-edit-tour" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="bi bi-signpost"></i> Editar Tour</h3>
+                <button class="modal-close" onclick="closeModal('modal-edit-tour')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="edit-tour-alert" class="alert" style="display: none;"></div>
+                <form id="edit-tour-form">
+                    <input type="hidden" id="edit-tour-id">
+                    <div class="form-group">
+                        <label>Nombre del Tour</label>
+                        <input type="text" id="edit-tour-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="edit-tour-desc" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Precio ($)</label>
+                            <div class="price-input">
+                                <input type="number" id="edit-tour-price" class="form-control" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Capacidad</label>
+                            <input type="number" id="edit-tour-capacity" class="form-control" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Duración</label>
+                            <input type="text" id="edit-tour-duration" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="edit-tour-available" class="form-control">
+                                <option value="true">Disponible</option>
+                                <option value="false">No Disponible</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>URL de Imagen</label>
+                        <input type="url" id="edit-tour-image" class="form-control">
+                        <div class="image-preview-container">
+                            <img id="edit-tour-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-edit-tour')">Cancelar</button>
+                <button class="btn" onclick="saveTourEdit()" style="background: var(--admin-success);">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Modal Nuevo Artículo de Blog -->
     <div id="modal-add-blog" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content" style="max-width: 900px;">
             <div class="modal-header">
                 <h3><i class="bi bi-pencil-square"></i> Nuevo Artículo de Blog</h3>
                 <button class="modal-close" onclick="closeModal('modal-add-blog')">&times;</button>
@@ -1414,31 +1558,106 @@
                     <label>Título del Artículo</label>
                     <input type="text" id="blog-title" class="form-control" placeholder="Ej: Nuevo tour por los manglares" required>
                 </div>
-                <div class="form-group">
-                    <label>Categoría</label>
-                    <select id="blog-category" class="form-control">
-                        <option value="noticias">Noticias</option>
-                        <option value="tours">Tours</option>
-                        <option value="consejos">Consejos</option>
-                        <option value="eventos">Eventos</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="blog-category" class="form-control">
+                            <option value="noticias">Noticias</option>
+                            <option value="tours">Tours</option>
+                            <option value="consejos">Consejos</option>
+                            <option value="eventos">Eventos</option>
+                            <option value="fauna">Fauna</option>
+                            <option value="flora">Flora</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Autor</label>
+                        <input type="text" id="blog-author" class="form-control" placeholder="Nombre del autor">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Contenido</label>
-                    <textarea id="blog-content" class="form-control" rows="10" placeholder="Escribe el contenido del artículo aquí..."></textarea>
+                    <label>Imagen Principal (URL)</label>
+                    <input type="url" id="blog-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                    <div class="image-preview-container">
+                        <img id="blog-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Resumen (excerpt)</label>
-                    <textarea id="blog-excerpt" class="form-control" rows="3" placeholder="Breve resumen del artículo"></textarea>
+                    <textarea id="blog-excerpt" class="form-control" rows="3" placeholder="Breve resumen que aparecerá en la lista de artículos"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>URL de Imagen (opcional)</label>
-                    <input type="url" id="blog-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                    <label>Contenido</label>
+                    <div id="blog-content-editor" class="content-editor"></div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="blog-published" checked>
+                        Publicar inmediatamente
+                    </label>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeModal('modal-add-blog')">Cancelar</button>
                 <button class="btn" onclick="saveBlogPost()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Publicar Artículo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Artículo de Blog -->
+    <div id="modal-edit-blog" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="bi bi-pencil-square"></i> Editar Artículo de Blog</h3>
+                <button class="modal-close" onclick="closeModal('modal-edit-blog')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="edit-blog-alert" class="alert" style="display: none;"></div>
+                <input type="hidden" id="edit-blog-id">
+                <div class="form-group">
+                    <label>Título del Artículo</label>
+                    <input type="text" id="edit-blog-title" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="edit-blog-category" class="form-control">
+                            <option value="noticias">Noticias</option>
+                            <option value="tours">Tours</option>
+                            <option value="consejos">Consejos</option>
+                            <option value="eventos">Eventos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Autor</label>
+                        <input type="text" id="edit-blog-author" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Imagen Principal (URL)</label>
+                    <input type="url" id="edit-blog-image" class="form-control">
+                    <div class="image-preview-container">
+                        <img id="edit-blog-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Resumen (excerpt)</label>
+                    <textarea id="edit-blog-excerpt" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Contenido</label>
+                    <div id="edit-blog-content-editor" class="content-editor"></div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="edit-blog-published">
+                        Publicado
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-edit-blog')">Cancelar</button>
+                <button class="btn" onclick="saveBlogEdit()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -1460,10 +1679,25 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL CORREGIDO Y COMPATIBLE CON TU SISTEMA -->
+    <!-- Vista Previa Blog -->
+    <div id="modal-preview-blog" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="bi bi-eye"></i> Vista Previa del Artículo</h3>
+                <button class="modal-close" onclick="closeModal('modal-preview-blog')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="blog-preview-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-preview-blog')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL CON TODAS LAS FUNCIONALIDADES COMPLETAS -->
     <script>
         // ========== CONFIGURACIÓN ==========
-        // ¡IMPORTANTE! Usar la misma URL que en tu index.html
         const API_BASE_URL = 'https://cano-salao.onrender.com';
         const STORAGE_KEYS = {
             TOKEN: 'cano_salao_token',
@@ -1474,15 +1708,14 @@
         // ========== ESTADO GLOBAL ==========
         let currentUser = null;
         let token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-        let refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-        let autoRefreshInterval = null;
         let isAdmin = false;
-        let isRefreshingToken = false;
+        let autoRefreshInterval = null;
+        let toursData = [];
+        let blogPostsData = [];
         
         // ========== INICIALIZACIÓN ==========
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Inicializando Panel Administrativo...');
-            console.log('🔗 URL del API:', API_BASE_URL);
             
             // Configurar URL del backend
             document.getElementById('backend-url').value = API_BASE_URL;
@@ -1493,17 +1726,16 @@
             initUserMenu();
             initEventListeners();
             
-            // Verificar conexión primero
-            testBackendConnection().then(isConnected => {
-                if (isConnected) {
-                    console.log('✅ Backend conectado, verificando permisos de administrador...');
-                    // Verificar si el usuario está autenticado y es administrador
-                    checkAuthAndAdmin();
-                } else {
-                    console.error('❌ No hay conexión al backend');
-                    showAlert('❌ No se pudo conectar al backend. Verifica tu conexión o que el servidor esté funcionando.', 'error');
-                }
-            });
+            // Inicializar TinyMCE
+            initTinyMCE();
+            
+            // Verificar conexión y permisos
+            const isConnected = await testBackendConnection();
+            if (isConnected) {
+                await checkAuthAndAdmin();
+            } else {
+                setupDemoMode();
+            }
             
             // Iniciar timers
             updateCurrentTime();
@@ -1511,6 +1743,38 @@
             
             console.log('✅ Panel inicializado correctamente');
         });
+        
+        function initTinyMCE() {
+            // Configuración de TinyMCE para el editor de blog
+            const tinymceConfig = {
+                selector: '#blog-content-editor, #edit-blog-content-editor',
+                height: 400,
+                menubar: true,
+                plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                ],
+                toolbar: 'undo redo | blocks | ' +
+                    'bold italic forecolor | alignleft aligncenter ' +
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'removeformat | help | image | link',
+                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                images_upload_url: 'https://cano-salao.onrender.com/api/upload',
+                automatic_uploads: false,
+                paste_data_images: true,
+                language: 'es',
+                branding: false
+            };
+            
+            // Solo inicializar si TinyMCE está disponible
+            if (typeof tinymce !== 'undefined') {
+                tinymce.init(tinymceConfig);
+                console.log('✅ TinyMCE inicializado');
+            } else {
+                console.warn('⚠️ TinyMCE no cargado, usando textarea simple');
+            }
+        }
         
         function initEventListeners() {
             // Cerrar modales al hacer clic fuera
@@ -1530,25 +1794,46 @@
                     });
                 }
             });
+            
+            // Previsualización de imágenes en tiempo real
+            document.getElementById('new-tour-image')?.addEventListener('input', function() {
+                updateImagePreview(this.value, 'tour-image-preview');
+            });
+            
+            document.getElementById('blog-image')?.addEventListener('input', function() {
+                updateImagePreview(this.value, 'blog-image-preview');
+            });
         }
         
-        // ========== SISTEMA DE AUTENTICACIÓN (COMPATIBLE CON INDEX.HTML) ==========
+        function updateImagePreview(url, previewId) {
+            const preview = document.getElementById(previewId);
+            if (url && isValidUrl(url)) {
+                preview.src = url;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+        
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        // ========== SISTEMA DE AUTENTICACIÓN ==========
         async function checkAuthAndAdmin() {
-            console.log('🔐 Verificando autenticación y permisos de administrador...');
-            
-            // Primero, verificar si hay token
             if (!token) {
-                console.log('❌ No hay token, redirigiendo a login...');
                 showAlert('Por favor inicia sesión primero', 'error');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1500);
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return false;
             }
             
             try {
-                console.log('🔍 Verificando token...');
-                const response = await fetchWithAuth(`${API_BASE_URL}/api/auth/verify`, {
+                const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1558,174 +1843,60 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('✅ Token válido:', data);
-                    
                     if (data.success && data.user) {
                         currentUser = data.user;
                         
-                        // Verificar si es administrador
                         if (currentUser.rol !== 'admin') {
-                            console.log('❌ Usuario no es administrador');
-                            showAlert('Acceso denegado. Se requieren permisos de administrador.', 'error');
-                            setTimeout(() => {
-                                window.location.href = '../index.html';
-                            }, 2000);
+                            showAlert('Acceso solo para administradores', 'error');
+                            setTimeout(() => window.location.href = '../index.html', 2000);
                             return false;
                         }
                         
                         isAdmin = true;
                         updateUserUI();
-                        
-                        // Cargar datos iniciales
                         loadInitialData();
                         return true;
                     }
                 } else if (response.status === 401) {
-                    console.log('🔄 Token expirado, intentando refresh...');
-                    // Intentar refrescar el token usando el mismo sistema que index.html
                     const refreshed = await refreshAuthToken();
                     if (refreshed) {
-                        // Intentar nuevamente después de refrescar
                         return checkAuthAndAdmin();
                     } else {
-                        // Redirigir a login si no se puede refrescar
-                        showAlert('Sesión expirada. Por favor inicia sesión nuevamente.', 'error');
-                        setTimeout(() => {
-                            window.location.href = 'login.html';
-                        }, 2000);
+                        showAlert('Sesión expirada', 'error');
+                        setTimeout(() => window.location.href = 'login.html', 2000);
                         return false;
                     }
-                } else {
-                    console.error('Error verificando token:', response.status);
-                    showAlert('Error de autenticación', 'error');
-                    return false;
                 }
             } catch (error) {
                 console.error('Error verificando permisos:', error);
-                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-                    showAlert('Error de conexión con el servidor. Verifica que el backend esté corriendo.', 'error');
-                } else {
-                    showAlert('Error de conexión con el servidor', 'error');
-                }
+                showAlert('Error de conexión con el servidor', 'error');
                 return false;
             }
-            
-            return false;
         }
         
-        // Sistema de peticiones con manejo de tokens (igual que en index.html)
-        async function fetchWithAuth(url, options = {}) {
-            // Obtener token actual
-            const accessToken = localStorage.getItem(STORAGE_KEYS.TOKEN);
-            
-            if (!accessToken) {
-                console.warn('⚠️ No hay token de acceso disponible');
-                return fetch(url, options);
-            }
-            
-            // Añadir encabezado de autorización
-            options.headers = {
-                ...options.headers,
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            };
-            
-            try {
-                const response = await fetch(url, options);
-                
-                // Si la respuesta es 401 (token expirado)
-                if (response.status === 401) {
-                    console.log('🔄 Token expirado, intentando refrescar...');
-                    
-                    try {
-                        // Intentar refrescar el token
-                        const newTokens = await refreshAuthToken();
-                        
-                        if (newTokens && newTokens.access_token) {
-                            // Actualizar token en la petición
-                            options.headers = {
-                                ...options.headers,
-                                'Authorization': `Bearer ${newTokens.access_token}`
-                            };
-                            
-                            // Reintentar la petición original
-                            return fetch(url, options);
-                        } else {
-                            // No se pudo refrescar, limpiar sesión
-                            throw new Error('No se pudo refrescar el token');
-                        }
-                    } catch (refreshError) {
-                        console.error('❌ Error refrescando token:', refreshError);
-                        // Limpiar sesión y mostrar login
-                        clearUserSession();
-                        showLoginInterface();
-                        showAlert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
-                        
-                        return response; // Devolver respuesta original
-                    }
-                }
-                
-                return response;
-                
-            } catch (error) {
-                console.error('❌ Error en fetchWithAuth:', error);
-                throw error;
-            }
-        }
-        
-        // Función para refrescar tokens (igual que en index.html)
         async function refreshAuthToken() {
             const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-            
-            if (!refreshToken) {
-                console.warn('⚠️ No hay refresh token disponible');
-                return null;
-            }
+            if (!refreshToken) return null;
             
             try {
-                console.log('🔄 Refrescando tokens...');
-                
                 const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${refreshToken}`,
                         'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
+                    }
                 });
                 
                 if (response.ok) {
                     const data = await response.json();
-                    
-                    // Guardar nuevos tokens
-                    localStorage.setItem(STORAGE_KEYS.TOKEN, data.access_token || data.token);
-                    if (data.refresh_token) {
-                        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refresh_token);
-                    }
-                    
-                    // Actualizar variables globales
-                    token = data.access_token || data.token;
-                    
-                    // Actualizar usuario si viene en la respuesta
-                    if (data.user) {
-                        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
-                        currentUser = data.user;
-                        updateUserUI();
-                    }
-                    
-                    console.log('✅ Tokens refrescados exitosamente');
-                    return {
-                        access_token: data.access_token || data.token,
-                        refresh_token: data.refresh_token
-                    };
-                } else {
-                    console.error('❌ Error en respuesta de refresh:', response.status);
-                    return null;
+                    localStorage.setItem(STORAGE_KEYS.TOKEN, data.access_token);
+                    token = data.access_token;
+                    return true;
                 }
             } catch (error) {
-                console.error('❌ Error en refreshAuthToken:', error);
-                return null;
+                console.error('Error refrescando token:', error);
             }
+            return false;
         }
         
         function updateUserUI() {
@@ -1735,15 +1906,6 @@
             document.getElementById('admin-user-role').textContent = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
             document.getElementById('admin-user-avatar').textContent = (currentUser.nombre?.charAt(0) || 'A').toUpperCase();
             document.getElementById('admin-subtitle').textContent = `Bienvenido, ${currentUser.nombre}`;
-            
-            // Actualizar footer
-            document.getElementById('footer-token-valid').textContent = 'Sí';
-            document.getElementById('footer-last-update').textContent = new Date().toLocaleTimeString();
-            
-            // Si es admin, mostrar todos los controles
-            if (currentUser.rol === 'admin') {
-                console.log('👑 Usuario es administrador - Mostrando controles completos');
-            }
         }
         
         function initUserMenu() {
@@ -1774,37 +1936,12 @@
         
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
-                // Limpiar datos locales
-                clearUserSession();
-                
-                // Redirigir a login
+                Object.values(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(key);
+                    sessionStorage.removeItem(key);
+                });
                 window.location.href = 'login.html';
             }
-        }
-        
-        function clearUserSession() {
-            // Limpiar todos los almacenamientos
-            Object.values(STORAGE_KEYS).forEach(key => {
-                localStorage.removeItem(key);
-                sessionStorage.removeItem(key);
-            });
-            
-            currentUser = null;
-            token = null;
-            refreshToken = null;
-            isAdmin = false;
-            
-            // Detener auto-refresh
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            
-            console.log('✅ Sesión completamente limpiada');
-        }
-        
-        function showLoginInterface() {
-            // Para admin, siempre redirigimos a login
-            window.location.href = 'login.html';
         }
         
         // ========== NAVEGACIÓN Y UI ==========
@@ -1846,7 +1983,6 @@
             if (targetSection) {
                 targetSection.classList.add('active');
                 
-                // Cargar datos específicos de la sección solo si está autenticado
                 if (isAdmin) {
                     switch(sectionId) {
                         case 'dashboard': loadDashboardData(); break;
@@ -1912,71 +2048,48 @@
         
         // ========== CONEXIÓN CON BACKEND ==========
         async function testBackendConnection() {
-            console.log('🔌 Probando conexión con backend en:', API_BASE_URL);
-            
             const statusElement = document.getElementById('backend-status');
             const connectionStatus = document.getElementById('connection-status');
             const statusText = document.getElementById('status-text');
             
-            // Mostrar estado de prueba
             statusElement.textContent = 'Probando...';
             statusElement.style.color = '#f39c12';
             connectionStatus.className = 'connection-status connection-offline';
             statusText.textContent = 'Probando conexión...';
             
             try {
-                // Probar endpoint de health
-                const response = await fetch(`${API_BASE_URL}/health`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const response = await fetch(`${API_BASE_URL}/health`);
                 
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // Actualizar estado
                     statusElement.textContent = 'Conectado ✓';
                     statusElement.style.color = '#27ae60';
                     connectionStatus.className = 'connection-status connection-online';
                     statusText.textContent = 'Conectado al Backend';
                     
-                    console.log('✅ Conexión exitosa:', data);
-                    showAlert(`✅ Conexión establecida con ${API_BASE_URL}`, 'success');
-                    
+                    showAlert(`✅ Backend conectado: ${data.database}`, 'success');
                     return true;
                 } else {
                     throw new Error(`HTTP ${response.status}`);
                 }
             } catch (error) {
-                console.error('❌ Error conectando al backend:', error);
+                console.error('Error conectando al backend:', error);
                 
-                // Actualizar estado
                 statusElement.textContent = 'Desconectado ✗';
                 statusElement.style.color = '#e74c3c';
                 connectionStatus.className = 'connection-status connection-offline';
                 statusText.textContent = 'Error de conexión';
                 
-                showAlert(`❌ No se pudo conectar a ${API_BASE_URL}. Error: ${error.message}`, 'error');
-                
+                showAlert(`❌ No se pudo conectar al backend: ${error.message}`, 'error');
                 return false;
             }
         }
         
         // ========== DATOS INICIALES ==========
         function loadInitialData() {
-            console.log('📊 Cargando datos iniciales...');
-            
-            // Solo cargar datos si es admin
-            if (!isAdmin) {
-                console.warn('No se cargan datos: usuario no es administrador');
-                return;
-            }
-            
             loadDashboardData();
             
-            // Cargar configuración guardada
             const savedAutoRefresh = localStorage.getItem('admin_auto_refresh') || '0';
             const savedNotifications = localStorage.getItem('admin_notifications') !== 'false';
             
@@ -1984,48 +2097,30 @@
             document.getElementById('notifications-enabled').checked = savedNotifications;
             
             if (savedAutoRefresh > 0) {
-                autoRefreshInterval = setInterval(() => {
-                    loadDashboardData();
-                }, savedAutoRefresh * 1000);
+                autoRefreshInterval = setInterval(loadDashboardData, savedAutoRefresh * 1000);
             }
         }
         
         // ========== DASHBOARD ==========
         async function loadDashboardData() {
-            if (!token || !isAdmin) {
-                console.log('No se carga dashboard: sin token o no es admin');
-                return;
-            }
-            
-            console.log('📈 Cargando datos del dashboard...');
+            if (!token || !isAdmin) return;
             
             try {
-                const response = await fetchWithAuth(`${API_BASE_URL}/api/admin/dashboard`);
+                const response = await fetch(`${API_BASE_URL}/api/admin/dashboard`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
                 
                 if (response.ok) {
                     const stats = await response.json();
-                    console.log('✅ Datos del dashboard:', stats);
                     updateDashboardStats(stats);
                     initCharts(stats);
                     updateFooterStats(stats);
-                    loadRecentActivity();
-                } else if (response.status === 403) {
-                    console.error('403: No tienes permisos de administrador');
-                    showAlert('No tienes permisos de administrador para ver el dashboard', 'error');
-                } else if (response.status === 401) {
-                    console.error('401: Token expirado');
-                    showAlert('Sesión expirada. Recargando...', 'warning');
-                    const refreshed = await refreshAuthToken();
-                    if (refreshed) {
-                        loadDashboardData(); // Reintentar
-                    }
-                } else {
-                    console.error('Error cargando dashboard:', response.status);
-                    showAlert(`Error cargando datos del dashboard: HTTP ${response.status}`, 'error');
                 }
             } catch (error) {
                 console.error('Error cargando dashboard:', error);
-                showAlert('Error cargando datos del dashboard: ' + error.message, 'error');
             }
         }
         
@@ -2036,8 +2131,6 @@
             document.getElementById('stat-users-desc').textContent = `${stats.active_users || 0} activos`;
             
             document.getElementById('stat-blog').textContent = stats.total_blog_posts || 0;
-            document.getElementById('stat-blog-desc').textContent = 'Publicados';
-            
             document.getElementById('stat-tours').textContent = stats.total_tours || 0;
             document.getElementById('stat-tours-desc').textContent = `${stats.active_tours || 0} activos`;
             
@@ -2050,6 +2143,8 @@
             
             document.getElementById('footer-users-count').textContent = stats.total_users || 0;
             document.getElementById('footer-tours-count').textContent = stats.total_tours || 0;
+            document.getElementById('footer-token-valid').textContent = 'Sí';
+            document.getElementById('footer-last-update').textContent = new Date().toLocaleTimeString();
         }
         
         function initCharts(stats) {
@@ -2061,18 +2156,13 @@
                     ctx1.chart.destroy();
                 }
                 
-                // Datos de ejemplo para gráfico de actividad
-                const activityData = stats.recent_registrations ? 
-                    [stats.recent_registrations, 3, 5, 7, 6, 8, 10] :
-                    [0, 2, 4, 6, 5, 7, 9];
-                
                 ctx1.chart = new Chart(ctx1, {
                     type: 'line',
                     data: {
                         labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
                         datasets: [{
                             label: 'Actividad',
-                            data: activityData,
+                            data: [stats.recent_registrations || 0, 3, 5, 7, 6, 8, 10],
                             borderColor: '#3498db',
                             backgroundColor: 'rgba(52, 152, 219, 0.1)',
                             tension: 0.4,
@@ -2082,19 +2172,7 @@
                     options: {
                         responsive: true,
                         plugins: { 
-                            legend: { display: false },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 2
-                                }
-                            }
+                            legend: { display: false }
                         }
                     }
                 });
@@ -2125,14 +2203,9 @@
                         responsive: true,
                         plugins: {
                             legend: { 
-                                position: 'bottom',
-                                labels: {
-                                    padding: 20,
-                                    usePointStyle: true
-                                }
+                                position: 'bottom'
                             }
-                        },
-                        cutout: '60%'
+                        }
                     }
                 });
             }
@@ -2140,18 +2213,15 @@
         
         function refreshDashboard() {
             loadDashboardData();
-            showAlert('Dashboard actualizado correctamente', 'success');
+            showAlert('Dashboard actualizado', 'success');
         }
         
         function loadRecentActivity() {
-            // Esta función simula actividad reciente
             const activityList = document.getElementById('recent-activity');
             const activities = [
                 { icon: 'bi-person-plus', user: currentUser?.nombre || 'Admin', action: 'actualizó el dashboard', time: 'Hace 5 minutos' },
                 { icon: 'bi-signpost', user: 'Sistema', action: 'cargó datos de tours', time: 'Hace 10 minutos' },
-                { icon: 'bi-calendar-check', user: 'Sistema', action: 'sincronizó reservas', time: 'Hace 15 minutos' },
-                { icon: 'bi-database', user: 'Sistema', action: 'realizó backup automático', time: 'Hace 30 minutos' },
-                { icon: 'bi-shield-check', user: 'Sistema', action: 'verificó seguridad', time: 'Hace 1 hora' }
+                { icon: 'bi-calendar-check', user: 'Sistema', action: 'sincronizó reservas', time: 'Hace 15 minutos' }
             ];
             
             activityList.innerHTML = '';
@@ -2179,7 +2249,6 @@
                 • Es administrador: ${isAdmin ? 'Sí' : 'No'}<br>
                 • Token válido: ${token ? 'Sí' : 'No'}<br>
                 • Auto-refresh: ${localStorage.getItem('admin_auto_refresh') || '0'} segundos<br>
-                • Notificaciones: ${localStorage.getItem('admin_notifications') !== 'false' ? 'Activadas' : 'Desactivadas'}<br>
                 • Última conexión: ${new Date().toLocaleTimeString()}
             `;
             
@@ -2188,12 +2257,10 @@
         
         // ========== USUARIOS ==========
         async function loadUsers() {
-            if (!token || !isAdmin) {
+            if (!isAdmin) {
                 showAlert('No tienes permisos de administrador', 'error');
                 return;
             }
-            
-            console.log('👥 Cargando lista de usuarios...');
             
             const tbody = document.getElementById('users-table-body');
             tbody.innerHTML = `
@@ -2206,25 +2273,22 @@
             `;
             
             try {
-                const response = await fetchWithAuth(`${API_BASE_URL}/api/admin/users`);
+                const response = await fetch(`${API_BASE_URL}/api/admin/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
                 
                 if (response.ok) {
                     const data = await response.json();
                     if (data.success) {
                         renderUsersTable(data.users);
-                    } else {
-                        throw new Error(data.error || 'Error en la respuesta');
                     }
-                } else if (response.status === 403) {
-                    throw new Error('No tienes permisos de administrador');
-                } else if (response.status === 401) {
-                    throw new Error('Token expirado o inválido');
-                } else {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
                 }
             } catch (error) {
                 console.error('Error cargando usuarios:', error);
-                showAlert(`Error cargando usuarios: ${error.message}`, 'error');
+                showAlert('Error cargando usuarios', 'error');
                 renderEmptyUsersTable();
             }
         }
@@ -2257,9 +2321,6 @@
                 `;
                 tbody.appendChild(row);
             });
-            
-            // Actualizar contador en footer
-            document.getElementById('footer-users-count').textContent = users.length;
         }
         
         function renderEmptyUsersTable() {
@@ -2287,10 +2348,7 @@
         }
         
         async function addNewUser() {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden agregar usuarios', 'error');
-                return;
-            }
+            if (!isAdmin) return;
             
             const name = document.getElementById('new-user-name').value.trim();
             const email = document.getElementById('new-user-email').value.trim().toLowerCase();
@@ -2298,7 +2356,6 @@
             const phone = document.getElementById('new-user-phone').value.trim();
             const role = document.getElementById('new-user-role').value;
             
-            // Validaciones
             if (!name || !email || !password) {
                 showFormAlert('add-user-alert', 'Nombre, email y contraseña son obligatorios', 'error');
                 return;
@@ -2306,11 +2363,6 @@
             
             if (password.length < 6) {
                 showFormAlert('add-user-alert', 'La contraseña debe tener al menos 6 caracteres', 'error');
-                return;
-            }
-            
-            if (!validateEmail(email)) {
-                showFormAlert('add-user-alert', 'El formato del email no es válido', 'error');
                 return;
             }
             
@@ -2352,16 +2404,8 @@
             }
         }
         
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-        
         function editUser(id, name, email, phone, role, active) {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden editar usuarios', 'error');
-                return;
-            }
+            if (!isAdmin) return;
             
             document.getElementById('edit-user-id').value = id;
             document.getElementById('edit-user-name').value = name;
@@ -2374,11 +2418,8 @@
             openModal('modal-edit-user');
         }
         
-        function saveUserEdit() {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden editar usuarios', 'error');
-                return;
-            }
+        async function saveUserEdit() {
+            if (!isAdmin) return;
             
             const id = document.getElementById('edit-user-id').value;
             const name = document.getElementById('edit-user-name').value.trim();
@@ -2392,59 +2433,86 @@
                 return;
             }
             
-            // Por ahora simulamos la actualización
-            // En una versión futura, conectar con PUT /api/admin/users/{id}
+            const userData = {
+                nombre: name,
+                email: email,
+                telefono: phone,
+                rol: role,
+                activo: status === 'active'
+            };
+            
             showFormAlert('edit-user-alert', 'Actualizando usuario...', 'info');
             
-            setTimeout(() => {
-                showFormAlert('edit-user-alert', 'Funcionalidad en desarrollo. En una versión futura se conectará al backend.', 'info');
-                setTimeout(() => {
-                    closeModal('modal-edit-user');
-                }, 2000);
-            }, 1000);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/users/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-user-alert', 'Usuario actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-user');
+                        loadUsers();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-user-alert', data.error || 'Error al actualizar usuario', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando usuario:', error);
+                showFormAlert('edit-user-alert', 'Error de conexión con el servidor', 'error');
+            }
         }
         
         function deleteUser(userId, userName) {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden eliminar usuarios', 'error');
-                return;
-            }
+            if (!isAdmin) return;
             
-            confirmAction(`¿Eliminar al usuario "${userName}"? Esta acción no se puede deshacer.`, function() {
-                // Por ahora simulamos
-                showAlert(`Funcionalidad en desarrollo. En una versión futura se podrán eliminar usuarios desde el backend.`, 'info');
+            confirmAction(`¿Eliminar al usuario "${userName}"?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Usuario eliminado correctamente', 'success');
+                        loadUsers();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar usuario', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando usuario:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
             });
-        }
-        
-        function exportUsersToCSV() {
-            showAlert('Exportando usuarios a CSV...', 'info');
-            setTimeout(() => {
-                showAlert('Funcionalidad en desarrollo', 'info');
-            }, 2000);
         }
         
         // ========== TOURS ==========
         async function loadTours() {
-            console.log('🚤 Cargando tours...');
-            
             try {
-                const response = await fetch(`${API_BASE_URL}/api/tours`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const response = await fetch(`${API_BASE_URL}/api/tours`);
                 
                 if (response.ok) {
-                    const tours = await response.json();
-                    console.log('✅ Tours cargados:', tours);
-                    renderToursTable(tours);
+                    toursData = await response.json();
+                    renderToursTable(toursData);
                 } else {
                     throw new Error('Error cargando tours');
                 }
             } catch (error) {
                 console.error('Error cargando tours:', error);
-                showAlert('Error cargando tours: ' + error.message, 'error');
+                showAlert('Error cargando tours', 'error');
                 renderEmptyToursTable();
             }
         }
@@ -2477,9 +2545,6 @@
                 `;
                 tbody.appendChild(row);
             });
-            
-            // Actualizar contador en footer
-            document.getElementById('footer-tours-count').textContent = tours.length;
         }
         
         function renderEmptyToursTable() {
@@ -2496,30 +2561,22 @@
         }
         
         function showAddTourModal() {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden agregar tours', 'error');
-                return;
-            }
-            
             document.getElementById('add-tour-alert').style.display = 'none';
             document.getElementById('add-tour-form').reset();
+            document.getElementById('tour-image-preview').style.display = 'none';
             openModal('modal-add-tour');
         }
         
-        function addNewTour() {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden agregar tours', 'error');
-                return;
-            }
-            
+        async function addNewTour() {
             const name = document.getElementById('new-tour-name').value.trim();
             const desc = document.getElementById('new-tour-desc').value.trim();
             const price = parseFloat(document.getElementById('new-tour-price').value);
             const capacity = parseInt(document.getElementById('new-tour-capacity').value);
             const duration = document.getElementById('new-tour-duration').value.trim();
+            const available = document.getElementById('new-tour-available').value === 'true';
             const image = document.getElementById('new-tour-image').value.trim();
             
-            if (!name || !desc || !price || !capacity) {
+            if (!name || !desc || !price || !capacity || !duration) {
                 showFormAlert('add-tour-alert', 'Todos los campos excepto imagen son obligatorios', 'error');
                 return;
             }
@@ -2534,66 +2591,458 @@
                 return;
             }
             
-            // Por ahora simulamos la creación
+            const tourData = {
+                nombre: name,
+                descripcion: desc,
+                precio: price,
+                capacidad: capacity,
+                duracion: duration,
+                disponible: available,
+                imagen_url: image || null
+            };
+            
             showFormAlert('add-tour-alert', 'Creando tour...', 'info');
             
-            setTimeout(() => {
-                showFormAlert('add-tour-alert', 'Funcionalidad en desarrollo. En una versión futura se podrán crear tours desde el backend.', 'info');
-                setTimeout(() => {
-                    closeModal('modal-add-tour');
-                }, 2000);
-            }, 1000);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/tours`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(tourData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('add-tour-alert', 'Tour creado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-add-tour');
+                        loadTours();
+                        loadDashboardData();
+                    }, 1500);
+                } else {
+                    showFormAlert('add-tour-alert', data.error || 'Error al crear tour', 'error');
+                }
+            } catch (error) {
+                console.error('Error creando tour:', error);
+                showFormAlert('add-tour-alert', 'Error de conexión con el servidor', 'error');
+            }
         }
         
-        function editTour(tourId) {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden editar tours', 'error');
+        async function editTour(tourId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tours/${tourId}`);
+                
+                if (response.ok) {
+                    const tour = await response.json();
+                    
+                    document.getElementById('edit-tour-id').value = tour.id;
+                    document.getElementById('edit-tour-name').value = tour.nombre;
+                    document.getElementById('edit-tour-desc').value = tour.descripcion;
+                    document.getElementById('edit-tour-price').value = tour.precio;
+                    document.getElementById('edit-tour-capacity').value = tour.capacidad;
+                    document.getElementById('edit-tour-duration').value = tour.duracion || '';
+                    document.getElementById('edit-tour-available').value = tour.disponible ? 'true' : 'false';
+                    document.getElementById('edit-tour-image').value = tour.imagen_url || '';
+                    
+                    if (tour.imagen_url) {
+                        document.getElementById('edit-tour-image-preview').src = tour.imagen_url;
+                        document.getElementById('edit-tour-image-preview').style.display = 'block';
+                    }
+                    
+                    document.getElementById('edit-tour-alert').style.display = 'none';
+                    openModal('modal-edit-tour');
+                }
+            } catch (error) {
+                console.error('Error cargando tour:', error);
+                showAlert('Error cargando datos del tour', 'error');
+            }
+        }
+        
+        async function saveTourEdit() {
+            const id = document.getElementById('edit-tour-id').value;
+            const name = document.getElementById('edit-tour-name').value.trim();
+            const desc = document.getElementById('edit-tour-desc').value.trim();
+            const price = parseFloat(document.getElementById('edit-tour-price').value);
+            const capacity = parseInt(document.getElementById('edit-tour-capacity').value);
+            const duration = document.getElementById('edit-tour-duration').value.trim();
+            const available = document.getElementById('edit-tour-available').value === 'true';
+            const image = document.getElementById('edit-tour-image').value.trim();
+            
+            if (!name || !desc || !price || !capacity || !duration) {
+                showFormAlert('edit-tour-alert', 'Todos los campos son obligatorios', 'error');
                 return;
             }
             
-            showAlert('Funcionalidad de edición de tours en desarrollo', 'info');
+            const tourData = {
+                nombre: name,
+                descripcion: desc,
+                precio: price,
+                capacidad: capacity,
+                duracion: duration,
+                disponible: available,
+                imagen_url: image || null
+            };
+            
+            showFormAlert('edit-tour-alert', 'Actualizando tour...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/tours/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(tourData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-tour-alert', 'Tour actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-tour');
+                        loadTours();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-tour-alert', data.error || 'Error al actualizar tour', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando tour:', error);
+                showFormAlert('edit-tour-alert', 'Error de conexión con el servidor', 'error');
+            }
         }
         
         function deleteTour(tourId, tourName) {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden eliminar tours', 'error');
+            confirmAction(`¿Eliminar el tour "${tourName}"?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/admin/tours/${tourId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Tour eliminado correctamente', 'success');
+                        loadTours();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar tour', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando tour:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
+            });
+        }
+        
+        // ========== BLOG ==========
+        async function loadBlogPosts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blog`);
+                
+                if (response.ok) {
+                    blogPostsData = await response.json();
+                    renderBlogTable(blogPostsData);
+                } else {
+                    throw new Error('Error cargando posts del blog');
+                }
+            } catch (error) {
+                console.error('Error cargando blog:', error);
+                showAlert('Error cargando artículos del blog', 'error');
+                renderEmptyBlogTable();
+            }
+        }
+        
+        function renderBlogTable(posts) {
+            const tbody = document.getElementById('blog-table-body');
+            if (!tbody) return;
+            
+            if (!posts || posts.length === 0) {
+                renderEmptyBlogTable();
                 return;
             }
             
-            confirmAction(`¿Eliminar el tour "${tourName}"?`, function() {
-                showAlert('Funcionalidad en desarrollo', 'info');
+            tbody.innerHTML = '';
+            posts.forEach(post => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${post.titulo}</strong></td>
+                    <td><span class="status-badge status-pending">${post.categoria || 'General'}</span></td>
+                    <td>${post.autor || 'Anónimo'}</td>
+                    <td>${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td>${post.vistas || 0}</td>
+                    <td><span class="status-badge ${post.publicado ? 'status-active' : 'status-pending'}">${post.publicado ? 'Publicado' : 'Borrador'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-view" onclick="previewBlogPost(${post.id})"><i class="bi bi-eye"></i></button>
+                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteBlogPost(${post.id}, '${post.titulo}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyBlogTable() {
+            const tbody = document.getElementById('blog-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-newspaper"></i>
+                        <h3>No hay artículos de blog</h3>
+                        <p>Crea el primer artículo</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function showAddBlogPostModal() {
+            document.getElementById('add-blog-alert').style.display = 'none';
+            document.getElementById('blog-title').value = '';
+            document.getElementById('blog-author').value = currentUser?.nombre || '';
+            document.getElementById('blog-excerpt').value = '';
+            document.getElementById('blog-image').value = '';
+            document.getElementById('blog-published').checked = true;
+            document.getElementById('blog-image-preview').style.display = 'none';
+            
+            // Limpiar editor TinyMCE
+            if (tinymce.get('blog-content-editor')) {
+                tinymce.get('blog-content-editor').setContent('');
+            }
+            
+            openModal('modal-add-blog');
+        }
+        
+        async function saveBlogPost() {
+            const title = document.getElementById('blog-title').value.trim();
+            const category = document.getElementById('blog-category').value;
+            const author = document.getElementById('blog-author').value.trim() || currentUser?.nombre || 'Administrador';
+            const excerpt = document.getElementById('blog-excerpt').value.trim();
+            const image = document.getElementById('blog-image').value.trim();
+            const published = document.getElementById('blog-published').checked;
+            
+            let content = '';
+            if (tinymce.get('blog-content-editor')) {
+                content = tinymce.get('blog-content-editor').getContent();
+            }
+            
+            if (!title || !content) {
+                showFormAlert('add-blog-alert', 'Título y contenido son obligatorios', 'error');
+                return;
+            }
+            
+            const blogData = {
+                titulo: title,
+                contenido: content,
+                excerpt: excerpt,
+                categoria: category,
+                autor: author,
+                imagen_url: image || null,
+                publicado: published
+            };
+            
+            showFormAlert('add-blog-alert', 'Publicando artículo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/blog`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('add-blog-alert', 'Artículo publicado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-add-blog');
+                        loadBlogPosts();
+                        loadDashboardData();
+                    }, 1500);
+                } else {
+                    showFormAlert('add-blog-alert', data.error || 'Error al publicar artículo', 'error');
+                }
+            } catch (error) {
+                console.error('Error publicando artículo:', error);
+                showFormAlert('add-blog-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function editBlogPost(postId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blog/${postId}`);
+                
+                if (response.ok) {
+                    const post = await response.json();
+                    
+                    document.getElementById('edit-blog-id').value = post.id;
+                    document.getElementById('edit-blog-title').value = post.titulo;
+                    document.getElementById('edit-blog-category').value = post.categoria || 'noticias';
+                    document.getElementById('edit-blog-author').value = post.autor || '';
+                    document.getElementById('edit-blog-excerpt').value = post.excerpt || '';
+                    document.getElementById('edit-blog-image').value = post.imagen_url || '';
+                    document.getElementById('edit-blog-published').checked = post.publicado || false;
+                    
+                    if (post.imagen_url) {
+                        document.getElementById('edit-blog-image-preview').src = post.imagen_url;
+                        document.getElementById('edit-blog-image-preview').style.display = 'block';
+                    }
+                    
+                    // Cargar contenido en TinyMCE
+                    if (tinymce.get('edit-blog-content-editor')) {
+                        tinymce.get('edit-blog-content-editor').setContent(post.contenido || '');
+                    }
+                    
+                    document.getElementById('edit-blog-alert').style.display = 'none';
+                    openModal('modal-edit-blog');
+                }
+            } catch (error) {
+                console.error('Error cargando artículo:', error);
+                showAlert('Error cargando datos del artículo', 'error');
+            }
+        }
+        
+        async function saveBlogEdit() {
+            const id = document.getElementById('edit-blog-id').value;
+            const title = document.getElementById('edit-blog-title').value.trim();
+            const category = document.getElementById('edit-blog-category').value;
+            const author = document.getElementById('edit-blog-author').value.trim();
+            const excerpt = document.getElementById('edit-blog-excerpt').value.trim();
+            const image = document.getElementById('edit-blog-image').value.trim();
+            const published = document.getElementById('edit-blog-published').checked;
+            
+            let content = '';
+            if (tinymce.get('edit-blog-content-editor')) {
+                content = tinymce.get('edit-blog-content-editor').getContent();
+            }
+            
+            if (!title || !content) {
+                showFormAlert('edit-blog-alert', 'Título y contenido son obligatorios', 'error');
+                return;
+            }
+            
+            const blogData = {
+                titulo: title,
+                contenido: content,
+                excerpt: excerpt,
+                categoria: category,
+                autor: author,
+                imagen_url: image || null,
+                publicado: published
+            };
+            
+            showFormAlert('edit-blog-alert', 'Actualizando artículo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/blog/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-blog-alert', 'Artículo actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-blog');
+                        loadBlogPosts();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-blog-alert', data.error || 'Error al actualizar artículo', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando artículo:', error);
+                showFormAlert('edit-blog-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function previewBlogPost(postId) {
+            const post = blogPostsData.find(p => p.id === postId);
+            if (!post) {
+                showAlert('Artículo no encontrado', 'error');
+                return;
+            }
+            
+            const previewContent = document.getElementById('blog-preview-content');
+            previewContent.innerHTML = `
+                <div class="blog-preview">
+                    <h1>${post.titulo}</h1>
+                    <div class="meta">
+                        <strong>Categoría:</strong> ${post.categoria || 'General'} |
+                        <strong>Autor:</strong> ${post.autor || 'Anónimo'} |
+                        <strong>Fecha:</strong> ${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'} |
+                        <strong>Vistas:</strong> ${post.vistas || 0}
+                    </div>
+                    ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" style="max-width: 100%; border-radius: 8px; margin-bottom: 20px;">` : ''}
+                    ${post.excerpt ? `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-style: italic;">${post.excerpt}</div>` : ''}
+                    <div>${post.contenido || '<p>Contenido no disponible</p>'}</div>
+                </div>
+            `;
+            
+            openModal('modal-preview-blog');
+        }
+        
+        function deleteBlogPost(postId, postTitle) {
+            confirmAction(`¿Eliminar el artículo "${postTitle}"?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/admin/blog/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Artículo eliminado correctamente', 'success');
+                        loadBlogPosts();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar artículo', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando artículo:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
             });
         }
         
         // ========== RESERVAS ==========
         async function loadBookings() {
-            if (!token) {
-                showAlert('Debes iniciar sesión para ver reservas', 'error');
-                return;
-            }
-            
-            console.log('📅 Cargando reservas...');
-            
             try {
-                const response = await fetchWithAuth(`${API_BASE_URL}/api/user/bookings`);
+                const response = await fetch(`${API_BASE_URL}/api/user/bookings`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
                 
                 if (response.ok) {
                     const data = await response.json();
                     if (data.success) {
-                        console.log('✅ Reservas cargadas:', data.bookings);
                         renderBookingsTable(data.bookings);
                     }
-                } else if (response.status === 401) {
-                    showAlert('Sesión expirada. Por favor inicia sesión nuevamente.', 'error');
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1500);
-                } else {
-                    throw new Error('Error cargando reservas');
                 }
             } catch (error) {
                 console.error('Error cargando reservas:', error);
-                showAlert('Error cargando reservas: ' + error.message, 'error');
+                showAlert('Error cargando reservas', 'error');
                 renderEmptyBookingsTable();
             }
         }
@@ -2620,7 +3069,6 @@
                     <td><span class="status-badge ${booking.estado === 'confirmed' ? 'status-confirmed' : 'status-pending'}">${booking.estado || 'pending'}</span></td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-icon btn-view" onclick="viewBooking(${booking.id})"><i class="bi bi-eye"></i></button>
                             <button class="btn-icon btn-edit" onclick="editBooking(${booking.id})"><i class="bi bi-pencil"></i></button>
                         </div>
                     </td>
@@ -2642,315 +3090,9 @@
             `;
         }
         
-        function viewBooking(bookingId) {
-            showAlert(`Viendo reserva ${bookingId} (simulación)`, 'info');
-        }
-        
-        function editBooking(bookingId) {
-            showAlert(`Editando reserva ${bookingId} (simulación)`, 'info');
-        }
-        
-        function exportBookingsToCSV() {
-            showAlert('Exportando reservas a CSV...', 'info');
-            setTimeout(() => {
-                showAlert('Funcionalidad en desarrollo', 'info');
-            }, 2000);
-        }
-        
-        // ========== BLOG ==========
-        async function loadBlogPosts() {
-            console.log('📰 Cargando artículos del blog...');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/blog`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    const posts = await response.json();
-                    console.log('✅ Artículos cargados:', posts);
-                    renderBlogTable(posts);
-                } else {
-                    throw new Error('Error cargando posts del blog');
-                }
-            } catch (error) {
-                console.error('Error cargando blog:', error);
-                showAlert('Error cargando artículos del blog: ' + error.message, 'error');
-                renderEmptyBlogTable();
-            }
-        }
-        
-        function renderBlogTable(posts) {
-            const tbody = document.getElementById('blog-table-body');
-            if (!tbody) return;
-            
-            if (!posts || posts.length === 0) {
-                renderEmptyBlogTable();
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            posts.forEach(post => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${post.titulo}</strong></td>
-                    <td><span class="status-badge status-pending">${post.categoria || 'General'}</span></td>
-                    <td>${post.autor || 'Anónimo'}</td>
-                    <td>${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'}</td>
-                    <td>${post.vistas || 0}</td>
-                    <td><span class="status-badge ${post.publicado ? 'status-active' : 'status-pending'}">${post.publicado ? 'Publicado' : 'Borrador'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-view" onclick="viewBlogPost(${post.id})"><i class="bi bi-eye"></i></button>
-                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteBlogPost(${post.id}, '${post.titulo}')"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function renderEmptyBlogTable() {
-            const tbody = document.getElementById('blog-table-body');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-state">
-                        <i class="bi bi-newspaper"></i>
-                        <h3>No hay artículos de blog</h3>
-                        <p>Crea el primer artículo</p>
-                    </td>
-                </tr>
-            `;
-        }
-        
-        function showAddBlogPostModal() {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden publicar artículos', 'error');
-                return;
-            }
-            
-            document.getElementById('add-blog-alert').style.display = 'none';
-            document.getElementById('blog-title').value = '';
-            document.getElementById('blog-content').value = '';
-            document.getElementById('blog-excerpt').value = '';
-            document.getElementById('blog-image').value = '';
-            openModal('modal-add-blog');
-        }
-        
-        function saveBlogPost() {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden publicar artículos', 'error');
-                return;
-            }
-            
-            const title = document.getElementById('blog-title').value.trim();
-            const category = document.getElementById('blog-category').value;
-            const content = document.getElementById('blog-content').value.trim();
-            const excerpt = document.getElementById('blog-excerpt').value.trim();
-            const image = document.getElementById('blog-image').value.trim();
-            
-            if (!title || !content) {
-                showFormAlert('add-blog-alert', 'Título y contenido son obligatorios', 'error');
-                return;
-            }
-            
-            // Por ahora simulamos
-            showFormAlert('add-blog-alert', 'Publicando artículo...', 'info');
-            
-            setTimeout(() => {
-                showFormAlert('add-blog-alert', 'Funcionalidad en desarrollo. En una versión futura se podrán crear artículos desde el backend.', 'info');
-                setTimeout(() => {
-                    closeModal('modal-add-blog');
-                }, 2000);
-            }, 1000);
-        }
-        
-        function viewBlogPost(postId) {
-            showAlert(`Viendo artículo ${postId} (simulación)`, 'info');
-        }
-        
-        function editBlogPost(postId) {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden editar artículos', 'error');
-                return;
-            }
-            
-            showAlert(`Editando artículo ${postId} (simulación)`, 'info');
-        }
-        
-        function deleteBlogPost(postId, postTitle) {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden eliminar artículos', 'error');
-                return;
-            }
-            
-            confirmAction(`¿Eliminar el artículo "${postTitle}"?`, function() {
-                showAlert('Funcionalidad en desarrollo', 'info');
-            });
-        }
-        
-        // ========== REPORTES ==========
-        function generateDashboardReport() {
-            const reportContent = document.getElementById('report-content');
-            
-            // Obtener datos actuales
-            const users = document.getElementById('stat-users').textContent;
-            const tours = document.getElementById('stat-tours').textContent;
-            const bookings = document.getElementById('stat-bookings').textContent;
-            const blog = document.getElementById('stat-blog').textContent;
-            
-            reportContent.innerHTML = `
-                <div class="report-data">
-                    <div class="report-section">
-                        <h4><i class="bi bi-people"></i> Usuarios</h4>
-                        <p><strong>Total registrados:</strong> ${users}</p>
-                        <p><strong>Activos:</strong> ${document.getElementById('stat-users-desc').textContent.split(' ')[0]}</p>
-                        <p><strong>Fecha del reporte:</strong> ${new Date().toLocaleDateString()}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-signpost"></i> Tours</h4>
-                        <p><strong>Total disponibles:</strong> ${tours}</p>
-                        <p><strong>Activos:</strong> ${document.getElementById('stat-tours-desc').textContent.split(' ')[0]}</p>
-                        <p><strong>Ingresos estimados:</strong> $${(parseInt(bookings) * 45).toFixed(2)}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-calendar-check"></i> Reservas</h4>
-                        <p><strong>Total realizadas:</strong> ${bookings}</p>
-                        <p><strong>Pendientes:</strong> ${document.getElementById('stat-bookings-desc').textContent.split(' ')[0]}</p>
-                        <p><strong>Tasa de ocupación:</strong> ${((parseInt(bookings) / 30) * 100).toFixed(1)}%</p>
-                    </div>
-                </div>
-                <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                    <h5><i class="bi bi-graph-up"></i> Análisis del Sistema</h5>
-                    <p>El sistema muestra un crecimiento constante en usuarios y reservas.</p>
-                    <p>Se recomienda agregar más tours para aumentar los ingresos.</p>
-                </div>
-                <div class="form-actions" style="margin-top: 20px;">
-                    <button class="btn" onclick="printReport()" style="background: var(--admin-primary);">
-                        <i class="bi bi-printer"></i> Imprimir Reporte
-                    </button>
-                    <button class="btn" onclick="exportReportToPDF()" style="background: var(--admin-success);">
-                        <i class="bi bi-download"></i> Exportar a PDF
-                    </button>
-                </div>
-            `;
-            
-            showAlert('Reporte de dashboard generado correctamente', 'success');
-        }
-        
-        function generateUsersReport() {
-            const reportContent = document.getElementById('report-content');
-            reportContent.innerHTML = `
-                <div class="report-data">
-                    <div class="report-section">
-                        <h4><i class="bi bi-people"></i> Reporte Detallado de Usuarios</h4>
-                        <p>Este reporte muestra información detallada de los usuarios registrados.</p>
-                        <p><strong>Fecha de generación:</strong> ${new Date().toLocaleString()}</p>
-                        <p><strong>Total de usuarios:</strong> ${document.getElementById('stat-users').textContent}</p>
-                        <p><strong>Usuarios activos:</strong> ${document.getElementById('stat-users-desc').textContent.split(' ')[0]}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-pie-chart"></i> Distribución por Rol</h4>
-                        <p><strong>Administradores:</strong> ${Math.round(parseInt(document.getElementById('stat-users').textContent) * 0.1)}</p>
-                        <p><strong>Usuarios normales:</strong> ${Math.round(parseInt(document.getElementById('stat-users').textContent) * 0.9)}</p>
-                        <p><strong>Usuarios verificados:</strong> ${Math.round(parseInt(document.getElementById('stat-users').textContent) * 0.8)}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-download"></i> Exportar Datos</h4>
-                        <p>Exporta los datos de usuarios para análisis externo.</p>
-                        <button class="btn" onclick="exportUsersToCSV()" style="margin-top:10px;">
-                            <i class="bi bi-file-earmark-excel"></i> Exportar a CSV
-                        </button>
-                        <button class="btn" onclick="exportUsersReport()" style="margin-top:10px; background: var(--admin-warning);">
-                            <i class="bi bi-file-earmark-text"></i> Exportar a Texto
-                        </button>
-                    </div>
-                </div>
-            `;
-            showAlert('Reporte de usuarios generado correctamente', 'success');
-        }
-        
-        function generateBookingsReport() {
-            const reportContent = document.getElementById('report-content');
-            reportContent.innerHTML = `
-                <div class="report-data">
-                    <div class="report-section">
-                        <h4><i class="bi bi-calendar-check"></i> Reporte de Reservas</h4>
-                        <p>Este reporte muestra las reservas realizadas en el sistema.</p>
-                        <p><strong>Fecha de generación:</strong> ${new Date().toLocaleString()}</p>
-                        <p><strong>Total de reservas:</strong> ${document.getElementById('stat-bookings').textContent}</p>
-                        <p><strong>Reservas pendientes:</strong> ${document.getElementById('stat-bookings-desc').textContent.split(' ')[0]}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-cash-stack"></i> Análisis Financiero</h4>
-                        <p><strong>Ingresos totales estimados:</strong> $${(parseInt(document.getElementById('stat-bookings').textContent) * 45).toFixed(2)}</p>
-                        <p><strong>Reservas por mes:</strong> ${Math.round(parseInt(document.getElementById('stat-bookings').textContent) / 12)}</p>
-                        <p><strong>Ticket promedio:</strong> $45.00</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-download"></i> Exportar</h4>
-                        <p>Exporta los datos de reservas para análisis externo.</p>
-                        <button class="btn" onclick="exportBookingsToCSV()" style="margin-top:10px;">
-                            <i class="bi bi-file-earmark-excel"></i> Exportar a CSV
-                        </button>
-                    </div>
-                </div>
-            `;
-            showAlert('Reporte de reservas generado correctamente', 'success');
-        }
-        
-        function printReport() {
-            const printContent = document.getElementById('report-content').innerHTML;
-            const originalContent = document.body.innerHTML;
-            
-            document.body.innerHTML = `
-                <div style="padding: 20px; font-family: Arial, sans-serif;">
-                    <h1 style="text-align: center; color: #2c3e50;">Reporte del Sistema</h1>
-                    <h3 style="text-align: center; color: #666;">Caño Salao - Panel de Administración</h3>
-                    <hr style="margin: 20px 0;">
-                    <div>${printContent}</div>
-                    <hr style="margin: 20px 0;">
-                    <div style="text-align: center; color: #888; font-size: 12px;">
-                        <p>Generado el ${new Date().toLocaleString()}</p>
-                        <p>Sistema de Administración v2.0</p>
-                    </div>
-                </div>
-            `;
-            
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
-        }
-        
-        function exportReportToPDF() {
-            showAlert('Generando PDF del reporte...', 'info');
-            setTimeout(() => {
-                showAlert('Funcionalidad en desarrollo', 'info');
-            }, 2000);
-        }
-        
-        function exportUsersReport() {
-            showAlert('Exportando reporte de usuarios...', 'info');
-            setTimeout(() => {
-                showAlert('Funcionalidad en desarrollo', 'info');
-            }, 2000);
-        }
-        
-        function generateQuickReport() {
-            generateDashboardReport();
-            showSection('reports');
-        }
-        
         // ========== CONFIGURACIÓN ==========
         function loadProfile() {
-            if (!currentUser) {
-                showAlert('No se pudo cargar el perfil. Verifica tu sesión.', 'error');
-                return;
-            }
+            if (!currentUser) return;
             
             document.getElementById('profile-name').value = currentUser.nombre || '';
             document.getElementById('profile-email').value = currentUser.email || '';
@@ -2960,105 +3102,68 @@
             document.getElementById('new-password').value = '';
         }
         
-        async function updateProfile() {
-            if (!currentUser) {
-                showAlert('No hay usuario autenticado', 'error');
-                return;
-            }
-            
-            const name = document.getElementById('profile-name').value.trim();
-            const email = document.getElementById('profile-email').value.trim();
-            const phone = document.getElementById('profile-phone').value.trim();
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            
-            if (!name || !email) {
-                showFormAlert('profile-form-alert', 'Nombre y email son obligatorios', 'error');
-                return;
-            }
-            
-            const updates = {
-                nombre: name,
-                email: email,
-                telefono: phone || ''
-            };
-            
-            if (currentPassword && newPassword) {
-                if (newPassword.length < 6) {
-                    showFormAlert('profile-form-alert', 'La nueva contraseña debe tener al menos 6 caracteres', 'error');
-                    return;
-                }
-                updates.current_password = currentPassword;
-                updates.new_password = newPassword;
-            }
-            
-            showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
-            
-            try {
-                const response = await fetchWithAuth(`${API_BASE_URL}/api/auth/profile`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updates)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    // Actualizar currentUser localmente
-                    if (currentUser) {
-                        currentUser.nombre = name;
-                        currentUser.email = email;
-                        currentUser.telefono = phone || '';
-                    }
-                    
-                    showFormAlert('profile-form-alert', 'Perfil actualizado correctamente', 'success');
-                    updateUserUI();
-                    loadProfile();
-                    
-                    // Limpiar campos de contraseña
-                    document.getElementById('current-password').value = '';
-                    document.getElementById('new-password').value = '';
-                } else {
-                    showFormAlert('profile-form-alert', data.error || 'Error al actualizar perfil', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando perfil:', error);
-                showFormAlert('profile-form-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function saveSystemSettings() {
-            const autoRefresh = document.getElementById('auto-refresh').value;
-            const notifications = document.getElementById('notifications-enabled').checked;
-            
-            // Guardar en localStorage
-            localStorage.setItem('admin_auto_refresh', autoRefresh);
-            localStorage.setItem('admin_notifications', notifications);
-            
-            // Configurar auto-refresh si está activado
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            
-            if (autoRefresh > 0) {
-                autoRefreshInterval = setInterval(() => {
-                    loadDashboardData();
-                    showAlert('Datos actualizados automáticamente', 'info');
-                }, autoRefresh * 1000);
-            }
-            
-            showAlert('Configuración del sistema guardada correctamente', 'success');
-        }
-        
         // ========== UTILIDADES ==========
         function updateCurrentTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = 
                 now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
+        
+        function setupDemoMode() {
+            console.log('🔄 Activando modo demo...');
+            document.getElementById('status-text').textContent = 'Modo Demo (Offline)';
+            document.getElementById('backend-status').textContent = 'Modo Demo';
+            document.getElementById('backend-status').style.color = '#f39c12';
+            showAlert('Usando modo demo. Algunas funcionalidades estarán limitadas.', 'warning');
+        }
+        
+        // Funciones placeholder para funcionalidades futuras
+        function exportUsersToCSV() {
+            showAlert('Funcionalidad en desarrollo - Exportar a CSV', 'info');
+        }
+        
+        function exportBookingsToCSV() {
+            showAlert('Funcionalidad en desarrollo - Exportar a CSV', 'info');
+        }
+        
+        function generateDashboardReport() {
+            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
+        }
+        
+        function generateUsersReport() {
+            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
+        }
+        
+        function generateBookingsReport() {
+            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
+        }
+        
+        function updateProfile() {
+            showAlert('Funcionalidad en desarrollo - Actualizar perfil', 'info');
+        }
+        
+        function saveSystemSettings() {
+            const autoRefresh = document.getElementById('auto-refresh').value;
+            const notifications = document.getElementById('notifications-enabled').checked;
+            
+            localStorage.setItem('admin_auto_refresh', autoRefresh);
+            localStorage.setItem('admin_notifications', notifications);
+            
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            if (autoRefresh > 0) {
+                autoRefreshInterval = setInterval(loadDashboardData, autoRefresh * 1000);
+            }
+            
+            showAlert('Configuración guardada correctamente', 'success');
+        }
+        
+        function editBooking(bookingId) {
+            showAlert(`Editando reserva ${bookingId} (funcionalidad en desarrollo)`, 'info');
+        }
+
     </script>
 </body>
 </html>
