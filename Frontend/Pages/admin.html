@@ -1460,7 +1460,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL COMPLETO Y FUNCIONAL -->
+    <!-- SCRIPT PRINCIPAL COMPLETO Y FUNCIONAL - CORREGIDO -->
     <script>
         // ========== CONFIGURACIÓN ==========
         const BACKEND_URL = 'http://localhost:5000';
@@ -1468,16 +1468,17 @@
         
         // ========== ESTADO GLOBAL ==========
         let currentUser = null;
-        let token = localStorage.getItem('token');
-        let refreshToken = localStorage.getItem('refreshToken');
+        let token = localStorage.getItem('cano_salao_token');
+        let refreshToken = localStorage.getItem('cano_salao_refresh_token');
         let autoRefreshInterval = null;
+        let isAdmin = false;
         
         // ========== INICIALIZACIÓN ==========
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Inicializando Panel Administrativo...');
             
-            // Verificar autenticación
-            checkAuth();
+            // Verificar autenticación y permisos de administrador
+            checkAuthAndAdmin();
             
             // Inicializar UI
             initNavigation();
@@ -1515,8 +1516,11 @@
             });
         }
         
-        // ========== AUTENTICACIÓN ==========
-        function checkAuth() {
+        // ========== AUTENTICACIÓN Y VERIFICACIÓN DE ADMIN ==========
+        async function checkAuthAndAdmin() {
+            console.log('🔐 Verificando autenticación y permisos de administrador...');
+            
+            // Primero, verificar si hay token
             if (!token) {
                 showAlert('Por favor inicia sesión primero', 'error');
                 setTimeout(() => {
@@ -1525,114 +1529,134 @@
                 return false;
             }
             
-            // Verificar token con backend
-            verifyToken().then(isValid => {
+            try {
+                // Verificar token y obtener información del usuario
+                const isValid = await verifyToken();
+                
                 if (!isValid) {
                     // Intentar refrescar el token
-                    refreshAuthToken().then(refreshed => {
-                        if (!refreshed) {
-                            logout();
-                        }
-                    });
-                } else {
-                    // Token válido, cargar perfil
-                    loadUserProfile();
-                    // Cargar datos iniciales
-                    loadInitialData();
-                }
-            }).catch(error => {
-                console.error('Error verificando token:', error);
-                showAlert('Error de conexión con el servidor', 'error');
-            });
-            
-            return true;
-        }
-        
-        function verifyToken() {
-            return fetch(`${API_URL}/auth/verify`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json().then(data => {
-                        if (data.success && data.valid) {
-                            currentUser = data.user;
-                            updateUserUI();
-                            return true;
-                        }
+                    const refreshed = await refreshAuthToken();
+                    if (!refreshed) {
+                        logout();
                         return false;
-                    });
+                    }
+                    // Después de refrescar, verificar nuevamente
+                    return checkAuthAndAdmin();
                 }
+                
+                // Ahora verificar si el usuario es administrador
+                if (!currentUser) {
+                    showAlert('No se pudo cargar la información del usuario', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                    return false;
+                }
+                
+                if (currentUser.rol !== 'admin') {
+                    showAlert('Acceso denegado. Se requieren permisos de administrador.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 2000);
+                    return false;
+                }
+                
+                isAdmin = true;
+                console.log('✅ Usuario es administrador:', currentUser.nombre);
+                
+                // Cargar datos iniciales
+                loadInitialData();
+                return true;
+                
+            } catch (error) {
+                console.error('Error verificando permisos:', error);
+                showAlert('Error verificando permisos de administrador', 'error');
+                logout();
                 return false;
-            })
-            .catch(error => {
-                console.error('Error verificando token:', error);
-                return false;
-            });
+            }
         }
         
-        function refreshAuthToken() {
-            if (!refreshToken) {
-                return Promise.resolve(false);
+        async function verifyToken() {
+            console.log('🔍 Verificando token...');
+            
+            if (!token) {
+                console.error('No hay token disponible');
+                return false;
             }
             
-            return fetch(`${API_URL}/auth/refresh`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${refreshToken}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
+            try {
+                const response = await fetch(`${API_URL}/auth/validate`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
                 if (response.ok) {
-                    return response.json().then(data => {
-                        if (data.success && data.token) {
-                            token = data.token;
-                            localStorage.setItem('token', token);
-                            currentUser = data.user;
-                            updateUserUI();
-                            showAlert('Sesión renovada automáticamente', 'success');
-                            return true;
-                        }
-                        return false;
-                    });
+                    const data = await response.json();
+                    console.log('✅ Token válido:', data);
+                    
+                    if (data.success && data.user) {
+                        currentUser = data.user;
+                        updateUserUI();
+                        return true;
+                    }
+                } else if (response.status === 401) {
+                    console.warn('Token expirado o inválido');
+                    return false;
+                } else {
+                    console.error('Error verificando token:', response.status);
+                    return false;
                 }
+            } catch (error) {
+                console.error('Error de conexión verificando token:', error);
                 return false;
-            })
-            .catch(error => {
-                console.error('Error refrescando token:', error);
-                return false;
-            });
+            }
+            
+            return false;
         }
         
-        function loadUserProfile() {
-            if (!token) return;
+        async function refreshAuthToken() {
+            console.log('🔄 Intentando refrescar token...');
             
-            fetch(`${API_URL}/auth/profile`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
+            if (!refreshToken) {
+                console.error('No hay refresh token disponible');
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${refreshToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
                 if (response.ok) {
-                    return response.json().then(data => {
-                        if (data.success && data.profile) {
-                            currentUser = data.profile;
+                    const data = await response.json();
+                    console.log('✅ Token refrescado exitosamente');
+                    
+                    if (data.success && data.token) {
+                        token = data.token;
+                        localStorage.setItem('cano_salao_token', token);
+                        
+                        // Actualizar usuario si viene en la respuesta
+                        if (data.user) {
+                            currentUser = data.user;
                             updateUserUI();
-                            loadProfileData();
                         }
-                    });
+                        
+                        showAlert('Sesión renovada automáticamente', 'success');
+                        return true;
+                    }
                 }
-            })
-            .catch(error => {
-                console.error('Error cargando perfil:', error);
-            });
+            } catch (error) {
+                console.error('Error refrescando token:', error);
+            }
+            
+            return false;
         }
         
         function updateUserUI() {
@@ -1646,6 +1670,11 @@
             // Actualizar footer
             document.getElementById('footer-token-valid').textContent = 'Sí';
             document.getElementById('footer-last-update').textContent = new Date().toLocaleTimeString();
+            
+            // Si es admin, mostrar todos los controles
+            if (currentUser.rol === 'admin') {
+                console.log('👑 Usuario es administrador - Mostrando controles completos');
+            }
         }
         
         function initUserMenu() {
@@ -1653,21 +1682,25 @@
             const dropdown = document.getElementById('admin-user-dropdown');
             const logoutBtn = document.getElementById('admin-logout-btn');
             
-            avatar.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdown.classList.toggle('show');
-            });
+            if (avatar) {
+                avatar.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                });
+            }
             
             document.addEventListener('click', function(e) {
-                if (!avatar.contains(e.target) && !dropdown.contains(e.target)) {
+                if (!avatar?.contains(e.target) && !dropdown?.contains(e.target)) {
                     dropdown.classList.remove('show');
                 }
             });
             
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                logout();
-            });
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
         }
         
         function logout() {
@@ -1684,13 +1717,16 @@
                 });
                 
                 // Limpiar datos locales
-                localStorage.removeItem('token');
-                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('cano_salao_token');
+                localStorage.removeItem('cano_salao_refresh_token');
+                localStorage.removeItem('cano_salao_user');
                 localStorage.removeItem('admin_auto_refresh');
                 localStorage.removeItem('admin_notifications');
+                
                 token = null;
                 refreshToken = null;
                 currentUser = null;
+                isAdmin = false;
                 
                 // Detener auto-refresh
                 if (autoRefreshInterval) {
@@ -1806,6 +1842,14 @@
         
         // ========== DATOS INICIALES ==========
         function loadInitialData() {
+            console.log('📊 Cargando datos iniciales...');
+            
+            // Solo cargar datos si es admin
+            if (!isAdmin) {
+                console.warn('No se cargan datos: usuario no es administrador');
+                return;
+            }
+            
             loadDashboardData();
             updateCurrentTime();
             
@@ -1852,7 +1896,9 @@
         
         // ========== DASHBOARD ==========
         function loadDashboardData() {
-            if (!token) return;
+            if (!token || !isAdmin) return;
+            
+            console.log('📈 Cargando datos del dashboard...');
             
             fetch(`${API_URL}/admin/dashboard`, {
                 method: 'GET',
@@ -1869,6 +1915,9 @@
                         updateFooterStats(stats);
                         loadRecentActivity();
                     });
+                } else if (response.status === 403) {
+                    showAlert('No tienes permisos de administrador para ver el dashboard', 'error');
+                    return;
                 }
                 throw new Error('Error cargando dashboard');
             })
@@ -2011,10 +2060,12 @@
         
         // ========== USUARIOS ==========
         function loadUsers() {
-            if (!token) {
-                showAlert('No estás autenticado. Por favor inicia sesión.', 'error');
+            if (!token || !isAdmin) {
+                showAlert('No tienes permisos de administrador', 'error');
                 return;
             }
+            
+            console.log('👥 Cargando lista de usuarios...');
             
             const tbody = document.getElementById('users-table-body');
             tbody.innerHTML = `
@@ -2102,12 +2153,22 @@
         }
         
         function showAddUserModal() {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden agregar usuarios', 'error');
+                return;
+            }
+            
             document.getElementById('add-user-alert').style.display = 'none';
             document.getElementById('add-user-form').reset();
             openModal('modal-add-user');
         }
         
         function addNewUser() {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden agregar usuarios', 'error');
+                return;
+            }
+            
             const name = document.getElementById('new-user-name').value.trim();
             const email = document.getElementById('new-user-email').value.trim().toLowerCase();
             const password = document.getElementById('new-user-password').value;
@@ -2173,6 +2234,11 @@
         }
         
         function editUser(id, name, email, phone, role, active) {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden editar usuarios', 'error');
+                return;
+            }
+            
             document.getElementById('edit-user-id').value = id;
             document.getElementById('edit-user-name').value = name;
             document.getElementById('edit-user-email').value = email;
@@ -2185,6 +2251,11 @@
         }
         
         function saveUserEdit() {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden editar usuarios', 'error');
+                return;
+            }
+            
             const id = document.getElementById('edit-user-id').value;
             const name = document.getElementById('edit-user-name').value.trim();
             const email = document.getElementById('edit-user-email').value.trim();
@@ -2208,22 +2279,69 @@
             showFormAlert('edit-user-alert', 'Actualizando usuario...', 'info');
             
             // En un sistema real, aquí harías una llamada PUT al backend
-            // Por ahora simulamos la actualización
-            setTimeout(() => {
-                showFormAlert('edit-user-alert', 'Usuario actualizado correctamente (simulación)', 'success');
-                setTimeout(() => {
-                    closeModal('modal-edit-user');
-                    loadUsers();
-                }, 1500);
-            }, 1000);
+            fetch(`${API_URL}/auth/users/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status === 403) {
+                    throw new Error('No tienes permisos para editar usuarios');
+                } else {
+                    throw new Error('Error actualizando usuario');
+                }
+            })
+            .then(data => {
+                if (data.success) {
+                    showFormAlert('edit-user-alert', 'Usuario actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-user');
+                        loadUsers();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-user-alert', data.error || 'Error al actualizar usuario', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error actualizando usuario:', error);
+                showFormAlert('edit-user-alert', error.message, 'error');
+            });
         }
         
         function deleteUser(userId, userName) {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden eliminar usuarios', 'error');
+                return;
+            }
+            
             confirmAction(`¿Eliminar al usuario "${userName}"? Esta acción no se puede deshacer.`, function() {
-                // Simulación - en producción harías DELETE al backend
-                showAlert(`Usuario "${userName}" eliminado (simulación)`, 'success');
-                loadUsers();
-                loadDashboardData();
+                fetch(`${API_URL}/auth/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showAlert(`Usuario "${userName}" eliminado correctamente`, 'success');
+                        loadUsers();
+                        loadDashboardData();
+                    } else if (response.status === 403) {
+                        throw new Error('No tienes permisos para eliminar usuarios');
+                    } else {
+                        throw new Error('Error eliminando usuario');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error eliminando usuario:', error);
+                    showAlert(error.message, 'error');
+                });
             });
         }
         
@@ -2304,12 +2422,22 @@
         }
         
         function showAddTourModal() {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden agregar tours', 'error');
+                return;
+            }
+            
             document.getElementById('add-tour-alert').style.display = 'none';
             document.getElementById('add-tour-form').reset();
             openModal('modal-add-tour');
         }
         
         function addNewTour() {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden agregar tours', 'error');
+                return;
+            }
+            
             const name = document.getElementById('new-tour-name').value.trim();
             const desc = document.getElementById('new-tour-desc').value.trim();
             const price = parseFloat(document.getElementById('new-tour-price').value);
@@ -2357,10 +2485,20 @@
         }
         
         function editTour(tourId) {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden editar tours', 'error');
+                return;
+            }
+            
             showAlert('Funcionalidad de edición de tours en desarrollo', 'info');
         }
         
         function deleteTour(tourId, tourName) {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden eliminar tours', 'error');
+                return;
+            }
+            
             confirmAction(`¿Eliminar el tour "${tourName}"?`, function() {
                 showAlert(`Tour "${tourName}" eliminado (simulación)`, 'success');
                 loadTours();
@@ -2523,6 +2661,11 @@
         }
         
         function showAddBlogPostModal() {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden publicar artículos', 'error');
+                return;
+            }
+            
             document.getElementById('add-blog-alert').style.display = 'none';
             document.getElementById('blog-title').value = '';
             document.getElementById('blog-content').value = '';
@@ -2532,6 +2675,11 @@
         }
         
         function saveBlogPost() {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden publicar artículos', 'error');
+                return;
+            }
+            
             const title = document.getElementById('blog-title').value.trim();
             const category = document.getElementById('blog-category').value;
             const content = document.getElementById('blog-content').value.trim();
@@ -2573,10 +2721,20 @@
         }
         
         function editBlogPost(postId) {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden editar artículos', 'error');
+                return;
+            }
+            
             showAlert(`Editando artículo ${postId} (simulación)`, 'info');
         }
         
         function deleteBlogPost(postId, postTitle) {
+            if (!isAdmin) {
+                showAlert('Solo los administradores pueden eliminar artículos', 'error');
+                return;
+            }
+            
             confirmAction(`¿Eliminar el artículo "${postTitle}"?`, function() {
                 showAlert(`Artículo "${postTitle}" eliminado (simulación)`, 'success');
                 loadBlogPosts();
@@ -2746,12 +2904,6 @@
             document.getElementById('profile-role').value = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
         }
         
-        function loadProfileData() {
-            if (!currentUser) return;
-            
-            loadProfile();
-        }
-        
         function updateProfile() {
             const name = document.getElementById('profile-name').value.trim();
             const email = document.getElementById('profile-email').value.trim();
@@ -2781,7 +2933,6 @@
             
             showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
             
-            // En un sistema real, aquí harías PUT al endpoint de perfil
             fetch(`${API_URL}/auth/profile`, {
                 method: 'PUT',
                 headers: {
@@ -2793,7 +2944,13 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    currentUser = { ...currentUser, ...updates };
+                    // Actualizar currentUser localmente
+                    if (currentUser) {
+                        currentUser.nombre = name;
+                        currentUser.email = email;
+                        currentUser.telefono = phone || '';
+                    }
+                    
                     showFormAlert('profile-form-alert', 'Perfil actualizado correctamente', 'success');
                     updateUserUI();
                     loadProfile();
@@ -2848,6 +3005,7 @@
                 • Usuario: ${currentUser?.nombre || 'No cargado'}<br>
                 • Email: ${currentUser?.email || 'No cargado'}<br>
                 • Rol: ${currentUser?.rol || 'Desconocido'}<br>
+                • Es administrador: ${isAdmin ? 'Sí' : 'No'}<br>
                 • Token válido: ${token ? 'Sí' : 'No'}<br>
                 • Auto-refresh: ${localStorage.getItem('admin_auto_refresh') || '0'} segundos<br>
                 • Notificaciones: ${localStorage.getItem('admin_notifications') !== 'false' ? 'Activadas' : 'Desactivadas'}<br>
