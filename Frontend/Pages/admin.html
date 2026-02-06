@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración Completo - Caño Salao</title>
+    <title>Panel de AdministraciÃ³n Completo - CaÃ±o Salao</title>
 
     <link rel="stylesheet" href="../index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -11,11 +11,11 @@
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <!-- Generador de PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Para gráficos -->
+    <!-- Para grÃ¡ficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Estilos específicos para admin - MANTENIDOS */
+        /* Estilos especÃ­ficos para admin - MANTENIDOS */
         :root {
             --admin-primary: #2c3e50;
             --admin-secondary: #34495e;
@@ -770,7 +770,7 @@
             display: block;
         }
         
-        /* Galería de medios */
+        /* GalerÃ­a de medios */
         .media-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -835,7 +835,7 @@
             border: 1px solid #ddd !important;
         }
         
-        /* Previsualización de blog */
+        /* PrevisualizaciÃ³n de blog */
         .blog-preview {
             max-width: 800px;
             margin: 0 auto;
@@ -889,7 +889,7 @@
             font-size: 14px;
         }
         
-        /* Selector de categorías */
+        /* Selector de categorÃ­as */
         .category-selector {
             display: flex;
             flex-wrap: wrap;
@@ -982,7 +982,7 @@
             transition: width 0.3s;
         }
         
-        /* Vista de cuadrícula para páginas */
+        /* Vista de cuadrÃ­cula para pÃ¡ginas */
         .pages-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1029,21 +1029,21 @@
             <div class="header-content">
                 <div class="logo">
                     <h1 class="times-font">Cano <span class="text-orange">Salao</span> - Admin</h1>
-                    <div class="connection-status" id="connection-status">
+                    <div class="connection-status connection-online" id="connection-status">
                         <span class="status-dot"></span>
-                        <span id="status-text">Sistema Completo</span>
+                        <span id="status-text">Conectado al Backend</span>
                     </div>
                 </div>
                 <div class="admin-user-menu">
                     <div class="admin-user-info">
                         <div class="user-name" id="admin-user-name">Administrador</div>
-                        <div class="user-role" id="admin-user-role">Administrador</div>
+                        <div class="user-role" id="admin-user-role">Cargando...</div>
                     </div>
                     <div class="admin-avatar" id="admin-user-avatar">A</div>
                     <div class="admin-user-dropdown" id="admin-user-dropdown">
                         <a href="../index.html"><i class="bi bi-house"></i> Ver Sitio</a>
                         <a href="usuario.html"><i class="bi bi-person"></i> Panel Usuario</a>
-                        <a href="#" id="admin-logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
+                        <a href="#" id="admin-logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar SesiÃ³n</a>
                     </div>
                 </div>
             </div>
@@ -1053,8 +1053,8 @@
     <!-- Page Header -->
     <section class="page-header" style="background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%); color: white; padding: 3rem 0; text-align: center;">
         <div class="container">
-            <h1 class="times-font">Panel de Administración Completo</h1>
-            <p id="admin-subtitle">CMS, Blog, Medios, Reportes - Todo funcional</p>
+            <h1 class="times-font">Panel de AdministraciÃ³n Completo</h1>
+            <p id="admin-subtitle">Conectado al Backend Flask - CaÃ±o Salao</p>
         </div>
     </section>
 
@@ -1072,11 +1072,9 @@
                     <li><a href="#" class="admin-nav-link" data-section="users"><i class="bi bi-people"></i> Usuarios</a></li>
                     <li><a href="#" class="admin-nav-link" data-section="tours"><i class="bi bi-signpost"></i> Tours</a></li>
                     <li><a href="#" class="admin-nav-link" data-section="bookings"><i class="bi bi-calendar-check"></i> Reservas</a></li>
-                    <li><a href="#" class="admin-nav-link" data-section="content"><i class="bi bi-file-text"></i> Contenido</a></li>
                     <li><a href="#" class="admin-nav-link" data-section="blog"><i class="bi bi-newspaper"></i> Blog</a></li>
-                    <li><a href="#" class="admin-nav-link" data-section="media"><i class="bi bi-images"></i> Medios</a></li>
                     <li><a href="#" class="admin-nav-link" data-section="reports"><i class="bi bi-bar-chart"></i> Reportes</a></li>
-                    <li><a href="#" class="admin-nav-link" data-section="settings"><i class="bi bi-gear"></i> Configuración</a></li>
+                    <li><a href="#" class="admin-nav-link" data-section="settings"><i class="bi bi-gear"></i> ConfiguraciÃ³n</a></li>
                 </ul>
             </nav>
 
@@ -1085,7 +1083,7 @@
                 <div class="quick-actions">
                     <button class="btn" onclick="refreshDashboard()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
                     <button class="btn" onclick="showSystemInfo()" style="background: var(--admin-primary);"><i class="bi bi-info-circle"></i> Info Sistema</button>
-                    <button class="btn" onclick="generateQuickReport()" style="background: var(--admin-success);"><i class="bi bi-file-text"></i> Reporte Rápido</button>
+                    <button class="btn" onclick="generateQuickReport()" style="background: var(--admin-success);"><i class="bi bi-file-text"></i> Reporte RÃ¡pido</button>
                 </div>
 
                 <!-- Stats Cards -->
@@ -1099,23 +1097,23 @@
                     
                     <div class="stat-card">
                         <i class="bi bi-newspaper" style="color: var(--admin-warning);"></i>
-                        <h3>Artículos Blog</h3>
+                        <h3>ArtÃ­culos Blog</h3>
                         <div class="stat-number" id="stat-blog">0</div>
-                        <p class="stat-desc" id="stat-blog-desc">Publicados / Borradores</p>
+                        <p class="stat-desc" id="stat-blog-desc">Publicados</p>
                     </div>
                     
                     <div class="stat-card">
-                        <i class="bi bi-images" style="color: var(--admin-success);"></i>
-                        <h3>Archivos Medios</h3>
-                        <div class="stat-number" id="stat-media">0</div>
-                        <p class="stat-desc" id="stat-media-desc">Imágenes / Videos</p>
+                        <i class="bi bi-signpost" style="color: var(--admin-success);"></i>
+                        <h3>Tours Disponibles</h3>
+                        <div class="stat-number" id="stat-tours">0</div>
+                        <p class="stat-desc" id="stat-tours-desc">Activos</p>
                     </div>
                     
                     <div class="stat-card">
-                        <i class="bi bi-file-text" style="color: var(--admin-primary);"></i>
-                        <h3>Páginas CMS</h3>
-                        <div class="stat-number" id="stat-pages">0</div>
-                        <p class="stat-desc" id="stat-pages-desc">Publicadas / Borradores</p>
+                        <i class="bi bi-calendar-check" style="color: var(--admin-primary);"></i>
+                        <h3>Reservas Totales</h3>
+                        <div class="stat-number" id="stat-bookings">0</div>
+                        <p class="stat-desc" id="stat-bookings-desc">Confirmadas</p>
                     </div>
                 </div>
 
@@ -1126,7 +1124,7 @@
                         <canvas id="activityChart" height="200"></canvas>
                     </div>
                     <div class="chart-container" style="flex: 1;">
-                        <h3><i class="bi bi-pie-chart"></i> Distribución</h3>
+                        <h3><i class="bi bi-pie-chart"></i> DistribuciÃ³n</h3>
                         <canvas id="distributionChart" height="200"></canvas>
                     </div>
                 </div>
@@ -1135,13 +1133,13 @@
                 <div class="admin-table-container">
                     <div style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                         <h3 style="margin: 0;"><i class="bi bi-clock-history"></i> Actividad Reciente</h3>
-                        <button class="btn" onclick="loadActivity()" style="padding: 8px 15px; font-size: 13px; background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
+                        <button class="btn" onclick="loadRecentActivity()" style="padding: 8px 15px; font-size: 13px; background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
                     </div>
                     <div class="activity-list" id="recent-activity">
                         <div class="activity-item">
                             <div class="activity-icon"><i class="bi bi-gear"></i></div>
                             <div class="activity-content">
-                                <strong>Sistema</strong> inicializando panel completo
+                                <strong>Sistema</strong> inicializando panel administrativo
                                 <div class="activity-time">Justo ahora</div>
                             </div>
                         </div>
@@ -1187,7 +1185,6 @@
                 <div class="quick-actions">
                     <button class="btn" onclick="showAddTourModal()" style="background: var(--admin-success);"><i class="bi bi-plus-circle"></i> Agregar Tour</button>
                     <button class="btn" onclick="loadTours()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                    <button class="btn" onclick="exportToursToCSV()" style="background: var(--admin-primary);"><i class="bi bi-download"></i> Exportar CSV</button>
                 </div>
 
                 <div class="admin-table-container">
@@ -1196,7 +1193,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre</th>
-                                <th>Descripción</th>
+                                <th>DescripciÃ³n</th>
                                 <th>Precio</th>
                                 <th>Capacidad</th>
                                 <th>Estado</th>
@@ -1218,16 +1215,15 @@
             <!-- ========== BOOKINGS SECTION ========== -->
             <div id="bookings" class="admin-section">
                 <div class="quick-actions">
-                    <button class="btn" onclick="showAddBookingModal()" style="background: var(--admin-success);"><i class="bi bi-calendar-plus"></i> Agregar Reserva</button>
                     <button class="btn" onclick="loadBookings()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                    <button class="btn" onclick="generateBookingsReport()" style="background: var(--admin-primary);"><i class="bi bi-file-earmark-pdf"></i> Reporte PDF</button>
+                    <button class="btn" onclick="exportBookingsToCSV()" style="background: var(--admin-primary);"><i class="bi bi-download"></i> Exportar CSV</button>
                 </div>
 
                 <div class="admin-table-container">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>Código</th>
+                                <th>ID</th>
                                 <th>Usuario</th>
                                 <th>Tour</th>
                                 <th>Fecha</th>
@@ -1249,35 +1245,19 @@
                 </div>
             </div>
 
-            <!-- ========== CONTENT SECTION (CMS) ========== -->
-            <div id="content" class="admin-section">
-                <div class="quick-actions">
-                    <button class="btn" onclick="showAddPageModal()" style="background: var(--admin-success);"><i class="bi bi-file-plus"></i> Nueva Página</button>
-                    <button class="btn" onclick="loadPages()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                    <button class="btn" onclick="previewHomePage()" style="background: var(--admin-warning);"><i class="bi bi-eye"></i> Previsualizar</button>
-                </div>
-
-                <div class="pages-grid" id="pages-grid">
-                    <!-- Las páginas se cargarán aquí -->
-                    <div class="spinner"></div>
-                    <p style="text-align: center; width: 100%;">Cargando páginas...</p>
-                </div>
-            </div>
-
             <!-- ========== BLOG SECTION ========== -->
             <div id="blog" class="admin-section">
                 <div class="quick-actions">
-                    <button class="btn" onclick="showAddBlogPostModal()" style="background: var(--admin-success);"><i class="bi bi-plus-circle"></i> Nuevo Artículo</button>
+                    <button class="btn" onclick="showAddBlogPostModal()" style="background: var(--admin-success);"><i class="bi bi-plus-circle"></i> Nuevo ArtÃ­culo</button>
                     <button class="btn" onclick="loadBlogPosts()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                    <button class="btn" onclick="manageBlogCategories()" style="background: var(--admin-primary);"><i class="bi bi-tags"></i> Categorías</button>
                 </div>
 
                 <div class="admin-table-container">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>Título</th>
-                                <th>Categoría</th>
+                                <th>TÃ­tulo</th>
+                                <th>CategorÃ­a</th>
                                 <th>Autor</th>
                                 <th>Fecha</th>
                                 <th>Vistas</th>
@@ -1289,7 +1269,7 @@
                             <tr>
                                 <td colspan="7" style="text-align: center; padding: 40px;">
                                     <div class="spinner"></div>
-                                    <p>Cargando artículos...</p>
+                                    <p>Cargando artÃ­culos...</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -1297,80 +1277,18 @@
                 </div>
             </div>
 
-            <!-- ========== MEDIA SECTION ========== -->
-            <div id="media" class="admin-section">
-                <div class="quick-actions">
-                    <button class="btn" onclick="document.getElementById('media-upload-input').click()" style="background: var(--admin-success);"><i class="bi bi-upload"></i> Subir Archivos</button>
-                    <button class="btn" onclick="refreshMediaGallery()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                    <button class="btn" onclick="showMediaStats()" style="background: var(--admin-primary);"><i class="bi bi-pie-chart"></i> Estadísticas</button>
-                </div>
-
-                <!-- Subida de archivos -->
-                <div class="admin-form" style="margin-bottom: 30px;">
-                    <h3><i class="bi bi-upload"></i> Subir Archivos</h3>
-                    <input type="file" id="media-upload-input" multiple accept="image/*,video/*,.pdf,.doc,.docx" style="display: none;" onchange="handleMediaUpload(event)">
-                    <div class="form-group">
-                        <label><i class="bi bi-folder"></i> Carpeta de destino</label>
-                        <select id="media-folder" class="form-control">
-                            <option value="general">General</option>
-                            <option value="blog">Blog</option>
-                            <option value="tours">Tours</option>
-                            <option value="pages">Páginas</option>
-                            <option value="users">Usuarios</option>
-                        </select>
-                    </div>
-                    <div id="upload-progress" class="upload-progress" style="display: none;">
-                        <div class="upload-progress-bar" id="upload-progress-bar"></div>
-                    </div>
-                    <div id="upload-status"></div>
-                </div>
-
-                <!-- Galería de medios -->
-                <div class="admin-form">
-                    <h3><i class="bi bi-images"></i> Biblioteca de Medios</h3>
-                    <div class="filter-controls" style="margin-bottom: 20px;">
-                        <select id="media-type-filter" class="filter-select" onchange="filterMedia()">
-                            <option value="all">Todos los tipos</option>
-                            <option value="image">Imágenes</option>
-                            <option value="video">Videos</option>
-                            <option value="document">Documentos</option>
-                        </select>
-                        <input type="text" id="media-search" class="form-control" placeholder="Buscar archivos..." style="max-width: 300px;" onkeyup="searchMedia()">
-                    </div>
-                    <div class="media-gallery" id="media-gallery">
-                        <!-- Los medios se cargarán aquí -->
-                        <div class="spinner" style="grid-column: 1/-1;"></div>
-                    </div>
-                </div>
-            </div>
-
             <!-- ========== REPORTS SECTION ========== -->
             <div id="reports" class="admin-section">
                 <div class="quick-actions">
-                    <button class="btn" onclick="generateFinancialReport()" style="background: var(--admin-success);"><i class="bi bi-file-earmark-pdf"></i> Reporte Financiero</button>
+                    <button class="btn" onclick="generateDashboardReport()" style="background: var(--admin-success);"><i class="bi bi-file-earmark-pdf"></i> Reporte Dashboard</button>
                     <button class="btn" onclick="generateUsersReport()" style="background: var(--admin-primary);"><i class="bi bi-file-earmark-excel"></i> Reporte Usuarios</button>
-                    <button class="btn" onclick="generateContentReport()" style="background: var(--admin-accent);"><i class="bi bi-file-earmark-text"></i> Reporte Contenido</button>
-                    <button class="btn" onclick="exportAllReports()" style="background: var(--admin-warning);"><i class="bi bi-download"></i> Exportar Todo</button>
+                    <button class="btn" onclick="generateBookingsReport()" style="background: var(--admin-accent);"><i class="bi bi-file-earmark-text"></i> Reporte Reservas</button>
                 </div>
 
-                <!-- Selector de fecha -->
-                <div class="date-range-selector">
-                    <div class="date-input-group">
-                        <label>Desde:</label>
-                        <input type="date" id="report-start-date" class="form-control" style="max-width: 150px;">
-                    </div>
-                    <div class="date-input-group">
-                        <label>Hasta:</label>
-                        <input type="date" id="report-end-date" class="form-control" style="max-width: 150px;">
-                    </div>
-                    <button class="btn" onclick="generateCustomReport()" style="background: var(--admin-accent);"><i class="bi bi-filter"></i> Generar Reporte</button>
-                </div>
-
-                <!-- Vista previa del reporte -->
                 <div class="report-preview" id="report-preview">
                     <div class="report-header">
                         <h2><i class="bi bi-bar-chart"></i> Reporte del Sistema</h2>
-                        <p>Selecciona un tipo de reporte y haz clic en generar</p>
+                        <p>Selecciona un tipo de reporte para generar</p>
                     </div>
                     <div id="report-content">
                         <p class="empty-state">No hay datos para mostrar. Genera un reporte.</p>
@@ -1381,118 +1299,81 @@
             <!-- ========== SETTINGS SECTION ========== -->
             <div id="settings" class="admin-section">
                 <div class="content-tabs">
-                    <button class="content-tab active" data-tab="site">Sitio Web</button>
-                    <button class="content-tab" data-tab="seo">SEO</button>
-                    <button class="content-tab" data-tab="email">Email</button>
-                    <button class="content-tab" data-tab="maintenance">Mantenimiento</button>
+                    <button class="content-tab active" data-tab="profile">Mi Perfil</button>
+                    <button class="content-tab" data-tab="system">Sistema</button>
                 </div>
 
-                <!-- Configuración del sitio -->
-                <div id="site-tab" class="tab-content active">
+                <!-- ConfiguraciÃ³n del perfil -->
+                <div id="profile-tab" class="tab-content active">
                     <div class="admin-form">
-                        <h3><i class="bi bi-gear"></i> Configuración del Sitio</h3>
+                        <h3><i class="bi bi-person-circle"></i> Mi Perfil de Administrador</h3>
+                        <div id="profile-form-alert" class="alert" style="display: none;"></div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label><i class="bi bi-building"></i> Nombre del Sitio</label>
-                                <input type="text" id="site-name" class="form-control" value="Caño Salao">
+                                <label><i class="bi bi-person"></i> Nombre Completo</label>
+                                <input type="text" id="profile-name" class="form-control" placeholder="Nombre completo">
                             </div>
                             <div class="form-group">
-                                <label><i class="bi bi-link"></i> URL del Sitio</label>
-                                <input type="url" id="site-url" class="form-control" value="https://canosalao.com">
+                                <label><i class="bi bi-envelope"></i> Email</label>
+                                <input type="email" id="profile-email" class="form-control" placeholder="correo@ejemplo.com">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="bi bi-text-paragraph"></i> Descripción</label>
-                            <textarea id="site-description" class="form-control" rows="3">Ruta turística marítima Caño Salao</textarea>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label><i class="bi bi-envelope"></i> Email de Contacto</label>
-                                <input type="email" id="site-email" class="form-control" value="info@canosalao.com">
+                                <label><i class="bi bi-telephone"></i> TelÃ©fono</label>
+                                <input type="tel" id="profile-phone" class="form-control" placeholder="+58 412-1234567">
                             </div>
                             <div class="form-group">
-                                <label><i class="bi bi-telephone"></i> Teléfono</label>
-                                <input type="tel" id="site-phone" class="form-control" value="+58 412-205-6558">
+                                <label><i class="bi bi-gear"></i> Rol</label>
+                                <input type="text" id="profile-role" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <h4 style="margin-top: 30px; color: var(--admin-primary);"><i class="bi bi-lock"></i> Cambiar ContraseÃ±a</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>ContraseÃ±a Actual</label>
+                                <input type="password" id="current-password" class="form-control" placeholder="ContraseÃ±a actual">
+                            </div>
+                            <div class="form-group">
+                                <label>Nueva ContraseÃ±a</label>
+                                <input type="password" id="new-password" class="form-control" placeholder="MÃ­nimo 6 caracteres">
                             </div>
                         </div>
                         <div class="form-actions">
-                            <button class="btn" onclick="saveSiteSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar</button>
+                            <button class="btn" onclick="loadProfile()" style="background: var(--admin-primary);"><i class="bi bi-arrow-clockwise"></i> Recargar</button>
+                            <button class="btn" onclick="updateProfile()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Cambios</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Configuración SEO -->
-                <div id="seo-tab" class="tab-content">
+                <!-- ConfiguraciÃ³n del sistema -->
+                <div id="system-tab" class="tab-content">
                     <div class="admin-form">
-                        <h3><i class="bi bi-search"></i> Configuración SEO</h3>
+                        <h3><i class="bi bi-gear"></i> ConfiguraciÃ³n del Sistema</h3>
                         <div class="form-group">
-                            <label><i class="bi bi-tags"></i> Meta Keywords</label>
-                            <textarea id="seo-keywords" class="form-control" rows="2" placeholder="turismo, manglares, venezuela, barcelona"></textarea>
+                            <label><i class="bi bi-link"></i> URL del Backend</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="backend-url" class="form-control" value="http://localhost:5000" readonly>
+                                <button class="btn" onclick="testBackendConnection()" style="background: var(--admin-warning);"><i class="bi bi-plug"></i> Probar</button>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label><i class="bi bi-file-text"></i> Meta Description</label>
-                            <textarea id="seo-description" class="form-control" rows="3"></textarea>
+                            <label><i class="bi bi-clock-history"></i> Auto-refresh</label>
+                            <select id="auto-refresh" class="form-control">
+                                <option value="0">Desactivado</option>
+                                <option value="30">30 segundos</option>
+                                <option value="60">1 minuto</option>
+                                <option value="300">5 minutos</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label><i class="bi bi-google"></i> Google Analytics ID</label>
-                            <input type="text" id="ga-id" class="form-control" placeholder="UA-XXXXX-Y">
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn" onclick="saveSEOSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar SEO</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Configuración Email -->
-                <div id="email-tab" class="tab-content">
-                    <div class="admin-form">
-                        <h3><i class="bi bi-envelope"></i> Configuración de Email</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>SMTP Host</label>
-                                <input type="text" id="smtp-host" class="form-control" placeholder="smtp.gmail.com">
-                            </div>
-                            <div class="form-group">
-                                <label>SMTP Port</label>
-                                <input type="number" id="smtp-port" class="form-control" placeholder="587">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Email Usuario</label>
-                                <input type="email" id="smtp-user" class="form-control" placeholder="tu@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Email Contraseña</label>
-                                <input type="password" id="smtp-pass" class="form-control" placeholder="••••••••">
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn" onclick="testEmailSettings()" style="background: var(--admin-warning);"><i class="bi bi-envelope-check"></i> Probar Configuración</button>
-                            <button class="btn" onclick="saveEmailSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mantenimiento -->
-                <div id="maintenance-tab" class="tab-content">
-                    <div class="admin-form">
-                        <h3><i class="bi bi-tools"></i> Mantenimiento del Sistema</h3>
                         <div class="form-group">
                             <label>
-                                <input type="checkbox" id="maintenance-mode"> 
-                                <i class="bi bi-tools"></i> Activar Modo Mantenimiento
+                                <input type="checkbox" id="notifications-enabled" checked>
+                                <i class="bi bi-bell"></i> Notificaciones del sistema
                             </label>
-                            <small>Los visitantes verán una página de mantenimiento</small>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="bi bi-exclamation-triangle"></i> Mensaje de Mantenimiento</label>
-                            <textarea id="maintenance-message" class="form-control" rows="3">Sitio en mantenimiento. Volveremos pronto.</textarea>
                         </div>
                         <div class="form-actions">
-                            <button class="btn" onclick="clearCache()" style="background: var(--admin-warning);"><i class="bi bi-trash"></i> Limpiar Caché</button>
-                            <button class="btn" onclick="optimizeDatabase()" style="background: var(--admin-primary);"><i class="bi bi-speedometer2"></i> Optimizar BD</button>
-                            <button class="btn" onclick="saveMaintenanceSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar</button>
+                            <button class="btn" onclick="saveSystemSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar ConfiguraciÃ³n</button>
                         </div>
                     </div>
                 </div>
@@ -1506,44 +1387,82 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3 class="times-font"><i class="bi bi-shield-check"></i> Panel Completo</h3>
-                    <p>Sistema de gestión completo con CMS, Blog y Reportes reales</p>
+                    <h3 class="times-font"><i class="bi bi-shield-check"></i> Panel Administrativo</h3>
+                    <p>Sistema conectado al backend Flask de CaÃ±o Salao</p>
                     <p style="font-size: 12px; color: #666; margin-top: 10px;">
-                        <strong>Versión:</strong> 3.0.0 (Completo)<br>
-                        <strong>Usuarios:</strong> <span id="footer-users-count">0</span><br>
-                        <strong>Páginas:</strong> <span id="footer-pages-count">0</span><br>
-                        <strong>Última acción:</strong> <span id="footer-last-action">--:--:--</span>
+                        <strong>VersiÃ³n:</strong> 2.0.0<br>
+                        <strong>Backend:</strong> <span id="backend-status">Conectando...</span><br>
+                        <strong>Ãšltima actualizaciÃ³n:</strong> <span id="footer-last-update">--:--:--</span>
                     </p>
                 </div>
                 <div class="footer-column">
-                    <h3 class="times-font"><i class="bi bi-lightning"></i> Acciones Rápidas</h3>
+                    <h3 class="times-font"><i class="bi bi-lightning"></i> Acciones RÃ¡pidas</h3>
                     <ul class="footer-links">
-                        <li><a href="#" onclick="showSection('content')"><i class="bi bi-file-text"></i> Gestionar Páginas</a></li>
+                        <li><a href="#" onclick="showSection('users')"><i class="bi bi-people"></i> Gestionar Usuarios</a></li>
+                        <li><a href="#" onclick="showSection('tours')"><i class="bi bi-signpost"></i> Gestionar Tours</a></li>
+                        <li><a href="#" onclick="showSection('bookings')"><i class="bi bi-calendar-check"></i> Ver Reservas</a></li>
                         <li><a href="#" onclick="showSection('blog')"><i class="bi bi-newspaper"></i> Blog</a></li>
-                        <li><a href="#" onclick="showSection('media')"><i class="bi bi-images"></i> Medios</a></li>
-                        <li><a href="#" onclick="showSection('reports')"><i class="bi bi-bar-chart"></i> Reportes</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3 class="times-font"><i class="bi bi-database"></i> Sistema</h3>
-                    <p><strong>Sesiones activas:</strong> <span id="active-sessions">1</span></p>
-                    <p><strong>Espacio usado:</strong> <span id="storage-used">0 MB</span></p>
-                    <p><strong>Último backup:</strong> <span id="last-backup">Nunca</span></p>
-                    <button class="btn" onclick="createBackup()" style="padding: 8px 15px; font-size: 13px; margin-top: 10px; background: var(--admin-success);">
-                        <i class="bi bi-download"></i> Crear Backup
-                    </button>
+                    <p><strong>Usuarios cargados:</strong> <span id="footer-users-count">0</span></p>
+                    <p><strong>Tours cargados:</strong> <span id="footer-tours-count">0</span></p>
+                    <p><strong>Token vÃ¡lido:</strong> <span id="footer-token-valid">No</span></p>
                 </div>
             </div>
             <div class="copyright">
-                <p><i class="bi bi-c-circle"></i> 2025 Caño Salao - Panel Administrativo Completo</p>
-                <p style="font-size: 11px; color: #888;"><i class="bi bi-code-slash"></i> Sistema 100% funcional | <span id="current-time">--:--:--</span></p>
+                <p><i class="bi bi-c-circle"></i> 2024 CaÃ±o Salao - Panel Administrativo</p>
+                <p style="font-size: 11px; color: #888;"><i class="bi bi-code-slash"></i> Conectado al Backend Flask | <span id="current-time">--:--:--</span></p>
             </div>
         </div>
     </footer>
 
-    <!-- ========== MODALES COMPLETOS ========== -->
+    <!-- ========== MODALES ========== -->
     
-    <!-- Modal Editar Usuario (COMPLETO) -->
+    <!-- Modal Agregar Usuario -->
+    <div id="modal-add-user" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="bi bi-person-plus"></i> Agregar Nuevo Usuario</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-user')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="add-user-alert" class="alert" style="display: none;"></div>
+                <form id="add-user-form">
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="new-user-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="new-user-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ContraseÃ±a</label>
+                        <input type="password" id="new-user-password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>TelÃ©fono (opcional)</label>
+                        <input type="tel" id="new-user-phone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select id="new-user-role" class="form-control">
+                            <option value="user">Usuario Normal</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-add-user')">Cancelar</button>
+                <button class="btn" onclick="addNewUser()" style="background: var(--admin-success);">Crear Usuario</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Editar Usuario -->
     <div id="modal-edit-user" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1563,11 +1482,14 @@
                         <input type="email" id="edit-user-email" class="form-control" required>
                     </div>
                     <div class="form-group">
+                        <label>TelÃ©fono</label>
+                        <input type="tel" id="edit-user-phone" class="form-control">
+                    </div>
+                    <div class="form-group">
                         <label>Rol</label>
                         <select id="edit-user-role" class="form-control">
                             <option value="user">Usuario</option>
                             <option value="admin">Administrador</option>
-                            <option value="editor">Editor</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1575,7 +1497,6 @@
                         <select id="edit-user-status" class="form-control">
                             <option value="active">Activo</option>
                             <option value="inactive">Inactivo</option>
-                            <option value="suspended">Suspendido</option>
                         </select>
                     </div>
                 </form>
@@ -1587,265 +1508,279 @@
         </div>
     </div>
     
-    <!-- Modal Nueva Página CMS -->
-    <div id="modal-add-page" class="modal">
-        <div class="modal-content" style="max-width: 900px;">
+    <!-- Modal Nuevo Tour -->
+    <div id="modal-add-tour" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="bi bi-file-plus"></i> Crear Nueva Página</h3>
-                <button class="modal-close" onclick="closeModal('modal-add-page')">&times;</button>
+                <h3><i class="bi bi-signpost"></i> Agregar Nuevo Tour</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-tour')">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="add-page-alert" class="alert" style="display: none;"></div>
-                <div class="form-group">
-                    <label>Título de la Página</label>
-                    <input type="text" id="page-title" class="form-control" placeholder="Ej: Sobre Nosotros" required>
-                </div>
-                <div class="form-group">
-                    <label>URL (slug)</label>
-                    <div style="display: flex; gap: 10px;">
-                        <span style="padding: 10px; background: #f8f9fa; border-radius: 4px;">https://canosalao.com/</span>
-                        <input type="text" id="page-slug" class="form-control" placeholder="sobre-nosotros" style="flex: 1;" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Contenido</label>
-                    <textarea id="page-content-editor" class="form-control" rows="10"></textarea>
-                </div>
-                <div class="form-row">
+                <div id="add-tour-alert" class="alert" style="display: none;"></div>
+                <form id="add-tour-form">
                     <div class="form-group">
-                        <label>Plantilla</label>
-                        <select id="page-template" class="form-control">
-                            <option value="default">Por defecto</option>
-                            <option value="fullwidth">Ancho completo</option>
-                            <option value="sidebar">Con barra lateral</option>
-                        </select>
+                        <label>Nombre del Tour</label>
+                        <input type="text" id="new-tour-name" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Estado</label>
-                        <select id="page-status" class="form-control">
-                            <option value="published">Publicado</option>
-                            <option value="draft">Borrador</option>
-                            <option value="private">Privado</option>
-                        </select>
+                        <label>DescripciÃ³n</label>
+                        <textarea id="new-tour-desc" class="form-control" rows="3" required></textarea>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Meta Descripción (SEO)</label>
-                    <textarea id="page-meta" class="form-control" rows="2" placeholder="Descripción para motores de búsqueda"></textarea>
-                </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Precio ($)</label>
+                            <input type="number" id="new-tour-price" class="form-control" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Capacidad</label>
+                            <input type="number" id="new-tour-capacity" class="form-control" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>DuraciÃ³n</label>
+                        <input type="text" id="new-tour-duration" class="form-control" placeholder="Ej: 2 horas">
+                    </div>
+                    <div class="form-group">
+                        <label>URL de Imagen</label>
+                        <input type="url" id="new-tour-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeModal('modal-add-page')">Cancelar</button>
-                <button class="btn" onclick="previewPage()" style="background: var(--admin-warning);"><i class="bi bi-eye"></i> Vista Previa</button>
-                <button class="btn" onclick="savePage()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Página</button>
+                <button class="btn" onclick="closeModal('modal-add-tour')">Cancelar</button>
+                <button class="btn" onclick="addNewTour()" style="background: var(--admin-success);">Crear Tour</button>
             </div>
         </div>
     </div>
     
-    <!-- Modal Nuevo Artículo de Blog -->
+    <!-- Modal Nuevo ArtÃ­culo de Blog -->
     <div id="modal-add-blog" class="modal">
-        <div class="modal-content" style="max-width: 1000px;">
+        <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
-                <h3><i class="bi bi-pencil-square"></i> Nuevo Artículo de Blog</h3>
+                <h3><i class="bi bi-pencil-square"></i> Nuevo ArtÃ­culo de Blog</h3>
                 <button class="modal-close" onclick="closeModal('modal-add-blog')">&times;</button>
             </div>
             <div class="modal-body">
                 <div id="add-blog-alert" class="alert" style="display: none;"></div>
                 <div class="form-group">
-                    <label>Título del Artículo</label>
+                    <label>TÃ­tulo del ArtÃ­culo</label>
                     <input type="text" id="blog-title" class="form-control" placeholder="Ej: Nuevo tour por los manglares" required>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="blog-category" class="form-control">
-                            <option value="noticias">Noticias</option>
-                            <option value="tours">Tours</option>
-                            <option value="consejos">Consejos</option>
-                            <option value="eventos">Eventos</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Imagen de Portada</label>
-                        <input type="file" id="blog-cover" class="form-control" accept="image/*" onchange="previewBlogCover(event)">
-                        <img id="blog-cover-preview" class="cover-preview" src="" alt="Vista previa" style="display: none;">
-                    </div>
+                <div class="form-group">
+                    <label>CategorÃ­a</label>
+                    <select id="blog-category" class="form-control">
+                        <option value="noticias">Noticias</option>
+                        <option value="tours">Tours</option>
+                        <option value="consejos">Consejos</option>
+                        <option value="eventos">Eventos</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Contenido</label>
-                    <textarea id="blog-content-editor" class="form-control" rows="12"></textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tags (etiquetas)</label>
-                        <div class="tags-container" id="blog-tags-container">
-                            <!-- Los tags se agregarán aquí -->
-                        </div>
-                        <input type="text" id="blog-tag-input" class="tag-input" placeholder="Escribe un tag y presiona Enter" onkeypress="addBlogTag(event)">
-                    </div>
-                    <div class="form-group">
-                        <label>Estado</label>
-                        <select id="blog-status" class="form-control">
-                            <option value="draft">Borrador</option>
-                            <option value="published">Publicado</option>
-                            <option value="scheduled">Programado</option>
-                        </select>
-                        <input type="datetime-local" id="blog-publish-date" class="form-control" style="margin-top: 10px; display: none;">
-                    </div>
+                    <textarea id="blog-content" class="form-control" rows="10" placeholder="Escribe el contenido del artÃ­culo aquÃ­..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>Resumen (excerpt)</label>
-                    <textarea id="blog-excerpt" class="form-control" rows="3" placeholder="Breve resumen del artículo"></textarea>
+                    <textarea id="blog-excerpt" class="form-control" rows="3" placeholder="Breve resumen del artÃ­culo"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>URL de Imagen (opcional)</label>
+                    <input type="url" id="blog-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeModal('modal-add-blog')">Cancelar</button>
-                <button class="btn" onclick="saveBlogPost()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Publicar Artículo</button>
+                <button class="btn" onclick="saveBlogPost()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Publicar ArtÃ­culo</button>
             </div>
         </div>
     </div>
     
-    <!-- Modal Editar Página -->
-    <div id="modal-edit-page" class="modal">
-        <div class="modal-content" style="max-width: 900px;">
+    <!-- Modal ConfirmaciÃ³n -->
+    <div id="modal-confirm" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h3><i class="bi bi-file-earmark-text"></i> Editar Página</h3>
-                <button class="modal-close" onclick="closeModal('modal-edit-page')">&times;</button>
-            </div>
-            <div class="modal-body" id="edit-page-content">
-                <div class="spinner"></div>
-                <p>Cargando editor...</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal Previsualización -->
-    <div id="modal-preview" class="modal">
-        <div class="modal-content" style="max-width: 1000px; height: 90vh;">
-            <div class="modal-header">
-                <h3><i class="bi bi-eye"></i> Vista Previa</h3>
-                <button class="modal-close" onclick="closeModal('modal-preview')">&times;</button>
-            </div>
-            <div class="modal-body" id="preview-content" style="overflow-y: auto; height: calc(90vh - 120px);">
-                <!-- Contenido de previsualización -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal Categorías del Blog -->
-    <div id="modal-categories" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="bi bi-tags"></i> Gestión de Categorías</h3>
-                <button class="modal-close" onclick="closeModal('modal-categories')">&times;</button>
+                <h3><i class="bi bi-question-circle"></i> Confirmar</h3>
+                <button class="modal-close" onclick="closeModal('modal-confirm')">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Nueva Categoría</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="new-category" class="form-control" placeholder="Nombre de la categoría">
-                        <button class="btn" onclick="addBlogCategory()" style="background: var(--admin-success);">Agregar</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Categorías Existentes</label>
-                    <div id="categories-list" style="max-height: 300px; overflow-y: auto;">
-                        <!-- Lista de categorías -->
-                    </div>
-                </div>
+                <p id="confirm-message">Â¿EstÃ¡s seguro?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-confirm')">Cancelar</button>
+                <button class="btn" id="confirm-action-btn" style="background: var(--admin-danger);">Confirmar</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL COMPLETO Y FUNCIONAL -->
+    <!-- SCRIPT PRINCIPAL CORREGIDO PARA BACKEND FLASK -->
     <script>
-        // ========== SISTEMA ADMIN COMPLETO v3.0 ==========
+        // ========== CONFIGURACIÃ“N ==========
+        const BACKEND_URL = 'http://localhost:5000';
+        const API_URL = `${BACKEND_URL}/api`;
         
-        // Configuración global
-        const STORAGE_KEYS = {
-            USERS: 'cano_salao_users',
-            TOURS: 'cano_salao_tours',
-            BOOKINGS: 'cano_salao_bookings',
-            PAGES: 'cano_salao_pages',
-            BLOG: 'cano_salao_blog_posts',
-            MEDIA: 'cano_salao_media',
-            SETTINGS: 'cano_salao_settings',
-            ACTIVITIES: 'admin_activities',
-            CATEGORIES: 'blog_categories'
-        };
-        
-        // Datos globales
+        // ========== ESTADO GLOBAL ==========
         let currentUser = null;
-        let usersData = [];
-        let toursData = [];
-        let bookingsData = [];
-        let pagesData = [];
-        let blogData = [];
-        let mediaData = [];
-        let settingsData = {};
-        let categoriesData = ['noticias', 'tours', 'consejos', 'eventos'];
+        let token = localStorage.getItem('token');
+        let refreshToken = localStorage.getItem('refreshToken');
+        let autoRefreshInterval = null;
         
-        // Editor TinyMCE
-        let tinymceInitialized = false;
-        
-        // ========== INICIALIZACIÓN ==========
+        // ========== INICIALIZACIÃ“N ==========
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('?? Inicializando Sistema Admin Completo v3.0...');
+            console.log('ðŸš€ Inicializando Panel Administrativo...');
             
-            // Verificar autenticación
-            if (!checkAuthentication()) return;
+            // Verificar autenticaciÃ³n
+            checkAuth();
             
             // Inicializar UI
-            initAdminNavigation();
-            initEventListeners();
+            initNavigation();
             initTabs();
-            
-            // Cargar todos los datos
-            loadAllData();
-            
-            // Inicializar editor TinyMCE
-            initTinyMCE();
+            initUserMenu();
             
             // Iniciar timers
             updateCurrentTime();
-            updateStorageInfo();
+            setInterval(updateCurrentTime, 1000);
             
-            console.log('? Sistema completamente inicializado');
+            // Verificar conexiÃ³n con backend
+            testBackendConnection();
+            
+            // Cargar datos iniciales
+            loadInitialData();
+            
+            console.log('âœ… Panel inicializado correctamente');
         });
         
-        function checkAuthentication() {
-            const authData = localStorage.getItem('admin_auth');
-            if (!authData) {
-                showAlert('Por favor inicia sesión primero', 'error');
-                setTimeout(() => window.location.href = 'login.html', 1500);
+        // ========== AUTENTICACIÃ“N ==========
+        function checkAuth() {
+            if (!token) {
+                showAlert('Por favor inicia sesiÃ³n primero', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
                 return false;
             }
             
-            try {
-                currentUser = JSON.parse(authData);
-                if (currentUser.rol !== 'admin') {
-                    showAlert('Acceso solo para administradores', 'error');
-                    setTimeout(() => window.location.href = 'usuario.html', 1500);
-                    return false;
+            // Verificar token con backend
+            verifyToken().then(isValid => {
+                if (!isValid) {
+                    // Intentar refrescar el token
+                    refreshAuthToken().then(refreshed => {
+                        if (!refreshed) {
+                            logout();
+                        }
+                    });
+                } else {
+                    // Token vÃ¡lido, cargar perfil
+                    loadUserProfile();
                 }
-                updateAdminUI();
-                return true;
-            } catch (error) {
-                showAlert('Error de autenticación', 'error');
-                setTimeout(() => window.location.href = 'login.html', 1500);
-                return false;
-            }
+            }).catch(error => {
+                console.error('Error verificando token:', error);
+                showAlert('Error de conexiÃ³n con el servidor', 'error');
+            });
+            
+            return true;
         }
         
-        function updateAdminUI() {
+        function verifyToken() {
+            return fetch(`${API_URL}/auth/verify`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        if (data.success && data.valid) {
+                            currentUser = data.user;
+                            updateUserUI();
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+                return false;
+            })
+            .catch(error => {
+                console.error('Error verificando token:', error);
+                return false;
+            });
+        }
+        
+        function refreshAuthToken() {
+            if (!refreshToken) {
+                return Promise.resolve(false);
+            }
+            
+            return fetch(`${API_URL}/auth/refresh`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${refreshToken}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        if (data.success && data.token) {
+                            token = data.token;
+                            localStorage.setItem('token', token);
+                            currentUser = data.user;
+                            updateUserUI();
+                            showAlert('SesiÃ³n renovada automÃ¡ticamente', 'success');
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+                return false;
+            })
+            .catch(error => {
+                console.error('Error refrescando token:', error);
+                return false;
+            });
+        }
+        
+        function loadUserProfile() {
+            if (!token) return;
+            
+            fetch(`${API_URL}/auth/profile`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        if (data.success && data.profile) {
+                            currentUser = data.profile;
+                            updateUserUI();
+                            loadProfileData();
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error cargando perfil:', error);
+            });
+        }
+        
+        function updateUserUI() {
             if (!currentUser) return;
             
-            document.getElementById('admin-user-name').textContent = currentUser.nombre;
-            document.getElementById('admin-user-role').textContent = 'Administrador';
-            document.getElementById('admin-user-avatar').textContent = currentUser.nombre.charAt(0).toUpperCase();
+            document.getElementById('admin-user-name').textContent = currentUser.nombre || 'Administrador';
+            document.getElementById('admin-user-role').textContent = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
+            document.getElementById('admin-user-avatar').textContent = (currentUser.nombre?.charAt(0) || 'A').toUpperCase();
             document.getElementById('admin-subtitle').textContent = `Bienvenido, ${currentUser.nombre}`;
             
-            // Configurar menú de usuario
+            // Actualizar footer
+            document.getElementById('footer-token-valid').textContent = 'SÃ­';
+            document.getElementById('footer-last-update').textContent = new Date().toLocaleTimeString();
+        }
+        
+        function initUserMenu() {
             const avatar = document.getElementById('admin-user-avatar');
             const dropdown = document.getElementById('admin-user-dropdown');
             const logoutBtn = document.getElementById('admin-logout-btn');
@@ -1863,19 +1798,37 @@
             
             logoutBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                if (confirm('¿Estás seguro de cerrar sesión?')) {
-                    logout();
-                }
+                logout();
             });
         }
         
         function logout() {
-            logActivity(currentUser.nombre, 'cerró sesión del panel de administración');
-            localStorage.removeItem('admin_auth');
-            window.location.href = 'login.html';
+            if (confirm('Â¿EstÃ¡s seguro de cerrar sesiÃ³n?')) {
+                // Opcional: llamar al endpoint de logout del backend
+                fetch(`${API_URL}/auth/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }).catch(error => {
+                    console.error('Error en logout:', error);
+                });
+                
+                // Limpiar datos locales
+                localStorage.removeItem('token');
+                localStorage.removeItem('refreshToken');
+                token = null;
+                refreshToken = null;
+                currentUser = null;
+                
+                // Redirigir a login
+                window.location.href = 'login.html';
+            }
         }
         
-        function initAdminNavigation() {
+        // ========== NAVEGACIÃ“N Y UI ==========
+        function initNavigation() {
             document.querySelectorAll('.admin-nav-link').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1904,1524 +1857,6 @@
             });
         }
         
-        function initEventListeners() {
-            // Cerrar modales
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        this.classList.remove('active');
-                    }
-                });
-            });
-            
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal.active').forEach(modal => {
-                        modal.classList.remove('active');
-                    });
-                }
-            });
-            
-            // Cambiar estado del blog para mostrar fecha de publicación
-            document.getElementById('blog-status').addEventListener('change', function() {
-                const publishDate = document.getElementById('blog-publish-date');
-                publishDate.style.display = this.value === 'scheduled' ? 'block' : 'none';
-            });
-        }
-        
-        function initTinyMCE() {
-            if (tinymceInitialized) return;
-            
-            tinymce.init({
-                selector: '#page-content-editor, #blog-content-editor',
-                height: 400,
-                menubar: false,
-                plugins: 'link image lists table code',
-                toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
-                content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }',
-                images_upload_url: 'upload.php', // En un sistema real
-                automatic_uploads: true,
-                file_picker_types: 'image',
-                setup: function(editor) {
-                    editor.on('init', function() {
-                        tinymceInitialized = true;
-                    });
-                }
-            });
-        }
-        
-        // ========== FUNCIONES DE DATOS ==========
-        
-        function loadAllData() {
-            loadDashboardData();
-            loadUsers();
-            loadTours();
-            loadBookings();
-            loadPages();
-            loadBlogPosts();
-            loadMedia();
-            loadSettings();
-            loadCategories();
-        }
-        
-        function loadDashboardData() {
-            // Cargar datos para estadísticas
-            usersData = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
-            pagesData = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAGES) || '[]');
-            blogData = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-            mediaData = JSON.parse(localStorage.getItem(STORAGE_KEYS.MEDIA) || '[]');
-            
-            // Actualizar estadísticas
-            document.getElementById('stat-users').textContent = usersData.length;
-            document.getElementById('stat-users-desc').textContent = `${usersData.filter(u => u.rol === 'admin').length} admin(s)`;
-            
-            document.getElementById('stat-pages').textContent = pagesData.length;
-            document.getElementById('stat-pages-desc').textContent = `${pagesData.filter(p => p.status === 'published').length} publicadas`;
-            
-            document.getElementById('stat-blog').textContent = blogData.length;
-            document.getElementById('stat-blog-desc').textContent = `${blogData.filter(b => b.status === 'published').length} publicados`;
-            
-            document.getElementById('stat-media').textContent = mediaData.length;
-            document.getElementById('stat-media-desc').textContent = `${mediaData.filter(m => m.type.includes('image')).length} imágenes`;
-            
-            // Actualizar footer
-            document.getElementById('footer-users-count').textContent = usersData.length;
-            document.getElementById('footer-pages-count').textContent = pagesData.length;
-            
-            // Cargar actividad reciente
-            loadRecentActivity();
-            
-            // Inicializar gráficos
-            initCharts();
-        }
-        
-        function loadRecentActivity() {
-            const activities = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVITIES) || '[]');
-            const activityList = document.getElementById('recent-activity');
-            
-            if (activities.length === 0) {
-                const defaultActivities = [
-                    { icon: 'bi-person', user: currentUser.nombre, action: 'inició sesión en el panel', time: new Date().toISOString() },
-                    { icon: 'bi-gear', user: 'Sistema', action: 'cargó datos del sistema', time: new Date(Date.now() - 300000).toISOString() },
-                    { icon: 'bi-database', user: 'Sistema', action: 'inicializó base de datos', time: new Date(Date.now() - 600000).toISOString() }
-                ];
-                localStorage.setItem(STORAGE_KEYS.ACTIVITIES, JSON.stringify(defaultActivities));
-                activities.push(...defaultActivities);
-            }
-            
-            activities.sort((a, b) => new Date(b.time) - new Date(a.time));
-            
-            activityList.innerHTML = '';
-            activities.slice(0, 5).forEach(activity => {
-                const timeDiff = getTimeDiff(new Date(activity.time));
-                
-                const item = document.createElement('div');
-                item.className = 'activity-item';
-                item.innerHTML = `
-                    <div class="activity-icon"><i class="bi ${activity.icon}"></i></div>
-                    <div class="activity-content">
-                        <strong>${activity.user}</strong> ${activity.action}
-                        <div class="activity-time">${timeDiff}</div>
-                    </div>
-                `;
-                activityList.appendChild(item);
-            });
-        }
-        
-        function getTimeDiff(date) {
-            const diff = Math.floor((new Date() - date) / 1000);
-            
-            if (diff < 60) return 'Justo ahora';
-            if (diff < 3600) return `Hace ${Math.floor(diff/60)} min`;
-            if (diff < 86400) return `Hace ${Math.floor(diff/3600)} h`;
-            return `Hace ${Math.floor(diff/86400)} d`;
-        }
-        
-        function logActivity(user, action, icon = 'bi-info-circle') {
-            const activities = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACTIVITIES) || '[]');
-            
-            activities.unshift({
-                icon: icon,
-                user: user,
-                action: action,
-                time: new Date().toISOString()
-            });
-            
-            // Mantener solo las últimas 50 actividades
-            if (activities.length > 50) {
-                activities.pop();
-            }
-            
-            localStorage.setItem(STORAGE_KEYS.ACTIVITIES, JSON.stringify(activities));
-            loadRecentActivity();
-            
-            // Actualizar footer
-            document.getElementById('footer-last-action').textContent = 
-                new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-        }
-        
-        function initCharts() {
-            const ctx1 = document.getElementById('activityChart')?.getContext('2d');
-            const ctx2 = document.getElementById('distributionChart')?.getContext('2d');
-            
-            if (ctx1) {
-                new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                        datasets: [{
-                            label: 'Visitas',
-                            data: [65, 59, 80, 81, 56, 55, 40],
-                            borderColor: '#3498db',
-                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: false } }
-                    }
-                });
-            }
-            
-            if (ctx2) {
-                new Chart(ctx2, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Páginas', 'Blog', 'Usuarios', 'Reservas'],
-                        datasets: [{
-                            data: [pagesData.length, blogData.length, usersData.length, bookingsData.length],
-                            backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#f39c12']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { position: 'bottom' }
-                        }
-                    }
-                });
-            }
-        }
-        
-        // ========== USUARIOS (CRUD COMPLETO) ==========
-        
-        function loadUsers() {
-            usersData = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
-            renderUsersTable();
-        }
-        
-        function renderUsersTable() {
-            const tbody = document.getElementById('users-table-body');
-            if (!tbody) return;
-            
-            if (usersData.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i class="bi bi-people"></i>
-                            <h3>No hay usuarios registrados</h3>
-                            <p>Agrega el primer usuario</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            usersData.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.id}</td>
-                    <td><strong>${user.nombre}</strong></td>
-                    <td>${user.email}</td>
-                    <td><span class="status-badge ${user.rol === 'admin' ? 'status-active' : 'status-pending'}">${user.rol}</span></td>
-                    <td>${new Date(user.fecha_registro).toLocaleDateString()}</td>
-                    <td><span class="status-badge ${user.activo ? 'status-active' : 'status-inactive'}">${user.activo ? 'Activo' : 'Inactivo'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="editUser(${user.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteUser(${user.id})"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function showAddUserModal() {
-            document.getElementById('add-user-alert').style.display = 'none';
-            openModal('modal-add-user');
-        }
-        
-        function editUser(userId) {
-            const user = usersData.find(u => u.id == userId);
-            if (!user) {
-                showAlert('Usuario no encontrado', 'error');
-                return;
-            }
-            
-            document.getElementById('edit-user-id').value = user.id;
-            document.getElementById('edit-user-name').value = user.nombre;
-            document.getElementById('edit-user-email').value = user.email;
-            document.getElementById('edit-user-role').value = user.rol;
-            document.getElementById('edit-user-status').value = user.activo ? 'active' : 'inactive';
-            document.getElementById('edit-user-alert').style.display = 'none';
-            
-            openModal('modal-edit-user');
-        }
-        
-        function saveUserEdit() {
-            const userId = document.getElementById('edit-user-id').value;
-            const name = document.getElementById('edit-user-name').value.trim();
-            const email = document.getElementById('edit-user-email').value.trim();
-            const role = document.getElementById('edit-user-role').value;
-            const status = document.getElementById('edit-user-status').value;
-            
-            if (!name || !email) {
-                showFormAlert('edit-user-alert', 'Completa todos los campos', 'error');
-                return;
-            }
-            
-            const userIndex = usersData.findIndex(u => u.id == userId);
-            if (userIndex === -1) {
-                showFormAlert('edit-user-alert', 'Usuario no encontrado', 'error');
-                return;
-            }
-            
-            usersData[userIndex] = {
-                ...usersData[userIndex],
-                nombre: name,
-                email: email,
-                rol: role,
-                activo: status === 'active'
-            };
-            
-            localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(usersData));
-            
-            showFormAlert('edit-user-alert', 'Usuario actualizado correctamente', 'success');
-            logActivity(currentUser.nombre, `editó usuario: ${name}`, 'bi-person-check');
-            
-            setTimeout(() => {
-                closeModal('modal-edit-user');
-                loadUsers();
-                loadDashboardData();
-            }, 1500);
-        }
-        
-        function deleteUser(userId) {
-            if (!confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')) return;
-            
-            usersData = usersData.filter(u => u.id != userId);
-            localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(usersData));
-            
-            showAlert('Usuario eliminado correctamente', 'success');
-            logActivity(currentUser.nombre, 'eliminó un usuario', 'bi-person-x');
-            
-            loadUsers();
-            loadDashboardData();
-        }
-        
-        function exportUsersToCSV() {
-            const csv = ['ID,Nombre,Email,Rol,Estado,Fecha Registro'];
-            
-            usersData.forEach(user => {
-                csv.push([
-                    user.id,
-                    `"${user.nombre}"`,
-                    user.email,
-                    user.rol,
-                    user.activo ? 'Activo' : 'Inactivo',
-                    new Date(user.fecha_registro).toLocaleDateString()
-                ].join(','));
-            });
-            
-            downloadCSV(csv.join('\n'), 'usuarios.csv');
-            logActivity(currentUser.nombre, 'exportó usuarios a CSV', 'bi-download');
-        }
-        
-        // ========== PÁGINAS CMS (SISTEMA COMPLETO) ==========
-        
-        function loadPages() {
-            pagesData = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAGES) || '[]');
-            renderPagesGrid();
-        }
-        
-        function renderPagesGrid() {
-            const grid = document.getElementById('pages-grid');
-            if (!grid) return;
-            
-            if (pagesData.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <i class="bi bi-files"></i>
-                        <h3>No hay páginas creadas</h3>
-                        <p>Crea la primera página para tu sitio web</p>
-                        <button class="btn" onclick="showAddPageModal()" style="background: var(--admin-success);">
-                            <i class="bi bi-file-plus"></i> Crear Página
-                        </button>
-                    </div>
-                `;
-                return;
-            }
-            
-            grid.innerHTML = '';
-            pagesData.forEach(page => {
-                const card = document.createElement('div');
-                card.className = 'page-card';
-                card.innerHTML = `
-                    <div class="page-card-header">
-                        <h4 style="margin: 0; color: var(--admin-primary);">${page.title}</h4>
-                        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">
-                            /${page.slug} • ${page.template}
-                        </p>
-                    </div>
-                    <div class="page-card-body">
-                        <p style="color: #666; font-size: 14px; margin: 0;">
-                            ${page.excerpt || 'Sin descripción...'}
-                        </p>
-                        <div style="margin-top: 10px;">
-                            <span class="status-badge ${page.status === 'published' ? 'status-active' : page.status === 'draft' ? 'status-pending' : 'status-inactive'}">
-                                ${page.status === 'published' ? 'Publicado' : page.status === 'draft' ? 'Borrador' : 'Privado'}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="page-card-footer">
-                        <small style="color: #888;">${new Date(page.updated_at).toLocaleDateString()}</small>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-view" onclick="previewPage('${page.id}')" title="Vista previa"><i class="bi bi-eye"></i></button>
-                            <button class="btn-icon btn-edit" onclick="editPage('${page.id}')" title="Editar"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deletePage('${page.id}')" title="Eliminar"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-        
-        function showAddPageModal() {
-            document.getElementById('add-page-alert').style.display = 'none';
-            document.getElementById('page-title').value = '';
-            document.getElementById('page-slug').value = '';
-            document.getElementById('page-template').value = 'default';
-            document.getElementById('page-status').value = 'draft';
-            document.getElementById('page-meta').value = '';
-            
-            if (tinymceInitialized) {
-                tinymce.get('page-content-editor').setContent('');
-            }
-            
-            openModal('modal-add-page');
-        }
-        
-        function savePage() {
-            const title = document.getElementById('page-title').value.trim();
-            const slug = document.getElementById('page-slug').value.trim().toLowerCase().replace(/\s+/g, '-');
-            const template = document.getElementById('page-template').value;
-            const status = document.getElementById('page-status').value;
-            const meta = document.getElementById('page-meta').value.trim();
-            
-            let content = '';
-            if (tinymceInitialized) {
-                content = tinymce.get('page-content-editor').getContent();
-            } else {
-                content = document.getElementById('page-content-editor').value;
-            }
-            
-            if (!title || !slug) {
-                showFormAlert('add-page-alert', 'Título y URL son obligatorios', 'error');
-                return;
-            }
-            
-            // Verificar si el slug ya existe
-            if (pagesData.some(p => p.slug === slug && !p.id)) {
-                showFormAlert('add-page-alert', 'Esta URL ya está en uso', 'error');
-                return;
-            }
-            
-            const newPage = {
-                id: Date.now(),
-                title: title,
-                slug: slug,
-                content: content,
-                template: template,
-                status: status,
-                meta_description: meta,
-                excerpt: content.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
-                author: currentUser.nombre,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            };
-            
-            pagesData.push(newPage);
-            localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pagesData));
-            
-            showFormAlert('add-page-alert', 'Página creada correctamente', 'success');
-            logActivity(currentUser.nombre, `creó página: ${title}`, 'bi-file-plus');
-            
-            setTimeout(() => {
-                closeModal('modal-add-page');
-                loadPages();
-                loadDashboardData();
-            }, 1500);
-        }
-        
-        function editPage(pageId) {
-            const page = pagesData.find(p => p.id == pageId);
-            if (!page) {
-                showAlert('Página no encontrada', 'error');
-                return;
-            }
-            
-            const contentDiv = document.getElementById('edit-page-content');
-            contentDiv.innerHTML = `
-                <h3>Editando: ${page.title}</h3>
-                <div class="form-group">
-                    <label>Título</label>
-                    <input type="text" id="edit-page-title" class="form-control" value="${page.title}">
-                </div>
-                <div class="form-group">
-                    <label>URL</label>
-                    <input type="text" id="edit-page-slug" class="form-control" value="${page.slug}">
-                </div>
-                <div class="form-group">
-                    <label>Contenido</label>
-                    <textarea id="edit-page-content-editor" class="form-control" rows="10">${page.content}</textarea>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Estado</label>
-                        <select id="edit-page-status" class="form-control">
-                            <option value="published" ${page.status === 'published' ? 'selected' : ''}>Publicado</option>
-                            <option value="draft" ${page.status === 'draft' ? 'selected' : ''}>Borrador</option>
-                            <option value="private" ${page.status === 'private' ? 'selected' : ''}>Privado</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button class="btn" onclick="closeModal('modal-edit-page')">Cancelar</button>
-                    <button class="btn" onclick="updatePage(${page.id})" style="background: var(--admin-success);">Guardar Cambios</button>
-                </div>
-            `;
-            
-            // Inicializar editor en el modal
-            setTimeout(() => {
-                tinymce.init({
-                    selector: '#edit-page-content-editor',
-                    height: 300,
-                    menubar: false,
-                    plugins: 'link image lists',
-                    toolbar: 'undo redo | bold italic | link image | bullist numlist'
-                });
-            }, 100);
-            
-            openModal('modal-edit-page');
-        }
-        
-        function updatePage(pageId) {
-            const pageIndex = pagesData.findIndex(p => p.id == pageId);
-            if (pageIndex === -1) return;
-            
-            const title = document.getElementById('edit-page-title').value.trim();
-            const slug = document.getElementById('edit-page-slug').value.trim();
-            const status = document.getElementById('edit-page-status').value;
-            
-            let content = '';
-            const editor = tinymce.get('edit-page-content-editor');
-            if (editor) {
-                content = editor.getContent();
-            }
-            
-            pagesData[pageIndex] = {
-                ...pagesData[pageIndex],
-                title: title,
-                slug: slug,
-                content: content,
-                status: status,
-                updated_at: new Date().toISOString(),
-                excerpt: content.replace(/<[^>]*>/g, '').substring(0, 150) + '...'
-            };
-            
-            localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pagesData));
-            
-            showAlert('Página actualizada correctamente', 'success');
-            logActivity(currentUser.nombre, `editó página: ${title}`, 'bi-file-earmark-text');
-            
-            closeModal('modal-edit-page');
-            loadPages();
-            loadDashboardData();
-        }
-        
-        function deletePage(pageId) {
-            if (!confirm('¿Eliminar esta página permanentemente?')) return;
-            
-            pagesData = pagesData.filter(p => p.id != pageId);
-            localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pagesData));
-            
-            showAlert('Página eliminada', 'success');
-            logActivity(currentUser.nombre, 'eliminó una página', 'bi-file-x');
-            
-            loadPages();
-            loadDashboardData();
-        }
-        
-        function previewPage(pageId = null) {
-            const previewContent = document.getElementById('preview-content');
-            
-            if (pageId) {
-                const page = pagesData.find(p => p.id == pageId);
-                if (page) {
-                    previewContent.innerHTML = `
-                        <div class="blog-preview">
-                            <h1>${page.title}</h1>
-                            <div class="meta">
-                                <strong>URL:</strong> /${page.slug} | 
-                                <strong>Plantilla:</strong> ${page.template} | 
-                                <strong>Estado:</strong> ${page.status}
-                            </div>
-                            <div>${page.content}</div>
-                        </div>
-                    `;
-                }
-            } else {
-                // Vista previa de la página que se está creando
-                const title = document.getElementById('page-title').value || 'Título de ejemplo';
-                const content = tinymce.get('page-content-editor').getContent() || '<p>Contenido de ejemplo...</p>';
-                
-                previewContent.innerHTML = `
-                    <div class="blog-preview">
-                        <h1>${title}</h1>
-                        <div class="meta">Vista previa | No publicada aún</div>
-                        <div>${content}</div>
-                    </div>
-                `;
-            }
-            
-            openModal('modal-preview');
-        }
-        
-        function previewHomePage() {
-            const previewContent = document.getElementById('preview-content');
-            previewContent.innerHTML = `
-                <div class="blog-preview">
-                    <h1>Vista previa del Sitio Web</h1>
-                    <div class="meta">Esta es una simulación de cómo se vería una página</div>
-                    <p>El sistema CMS permite crear páginas reales que los visitantes pueden ver.</p>
-                    <p>Puedes crear páginas como:</p>
-                    <ul>
-                        <li><strong>/sobre-nosotros</strong> - Información sobre Caño Salao</li>
-                        <li><strong>/tours</strong> - Listado de tours disponibles</li>
-                        <li><strong>/contacto</strong> - Formulario de contacto</li>
-                        <li><strong>/galeria</strong> - Fotos de los tours</li>
-                    </ul>
-                    <p>Cada página puede tener:</p>
-                    <ul>
-                        <li>Contenido rico con editor WYSIWYG</li>
-                        <li>Imágenes y videos</li>
-                        <li>Formato personalizado</li>
-                        <li>Meta descripciones para SEO</li>
-                        <li>Diferentes plantillas de diseño</li>
-                    </ul>
-                </div>
-            `;
-            openModal('modal-preview');
-        }
-        
-        // ========== BLOG (SISTEMA COMPLETO) ==========
-        
-        function loadBlogPosts() {
-            blogData = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-            renderBlogTable();
-        }
-        
-        function renderBlogTable() {
-            const tbody = document.getElementById('blog-table-body');
-            if (!tbody) return;
-            
-            if (blogData.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i class="bi bi-newspaper"></i>
-                            <h3>No hay artículos de blog</h3>
-                            <p>Crea el primer artículo para tu blog</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            blogData.forEach(post => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${post.title}</strong></td>
-                    <td><span class="status-badge status-pending">${post.category}</span></td>
-                    <td>${post.author}</td>
-                    <td>${new Date(post.created_at).toLocaleDateString()}</td>
-                    <td>${post.views || 0}</td>
-                    <td><span class="status-badge ${post.status === 'published' ? 'status-active' : 'status-pending'}">${post.status === 'published' ? 'Publicado' : 'Borrador'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-view" onclick="previewBlogPost(${post.id})"><i class="bi bi-eye"></i></button>
-                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteBlogPost(${post.id})"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function showAddBlogPostModal() {
-            document.getElementById('add-blog-alert').style.display = 'none';
-            document.getElementById('blog-title').value = '';
-            document.getElementById('blog-category').value = 'noticias';
-            document.getElementById('blog-cover').value = '';
-            document.getElementById('blog-status').value = 'draft';
-            document.getElementById('blog-excerpt').value = '';
-            document.getElementById('blog-tags-container').innerHTML = '';
-            document.getElementById('blog-publish-date').style.display = 'none';
-            document.getElementById('blog-cover-preview').style.display = 'none';
-            
-            if (tinymceInitialized) {
-                tinymce.get('blog-content-editor').setContent('');
-            }
-            
-            openModal('modal-add-blog');
-        }
-        
-        function previewBlogCover(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('blog-cover-preview');
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        
-        function addBlogTag(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const input = document.getElementById('blog-tag-input');
-                const tag = input.value.trim();
-                
-                if (tag && !document.querySelector(`[data-tag="${tag}"]`)) {
-                    const container = document.getElementById('blog-tags-container');
-                    const tagElement = document.createElement('span');
-                    tagElement.className = 'tag';
-                    tagElement.setAttribute('data-tag', tag);
-                    tagElement.innerHTML = `
-                        ${tag}
-                        <span class="tag-remove" onclick="removeBlogTag('${tag}')">&times;</span>
-                    `;
-                    container.appendChild(tagElement);
-                }
-                
-                input.value = '';
-            }
-        }
-        
-        function removeBlogTag(tag) {
-            const tagElement = document.querySelector(`[data-tag="${tag}"]`);
-            if (tagElement) {
-                tagElement.remove();
-            }
-        }
-        
-        function saveBlogPost() {
-            const title = document.getElementById('blog-title').value.trim();
-            const category = document.getElementById('blog-category').value;
-            const status = document.getElementById('blog-status').value;
-            const excerpt = document.getElementById('blog-excerpt').value.trim();
-            const publishDate = document.getElementById('blog-publish-date').value;
-            
-            let content = '';
-            if (tinymceInitialized) {
-                content = tinymce.get('blog-content-editor').getContent();
-            } else {
-                content = document.getElementById('blog-content-editor').value;
-            }
-            
-            // Obtener tags
-            const tags = [];
-            document.querySelectorAll('#blog-tags-container .tag').forEach(tag => {
-                tags.push(tag.getAttribute('data-tag'));
-            });
-            
-            if (!title || !content) {
-                showFormAlert('add-blog-alert', 'Título y contenido son obligatorios', 'error');
-                return;
-            }
-            
-            // Manejar imagen de portada
-            const coverInput = document.getElementById('blog-cover');
-            let coverUrl = '';
-            if (coverInput.files.length > 0) {
-                const file = coverInput.files[0];
-                coverUrl = URL.createObjectURL(file); // En producción, subirías al servidor
-            }
-            
-            const newPost = {
-                id: Date.now(),
-                title: title,
-                slug: title.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-'),
-                content: content,
-                excerpt: excerpt || content.replace(/<[^>]*>/g, '').substring(0, 200) + '...',
-                category: category,
-                tags: tags,
-                cover_image: coverUrl,
-                author: currentUser.nombre,
-                status: status,
-                views: 0,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-                published_at: status === 'published' ? new Date().toISOString() : null,
-                scheduled_at: status === 'scheduled' && publishDate ? publishDate : null
-            };
-            
-            blogData.push(newPost);
-            localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(blogData));
-            
-            showFormAlert('add-blog-alert', 'Artículo guardado correctamente', 'success');
-            logActivity(currentUser.nombre, `creó artículo: ${title}`, 'bi-newspaper');
-            
-            setTimeout(() => {
-                closeModal('modal-add-blog');
-                loadBlogPosts();
-                loadDashboardData();
-            }, 1500);
-        }
-        
-        function editBlogPost(postId) {
-            showAlert('Función de edición de blog en desarrollo', 'info');
-            // Similar a editPage pero para blog
-        }
-        
-        function deleteBlogPost(postId) {
-            if (!confirm('¿Eliminar este artículo permanentemente?')) return;
-            
-            blogData = blogData.filter(p => p.id != postId);
-            localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(blogData));
-            
-            showAlert('Artículo eliminado', 'success');
-            logActivity(currentUser.nombre, 'eliminó un artículo', 'bi-file-x');
-            
-            loadBlogPosts();
-            loadDashboardData();
-        }
-        
-        function previewBlogPost(postId) {
-            const post = blogData.find(p => p.id == postId);
-            if (!post) return;
-            
-            const previewContent = document.getElementById('preview-content');
-            previewContent.innerHTML = `
-                <div class="blog-preview">
-                    ${post.cover_image ? `<img src="${post.cover_image}" style="width:100%;max-height:300px;object-fit:cover;border-radius:10px;margin-bottom:20px;">` : ''}
-                    <h1>${post.title}</h1>
-                    <div class="meta">
-                        Por <strong>${post.author}</strong> | 
-                        ${new Date(post.created_at).toLocaleDateString()} | 
-                        <strong>${post.category}</strong>
-                    </div>
-                    ${post.excerpt ? `<p style="font-style: italic; color: #666;">${post.excerpt}</p>` : ''}
-                    <div>${post.content}</div>
-                    ${post.tags.length > 0 ? `
-                        <div style="margin-top: 30px;">
-                            <strong>Tags:</strong>
-                            <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;">
-                                ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-            openModal('modal-preview');
-        }
-        
-        function manageBlogCategories() {
-            const categoriesList = document.getElementById('categories-list');
-            categoriesList.innerHTML = '';
-            
-            categoriesData.forEach(category => {
-                const div = document.createElement('div');
-                div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee;';
-                div.innerHTML = `
-                    <span>${category}</span>
-                    <button class="btn-icon btn-delete" onclick="removeBlogCategory('${category}')" style="width: 30px; height: 30px;">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                `;
-                categoriesList.appendChild(div);
-            });
-            
-            openModal('modal-categories');
-        }
-        
-        function addBlogCategory() {
-            const input = document.getElementById('new-category');
-            const category = input.value.trim().toLowerCase();
-            
-            if (category && !categoriesData.includes(category)) {
-                categoriesData.push(category);
-                localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categoriesData));
-                input.value = '';
-                manageBlogCategories(); // Recargar lista
-                logActivity(currentUser.nombre, `agregó categoría: ${category}`, 'bi-tag');
-            }
-        }
-        
-        function removeBlogCategory(category) {
-            categoriesData = categoriesData.filter(c => c !== category);
-            localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categoriesData));
-            manageBlogCategories(); // Recargar lista
-            logActivity(currentUser.nombre, `eliminó categoría: ${category}`, 'bi-tag');
-        }
-        
-        function loadCategories() {
-            const saved = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-            if (saved) {
-                categoriesData = JSON.parse(saved);
-            }
-        }
-        
-        // ========== MEDIOS (SISTEMA COMPLETO) ==========
-        
-        function loadMedia() {
-            mediaData = JSON.parse(localStorage.getItem(STORAGE_KEYS.MEDIA) || '[]');
-            renderMediaGallery();
-        }
-        
-        function renderMediaGallery() {
-            const gallery = document.getElementById('media-gallery');
-            if (!gallery) return;
-            
-            if (mediaData.length === 0) {
-                gallery.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <i class="bi bi-images"></i>
-                        <h3>No hay archivos multimedia</h3>
-                        <p>Sube imágenes, videos o documentos</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            gallery.innerHTML = '';
-            mediaData.forEach(media => {
-                const item = document.createElement('div');
-                item.className = 'media-item';
-                
-                let thumbnail = '';
-                if (media.type.includes('image')) {
-                    thumbnail = `<img src="${media.url}" class="media-thumbnail" alt="${media.name}">`;
-                } else if (media.type.includes('video')) {
-                    thumbnail = `<div style="width:100%;height:150px;background:#3498db;display:flex;align-items:center;justify-content:center;color:white;"><i class="bi bi-play-circle" style="font-size:48px;"></i></div>`;
-                } else {
-                    thumbnail = `<div style="width:100%;height:150px;background:#2c3e50;display:flex;align-items:center;justify-content:center;color:white;"><i class="bi bi-file-earmark" style="font-size:48px;"></i></div>`;
-                }
-                
-                item.innerHTML = `
-                    ${thumbnail}
-                    <div class="media-info">
-                        <p class="media-name">${media.name}</p>
-                        <p class="media-size">${formatFileSize(media.size)} • ${media.type}</p>
-                    </div>
-                    <div class="media-actions">
-                        <button class="btn-icon btn-view" onclick="previewMedia('${media.id}')" style="width:30px;height:30px;"><i class="bi bi-eye"></i></button>
-                        <button class="btn-icon btn-delete" onclick="deleteMedia('${media.id}')" style="width:30px;height:30px;"><i class="bi bi-trash"></i></button>
-                    </div>
-                `;
-                gallery.appendChild(item);
-            });
-        }
-        
-        function handleMediaUpload(event) {
-            const files = event.target.files;
-            const folder = document.getElementById('media-folder').value;
-            const progressBar = document.getElementById('upload-progress-bar');
-            const progressContainer = document.getElementById('upload-progress');
-            const statusDiv = document.getElementById('upload-status');
-            
-            progressContainer.style.display = 'block';
-            progressBar.style.width = '0%';
-            statusDiv.innerHTML = '';
-            
-            let uploaded = 0;
-            
-            Array.from(files).forEach((file, index) => {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    const media = {
-                        id: Date.now() + index,
-                        name: file.name,
-                        type: file.type,
-                        size: file.size,
-                        url: e.target.result,
-                        folder: folder,
-                        uploaded_by: currentUser.nombre,
-                        uploaded_at: new Date().toISOString()
-                    };
-                    
-                    mediaData.push(media);
-                    uploaded++;
-                    
-                    // Actualizar progreso
-                    const progress = Math.round((uploaded / files.length) * 100);
-                    progressBar.style.width = `${progress}%`;
-                    
-                    if (uploaded === files.length) {
-                        // Guardar todos los archivos
-                        localStorage.setItem(STORAGE_KEYS.MEDIA, JSON.stringify(mediaData));
-                        
-                        setTimeout(() => {
-                            progressContainer.style.display = 'none';
-                            statusDiv.innerHTML = `
-                                <div class="alert alert-success">
-                                    <i class="bi bi-check-circle"></i> ${files.length} archivo(s) subido(s) correctamente
-                                </div>
-                            `;
-                            
-                            logActivity(currentUser.nombre, `subió ${files.length} archivo(s) a ${folder}`, 'bi-upload');
-                            renderMediaGallery();
-                            loadDashboardData();
-                            
-                            // Limpiar input
-                            event.target.value = '';
-                        }, 500);
-                    }
-                };
-                
-                reader.readAsDataURL(file);
-            });
-        }
-        
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-        
-        function previewMedia(mediaId) {
-            const media = mediaData.find(m => m.id == mediaId);
-            if (!media) return;
-            
-            const previewContent = document.getElementById('preview-content');
-            
-            if (media.type.includes('image')) {
-                previewContent.innerHTML = `
-                    <div style="text-align: center;">
-                        <img src="${media.url}" style="max-width:100%; max-height:70vh; border-radius:10px;">
-                        <div style="margin-top:20px; text-align:left;">
-                            <h4>${media.name}</h4>
-                            <p><strong>Tipo:</strong> ${media.type}</p>
-                            <p><strong>Tamaño:</strong> ${formatFileSize(media.size)}</p>
-                            <p><strong>Subido por:</strong> ${media.uploaded_by}</p>
-                            <p><strong>Fecha:</strong> ${new Date(media.uploaded_at).toLocaleString()}</p>
-                        </div>
-                    </div>
-                `;
-            } else {
-                previewContent.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="bi bi-file-earmark" style="font-size: 80px; color: #666; margin-bottom: 20px;"></i>
-                        <h4>${media.name}</h4>
-                        <p><strong>Tipo:</strong> ${media.type}</p>
-                        <p><strong>Tamaño:</strong> ${formatFileSize(media.size)}</p>
-                        <p><strong>Subido por:</strong> ${media.uploaded_by}</p>
-                        <p><strong>Fecha:</strong> ${new Date(media.uploaded_at).toLocaleString()}</p>
-                        <button class="btn" onclick="downloadMedia('${media.id}')" style="margin-top:20px;">
-                            <i class="bi bi-download"></i> Descargar Archivo
-                        </button>
-                    </div>
-                `;
-            }
-            
-            openModal('modal-preview');
-        }
-        
-        function downloadMedia(mediaId) {
-            const media = mediaData.find(m => m.id == mediaId);
-            if (!media) return;
-            
-            const link = document.createElement('a');
-            link.href = media.url;
-            link.download = media.name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        function deleteMedia(mediaId) {
-            if (!confirm('¿Eliminar este archivo permanentemente?')) return;
-            
-            mediaData = mediaData.filter(m => m.id != mediaId);
-            localStorage.setItem(STORAGE_KEYS.MEDIA, JSON.stringify(mediaData));
-            
-            showAlert('Archivo eliminado', 'success');
-            logActivity(currentUser.nombre, 'eliminó un archivo multimedia', 'bi-trash');
-            
-            renderMediaGallery();
-            loadDashboardData();
-        }
-        
-        function refreshMediaGallery() {
-            loadMedia();
-            showAlert('Galería actualizada', 'success');
-        }
-        
-        function filterMedia() {
-            const type = document.getElementById('media-type-filter').value;
-            const search = document.getElementById('media-search').value.toLowerCase();
-            
-            const filtered = mediaData.filter(media => {
-                const matchesType = type === 'all' || 
-                    (type === 'image' && media.type.includes('image')) ||
-                    (type === 'video' && media.type.includes('video')) ||
-                    (type === 'document' && !media.type.includes('image') && !media.type.includes('video'));
-                
-                const matchesSearch = media.name.toLowerCase().includes(search) ||
-                    media.folder.toLowerCase().includes(search);
-                
-                return matchesType && matchesSearch;
-            });
-            
-            renderFilteredMediaGallery(filtered);
-        }
-        
-        function renderFilteredMediaGallery(filteredData) {
-            const gallery = document.getElementById('media-gallery');
-            if (!gallery) return;
-            
-            if (filteredData.length === 0) {
-                gallery.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1/-1;">
-                        <i class="bi bi-search"></i>
-                        <h3>No se encontraron archivos</h3>
-                        <p>Intenta con otros filtros</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            gallery.innerHTML = '';
-            filteredData.forEach(media => {
-                const item = document.createElement('div');
-                item.className = 'media-item';
-                item.innerHTML = `
-                    <img src="${media.url}" class="media-thumbnail" alt="${media.name}">
-                    <div class="media-info">
-                        <p class="media-name">${media.name}</p>
-                        <p class="media-size">${formatFileSize(media.size)}</p>
-                    </div>
-                `;
-                gallery.appendChild(item);
-            });
-        }
-        
-        function searchMedia() {
-            filterMedia();
-        }
-        
-        function showMediaStats() {
-            const images = mediaData.filter(m => m.type.includes('image')).length;
-            const videos = mediaData.filter(m => m.type.includes('video')).length;
-            const documents = mediaData.length - images - videos;
-            const totalSize = mediaData.reduce((sum, m) => sum + m.size, 0);
-            
-            showAlert(`
-                <strong><i class="bi bi-pie-chart"></i> Estadísticas de Medios:</strong><br><br>
-                • Imágenes: ${images} archivos<br>
-                • Videos: ${videos} archivos<br>
-                • Documentos: ${documents} archivos<br>
-                • Total: ${mediaData.length} archivos<br>
-                • Espacio usado: ${formatFileSize(totalSize)}<br>
-                • Última subida: ${mediaData.length > 0 ? new Date(mediaData[mediaData.length-1].uploaded_at).toLocaleDateString() : 'Nunca'}
-            `, 'info');
-        }
-        
-        // ========== REPORTES (SISTEMA COMPLETO) ==========
-        
-        function generateFinancialReport() {
-            const startDate = document.getElementById('report-start-date').value;
-            const endDate = document.getElementById('report-end-date').value;
-            
-            // Filtrar reservas por fecha
-            const filteredBookings = bookingsData.filter(booking => {
-                const bookingDate = new Date(booking.fecha);
-                const start = startDate ? new Date(startDate) : new Date(0);
-                const end = endDate ? new Date(endDate) : new Date();
-                end.setHours(23, 59, 59, 999);
-                
-                return bookingDate >= start && bookingDate <= end;
-            });
-            
-            // Calcular estadísticas
-            const totalBookings = filteredBookings.length;
-            const confirmedBookings = filteredBookings.filter(b => b.estado === 'confirmed').length;
-            const totalRevenue = filteredBookings.reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
-            const avgBookingValue = totalBookings > 0 ? totalRevenue / totalBookings : 0;
-            
-            // Mostrar reporte
-            const reportContent = document.getElementById('report-content');
-            reportContent.innerHTML = `
-                <div class="report-data">
-                    <div class="report-section">
-                        <h4><i class="bi bi-calendar-check"></i> Reservas</h4>
-                        <p><strong>Total:</strong> ${totalBookings}</p>
-                        <p><strong>Confirmadas:</strong> ${confirmedBookings}</p>
-                        <p><strong>Tasa de confirmación:</strong> ${totalBookings > 0 ? Math.round((confirmedBookings / totalBookings) * 100) : 0}%</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-cash-stack"></i> Finanzas</h4>
-                        <p><strong>Ingresos totales:</strong> $${totalRevenue.toFixed(2)}</p>
-                        <p><strong>Valor promedio:</strong> $${avgBookingValue.toFixed(2)}</p>
-                        <p><strong>Período:</strong> ${startDate || 'Inicio'} - ${endDate || 'Hoy'}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-graph-up"></i> Análisis</h4>
-                        <p>Este reporte incluye todas las reservas en el período seleccionado.</p>
-                        <p>Los datos se basan en información almacenada en el sistema.</p>
-                        <button class="btn" onclick="exportFinancialReport()" style="margin-top:10px;">
-                            <i class="bi bi-download"></i> Exportar a PDF
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            logActivity(currentUser.nombre, 'generó reporte financiero', 'bi-file-earmark-text');
-        }
-        
-        function generateUsersReport() {
-            const totalUsers = usersData.length;
-            const activeUsers = usersData.filter(u => u.activo).length;
-            const admins = usersData.filter(u => u.rol === 'admin').length;
-            const today = new Date();
-            const newThisMonth = usersData.filter(u => {
-                const regDate = new Date(u.fecha_registro);
-                return regDate.getMonth() === today.getMonth() && 
-                       regDate.getFullYear() === today.getFullYear();
-            }).length;
-            
-            const reportContent = document.getElementById('report-content');
-            reportContent.innerHTML = `
-                <div class="report-data">
-                    <div class="report-section">
-                        <h4><i class="bi bi-people"></i> Usuarios Totales</h4>
-                        <p><strong>Registrados:</strong> ${totalUsers}</p>
-                        <p><strong>Activos:</strong> ${activeUsers}</p>
-                        <p><strong>Administradores:</strong> ${admins}</p>
-                        <p><strong>Tasa de actividad:</strong> ${totalUsers > 0 ? Math.round((activeUsers / totalUsers) * 100) : 0}%</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-calendar-month"></i> Este Mes</h4>
-                        <p><strong>Nuevos registros:</strong> ${newThisMonth}</p>
-                        <p><strong>Promedio diario:</strong> ${(newThisMonth / today.getDate()).toFixed(1)}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-download"></i> Exportar</h4>
-                        <p>Exporta los datos de usuarios para análisis externo.</p>
-                        <button class="btn" onclick="exportUsersReportToExcel()" style="margin-top:10px;">
-                            <i class="bi bi-file-earmark-excel"></i> Exportar a Excel
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            logActivity(currentUser.nombre, 'generó reporte de usuarios', 'bi-people');
-        }
-        
-        function generateContentReport() {
-            const publishedPages = pagesData.filter(p => p.status === 'published').length;
-            const publishedPosts = blogData.filter(p => p.status === 'published').length;
-            const totalMedia = mediaData.length;
-            const lastUpdatedPage = pagesData.length > 0 ? 
-                pagesData.reduce((latest, page) => new Date(page.updated_at) > new Date(latest.updated_at) ? page : latest) : 
-                null;
-            
-            const reportContent = document.getElementById('report-content');
-            reportContent.innerHTML = `
-                <div class="report-data">
-                    <div class="report-section">
-                        <h4><i class="bi bi-file-text"></i> Contenido Publicado</h4>
-                        <p><strong>Páginas:</strong> ${publishedPages}</p>
-                        <p><strong>Artículos:</strong> ${publishedPosts}</p>
-                        <p><strong>Medios:</strong> ${totalMedia}</p>
-                        <p><strong>Total:</strong> ${publishedPages + publishedPosts + totalMedia}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-clock-history"></i> Actividad</h4>
-                        <p><strong>Última actualización:</strong> ${lastUpdatedPage ? new Date(lastUpdatedPage.updated_at).toLocaleDateString() : 'Nunca'}</p>
-                        <p><strong>Página más reciente:</strong> ${lastUpdatedPage ? lastUpdatedPage.title : 'Ninguna'}</p>
-                    </div>
-                    <div class="report-section">
-                        <h4><i class="bi bi-bar-chart"></i> Análisis</h4>
-                        <p>Este reporte muestra el contenido publicado en el sitio web.</p>
-                        <p>Incluye páginas, artículos de blog y archivos multimedia.</p>
-                    </div>
-                </div>
-            `;
-            
-            logActivity(currentUser.nombre, 'generó reporte de contenido', 'bi-bar-chart');
-        }
-        
-        function generateCustomReport() {
-            const type = prompt('¿Qué tipo de reporte deseas generar?\n1. Financiero\n2. Usuarios\n3. Contenido\n4. Completo');
-            
-            switch(type) {
-                case '1': generateFinancialReport(); break;
-                case '2': generateUsersReport(); break;
-                case '3': generateContentReport(); break;
-                case '4': generateCompleteReport(); break;
-                default: showAlert('Tipo de reporte no válido', 'error');
-            }
-        }
-        
-        function generateCompleteReport() {
-            const reportContent = document.getElementById('report-content');
-            const htmlContent = `
-                <h3 style="color: var(--admin-primary); border-bottom: 2px solid var(--admin-accent); padding-bottom: 10px;">
-                    <i class="bi bi-clipboard-data"></i> Reporte Completo del Sistema
-                </h3>
-                <p><strong>Fecha de generación:</strong> ${new Date().toLocaleString()}</p>
-                
-                <div class="report-data" style="margin-top: 20px;">
-                    <div class="report-section">
-                        <h4><i class="bi bi-people"></i> Usuarios</h4>
-                        <p>Total: ${usersData.length}</p>
-                        <p>Activos: ${usersData.filter(u => u.activo).length}</p>
-                        <p>Administradores: ${usersData.filter(u => u.rol === 'admin').length}</p>
-                    </div>
-                    
-                    <div class="report-section">
-                        <h4><i class="bi bi-file-text"></i> Contenido</h4>
-                        <p>Páginas: ${pagesData.length}</p>
-                        <p>Publicadas: ${pagesData.filter(p => p.status === 'published').length}</p>
-                        <p>Artículos: ${blogData.length}</p>
-                    </div>
-                    
-                    <div class="report-section">
-                        <h4><i class="bi bi-calendar-check"></i> Reservas</h4>
-                        <p>Total: ${bookingsData.length}</p>
-                        <p>Confirmadas: ${bookingsData.filter(b => b.estado === 'confirmed').length}</p>
-                    </div>
-                    
-                    <div class="report-section">
-                        <h4><i class="bi bi-images"></i> Medios</h4>
-                        <p>Archivos: ${mediaData.length}</p>
-                        <p>Imágenes: ${mediaData.filter(m => m.type.includes('image')).length}</p>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                    <h5><i class="bi bi-info-circle"></i> Resumen del Sistema</h5>
-                    <p>Este reporte completo incluye todas las estadísticas del sistema de administración.</p>
-                    <p>Generado automáticamente por el panel de administración de Caño Salao.</p>
-                </div>
-                
-                <div class="form-actions" style="margin-top: 30px;">
-                    <button class="btn" onclick="printReport()" style="background: var(--admin-primary);">
-                        <i class="bi bi-printer"></i> Imprimir
-                    </button>
-                    <button class="btn" onclick="exportCompleteReport()" style="background: var(--admin-success);">
-                        <i class="bi bi-download"></i> Exportar Completo
-                    </button>
-                </div>
-            `;
-            
-            reportContent.innerHTML = htmlContent;
-            logActivity(currentUser.nombre, 'generó reporte completo', 'bi-clipboard-data');
-        }
-        
-        function exportFinancialReport() {
-            // En un sistema real, usarías jsPDF para generar PDF
-            showAlert('Generando PDF del reporte financiero...', 'info');
-            setTimeout(() => {
-                showAlert('Reporte financiero exportado a PDF (simulación)', 'success');
-            }, 2000);
-        }
-        
-        function exportUsersReportToExcel() {
-            showAlert('Exportando datos de usuarios a Excel...', 'info');
-            setTimeout(() => {
-                showAlert('Reporte de usuarios exportado a Excel (simulación)', 'success');
-            }, 2000);
-        }
-        
-        function exportCompleteReport() {
-            const reportData = {
-                fecha: new Date().toISOString(),
-                usuarios: usersData.length,
-                paginas: pagesData.length,
-                blog: blogData.length,
-                reservas: bookingsData.length,
-                medios: mediaData.length,
-                generado_por: currentUser.nombre
-            };
-            
-            downloadJSON(reportData, 'reporte-completo.json');
-            showAlert('Reporte completo exportado', 'success');
-        }
-        
-        function printReport() {
-            const printContent = document.getElementById('report-content').innerHTML;
-            const originalContent = document.body.innerHTML;
-            
-            document.body.innerHTML = `
-                <div style="padding: 20px; font-family: Arial, sans-serif;">
-                    <h1 style="text-align: center; color: #2c3e50;">Reporte del Sistema</h1>
-                    <h3 style="text-align: center; color: #666;">Caño Salao - Panel de Administración</h3>
-                    <hr style="margin: 20px 0;">
-                    <div>${printContent}</div>
-                    <hr style="margin: 20px 0;">
-                    <div style="text-align: center; color: #888; font-size: 12px;">
-                        <p>Generado el ${new Date().toLocaleString()}</p>
-                        <p>Sistema de Administración v3.0</p>
-                    </div>
-                </div>
-            `;
-            
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
-        }
-        
-        function exportAllReports() {
-            showAlert('Exportando todos los reportes...', 'info');
-            setTimeout(() => {
-                showAlert('Todos los reportes han sido exportados (simulación)', 'success');
-                logActivity(currentUser.nombre, 'exportó todos los reportes', 'bi-download');
-            }, 3000);
-        }
-        
-        // ========== CONFIGURACIÓN (SISTEMA COMPLETO) ==========
-        
-        function loadSettings() {
-            settingsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
-            
-            // Cargar valores en formularios
-            if (settingsData.site) {
-                document.getElementById('site-name').value = settingsData.site.name || '';
-                document.getElementById('site-url').value = settingsData.site.url || '';
-                document.getElementById('site-description').value = settingsData.site.description || '';
-                document.getElementById('site-email').value = settingsData.site.email || '';
-                document.getElementById('site-phone').value = settingsData.site.phone || '';
-            }
-            
-            if (settingsData.seo) {
-                document.getElementById('seo-keywords').value = settingsData.seo.keywords || '';
-                document.getElementById('seo-description').value = settingsData.seo.description || '';
-                document.getElementById('ga-id').value = settingsData.seo.ga_id || '';
-            }
-            
-            if (settingsData.email) {
-                document.getElementById('smtp-host').value = settingsData.email.smtp_host || '';
-                document.getElementById('smtp-port').value = settingsData.email.smtp_port || '';
-                document.getElementById('smtp-user').value = settingsData.email.smtp_user || '';
-                document.getElementById('smtp-pass').value = settingsData.email.smtp_pass || '';
-            }
-            
-            if (settingsData.maintenance) {
-                document.getElementById('maintenance-mode').checked = settingsData.maintenance.enabled || false;
-                document.getElementById('maintenance-message').value = settingsData.maintenance.message || '';
-            }
-        }
-        
-        function saveSiteSettings() {
-            const siteSettings = {
-                name: document.getElementById('site-name').value,
-                url: document.getElementById('site-url').value,
-                description: document.getElementById('site-description').value,
-                email: document.getElementById('site-email').value,
-                phone: document.getElementById('site-phone').value
-            };
-            
-            settingsData.site = siteSettings;
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settingsData));
-            
-            showAlert('Configuración del sitio guardada', 'success');
-            logActivity(currentUser.nombre, 'actualizó configuración del sitio', 'bi-gear');
-        }
-        
-        function saveSEOSettings() {
-            const seoSettings = {
-                keywords: document.getElementById('seo-keywords').value,
-                description: document.getElementById('seo-description').value,
-                ga_id: document.getElementById('ga-id').value
-            };
-            
-            settingsData.seo = seoSettings;
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settingsData));
-            
-            showAlert('Configuración SEO guardada', 'success');
-            logActivity(currentUser.nombre, 'actualizó configuración SEO', 'bi-search');
-        }
-        
-        function saveEmailSettings() {
-            const emailSettings = {
-                smtp_host: document.getElementById('smtp-host').value,
-                smtp_port: document.getElementById('smtp-port').value,
-                smtp_user: document.getElementById('smtp-user').value,
-                smtp_pass: document.getElementById('smtp-pass').value
-            };
-            
-            settingsData.email = emailSettings;
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settingsData));
-            
-            showAlert('Configuración de email guardada', 'success');
-            logActivity(currentUser.nombre, 'actualizó configuración de email', 'bi-envelope');
-        }
-        
-        function testEmailSettings() {
-            showAlert('Probando configuración de email...', 'info');
-            setTimeout(() => {
-                showAlert('Configuración de email probada correctamente (simulación)', 'success');
-            }, 2000);
-        }
-        
-        function saveMaintenanceSettings() {
-            const maintenanceSettings = {
-                enabled: document.getElementById('maintenance-mode').checked,
-                message: document.getElementById('maintenance-message').value
-            };
-            
-            settingsData.maintenance = maintenanceSettings;
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settingsData));
-            
-            showAlert('Configuración de mantenimiento guardada', 'success');
-            logActivity(currentUser.nombre, 'actualizó configuración de mantenimiento', 'bi-tools');
-        }
-        
-        function clearCache() {
-            if (confirm('¿Limpiar toda la caché del sistema? Esto no eliminará datos importantes.')) {
-                // Limpiar caché del navegador (simulación)
-                showAlert('Limpiando caché...', 'info');
-                setTimeout(() => {
-                    showAlert('Caché limpiada correctamente', 'success');
-                    logActivity(currentUser.nombre, 'limpió la caché del sistema', 'bi-trash');
-                }, 1500);
-            }
-        }
-        
-        function optimizeDatabase() {
-            showAlert('Optimizando base de datos...', 'info');
-            setTimeout(() => {
-                showAlert('Base de datos optimizada correctamente', 'success');
-                logActivity(currentUser.nombre, 'optimizó la base de datos', 'bi-speedometer2');
-            }, 2000);
-        }
-        
-        // ========== FUNCIONES GENERALES ==========
-        
         function showSection(sectionId) {
             document.querySelectorAll('.admin-section').forEach(section => {
                 section.classList.remove('active');
@@ -3431,26 +1866,14 @@
             if (targetSection) {
                 targetSection.classList.add('active');
                 
-                // Cargar datos específicos de la sección
+                // Cargar datos especÃ­ficos de la secciÃ³n
                 switch(sectionId) {
                     case 'dashboard': loadDashboardData(); break;
                     case 'users': loadUsers(); break;
                     case 'tours': loadTours(); break;
                     case 'bookings': loadBookings(); break;
-                    case 'content': loadPages(); break;
                     case 'blog': loadBlogPosts(); break;
-                    case 'media': loadMedia(); break;
-                    case 'reports': 
-                        // Establecer fechas por defecto
-                        const today = new Date().toISOString().split('T')[0];
-                        const monthAgo = new Date();
-                        monthAgo.setMonth(monthAgo.getMonth() - 1);
-                        const monthAgoStr = monthAgo.toISOString().split('T')[0];
-                        
-                        document.getElementById('report-start-date').value = monthAgoStr;
-                        document.getElementById('report-end-date').value = today;
-                        break;
-                    case 'settings': loadSettings(); break;
+                    case 'settings': loadProfile(); break;
                 }
             }
         }
@@ -3493,236 +1916,885 @@
             alertDiv.style.display = 'block';
         }
         
-        function downloadCSV(content, filename) {
-            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-        }
-        
-        function downloadJSON(data, filename) {
-            const json = JSON.stringify(data, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = filename;
-            link.click();
-        }
-        
-        function updateCurrentTime() {
-            const now = new Date();
-            document.getElementById('current-time').textContent = 
-                now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        function confirmAction(message, callback) {
+            document.getElementById('confirm-message').textContent = message;
+            const confirmBtn = document.getElementById('confirm-action-btn');
             
-            setTimeout(updateCurrentTime, 1000);
-        }
-        
-        function updateStorageInfo() {
-            // Calcular espacio usado
-            let totalSize = 0;
-            const keys = Object.values(STORAGE_KEYS);
-            
-            keys.forEach(key => {
-                const data = localStorage.getItem(key);
-                if (data) {
-                    totalSize += data.length * 2; // UTF-16 string
-                }
-            });
-            
-            const mbUsed = (totalSize / (1024 * 1024)).toFixed(2);
-            document.getElementById('storage-used').textContent = `${mbUsed} MB`;
-            
-            // Actualizar sesiones activas (simulación)
-            const activeSessions = usersData.filter(u => u.activo).length;
-            document.getElementById('active-sessions').textContent = activeSessions;
-            
-            setTimeout(updateStorageInfo, 30000);
-        }
-        
-        function createBackup() {
-            const backup = {
-                version: '3.0',
-                timestamp: new Date().toISOString(),
-                users: usersData,
-                tours: toursData,
-                bookings: bookingsData,
-                pages: pagesData,
-                blog: blogData,
-                media: mediaData,
-                settings: settingsData,
-                categories: categoriesData
+            // Guardar referencia temporal al callback
+            confirmBtn.onclick = function() {
+                callback();
+                closeModal('modal-confirm');
             };
             
-            downloadJSON(backup, `backup-canosalao-${new Date().toISOString().split('T')[0]}.json`);
+            openModal('modal-confirm');
+        }
+        
+        // ========== DATOS INICIALES ==========
+        function loadInitialData() {
+            loadDashboardData();
+            updateCurrentTime();
+        }
+        
+        function testBackendConnection() {
+            fetch(`${BACKEND_URL}/health`, {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    const statusElement = document.getElementById('backend-status');
+                    statusElement.textContent = 'Conectado';
+                    statusElement.style.color = '#27ae60';
+                    document.getElementById('connection-status').className = 'connection-status connection-online';
+                    document.getElementById('status-text').textContent = 'Conectado al Backend';
+                } else {
+                    throw new Error('Backend no responde');
+                }
+            })
+            .catch(error => {
+                console.error('Error conectando al backend:', error);
+                const statusElement = document.getElementById('backend-status');
+                statusElement.textContent = 'Desconectado';
+                statusElement.style.color = '#e74c3c';
+                document.getElementById('connection-status').className = 'connection-status connection-offline';
+                document.getElementById('status-text').textContent = 'Error de conexiÃ³n';
+                showAlert('No se pudo conectar al backend. Verifica que el servidor estÃ© ejecutÃ¡ndose.', 'error');
+            });
+        }
+        
+        // ========== DASHBOARD ==========
+        function loadDashboardData() {
+            if (!token) return;
             
-            showAlert('Backup creado exitosamente', 'success');
-            document.getElementById('last-backup').textContent = new Date().toLocaleDateString();
-            logActivity(currentUser.nombre, 'creó backup del sistema', 'bi-database');
+            fetch(`${API_URL}/admin/dashboard`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(stats => {
+                        updateDashboardStats(stats);
+                        initCharts(stats);
+                        updateFooterStats(stats);
+                    });
+                }
+                throw new Error('Error cargando dashboard');
+            })
+            .catch(error => {
+                console.error('Error cargando dashboard:', error);
+                showAlert('Error cargando datos del dashboard', 'error');
+            });
+        }
+        
+        function updateDashboardStats(stats) {
+            document.getElementById('stat-users').textContent = stats.total_users || 0;
+            document.getElementById('stat-users-desc').textContent = `${stats.active_users || 0} activos`;
+            
+            document.getElementById('stat-blog').textContent = stats.total_blog_posts || 0;
+            document.getElementById('stat-blog-desc').textContent = 'Publicados';
+            
+            document.getElementById('stat-tours').textContent = stats.total_tours || 0;
+            document.getElementById('stat-tours-desc').textContent = `${stats.active_tours || 0} activos`;
+            
+            document.getElementById('stat-bookings').textContent = stats.total_bookings || 0;
+            document.getElementById('stat-bookings-desc').textContent = `${stats.pending_bookings || 0} pendientes`;
+        }
+        
+        function updateFooterStats(stats) {
+            document.getElementById('footer-users-count').textContent = stats.total_users || 0;
+            document.getElementById('footer-tours-count').textContent = stats.total_tours || 0;
+        }
+        
+        function initCharts(stats) {
+            const ctx1 = document.getElementById('activityChart')?.getContext('2d');
+            const ctx2 = document.getElementById('distributionChart')?.getContext('2d');
+            
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: ['Lun', 'Mar', 'MiÃ©', 'Jue', 'Vie', 'SÃ¡b', 'Dom'],
+                        datasets: [{
+                            label: 'Actividad',
+                            data: [stats.recent_registrations || 0, 3, 5, 7, 6, 8, 10],
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+            
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Usuarios', 'Tours', 'Reservas', 'Blog'],
+                        datasets: [{
+                            data: [
+                                stats.total_users || 0,
+                                stats.total_tours || 0,
+                                stats.total_bookings || 0,
+                                stats.total_blog_posts || 0
+                            ],
+                            backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#f39c12']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
         }
         
         function refreshDashboard() {
             loadDashboardData();
             showAlert('Dashboard actualizado', 'success');
-            logActivity(currentUser.nombre, 'actualizó el dashboard', 'bi-arrow-clockwise');
+        }
+        
+        function loadRecentActivity() {
+            // Esta funciÃ³n simula actividad reciente
+            const activityList = document.getElementById('recent-activity');
+            const activities = [
+                { icon: 'bi-person-plus', user: currentUser?.nombre || 'Admin', action: 'actualizÃ³ el dashboard', time: 'Hace 5 minutos' },
+                { icon: 'bi-signpost', user: 'Sistema', action: 'cargÃ³ datos de tours', time: 'Hace 10 minutos' },
+                { icon: 'bi-calendar-check', user: 'Sistema', action: 'sincronizÃ³ reservas', time: 'Hace 15 minutos' }
+            ];
+            
+            activityList.innerHTML = '';
+            activities.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div class="activity-icon"><i class="bi ${activity.icon}"></i></div>
+                    <div class="activity-content">
+                        <strong>${activity.user}</strong> ${activity.action}
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `;
+                activityList.appendChild(item);
+            });
+        }
+        
+        // ========== USUARIOS ==========
+        function loadUsers() {
+            if (!token) return;
+            
+            fetch(`${API_URL}/admin/users`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        if (data.success) {
+                            renderUsersTable(data.users);
+                        }
+                    });
+                }
+                throw new Error('Error cargando usuarios');
+            })
+            .catch(error => {
+                console.error('Error cargando usuarios:', error);
+                showAlert('Error cargando usuarios', 'error');
+                renderEmptyUsersTable();
+            });
+        }
+        
+        function renderUsersTable(users) {
+            const tbody = document.getElementById('users-table-body');
+            if (!tbody) return;
+            
+            if (!users || users.length === 0) {
+                renderEmptyUsersTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td><strong>${user.nombre}</strong></td>
+                    <td>${user.email}</td>
+                    <td><span class="status-badge ${user.rol === 'admin' ? 'status-active' : 'status-pending'}">${user.rol}</span></td>
+                    <td>${user.fecha_registro ? new Date(user.fecha_registro).toLocaleDateString() : 'N/A'}</td>
+                    <td><span class="status-badge ${user.activo ? 'status-active' : 'status-inactive'}">${user.activo ? 'Activo' : 'Inactivo'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-edit" onclick="editUser(${user.id}, '${user.nombre}', '${user.email}', '${user.telefono || ''}', '${user.rol}', ${user.activo})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteUser(${user.id}, '${user.nombre}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyUsersTable() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-people"></i>
+                        <h3>No hay usuarios registrados</h3>
+                        <p>Agrega el primer usuario</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function showAddUserModal() {
+            document.getElementById('add-user-alert').style.display = 'none';
+            document.getElementById('add-user-form').reset();
+            openModal('modal-add-user');
+        }
+        
+        function addNewUser() {
+            const name = document.getElementById('new-user-name').value.trim();
+            const email = document.getElementById('new-user-email').value.trim();
+            const password = document.getElementById('new-user-password').value;
+            const phone = document.getElementById('new-user-phone').value.trim();
+            const role = document.getElementById('new-user-role').value;
+            
+            if (!name || !email || !password) {
+                showFormAlert('add-user-alert', 'Nombre, email y contraseÃ±a son obligatorios', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showFormAlert('add-user-alert', 'La contraseÃ±a debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+            
+            const userData = {
+                nombre: name,
+                email: email,
+                password: password,
+                telefono: phone,
+                rol: role
+            };
+            
+            // En un sistema real, aquÃ­ harÃ­as una llamada POST al backend
+            showFormAlert('add-user-alert', 'Creando usuario...', 'info');
+            
+            // SimulaciÃ³n - en producciÃ³n usarÃ­as fetch
+            setTimeout(() => {
+                showFormAlert('add-user-alert', 'Usuario creado correctamente (simulaciÃ³n)', 'success');
+                setTimeout(() => {
+                    closeModal('modal-add-user');
+                    loadUsers();
+                    loadDashboardData();
+                }, 1500);
+            }, 1000);
+        }
+        
+        function editUser(id, name, email, phone, role, active) {
+            document.getElementById('edit-user-id').value = id;
+            document.getElementById('edit-user-name').value = name;
+            document.getElementById('edit-user-email').value = email;
+            document.getElementById('edit-user-phone').value = phone;
+            document.getElementById('edit-user-role').value = role;
+            document.getElementById('edit-user-status').value = active ? 'active' : 'inactive';
+            document.getElementById('edit-user-alert').style.display = 'none';
+            
+            openModal('modal-edit-user');
+        }
+        
+        function saveUserEdit() {
+            const id = document.getElementById('edit-user-id').value;
+            const name = document.getElementById('edit-user-name').value.trim();
+            const email = document.getElementById('edit-user-email').value.trim();
+            const phone = document.getElementById('edit-user-phone').value.trim();
+            const role = document.getElementById('edit-user-role').value;
+            const status = document.getElementById('edit-user-status').value;
+            
+            if (!name || !email) {
+                showFormAlert('edit-user-alert', 'Nombre y email son obligatorios', 'error');
+                return;
+            }
+            
+            showFormAlert('edit-user-alert', 'Actualizando usuario...', 'info');
+            
+            // SimulaciÃ³n - en producciÃ³n harÃ­as PUT al backend
+            setTimeout(() => {
+                showFormAlert('edit-user-alert', 'Usuario actualizado correctamente (simulaciÃ³n)', 'success');
+                setTimeout(() => {
+                    closeModal('modal-edit-user');
+                    loadUsers();
+                }, 1500);
+            }, 1000);
+        }
+        
+        function deleteUser(userId, userName) {
+            confirmAction(`Â¿Eliminar al usuario "${userName}"? Esta acciÃ³n no se puede deshacer.`, function() {
+                // SimulaciÃ³n - en producciÃ³n harÃ­as DELETE al backend
+                showAlert(`Usuario "${userName}" eliminado (simulaciÃ³n)`, 'success');
+                loadUsers();
+                loadDashboardData();
+            });
+        }
+        
+        function exportUsersToCSV() {
+            showAlert('Exportando usuarios a CSV...', 'info');
+            setTimeout(() => {
+                showAlert('Usuarios exportados a CSV (simulaciÃ³n)', 'success');
+            }, 2000);
+        }
+        
+        // ========== TOURS ==========
+        function loadTours() {
+            fetch(`${API_URL}/tours`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(tours => {
+                        renderToursTable(tours);
+                    });
+                }
+                throw new Error('Error cargando tours');
+            })
+            .catch(error => {
+                console.error('Error cargando tours:', error);
+                showAlert('Error cargando tours', 'error');
+                renderEmptyToursTable();
+            });
+        }
+        
+        function renderToursTable(tours) {
+            const tbody = document.getElementById('tours-table-body');
+            if (!tbody) return;
+            
+            if (!tours || tours.length === 0) {
+                renderEmptyToursTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            tours.forEach(tour => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${tour.id}</td>
+                    <td><strong>${tour.nombre}</strong></td>
+                    <td>${tour.descripcion?.substring(0, 50)}${tour.descripcion?.length > 50 ? '...' : ''}</td>
+                    <td>$${tour.precio?.toFixed(2)}</td>
+                    <td>${tour.capacidad}</td>
+                    <td><span class="status-badge ${tour.disponible ? 'status-active' : 'status-inactive'}">${tour.disponible ? 'Disponible' : 'No disponible'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-edit" onclick="editTour(${tour.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteTour(${tour.id}, '${tour.nombre}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyToursTable() {
+            const tbody = document.getElementById('tours-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-signpost"></i>
+                        <h3>No hay tours disponibles</h3>
+                        <p>Agrega el primer tour</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function showAddTourModal() {
+            document.getElementById('add-tour-alert').style.display = 'none';
+            document.getElementById('add-tour-form').reset();
+            openModal('modal-add-tour');
+        }
+        
+        function addNewTour() {
+            const name = document.getElementById('new-tour-name').value.trim();
+            const desc = document.getElementById('new-tour-desc').value.trim();
+            const price = parseFloat(document.getElementById('new-tour-price').value);
+            const capacity = parseInt(document.getElementById('new-tour-capacity').value);
+            const duration = document.getElementById('new-tour-duration').value.trim();
+            const image = document.getElementById('new-tour-image').value.trim();
+            
+            if (!name || !desc || !price || !capacity) {
+                showFormAlert('add-tour-alert', 'Todos los campos excepto imagen son obligatorios', 'error');
+                return;
+            }
+            
+            if (price <= 0) {
+                showFormAlert('add-tour-alert', 'El precio debe ser mayor a 0', 'error');
+                return;
+            }
+            
+            if (capacity <= 0) {
+                showFormAlert('add-tour-alert', 'La capacidad debe ser mayor a 0', 'error');
+                return;
+            }
+            
+            showFormAlert('add-tour-alert', 'Creando tour...', 'info');
+            
+            // SimulaciÃ³n
+            setTimeout(() => {
+                showFormAlert('add-tour-alert', 'Tour creado correctamente (simulaciÃ³n)', 'success');
+                setTimeout(() => {
+                    closeModal('modal-add-tour');
+                    loadTours();
+                    loadDashboardData();
+                }, 1500);
+            }, 1000);
+        }
+        
+        function editTour(tourId) {
+            showAlert('Funcionalidad de ediciÃ³n de tours en desarrollo', 'info');
+        }
+        
+        function deleteTour(tourId, tourName) {
+            confirmAction(`Â¿Eliminar el tour "${tourName}"?`, function() {
+                showAlert(`Tour "${tourName}" eliminado (simulaciÃ³n)`, 'success');
+                loadTours();
+                loadDashboardData();
+            });
+        }
+        
+        // ========== RESERVAS ==========
+        function loadBookings() {
+            if (!token) return;
+            
+            fetch(`${API_URL}/user/bookings`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        if (data.success) {
+                            renderBookingsTable(data.bookings);
+                        }
+                    });
+                }
+                throw new Error('Error cargando reservas');
+            })
+            .catch(error => {
+                console.error('Error cargando reservas:', error);
+                showAlert('Error cargando reservas', 'error');
+                renderEmptyBookingsTable();
+            });
+        }
+        
+        function renderBookingsTable(bookings) {
+            const tbody = document.getElementById('bookings-table-body');
+            if (!tbody) return;
+            
+            if (!bookings || bookings.length === 0) {
+                renderEmptyBookingsTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            bookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${booking.id}</td>
+                    <td>${booking.user_id}</td>
+                    <td>${booking.tour_nombre || `Tour ${booking.tour_id}`}</td>
+                    <td>${booking.fecha ? new Date(booking.fecha).toLocaleDateString() : 'N/A'}</td>
+                    <td>${booking.personas}</td>
+                    <td>$${booking.total?.toFixed(2)}</td>
+                    <td><span class="status-badge ${booking.estado === 'confirmed' ? 'status-confirmed' : 'status-pending'}">${booking.estado || 'pending'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-view" onclick="viewBooking(${booking.id})"><i class="bi bi-eye"></i></button>
+                            <button class="btn-icon btn-edit" onclick="editBooking(${booking.id})"><i class="bi bi-pencil"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyBookingsTable() {
+            const tbody = document.getElementById('bookings-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="bi bi-calendar-check"></i>
+                        <h3>No hay reservas</h3>
+                        <p>No se han realizado reservas aÃºn</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function viewBooking(bookingId) {
+            showAlert(`Viendo reserva ${bookingId} (simulaciÃ³n)`, 'info');
+        }
+        
+        function editBooking(bookingId) {
+            showAlert(`Editando reserva ${bookingId} (simulaciÃ³n)`, 'info');
+        }
+        
+        function exportBookingsToCSV() {
+            showAlert('Exportando reservas a CSV...', 'info');
+            setTimeout(() => {
+                showAlert('Reservas exportadas a CSV (simulaciÃ³n)', 'success');
+            }, 2000);
+        }
+        
+        // ========== BLOG ==========
+        function loadBlogPosts() {
+            fetch(`${API_URL}/blog`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(posts => {
+                        renderBlogTable(posts);
+                    });
+                }
+                throw new Error('Error cargando posts del blog');
+            })
+            .catch(error => {
+                console.error('Error cargando blog:', error);
+                showAlert('Error cargando artÃ­culos del blog', 'error');
+                renderEmptyBlogTable();
+            });
+        }
+        
+        function renderBlogTable(posts) {
+            const tbody = document.getElementById('blog-table-body');
+            if (!tbody) return;
+            
+            if (!posts || posts.length === 0) {
+                renderEmptyBlogTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            posts.forEach(post => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${post.titulo}</strong></td>
+                    <td><span class="status-badge status-pending">${post.categoria || 'General'}</span></td>
+                    <td>${post.autor || 'AnÃ³nimo'}</td>
+                    <td>${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td>${post.vistas || 0}</td>
+                    <td><span class="status-badge ${post.publicado ? 'status-active' : 'status-pending'}">${post.publicado ? 'Publicado' : 'Borrador'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-view" onclick="viewBlogPost(${post.id})"><i class="bi bi-eye"></i></button>
+                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteBlogPost(${post.id}, '${post.titulo}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyBlogTable() {
+            const tbody = document.getElementById('blog-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-newspaper"></i>
+                        <h3>No hay artÃ­culos de blog</h3>
+                        <p>Crea el primer artÃ­culo</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function showAddBlogPostModal() {
+            document.getElementById('add-blog-alert').style.display = 'none';
+            document.getElementById('blog-title').value = '';
+            document.getElementById('blog-content').value = '';
+            document.getElementById('blog-excerpt').value = '';
+            document.getElementById('blog-image').value = '';
+            openModal('modal-add-blog');
+        }
+        
+        function saveBlogPost() {
+            const title = document.getElementById('blog-title').value.trim();
+            const category = document.getElementById('blog-category').value;
+            const content = document.getElementById('blog-content').value.trim();
+            const excerpt = document.getElementById('blog-excerpt').value.trim();
+            const image = document.getElementById('blog-image').value.trim();
+            
+            if (!title || !content) {
+                showFormAlert('add-blog-alert', 'TÃ­tulo y contenido son obligatorios', 'error');
+                return;
+            }
+            
+            showFormAlert('add-blog-alert', 'Publicando artÃ­culo...', 'info');
+            
+            // SimulaciÃ³n
+            setTimeout(() => {
+                showFormAlert('add-blog-alert', 'ArtÃ­culo publicado correctamente (simulaciÃ³n)', 'success');
+                setTimeout(() => {
+                    closeModal('modal-add-blog');
+                    loadBlogPosts();
+                    loadDashboardData();
+                }, 1500);
+            }, 1000);
+        }
+        
+        function viewBlogPost(postId) {
+            showAlert(`Viendo artÃ­culo ${postId} (simulaciÃ³n)`, 'info');
+        }
+        
+        function editBlogPost(postId) {
+            showAlert(`Editando artÃ­culo ${postId} (simulaciÃ³n)`, 'info');
+        }
+        
+        function deleteBlogPost(postId, postTitle) {
+            confirmAction(`Â¿Eliminar el artÃ­culo "${postTitle}"?`, function() {
+                showAlert(`ArtÃ­culo "${postTitle}" eliminado (simulaciÃ³n)`, 'success');
+                loadBlogPosts();
+                loadDashboardData();
+            });
+        }
+        
+        // ========== REPORTES ==========
+        function generateDashboardReport() {
+            const reportContent = document.getElementById('report-content');
+            reportContent.innerHTML = `
+                <div class="report-data">
+                    <div class="report-section">
+                        <h4><i class="bi bi-people"></i> Usuarios</h4>
+                        <p><strong>Total:</strong> <span id="stat-users">0</span></p>
+                        <p><strong>Activos:</strong> ${document.getElementById('stat-users-desc').textContent.split(' ')[0]}</p>
+                    </div>
+                    <div class="report-section">
+                        <h4><i class="bi bi-signpost"></i> Tours</h4>
+                        <p><strong>Total:</strong> <span id="stat-tours">0</span></p>
+                        <p><strong>Activos:</strong> ${document.getElementById('stat-tours-desc').textContent.split(' ')[0]}</p>
+                    </div>
+                    <div class="report-section">
+                        <h4><i class="bi bi-calendar-check"></i> Reservas</h4>
+                        <p><strong>Total:</strong> <span id="stat-bookings">0</span></p>
+                        <p><strong>Pendientes:</strong> ${document.getElementById('stat-bookings-desc').textContent.split(' ')[0]}</p>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn" onclick="printReport()" style="background: var(--admin-primary);">
+                        <i class="bi bi-printer"></i> Imprimir Reporte
+                    </button>
+                </div>
+            `;
+            
+            // Actualizar con datos reales
+            reportContent.querySelectorAll('#stat-users, #stat-tours, #stat-bookings').forEach(el => {
+                const id = el.id.replace('stat-', '');
+                el.textContent = document.getElementById(el.id).textContent;
+            });
+            
+            showAlert('Reporte de dashboard generado', 'success');
+        }
+        
+        function generateUsersReport() {
+            const reportContent = document.getElementById('report-content');
+            reportContent.innerHTML = `
+                <div class="report-data">
+                    <div class="report-section">
+                        <h4><i class="bi bi-people"></i> Reporte de Usuarios</h4>
+                        <p>Este reporte muestra la informaciÃ³n de usuarios registrados.</p>
+                        <p>Generado el: ${new Date().toLocaleString()}</p>
+                    </div>
+                    <div class="report-section">
+                        <h4><i class="bi bi-download"></i> Exportar</h4>
+                        <p>Exporta los datos de usuarios para anÃ¡lisis externo.</p>
+                        <button class="btn" onclick="exportUsersToCSV()" style="margin-top:10px;">
+                            <i class="bi bi-file-earmark-excel"></i> Exportar a CSV
+                        </button>
+                    </div>
+                </div>
+            `;
+            showAlert('Reporte de usuarios generado', 'success');
+        }
+        
+        function generateBookingsReport() {
+            const reportContent = document.getElementById('report-content');
+            reportContent.innerHTML = `
+                <div class="report-data">
+                    <div class="report-section">
+                        <h4><i class="bi bi-calendar-check"></i> Reporte de Reservas</h4>
+                        <p>Este reporte muestra las reservas realizadas en el sistema.</p>
+                        <p>Generado el: ${new Date().toLocaleString()}</p>
+                    </div>
+                    <div class="report-section">
+                        <h4><i class="bi bi-download"></i> Exportar</h4>
+                        <p>Exporta los datos de reservas para anÃ¡lisis externo.</p>
+                        <button class="btn" onclick="exportBookingsToCSV()" style="margin-top:10px;">
+                            <i class="bi bi-file-earmark-excel"></i> Exportar a CSV
+                        </button>
+                    </div>
+                </div>
+            `;
+            showAlert('Reporte de reservas generado', 'success');
+        }
+        
+        function printReport() {
+            const printContent = document.getElementById('report-content').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = `
+                <div style="padding: 20px; font-family: Arial, sans-serif;">
+                    <h1 style="text-align: center; color: #2c3e50;">Reporte del Sistema</h1>
+                    <h3 style="text-align: center; color: #666;">CaÃ±o Salao - Panel de AdministraciÃ³n</h3>
+                    <hr style="margin: 20px 0;">
+                    <div>${printContent}</div>
+                    <hr style="margin: 20px 0;">
+                    <div style="text-align: center; color: #888; font-size: 12px;">
+                        <p>Generado el ${new Date().toLocaleString()}</p>
+                        <p>Sistema de AdministraciÃ³n v2.0</p>
+                    </div>
+                </div>
+            `;
+            
+            window.print();
+            document.body.innerHTML = originalContent;
         }
         
         function generateQuickReport() {
-            generateCompleteReport();
+            generateDashboardReport();
             showSection('reports');
+        }
+        
+        // ========== CONFIGURACIÃ“N ==========
+        function loadProfile() {
+            if (!currentUser) return;
+            
+            document.getElementById('profile-name').value = currentUser.nombre || '';
+            document.getElementById('profile-email').value = currentUser.email || '';
+            document.getElementById('profile-phone').value = currentUser.telefono || '';
+            document.getElementById('profile-role').value = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
+        }
+        
+        function loadProfileData() {
+            if (!currentUser) return;
+            
+            loadProfile();
+        }
+        
+        function updateProfile() {
+            const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const phone = document.getElementById('profile-phone').value.trim();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            
+            if (!name || !email) {
+                showFormAlert('profile-form-alert', 'Nombre y email son obligatorios', 'error');
+                return;
+            }
+            
+            const updates = {
+                nombre: name,
+                email: email,
+                telefono: phone
+            };
+            
+            if (currentPassword && newPassword) {
+                if (newPassword.length < 6) {
+                    showFormAlert('profile-form-alert', 'La nueva contraseÃ±a debe tener al menos 6 caracteres', 'error');
+                    return;
+                }
+                // AquÃ­ agregarÃ­as la lÃ³gica para cambiar contraseÃ±a
+            }
+            
+            showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
+            
+            // SimulaciÃ³n
+            setTimeout(() => {
+                currentUser = { ...currentUser, ...updates };
+                showFormAlert('profile-form-alert', 'Perfil actualizado correctamente (simulaciÃ³n)', 'success');
+                updateUserUI();
+                loadProfile();
+                
+                // Limpiar campos de contraseÃ±a
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+            }, 1000);
+        }
+        
+        function saveSystemSettings() {
+            const autoRefresh = document.getElementById('auto-refresh').value;
+            const notifications = document.getElementById('notifications-enabled').checked;
+            
+            // Guardar en localStorage
+            localStorage.setItem('admin_auto_refresh', autoRefresh);
+            localStorage.setItem('admin_notifications', notifications);
+            
+            // Configurar auto-refresh si estÃ¡ activado
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            if (autoRefresh > 0) {
+                autoRefreshInterval = setInterval(() => {
+                    loadDashboardData();
+                }, autoRefresh * 1000);
+            }
+            
+            showAlert('ConfiguraciÃ³n del sistema guardada', 'success');
+        }
+        
+        // ========== UTILIDADES ==========
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = 
+                now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         
         function showSystemInfo() {
             const info = `
-                <strong><i class="bi bi-info-circle"></i> Información del Sistema:</strong><br><br>
-                • Usuarios: ${usersData.length}<br>
-                • Páginas: ${pagesData.length}<br>
-                • Artículos: ${blogData.length}<br>
-                • Reservas: ${bookingsData.length}<br>
-                • Medios: ${mediaData.length}<br>
-                • Última actividad: ${new Date().toLocaleString()}<br>
-                • Usuario actual: ${currentUser.nombre}<br>
-                • Navegador: ${navigator.userAgent.substring(0, 50)}...
+                <strong><i class="bi bi-info-circle"></i> InformaciÃ³n del Sistema:</strong><br><br>
+                â€¢ Backend: ${BACKEND_URL}<br>
+                â€¢ Usuario: ${currentUser?.nombre || 'No cargado'}<br>
+                â€¢ Rol: ${currentUser?.rol || 'Desconocido'}<br>
+                â€¢ Token vÃ¡lido: ${token ? 'SÃ­' : 'No'}<br>
+                â€¢ Navegador: ${navigator.userAgent.substring(0, 50)}...
             `;
             
             showAlert(info, 'info');
         }
         
-        // ========== FUNCIONES DE TOURS Y RESERVAS (SIMPLIFICADAS) ==========
+        // Inicializar configuraciÃ³n del sistema
+        const savedAutoRefresh = localStorage.getItem('admin_auto_refresh') || '0';
+        const savedNotifications = localStorage.getItem('admin_notifications') !== 'false';
         
-        function loadTours() {
-            toursData = JSON.parse(localStorage.getItem(STORAGE_KEYS.TOURS) || '[]');
-            renderToursTable();
+        document.getElementById('auto-refresh').value = savedAutoRefresh;
+        document.getElementById('notifications-enabled').checked = savedNotifications;
+        
+        if (savedAutoRefresh > 0) {
+            autoRefreshInterval = setInterval(() => {
+                loadDashboardData();
+            }, savedAutoRefresh * 1000);
         }
-        
-        function renderToursTable() {
-            const tbody = document.getElementById('tours-table-body');
-            if (!tbody || toursData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7">No hay tours</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            toursData.forEach(tour => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${tour.id}</td>
-                    <td><strong>${tour.nombre}</strong></td>
-                    <td>${tour.descripcion?.substring(0, 50)}...</td>
-                    <td>$${tour.precio}</td>
-                    <td>${tour.capacidad_maxima}</td>
-                    <td><span class="status-badge ${tour.disponible ? 'status-active' : 'status-inactive'}">${tour.disponible ? 'Disponible' : 'No disponible'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-edit"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function loadBookings() {
-            bookingsData = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS) || '[]');
-            renderBookingsTable();
-        }
-        
-        function renderBookingsTable() {
-            const tbody = document.getElementById('bookings-table-body');
-            if (!tbody || bookingsData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8">No hay reservas</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            bookingsData.forEach(booking => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${booking.codigo}</strong></td>
-                    <td>${booking.usuario_id}</td>
-                    <td>${booking.tour_id}</td>
-                    <td>${booking.fecha}</td>
-                    <td>${booking.personas}</td>
-                    <td>$${booking.total}</td>
-                    <td><span class="status-badge ${booking.estado === 'confirmed' ? 'status-active' : 'status-pending'}">${booking.estado}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-edit"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function generateBookingsReport() {
-            showAlert('Generando reporte de reservas...', 'info');
-            setTimeout(() => {
-                showAlert('Reporte de reservas generado (simulación)', 'success');
-                logActivity(currentUser.nombre, 'generó reporte de reservas', 'bi-file-earmark-pdf');
-            }, 2000);
-        }
-        
-        function exportToursToCSV() {
-            showAlert('Exportando tours a CSV...', 'info');
-            setTimeout(() => {
-                showAlert('Tours exportados a CSV (simulación)', 'success');
-            }, 2000);
-        }
-        
-        // ========== INICIALIZAR TOURS Y RESERVAS DE EJEMPLO ==========
-        
-        function initSampleData() {
-            // Tours de ejemplo
-            if (toursData.length === 0) {
-                toursData = [
-                    { id: 1, nombre: "Tour Básico", descripcion: "Recorrido por los manglares", precio: 25, capacidad_maxima: 15, disponible: true },
-                    { id: 2, nombre: "Tour Completo", descripcion: "Experiencia completa de 4 horas", precio: 45, capacidad_maxima: 12, disponible: true },
-                    { id: 3, nombre: "Tour Fotográfico", descripcion: "Especial para fotógrafos", precio: 60, capacidad_maxima: 8, disponible: true }
-                ];
-                localStorage.setItem(STORAGE_KEYS.TOURS, JSON.stringify(toursData));
-            }
-            
-            // Reservas de ejemplo
-            if (bookingsData.length === 0) {
-                bookingsData = [
-                    { id: 1, codigo: "RES-2024-001", usuario_id: 2, tour_id: 1, fecha: "2024-01-15", personas: 2, total: 50, estado: "confirmed" },
-                    { id: 2, codigo: "RES-2024-002", usuario_id: 3, tour_id: 2, fecha: "2024-01-20", personas: 4, total: 180, estado: "pending" }
-                ];
-                localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookingsData));
-            }
-            
-            // Páginas de ejemplo
-            if (pagesData.length === 0) {
-                pagesData = [
-                    { id: 1, title: "Sobre Nosotros", slug: "sobre-nosotros", content: "<h1>Sobre Caño Salao</h1><p>Información sobre nuestra empresa...</p>", template: "default", status: "published", excerpt: "Conoce más sobre Caño Salao...", author: currentUser.nombre, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-                    { id: 2, title: "Contacto", slug: "contacto", content: "<h1>Contáctanos</h1><p>Formulario de contacto...</p>", template: "fullwidth", status: "published", excerpt: "Ponte en contacto con nosotros...", author: currentUser.nombre, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
-                ];
-                localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pagesData));
-            }
-            
-            // Artículos de blog de ejemplo
-            if (blogData.length === 0) {
-                blogData = [
-                    { id: 1, title: "Nuevo tour disponible", slug: "nuevo-tour-disponible", content: "<h1>¡Nuevo tour!</h1><p>Hemos lanzado un nuevo tour...</p>", excerpt: "Descubre nuestro nuevo tour...", category: "noticias", tags: ["tour", "nuevo"], cover_image: "", author: currentUser.nombre, status: "published", views: 42, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), published_at: new Date().toISOString() }
-                ];
-                localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(blogData));
-            }
-            
-            // Medios de ejemplo
-            if (mediaData.length === 0) {
-                mediaData = [
-                    { id: 1, name: "manglar1.jpg", type: "image/jpeg", size: 1024576, url: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400", folder: "tours", uploaded_by: currentUser.nombre, uploaded_at: new Date().toISOString() },
-                    { id: 2, name: "tour-video.mp4", type: "video/mp4", size: 5242880, url: "", folder: "tours", uploaded_by: currentUser.nombre, uploaded_at: new Date().toISOString() }
-                ];
-                localStorage.setItem(STORAGE_KEYS.MEDIA, JSON.stringify(mediaData));
-            }
-        }
-        
-        // Inicializar datos de ejemplo
-        initSampleData();
         
     </script>
 </body>
