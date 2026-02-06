@@ -879,7 +879,7 @@
                     <h1 class="times-font">Caño <span class="text-orange">Salao</span> - Admin</h1>
                     <div class="connection-status connection-online" id="connection-status">
                         <span class="status-dot"></span>
-                        <span id="status-text">Conectado al Backend</span>
+                        <span id="status-text">Conectando al Backend...</span>
                     </div>
                 </div>
                 <div class="admin-user-menu">
@@ -902,7 +902,7 @@
     <section class="page-header" style="background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%); color: white; padding: 3rem 0; text-align: center;">
         <div class="container">
             <h1 class="times-font">Panel de Administración Completo</h1>
-            <p id="admin-subtitle">Conectado al Backend Flask - Caño Salao</p>
+            <p id="admin-subtitle">Conectando al Backend Flask - Caño Salao</p>
         </div>
     </section>
 
@@ -1460,11 +1460,11 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL COMPLETO Y FUNCIONAL - CORREGIDO -->
+    <!-- SCRIPT PRINCIPAL COMPLETO Y FUNCIONAL - CON ENDPOINTS CORRECTOS -->
     <script>
         // ========== CONFIGURACIÓN ==========
-        const BACKEND_URL = 'http://localhost:5000';
-        const API_URL = `${BACKEND_URL}/api`;
+        // Usa la misma configuración que tu index.html
+        const API_BASE_URL = 'http://localhost:5000/api';
         
         // ========== ESTADO GLOBAL ==========
         let currentUser = null;
@@ -1522,6 +1522,7 @@
             
             // Primero, verificar si hay token
             if (!token) {
+                console.log('❌ No hay token, redirigiendo a login...');
                 showAlert('Por favor inicia sesión primero', 'error');
                 setTimeout(() => {
                     window.location.href = 'login.html';
@@ -1530,62 +1531,9 @@
             }
             
             try {
-                // Verificar token y obtener información del usuario
-                const isValid = await verifyToken();
-                
-                if (!isValid) {
-                    // Intentar refrescar el token
-                    const refreshed = await refreshAuthToken();
-                    if (!refreshed) {
-                        logout();
-                        return false;
-                    }
-                    // Después de refrescar, verificar nuevamente
-                    return checkAuthAndAdmin();
-                }
-                
-                // Ahora verificar si el usuario es administrador
-                if (!currentUser) {
-                    showAlert('No se pudo cargar la información del usuario', 'error');
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1500);
-                    return false;
-                }
-                
-                if (currentUser.rol !== 'admin') {
-                    showAlert('Acceso denegado. Se requieren permisos de administrador.', 'error');
-                    setTimeout(() => {
-                        window.location.href = '../index.html';
-                    }, 2000);
-                    return false;
-                }
-                
-                isAdmin = true;
-                console.log('✅ Usuario es administrador:', currentUser.nombre);
-                
-                // Cargar datos iniciales
-                loadInitialData();
-                return true;
-                
-            } catch (error) {
-                console.error('Error verificando permisos:', error);
-                showAlert('Error verificando permisos de administrador', 'error');
-                logout();
-                return false;
-            }
-        }
-        
-        async function verifyToken() {
-            console.log('🔍 Verificando token...');
-            
-            if (!token) {
-                console.error('No hay token disponible');
-                return false;
-            }
-            
-            try {
-                const response = await fetch(`${API_URL}/auth/validate`, {
+                console.log('🔍 Verificando token...');
+                // Usar el endpoint correcto según tu app.py
+                const response = await fetch(`${API_BASE_URL}/auth/verify`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1599,18 +1547,46 @@
                     
                     if (data.success && data.user) {
                         currentUser = data.user;
+                        
+                        // Verificar si es administrador
+                        if (currentUser.rol !== 'admin') {
+                            console.log('❌ Usuario no es administrador');
+                            showAlert('Acceso denegado. Se requieren permisos de administrador.', 'error');
+                            setTimeout(() => {
+                                window.location.href = '../index.html';
+                            }, 2000);
+                            return false;
+                        }
+                        
+                        isAdmin = true;
                         updateUserUI();
+                        
+                        // Cargar datos iniciales
+                        loadInitialData();
                         return true;
                     }
                 } else if (response.status === 401) {
-                    console.warn('Token expirado o inválido');
-                    return false;
+                    console.log('🔄 Token expirado, intentando refresh...');
+                    // Intentar refrescar el token
+                    const refreshed = await refreshAuthToken();
+                    if (refreshed) {
+                        // Intentar nuevamente después de refrescar
+                        return checkAuthAndAdmin();
+                    } else {
+                        logout();
+                        return false;
+                    }
                 } else {
                     console.error('Error verificando token:', response.status);
+                    showAlert('Error de autenticación', 'error');
+                    logout();
                     return false;
                 }
             } catch (error) {
-                console.error('Error de conexión verificando token:', error);
+                console.error('Error verificando permisos:', error);
+                showAlert('Error de conexión con el servidor', 'error');
+                // Verificar si el backend está corriendo
+                testBackendConnection();
                 return false;
             }
             
@@ -1626,7 +1602,7 @@
             }
             
             try {
-                const response = await fetch(`${API_URL}/auth/refresh`, {
+                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${refreshToken}`,
@@ -1706,7 +1682,7 @@
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
                 // Opcional: llamar al endpoint de logout del backend
-                fetch(`${API_URL}/auth/logout`, {
+                fetch(`${API_BASE_URL}/auth/logout`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1868,20 +1844,28 @@
         }
         
         function testBackendConnection() {
-            fetch(`${BACKEND_URL}/health`, {
-                method: 'GET'
+            console.log('🔌 Probando conexión con backend...');
+            
+            // Primero probar con el endpoint básico
+            fetch('http://localhost:5000/health', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
             .then(response => {
                 if (response.ok) {
-                    const statusElement = document.getElementById('backend-status');
-                    statusElement.textContent = 'Conectado';
-                    statusElement.style.color = '#27ae60';
-                    document.getElementById('connection-status').className = 'connection-status connection-online';
-                    document.getElementById('status-text').textContent = 'Conectado al Backend';
-                    showAlert('✅ Conexión con el backend establecida correctamente', 'success');
-                } else {
-                    throw new Error('Backend no responde');
+                    return response.json().then(data => {
+                        const statusElement = document.getElementById('backend-status');
+                        statusElement.textContent = 'Conectado';
+                        statusElement.style.color = '#27ae60';
+                        document.getElementById('connection-status').className = 'connection-status connection-online';
+                        document.getElementById('status-text').textContent = 'Conectado al Backend';
+                        showAlert('✅ Conexión con el backend establecida correctamente', 'success');
+                        return true;
+                    });
                 }
+                throw new Error('Backend no responde');
             })
             .catch(error => {
                 console.error('Error conectando al backend:', error);
@@ -1890,17 +1874,21 @@
                 statusElement.style.color = '#e74c3c';
                 document.getElementById('connection-status').className = 'connection-status connection-offline';
                 document.getElementById('status-text').textContent = 'Error de conexión';
-                showAlert('❌ No se pudo conectar al backend. Verifica que el servidor esté ejecutándose.', 'error');
+                showAlert('❌ No se pudo conectar al backend. Verifica que el servidor Flask esté ejecutándose en http://localhost:5000', 'error');
+                return false;
             });
         }
         
         // ========== DASHBOARD ==========
         function loadDashboardData() {
-            if (!token || !isAdmin) return;
+            if (!token || !isAdmin) {
+                console.log('No se carga dashboard: sin token o no es admin');
+                return;
+            }
             
             console.log('📈 Cargando datos del dashboard...');
             
-            fetch(`${API_URL}/admin/dashboard`, {
+            fetch(`${API_BASE_URL}/admin/dashboard`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -1910,24 +1898,37 @@
             .then(response => {
                 if (response.ok) {
                     return response.json().then(stats => {
+                        console.log('✅ Datos del dashboard:', stats);
                         updateDashboardStats(stats);
                         initCharts(stats);
                         updateFooterStats(stats);
                         loadRecentActivity();
                     });
                 } else if (response.status === 403) {
+                    console.error('403: No tienes permisos de administrador');
                     showAlert('No tienes permisos de administrador para ver el dashboard', 'error');
                     return;
+                } else if (response.status === 401) {
+                    console.error('401: Token expirado');
+                    // Intentar refrescar token
+                    refreshAuthToken().then(refreshed => {
+                        if (refreshed) {
+                            loadDashboardData(); // Reintentar
+                        }
+                    });
+                    return;
                 }
-                throw new Error('Error cargando dashboard');
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
             })
             .catch(error => {
                 console.error('Error cargando dashboard:', error);
-                showAlert('Error cargando datos del dashboard', 'error');
+                showAlert('Error cargando datos del dashboard: ' + error.message, 'error');
             });
         }
         
         function updateDashboardStats(stats) {
+            if (!stats) return;
+            
             document.getElementById('stat-users').textContent = stats.total_users || 0;
             document.getElementById('stat-users-desc').textContent = `${stats.active_users || 0} activos`;
             
@@ -1942,6 +1943,8 @@
         }
         
         function updateFooterStats(stats) {
+            if (!stats) return;
+            
             document.getElementById('footer-users-count').textContent = stats.total_users || 0;
             document.getElementById('footer-tours-count').textContent = stats.total_tours || 0;
         }
@@ -1955,13 +1958,18 @@
                     ctx1.chart.destroy();
                 }
                 
+                // Datos de ejemplo para gráfico de actividad
+                const activityData = stats.recent_registrations ? 
+                    [stats.recent_registrations, 3, 5, 7, 6, 8, 10] :
+                    [0, 2, 4, 6, 5, 7, 9];
+                
                 ctx1.chart = new Chart(ctx1, {
                     type: 'line',
                     data: {
                         labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
                         datasets: [{
                             label: 'Actividad',
-                            data: [stats.recent_registrations || 0, 3, 5, 7, 6, 8, 10],
+                            data: activityData,
                             borderColor: '#3498db',
                             backgroundColor: 'rgba(52, 152, 219, 0.1)',
                             tension: 0.4,
@@ -2077,7 +2085,7 @@
                 </tr>
             `;
             
-            fetch(`${API_URL}/admin/users`, {
+            fetch(`${API_BASE_URL}/admin/users`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -2095,6 +2103,8 @@
                     });
                 } else if (response.status === 403) {
                     throw new Error('No tienes permisos de administrador');
+                } else if (response.status === 401) {
+                    throw new Error('Token expirado o inválido');
                 } else {
                     throw new Error(`Error ${response.status}: ${response.statusText}`);
                 }
@@ -2201,7 +2211,7 @@
             
             showFormAlert('add-user-alert', 'Creando usuario...', 'info');
             
-            fetch(`${API_URL}/auth/register`, {
+            fetch(`${API_BASE_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2278,39 +2288,14 @@
             
             showFormAlert('edit-user-alert', 'Actualizando usuario...', 'info');
             
-            // En un sistema real, aquí harías una llamada PUT al backend
-            fetch(`${API_URL}/auth/users/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else if (response.status === 403) {
-                    throw new Error('No tienes permisos para editar usuarios');
-                } else {
-                    throw new Error('Error actualizando usuario');
-                }
-            })
-            .then(data => {
-                if (data.success) {
-                    showFormAlert('edit-user-alert', 'Usuario actualizado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-edit-user');
-                        loadUsers();
-                    }, 1500);
-                } else {
-                    showFormAlert('edit-user-alert', data.error || 'Error al actualizar usuario', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error actualizando usuario:', error);
-                showFormAlert('edit-user-alert', error.message, 'error');
-            });
+            // Nota: En tu app.py actual no hay un endpoint PUT para usuarios
+            // Por ahora simulamos la actualización
+            setTimeout(() => {
+                showFormAlert('edit-user-alert', 'Funcionalidad en desarrollo. En una versión futura se conectará al backend.', 'info');
+                setTimeout(() => {
+                    closeModal('modal-edit-user');
+                }, 2000);
+            }, 1000);
         }
         
         function deleteUser(userId, userName) {
@@ -2320,41 +2305,24 @@
             }
             
             confirmAction(`¿Eliminar al usuario "${userName}"? Esta acción no se puede deshacer.`, function() {
-                fetch(`${API_URL}/auth/users/${userId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        showAlert(`Usuario "${userName}" eliminado correctamente`, 'success');
-                        loadUsers();
-                        loadDashboardData();
-                    } else if (response.status === 403) {
-                        throw new Error('No tienes permisos para eliminar usuarios');
-                    } else {
-                        throw new Error('Error eliminando usuario');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error eliminando usuario:', error);
-                    showAlert(error.message, 'error');
-                });
+                // Nota: En tu app.py actual no hay un endpoint DELETE para usuarios
+                // Por ahora simulamos
+                showAlert(`Funcionalidad en desarrollo. En una versión futura se podrán eliminar usuarios desde el backend.`, 'info');
             });
         }
         
         function exportUsersToCSV() {
             showAlert('Exportando usuarios a CSV...', 'info');
             setTimeout(() => {
-                showAlert('Usuarios exportados a CSV (simulación)', 'success');
+                showAlert('Funcionalidad en desarrollo', 'info');
             }, 2000);
         }
         
         // ========== TOURS ==========
         function loadTours() {
-            fetch(`${API_URL}/tours`, {
+            console.log('🚤 Cargando tours...');
+            
+            fetch(`${API_BASE_URL}/tours`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -2363,6 +2331,7 @@
             .then(response => {
                 if (response.ok) {
                     return response.json().then(tours => {
+                        console.log('✅ Tours cargados:', tours);
                         renderToursTable(tours);
                     });
                 }
@@ -2370,7 +2339,7 @@
             })
             .catch(error => {
                 console.error('Error cargando tours:', error);
-                showAlert('Error cargando tours', 'error');
+                showAlert('Error cargando tours: ' + error.message, 'error');
                 renderEmptyToursTable();
             });
         }
@@ -2472,15 +2441,13 @@
             
             showFormAlert('add-tour-alert', 'Creando tour...', 'info');
             
-            // En un sistema real, aquí harías POST al backend
+            // Nota: En tu app.py actual no hay un endpoint POST para tours
             // Por ahora simulamos
             setTimeout(() => {
-                showFormAlert('add-tour-alert', 'Tour creado correctamente (simulación)', 'success');
+                showFormAlert('add-tour-alert', 'Funcionalidad en desarrollo. En una versión futura se podrán crear tours desde el backend.', 'info');
                 setTimeout(() => {
                     closeModal('modal-add-tour');
-                    loadTours();
-                    loadDashboardData();
-                }, 1500);
+                }, 2000);
             }, 1000);
         }
         
@@ -2500,17 +2467,20 @@
             }
             
             confirmAction(`¿Eliminar el tour "${tourName}"?`, function() {
-                showAlert(`Tour "${tourName}" eliminado (simulación)`, 'success');
-                loadTours();
-                loadDashboardData();
+                showAlert('Funcionalidad en desarrollo', 'info');
             });
         }
         
         // ========== RESERVAS ==========
         function loadBookings() {
-            if (!token) return;
+            if (!token) {
+                showAlert('Debes iniciar sesión para ver reservas', 'error');
+                return;
+            }
             
-            fetch(`${API_URL}/user/bookings`, {
+            console.log('📅 Cargando reservas...');
+            
+            fetch(`${API_BASE_URL}/user/bookings`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -2521,15 +2491,22 @@
                 if (response.ok) {
                     return response.json().then(data => {
                         if (data.success) {
+                            console.log('✅ Reservas cargadas:', data.bookings);
                             renderBookingsTable(data.bookings);
                         }
                     });
+                } else if (response.status === 401) {
+                    showAlert('Sesión expirada. Por favor inicia sesión nuevamente.', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                } else {
+                    throw new Error('Error cargando reservas');
                 }
-                throw new Error('Error cargando reservas');
             })
             .catch(error => {
                 console.error('Error cargando reservas:', error);
-                showAlert('Error cargando reservas', 'error');
+                showAlert('Error cargando reservas: ' + error.message, 'error');
                 renderEmptyBookingsTable();
             });
         }
@@ -2589,13 +2566,15 @@
         function exportBookingsToCSV() {
             showAlert('Exportando reservas a CSV...', 'info');
             setTimeout(() => {
-                showAlert('Reservas exportadas a CSV (simulación)', 'success');
+                showAlert('Funcionalidad en desarrollo', 'info');
             }, 2000);
         }
         
         // ========== BLOG ==========
         function loadBlogPosts() {
-            fetch(`${API_URL}/blog`, {
+            console.log('📰 Cargando artículos del blog...');
+            
+            fetch(`${API_BASE_URL}/blog`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -2604,6 +2583,7 @@
             .then(response => {
                 if (response.ok) {
                     return response.json().then(posts => {
+                        console.log('✅ Artículos cargados:', posts);
                         renderBlogTable(posts);
                     });
                 }
@@ -2611,7 +2591,7 @@
             })
             .catch(error => {
                 console.error('Error cargando blog:', error);
-                showAlert('Error cargando artículos del blog', 'error');
+                showAlert('Error cargando artículos del blog: ' + error.message, 'error');
                 renderEmptyBlogTable();
             });
         }
@@ -2704,15 +2684,13 @@
             
             showFormAlert('add-blog-alert', 'Publicando artículo...', 'info');
             
-            // En un sistema real, aquí harías POST al backend
+            // Nota: En tu app.py actual no hay un endpoint POST para blog
             // Por ahora simulamos
             setTimeout(() => {
-                showFormAlert('add-blog-alert', 'Artículo publicado correctamente (simulación)', 'success');
+                showFormAlert('add-blog-alert', 'Funcionalidad en desarrollo. En una versión futura se podrán crear artículos desde el backend.', 'info');
                 setTimeout(() => {
                     closeModal('modal-add-blog');
-                    loadBlogPosts();
-                    loadDashboardData();
-                }, 1500);
+                }, 2000);
             }, 1000);
         }
         
@@ -2736,9 +2714,7 @@
             }
             
             confirmAction(`¿Eliminar el artículo "${postTitle}"?`, function() {
-                showAlert(`Artículo "${postTitle}" eliminado (simulación)`, 'success');
-                loadBlogPosts();
-                loadDashboardData();
+                showAlert('Funcionalidad en desarrollo', 'info');
             });
         }
         
@@ -2878,14 +2854,14 @@
         function exportReportToPDF() {
             showAlert('Generando PDF del reporte...', 'info');
             setTimeout(() => {
-                showAlert('Reporte exportado a PDF (simulación)', 'success');
+                showAlert('Funcionalidad en desarrollo', 'info');
             }, 2000);
         }
         
         function exportUsersReport() {
             showAlert('Exportando reporte de usuarios...', 'info');
             setTimeout(() => {
-                showAlert('Reporte de usuarios exportado (simulación)', 'success');
+                showAlert('Funcionalidad en desarrollo', 'info');
             }, 2000);
         }
         
@@ -2896,15 +2872,25 @@
         
         // ========== CONFIGURACIÓN ==========
         function loadProfile() {
-            if (!currentUser) return;
+            if (!currentUser) {
+                showAlert('No se pudo cargar el perfil. Verifica tu sesión.', 'error');
+                return;
+            }
             
             document.getElementById('profile-name').value = currentUser.nombre || '';
             document.getElementById('profile-email').value = currentUser.email || '';
             document.getElementById('profile-phone').value = currentUser.telefono || '';
             document.getElementById('profile-role').value = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
         }
         
         function updateProfile() {
+            if (!currentUser) {
+                showAlert('No hay usuario autenticado', 'error');
+                return;
+            }
+            
             const name = document.getElementById('profile-name').value.trim();
             const email = document.getElementById('profile-email').value.trim();
             const phone = document.getElementById('profile-phone').value.trim();
@@ -2933,7 +2919,7 @@
             
             showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
             
-            fetch(`${API_URL}/auth/profile`, {
+            fetch(`${API_BASE_URL}/auth/profile`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -3001,7 +2987,8 @@
         function showSystemInfo() {
             const info = `
                 <strong><i class="bi bi-info-circle"></i> Información del Sistema:</strong><br><br>
-                • Backend: ${BACKEND_URL}<br>
+                • Backend: http://localhost:5000<br>
+                • API Base: ${API_BASE_URL}<br>
                 • Usuario: ${currentUser?.nombre || 'No cargado'}<br>
                 • Email: ${currentUser?.email || 'No cargado'}<br>
                 • Rol: ${currentUser?.rol || 'Desconocido'}<br>
@@ -3013,21 +3000,6 @@
             `;
             
             showAlert(info, 'info');
-        }
-        
-        // Función para cargar perfil cuando se muestra la sección de configuración
-        function loadProfile() {
-            if (!currentUser) {
-                showAlert('No se pudo cargar el perfil. Verifica tu sesión.', 'error');
-                return;
-            }
-            
-            document.getElementById('profile-name').value = currentUser.nombre || '';
-            document.getElementById('profile-email').value = currentUser.email || '';
-            document.getElementById('profile-phone').value = currentUser.telefono || '';
-            document.getElementById('profile-role').value = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
-            document.getElementById('current-password').value = '';
-            document.getElementById('new-password').value = '';
         }
 
     </script>
