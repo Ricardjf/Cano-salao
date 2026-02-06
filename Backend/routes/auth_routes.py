@@ -1,4 +1,4 @@
-# Backend/routes/auth_routes.py - VERSIÓN CORREGIDA PARA SESIONES PERSISTENTES
+# Backend/routes/auth_routes.py - VERSIÓN FINAL CORREGIDA
 from datetime import timedelta
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import (
@@ -120,28 +120,18 @@ def login():
             logger.warning(f"Error al actualizar último acceso: {e}")
             # Continuar aunque falle esta parte
         
-        # Crear tokens
-        identity = {
-            'id': usuario.id,
-            'email': usuario.email,
-            'rol': usuario.rol
-        }
+        # Crear tokens - IDENTITY DEBE SER UN STRING (solo el ID)
+        identity = str(usuario.id)  # ¡IMPORTANTE: Solo el ID como string!
         
         # OBTENER DURACIÓN CORRECTA - SESIONES DE 30 DÍAS
         jwt_expires = current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES')
         
-        # DEBUG: Verificar configuración
-        logger.debug(f"Configuración JWT obtenida: {jwt_expires}")
-        
         # Manejar diferentes formatos de duración
         if isinstance(jwt_expires, (int, float)):
-            # Si es número (segundos), convertir a timedelta
             expires_delta = timedelta(seconds=jwt_expires)
         elif isinstance(jwt_expires, timedelta):
-            # Si ya es timedelta, usarlo directamente
             expires_delta = jwt_expires
         else:
-            # Valor por defecto: 30 DÍAS
             expires_delta = timedelta(days=30)
             logger.warning(f"Usando valor por defecto de 30 días para JWT")
         
@@ -159,17 +149,24 @@ def login():
         
         logger.info(f"Login exitoso: {email} (ID: {usuario.id}), Token expira en: {expires_delta}")
         
-        # RESPUESTA CORREGIDA: El frontend busca "token", no "access_token"
+        # RESPUESTA CORREGIDA
         return jsonify({
             'success': True,
             'message': 'Inicio de sesión exitoso',
-            'token': access_token,  # ¡IMPORTANTE! El frontend espera "token"
-            'access_token': access_token,  # Para compatibilidad con otras partes
+            'token': access_token,
+            'access_token': access_token,
             'refresh_token': refresh_token,
-            'user': usuario.to_auth_dict(),
+            'user': {
+                'id': usuario.id,
+                'nombre': usuario.nombre,
+                'email': usuario.email,
+                'rol': usuario.rol,
+                'activo': usuario.activo,
+                'telefono': usuario.telefono
+            },
             'token_type': 'Bearer',
             'expires_in': expires_delta.total_seconds(),
-            'expires_days': expires_delta.days  # Información adicional
+            'expires_days': expires_delta.days
         }), 200
         
     except Exception as e:
@@ -257,26 +254,21 @@ def register():
                 email=email,
                 telefono=telefono,
                 rol=rol,
-                email_verificado=False  # En producción, requerir verificación
+                email_verificado=False
             )
             usuario.set_password(password)
             
             db.session.add(usuario)
             db.session.commit()
             
-            # Crear token de acceso con duración extendida (30 días)
-            identity = {
-                'id': usuario.id,
-                'email': usuario.email,
-                'rol': usuario.rol
-            }
+            # Crear tokens - IDENTITY DEBE SER UN STRING
+            identity = str(usuario.id)  # Solo el ID como string
             
             access_token = create_access_token(
                 identity=identity,
                 expires_delta=timedelta(days=30)
             )
             
-            # Crear refresh token (1 año)
             refresh_token = create_refresh_token(
                 identity=identity,
                 expires_delta=timedelta(days=365)
@@ -284,14 +276,20 @@ def register():
             
             logger.info(f"Nuevo usuario registrado: {email} (ID: {usuario.id}, Rol: {rol})")
             
-            # RESPUESTA CORREGIDA: El frontend busca "token"
             return jsonify({
                 'success': True,
                 'message': 'Registro exitoso. ¡Bienvenido/a!',
-                'token': access_token,  # ¡IMPORTANTE!
-                'access_token': access_token,  # Compatibilidad
+                'token': access_token,
+                'access_token': access_token,
                 'refresh_token': refresh_token,
-                'user': usuario.to_auth_dict(),
+                'user': {
+                    'id': usuario.id,
+                    'nombre': usuario.nombre,
+                    'email': usuario.email,
+                    'rol': usuario.rol,
+                    'activo': usuario.activo,
+                    'telefono': usuario.telefono
+                },
                 'is_first_user': rol == 'admin',
                 'expires_in': timedelta(days=30).total_seconds()
             }), 201
@@ -320,9 +318,10 @@ def validate_token():
     Headers: Authorization: Bearer <token>
     """
     try:
-        current_user = get_jwt_identity()
+        # get_jwt_identity() ahora devuelve un string (el ID)
+        current_user_id = get_jwt_identity()
         
-        if not current_user or 'id' not in current_user:
+        if not current_user_id:
             return jsonify({
                 'success': False,
                 'error': 'Token inválido'
@@ -330,7 +329,7 @@ def validate_token():
         
         # Buscar usuario en base de datos
         from models.user import User
-        usuario = User.find_by_id(current_user['id'])
+        usuario = User.find_by_id(int(current_user_id))  # Convertir a int
         
         if not usuario:
             return jsonify({
@@ -349,7 +348,6 @@ def validate_token():
         expires_at = jwt_data.get('exp')
         
         # Calcular tiempo restante
-        from datetime import datetime
         import time
         current_time = time.time()
         time_left = expires_at - current_time if expires_at else 0
@@ -357,9 +355,16 @@ def validate_token():
         return jsonify({
             'success': True,
             'message': 'Token válido',
-            'user': usuario.to_auth_dict(),
+            'user': {
+                'id': usuario.id,
+                'nombre': usuario.nombre,
+                'email': usuario.email,
+                'rol': usuario.rol,
+                'activo': usuario.activo,
+                'telefono': usuario.telefono
+            },
             'token_info': {
-                'identity': current_user,
+                'identity': current_user_id,
                 'expires_at': expires_at,
                 'time_left_seconds': time_left,
                 'time_left_days': time_left / (24 * 3600) if time_left > 0 else 0,
@@ -383,9 +388,18 @@ def refresh():
     Headers: Authorization: Bearer <refresh_token>
     """
     try:
-        current_user = get_jwt_identity()
+        current_user_id = get_jwt_identity()  # Esto es un string ID
         
-        # Obtener duración de la configuración o usar 30 días por defecto
+        # Verificar usuario
+        from models.user import User
+        user = User.find_by_id(int(current_user_id))
+        if not user or not user.activo:
+            return jsonify({
+                'success': False,
+                'error': 'Usuario no encontrado o inactivo'
+            }), 401
+        
+        # Obtener duración
         jwt_expires = current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES', timedelta(days=30))
         
         if isinstance(jwt_expires, (int, float)):
@@ -396,17 +410,16 @@ def refresh():
             expires_delta = timedelta(days=30)
         
         access_token = create_access_token(
-            identity=current_user,
+            identity=current_user_id,  # Ya es un string
             expires_delta=expires_delta
         )
         
-        logger.info(f"Token refrescado para usuario ID: {current_user.get('id')}")
+        logger.info(f"Token refrescado para usuario ID: {current_user_id}")
         
-        # RESPUESTA CORREGIDA: El frontend busca "token"
         return jsonify({
             'success': True,
-            'token': access_token,  # ¡IMPORTANTE!
-            'access_token': access_token,  # Compatibilidad
+            'token': access_token,
+            'access_token': access_token,
             'token_type': 'Bearer',
             'expires_in': expires_delta.total_seconds()
         }), 200
@@ -426,10 +439,10 @@ def get_profile():
     GET /api/auth/profile
     """
     try:
-        current_user = get_jwt_identity()
+        current_user_id = get_jwt_identity()
         
         from models.user import User
-        usuario = User.find_by_id(current_user['id'])
+        usuario = User.find_by_id(int(current_user_id))
         
         if not usuario:
             return jsonify({
@@ -457,7 +470,7 @@ def update_profile():
     PUT /api/auth/profile
     """
     try:
-        current_user = get_jwt_identity()
+        current_user_id = get_jwt_identity()
         data = request.get_json()
         
         if not data:
@@ -469,7 +482,7 @@ def update_profile():
         from models.user import User
         from models import db
         
-        usuario = User.find_by_id(current_user['id'])
+        usuario = User.find_by_id(int(current_user_id))
         
         if not usuario:
             return jsonify({
@@ -523,9 +536,8 @@ def logout():
     Cerrar sesión (en el lado del cliente)
     POST /api/auth/logout
     """
-    # Nota: JWT es stateless, este endpoint es principalmente para limpieza en el cliente
-    current_user = get_jwt_identity()
-    logger.info(f"Logout solicitado por usuario ID: {current_user.get('id')}")
+    current_user_id = get_jwt_identity()
+    logger.info(f"Logout solicitado por usuario ID: {current_user_id}")
     
     return jsonify({
         'success': True,
@@ -593,12 +605,8 @@ def test_login():
         if role not in ['admin', 'user']:
             role = 'admin'
         
-        # Crear usuario de prueba
-        identity = {
-            'id': 999 if role == 'admin' else 998,
-            'email': f'{role}@canosalaotours.com',
-            'rol': role
-        }
+        # Crear usuario de prueba - identity debe ser string
+        identity = '999' if role == 'admin' else '998'
         
         # Token de 30 días para pruebas
         access_token = create_access_token(
@@ -607,20 +615,19 @@ def test_login():
         )
         
         user_data = {
-            'id': identity['id'],
+            'id': int(identity),
             'nombre': 'Administrador' if role == 'admin' else 'Usuario Demo',
-            'email': identity['email'],
+            'email': f'{role}@canosalaotours.com',
             'rol': role,
             'activo': True,
             'telefono': '+58 412-205-6558' if role == 'admin' else '+58 414-123-4567'
         }
         
-        # RESPUESTA CORREGIDA: El frontend busca "token"
         return jsonify({
             'success': True,
             'message': f'Login de prueba como {role}',
-            'token': access_token,  # ¡IMPORTANTE!
-            'access_token': access_token,  # Compatibilidad
+            'token': access_token,
+            'access_token': access_token,
             'user': user_data,
             'expires_in': timedelta(days=30).total_seconds(),
             'note': 'Este es un usuario de prueba para desarrollo (30 días de sesión)'
@@ -633,7 +640,7 @@ def test_login():
             'error': 'Error en login de prueba'
         }), 500
 
-# ========== RUTAS ADMINISTRATIVAS (solo para admins) ==========
+# ========== RUTAS ADMINISTRATIVAS ==========
 @auth_bp.route('/users', methods=['GET'])
 @jwt_required()
 def get_users():
@@ -642,15 +649,18 @@ def get_users():
     GET /api/auth/users
     """
     try:
-        current_user = get_jwt_identity()
+        current_user_id = get_jwt_identity()
         
-        if current_user.get('rol') != 'admin':
+        # Verificar si es admin
+        from models.user import User
+        usuario = User.find_by_id(int(current_user_id))
+        
+        if not usuario or usuario.rol != 'admin':
             return jsonify({
                 'success': False,
                 'error': 'Se requieren permisos de administrador'
             }), 403
         
-        from models.user import User
         users = User.query.all()
         
         return jsonify({
@@ -675,7 +685,7 @@ def get_session_info():
     GET /api/auth/session-info
     """
     try:
-        current_user = get_jwt_identity()
+        current_user_id = get_jwt_identity()
         jwt_data = get_jwt()
         
         from datetime import datetime
@@ -694,12 +704,12 @@ def get_session_info():
             expires_date = None
         
         from models.user import User
-        usuario = User.find_by_id(current_user['id'])
+        usuario = User.find_by_id(int(current_user_id))
         
         response_data = {
             'success': True,
-            'user': usuario.to_auth_dict() if usuario else None,
             'session': {
+                'user_id': current_user_id,
                 'issued_at': issued_at,
                 'issued_date': datetime.fromtimestamp(issued_at).isoformat() if issued_at else None,
                 'expires_at': expires_at,
@@ -713,7 +723,11 @@ def get_session_info():
         }
         
         if usuario:
-            response_data['user_extra'] = {
+            response_data['user'] = {
+                'id': usuario.id,
+                'nombre': usuario.nombre,
+                'email': usuario.email,
+                'rol': usuario.rol,
                 'last_login': usuario.ultimo_acceso.isoformat() if usuario.ultimo_acceso else None,
                 'email_verified': usuario.email_verificado,
                 'active': usuario.activo
