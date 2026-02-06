@@ -1,4 +1,4 @@
-# Backend/routes/auth_routes.py - VERSIÓN FINAL CORREGIDA
+# Backend/routes/auth_routes.py - VERSIÓN CORREGIDA Y FUNCIONAL
 from datetime import timedelta
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import (
@@ -114,31 +114,24 @@ def login():
         # Actualizar último acceso
         try:
             from models import db
-            usuario.ultimo_acceso = db.func.now()
+            from datetime import datetime
+            usuario.ultimo_acceso = datetime.utcnow()
             db.session.commit()
         except Exception as e:
             logger.warning(f"Error al actualizar último acceso: {e}")
             # Continuar aunque falle esta parte
         
-        # Crear tokens - IDENTITY DEBE SER UN STRING (solo el ID)
-        identity = str(usuario.id)  # ¡IMPORTANTE: Solo el ID como string!
+        # ¡IMPORTANTE! Para Flask-JWT-Extended, identity debe ser un STRING
+        # Pasamos solo el ID como string
+        identity = str(usuario.id)
         
-        # OBTENER DURACIÓN CORRECTA - SESIONES DE 30 DÍAS
-        jwt_expires = current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES')
-        
-        # Manejar diferentes formatos de duración
-        if isinstance(jwt_expires, (int, float)):
-            expires_delta = timedelta(seconds=jwt_expires)
-        elif isinstance(jwt_expires, timedelta):
-            expires_delta = jwt_expires
-        else:
-            expires_delta = timedelta(days=30)
-            logger.warning(f"Usando valor por defecto de 30 días para JWT")
+        # Obtener duración de la configuración
+        jwt_expires = current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES', timedelta(days=30))
         
         # Crear token de acceso con duración extendida
         access_token = create_access_token(
             identity=identity,
-            expires_delta=expires_delta
+            expires_delta=jwt_expires
         )
         
         # Crear refresh token (1 año)
@@ -147,33 +140,28 @@ def login():
             expires_delta=timedelta(days=365)
         )
         
-        logger.info(f"Login exitoso: {email} (ID: {usuario.id}), Token expira en: {expires_delta}")
+        logger.info(f"✅ Login exitoso: {email} (ID: {usuario.id}), Token expira en: {jwt_expires}")
         
-        # RESPUESTA CORREGIDA
+        # RESPUESTA CORREGIDA - El frontend busca "token" como campo principal
         return jsonify({
             'success': True,
             'message': 'Inicio de sesión exitoso',
-            'token': access_token,
-            'access_token': access_token,
+            'token': access_token,  # ← ¡IMPORTANTE! El frontend busca "token"
+            'access_token': access_token,  # ← Para compatibilidad
             'refresh_token': refresh_token,
-            'user': {
-                'id': usuario.id,
-                'nombre': usuario.nombre,
-                'email': usuario.email,
-                'rol': usuario.rol,
-                'activo': usuario.activo,
-                'telefono': usuario.telefono
-            },
+            'user': usuario.to_auth_dict(),
             'token_type': 'Bearer',
-            'expires_in': expires_delta.total_seconds(),
-            'expires_days': expires_delta.days
+            'expires_in': int(jwt_expires.total_seconds()),
+            'expires_days': jwt_expires.days,
+            'persistent_session': True
         }), 200
         
     except Exception as e:
-        logger.error(f"Error en login: {str(e)}", exc_info=True)
+        logger.error(f"❌ Error en login: {str(e)}", exc_info=True)
         return jsonify({
             'success': False,
-            'error': 'Error interno del servidor'
+            'error': 'Error interno del servidor',
+            'details': str(e) if current_app.config.get('DEBUG') else None
         }), 500
 
 @auth_bp.route('/register', methods=['POST'])
@@ -244,6 +232,7 @@ def register():
         try:
             from models import db
             from models.user import User
+            from datetime import datetime
             
             # Determinar rol (primer usuario = admin, otros = user)
             user_count = User.query.count()
@@ -254,59 +243,59 @@ def register():
                 email=email,
                 telefono=telefono,
                 rol=rol,
-                email_verificado=False
+                email_verificado=False,
+                fecha_registro=datetime.utcnow(),
+                activo=True
             )
             usuario.set_password(password)
             
             db.session.add(usuario)
             db.session.commit()
             
-            # Crear tokens - IDENTITY DEBE SER UN STRING
-            identity = str(usuario.id)  # Solo el ID como string
+            # ¡IMPORTANTE! Identity debe ser string (solo el ID)
+            identity = str(usuario.id)
             
+            # Crear token de acceso con duración extendida (30 días)
             access_token = create_access_token(
                 identity=identity,
                 expires_delta=timedelta(days=30)
             )
             
+            # Crear refresh token (1 año)
             refresh_token = create_refresh_token(
                 identity=identity,
                 expires_delta=timedelta(days=365)
             )
             
-            logger.info(f"Nuevo usuario registrado: {email} (ID: {usuario.id}, Rol: {rol})")
+            logger.info(f"✅ Nuevo usuario registrado: {email} (ID: {usuario.id}, Rol: {rol})")
             
+            # RESPUESTA CORREGIDA
             return jsonify({
                 'success': True,
                 'message': 'Registro exitoso. ¡Bienvenido/a!',
-                'token': access_token,
-                'access_token': access_token,
+                'token': access_token,  # ← ¡IMPORTANTE!
+                'access_token': access_token,  # ← Para compatibilidad
                 'refresh_token': refresh_token,
-                'user': {
-                    'id': usuario.id,
-                    'nombre': usuario.nombre,
-                    'email': usuario.email,
-                    'rol': usuario.rol,
-                    'activo': usuario.activo,
-                    'telefono': usuario.telefono
-                },
+                'user': usuario.to_auth_dict(),
                 'is_first_user': rol == 'admin',
                 'expires_in': timedelta(days=30).total_seconds()
             }), 201
             
         except Exception as e:
             db.session.rollback()
-            logger.error(f"Error al crear usuario: {str(e)}", exc_info=True)
+            logger.error(f"❌ Error al crear usuario: {str(e)}", exc_info=True)
             return jsonify({
                 'success': False,
-                'error': 'Error al crear el usuario'
+                'error': 'Error al crear el usuario',
+                'details': str(e) if current_app.config.get('DEBUG') else None
             }), 500
             
     except Exception as e:
-        logger.error(f"Error en registro: {str(e)}", exc_info=True)
+        logger.error(f"❌ Error en registro: {str(e)}", exc_info=True)
         return jsonify({
             'success': False,
-            'error': 'Error interno del servidor'
+            'error': 'Error interno del servidor',
+            'details': str(e) if current_app.config.get('DEBUG') else None
         }), 500
 
 @auth_bp.route('/validate', methods=['GET'])
@@ -318,7 +307,7 @@ def validate_token():
     Headers: Authorization: Bearer <token>
     """
     try:
-        # get_jwt_identity() ahora devuelve un string (el ID)
+        # get_jwt_identity() devuelve el string que guardamos (el ID)
         current_user_id = get_jwt_identity()
         
         if not current_user_id:
@@ -327,9 +316,12 @@ def validate_token():
                 'error': 'Token inválido'
             }), 401
         
+        # Convertir a int para buscar en BD
+        user_id = int(current_user_id)
+        
         # Buscar usuario en base de datos
         from models.user import User
-        usuario = User.find_by_id(int(current_user_id))  # Convertir a int
+        usuario = User.find_by_id(user_id)
         
         if not usuario:
             return jsonify({
@@ -348,6 +340,7 @@ def validate_token():
         expires_at = jwt_data.get('exp')
         
         # Calcular tiempo restante
+        from datetime import datetime
         import time
         current_time = time.time()
         time_left = expires_at - current_time if expires_at else 0
@@ -355,28 +348,30 @@ def validate_token():
         return jsonify({
             'success': True,
             'message': 'Token válido',
-            'user': {
-                'id': usuario.id,
-                'nombre': usuario.nombre,
-                'email': usuario.email,
-                'rol': usuario.rol,
-                'activo': usuario.activo,
-                'telefono': usuario.telefono
-            },
+            'user': usuario.to_auth_dict(),
             'token_info': {
                 'identity': current_user_id,
                 'expires_at': expires_at,
+                'expires_date': datetime.fromtimestamp(expires_at).isoformat() if expires_at else None,
                 'time_left_seconds': time_left,
                 'time_left_days': time_left / (24 * 3600) if time_left > 0 else 0,
+                'time_left_hours': time_left / 3600 if time_left > 0 else 0,
                 'type': jwt_data.get('type', 'access')
             }
         }), 200
         
-    except Exception as e:
-        logger.error(f"Error validando token: {str(e)}", exc_info=True)
+    except (ValueError, TypeError) as e:
+        logger.error(f"❌ Error de conversión de ID: {str(e)}")
         return jsonify({
             'success': False,
-            'error': 'Error al validar token'
+            'error': 'Token inválido - formato incorrecto'
+        }), 401
+    except Exception as e:
+        logger.error(f"❌ Error validando token: {str(e)}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Error al validar token',
+            'details': str(e) if current_app.config.get('DEBUG') else None
         }), 500
 
 @auth_bp.route('/refresh', methods=['POST'])
@@ -388,47 +383,68 @@ def refresh():
     Headers: Authorization: Bearer <refresh_token>
     """
     try:
-        current_user_id = get_jwt_identity()  # Esto es un string ID
+        # get_jwt_identity() devuelve el string ID
+        current_user_id = get_jwt_identity()
+        
+        if not current_user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Token inválido'
+            }), 401
+        
+        # Convertir a int para buscar en BD
+        user_id = int(current_user_id)
         
         # Verificar usuario
         from models.user import User
-        user = User.find_by_id(int(current_user_id))
+        user = User.find_by_id(user_id)
         if not user or not user.activo:
             return jsonify({
                 'success': False,
                 'error': 'Usuario no encontrado o inactivo'
             }), 401
         
+        # Actualizar actividad
+        try:
+            from models import db
+            from datetime import datetime
+            user.last_activity = datetime.utcnow()
+            db.session.commit()
+        except Exception as e:
+            logger.warning(f"Error actualizando actividad: {e}")
+        
         # Obtener duración
         jwt_expires = current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES', timedelta(days=30))
         
-        if isinstance(jwt_expires, (int, float)):
-            expires_delta = timedelta(seconds=jwt_expires)
-        elif isinstance(jwt_expires, timedelta):
-            expires_delta = jwt_expires
-        else:
-            expires_delta = timedelta(days=30)
-        
-        access_token = create_access_token(
-            identity=current_user_id,  # Ya es un string
-            expires_delta=expires_delta
+        # Crear nuevo access token
+        new_access_token = create_access_token(
+            identity=current_user_id,  # Ya es string
+            expires_delta=jwt_expires
         )
         
-        logger.info(f"Token refrescado para usuario ID: {current_user_id}")
+        logger.info(f"✅ Token refrescado para usuario ID: {user_id}")
         
         return jsonify({
             'success': True,
-            'token': access_token,
-            'access_token': access_token,
-            'token_type': 'Bearer',
-            'expires_in': expires_delta.total_seconds()
+            'token': new_access_token,  # ← ¡IMPORTANTE!
+            'access_token': new_access_token,  # ← Para compatibilidad
+            'user': user.to_auth_dict(),
+            'message': 'Token refrescado exitosamente',
+            'expires_in': int(jwt_expires.total_seconds())
         }), 200
         
-    except Exception as e:
-        logger.error(f"Error refrescando token: {str(e)}")
+    except (ValueError, TypeError) as e:
+        logger.error(f"❌ Error de conversión en refresh: {str(e)}")
         return jsonify({
             'success': False,
-            'error': 'Error al refrescar token'
+            'error': 'Token inválido - formato incorrecto'
+        }), 401
+    except Exception as e:
+        logger.error(f"❌ Error refrescando token: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Error al refrescar token',
+            'details': str(e) if current_app.config.get('DEBUG') else None
         }), 500
 
 @auth_bp.route('/profile', methods=['GET'])
@@ -439,10 +455,20 @@ def get_profile():
     GET /api/auth/profile
     """
     try:
+        # get_jwt_identity() devuelve string ID
         current_user_id = get_jwt_identity()
         
+        if not current_user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Token inválido'
+            }), 401
+        
+        # Convertir a int
+        user_id = int(current_user_id)
+        
         from models.user import User
-        usuario = User.find_by_id(int(current_user_id))
+        usuario = User.find_by_id(user_id)
         
         if not usuario:
             return jsonify({
@@ -450,16 +476,32 @@ def get_profile():
                 'error': 'Usuario no encontrado'
             }), 404
         
+        # Actualizar última actividad
+        try:
+            from models import db
+            from datetime import datetime
+            usuario.last_activity = datetime.utcnow()
+            db.session.commit()
+        except Exception as e:
+            logger.warning(f"Error actualizando actividad: {e}")
+        
         return jsonify({
             'success': True,
             'profile': usuario.to_dict(include_sensitive=True)
         }), 200
         
-    except Exception as e:
-        logger.error(f"Error obteniendo perfil: {str(e)}")
+    except (ValueError, TypeError) as e:
+        logger.error(f"❌ Error de conversión en perfil: {str(e)}")
         return jsonify({
             'success': False,
-            'error': 'Error al obtener perfil'
+            'error': 'Token inválido - formato incorrecto'
+        }), 401
+    except Exception as e:
+        logger.error(f"❌ Error obteniendo perfil: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Error al obtener perfil',
+            'details': str(e) if current_app.config.get('DEBUG') else None
         }), 500
 
 @auth_bp.route('/profile', methods=['PUT'])
@@ -479,10 +521,19 @@ def update_profile():
                 'error': 'Se requiere datos en formato JSON'
             }), 400
         
+        if not current_user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Token inválido'
+            }), 401
+        
+        # Convertir a int
+        user_id = int(current_user_id)
+        
         from models.user import User
         from models import db
         
-        usuario = User.find_by_id(int(current_user_id))
+        usuario = User.find_by_id(user_id)
         
         if not usuario:
             return jsonify({
@@ -521,12 +572,20 @@ def update_profile():
             'profile': usuario.to_dict(include_sensitive=True)
         }), 200
         
-    except Exception as e:
+    except (ValueError, TypeError) as e:
+        logger.error(f"❌ Error de conversión en update: {str(e)}")
         db.session.rollback()
-        logger.error(f"Error actualizando perfil: {str(e)}", exc_info=True)
         return jsonify({
             'success': False,
-            'error': 'Error al actualizar perfil'
+            'error': 'Token inválido - formato incorrecto'
+        }), 401
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"❌ Error actualizando perfil: {str(e)}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Error al actualizar perfil',
+            'details': str(e) if current_app.config.get('DEBUG') else None
         }), 500
 
 @auth_bp.route('/logout', methods=['POST'])
@@ -536,13 +595,21 @@ def logout():
     Cerrar sesión (en el lado del cliente)
     POST /api/auth/logout
     """
-    current_user_id = get_jwt_identity()
-    logger.info(f"Logout solicitado por usuario ID: {current_user_id}")
-    
-    return jsonify({
-        'success': True,
-        'message': 'Sesión cerrada exitosamente'
-    }), 200
+    try:
+        current_user_id = get_jwt_identity()
+        logger.info(f"Logout solicitado por usuario ID: {current_user_id}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Sesión cerrada exitosamente'
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error en logout: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Error al cerrar sesión'
+        }), 500
 
 @auth_bp.route('/check', methods=['GET'])
 def check():
@@ -557,27 +624,20 @@ def check():
         # Obtener configuración de JWT actual
         jwt_expires = current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES', timedelta(days=30))
         
-        if isinstance(jwt_expires, (int, float)):
-            expires_delta = timedelta(seconds=jwt_expires)
-        elif isinstance(jwt_expires, timedelta):
-            expires_delta = jwt_expires
-        else:
-            expires_delta = timedelta(days=30)
-        
         return jsonify({
             'success': True,
             'status': 'active',
             'service': 'authentication',
             'users_registered': user_count,
             'jwt_configuration': {
-                'access_token_expires': str(expires_delta),
-                'access_token_expires_days': expires_delta.days,
-                'access_token_expires_seconds': expires_delta.total_seconds()
+                'access_token_expires': str(jwt_expires),
+                'access_token_expires_days': jwt_expires.days,
+                'access_token_expires_seconds': jwt_expires.total_seconds()
             },
             'timestamp': __import__('datetime').datetime.utcnow().isoformat()
         }), 200
     except Exception as e:
-        logger.error(f"Error en check: {e}")
+        logger.error(f"❌ Error en check: {e}")
         return jsonify({
             'success': False,
             'status': 'error',
@@ -605,7 +665,7 @@ def test_login():
         if role not in ['admin', 'user']:
             role = 'admin'
         
-        # Crear usuario de prueba - identity debe ser string
+        # Crear identity como string ID
         identity = '999' if role == 'admin' else '998'
         
         # Token de 30 días para pruebas
@@ -626,55 +686,18 @@ def test_login():
         return jsonify({
             'success': True,
             'message': f'Login de prueba como {role}',
-            'token': access_token,
-            'access_token': access_token,
+            'token': access_token,  # ← ¡IMPORTANTE!
+            'access_token': access_token,  # ← Para compatibilidad
             'user': user_data,
             'expires_in': timedelta(days=30).total_seconds(),
             'note': 'Este es un usuario de prueba para desarrollo (30 días de sesión)'
         }), 200
         
     except Exception as e:
-        logger.error(f"Error en test-login: {str(e)}")
+        logger.error(f"❌ Error en test-login: {str(e)}")
         return jsonify({
             'success': False,
             'error': 'Error en login de prueba'
-        }), 500
-
-# ========== RUTAS ADMINISTRATIVAS ==========
-@auth_bp.route('/users', methods=['GET'])
-@jwt_required()
-def get_users():
-    """
-    Obtener lista de usuarios (solo administradores)
-    GET /api/auth/users
-    """
-    try:
-        current_user_id = get_jwt_identity()
-        
-        # Verificar si es admin
-        from models.user import User
-        usuario = User.find_by_id(int(current_user_id))
-        
-        if not usuario or usuario.rol != 'admin':
-            return jsonify({
-                'success': False,
-                'error': 'Se requieren permisos de administrador'
-            }), 403
-        
-        users = User.query.all()
-        
-        return jsonify({
-            'success': True,
-            'users': [user.to_dict() for user in users],
-            'count': len(users),
-            'timestamp': __import__('datetime').datetime.utcnow().isoformat()
-        }), 200
-        
-    except Exception as e:
-        logger.error(f"Error obteniendo usuarios: {str(e)}", exc_info=True)
-        return jsonify({
-            'success': False,
-            'error': 'Error al obtener usuarios'
         }), 500
 
 @auth_bp.route('/session-info', methods=['GET'])
@@ -703,8 +726,11 @@ def get_session_info():
             time_left = 0
             expires_date = None
         
+        # Convertir a int para buscar usuario
+        user_id = int(current_user_id) if current_user_id else None
+        
         from models.user import User
-        usuario = User.find_by_id(int(current_user_id))
+        usuario = User.find_by_id(user_id) if user_id else None
         
         response_data = {
             'success': True,
@@ -735,9 +761,111 @@ def get_session_info():
         
         return jsonify(response_data), 200
         
+    except (ValueError, TypeError) as e:
+        logger.error(f"❌ Error de conversión en session-info: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Token inválido - formato incorrecto'
+        }), 401
     except Exception as e:
-        logger.error(f"Error obteniendo información de sesión: {str(e)}")
+        logger.error(f"❌ Error obteniendo información de sesión: {str(e)}")
         return jsonify({
             'success': False,
             'error': 'Error al obtener información de sesión'
+        }), 500
+
+# ========== RUTAS ADMINISTRATIVAS (solo para admins) ==========
+@auth_bp.route('/users', methods=['GET'])
+@jwt_required()
+def get_users():
+    """
+    Obtener lista de usuarios (solo administradores)
+    GET /api/auth/users
+    """
+    try:
+        current_user_id = get_jwt_identity()
+        
+        if not current_user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Token inválido'
+            }), 401
+        
+        # Convertir a int y verificar si es admin
+        user_id = int(current_user_id)
+        
+        from models.user import User
+        usuario = User.find_by_id(user_id)
+        
+        if not usuario or not usuario.is_admin():
+            return jsonify({
+                'success': False,
+                'error': 'Se requieren permisos de administrador'
+            }), 403
+        
+        users = User.query.all()
+        
+        return jsonify({
+            'success': True,
+            'users': [user.to_dict() for user in users],
+            'count': len(users),
+            'timestamp': __import__('datetime').datetime.utcnow().isoformat()
+        }), 200
+        
+    except (ValueError, TypeError) as e:
+        logger.error(f"❌ Error de conversión en get_users: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Token inválido - formato incorrecto'
+        }), 401
+    except Exception as e:
+        logger.error(f"❌ Error obteniendo usuarios: {str(e)}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Error al obtener usuarios'
+        }), 500
+
+@auth_bp.route('/debug-token', methods=['GET'])
+@jwt_required()
+def debug_token():
+    """
+    Endpoint de depuración para ver información del token
+    GET /api/auth/debug-token
+    """
+    try:
+        current_user_id = get_jwt_identity()
+        jwt_data = get_jwt()
+        
+        # Obtener configuración actual
+        jwt_expires = current_app.config.get('JWT_ACCESS_TOKEN_EXPIRES', timedelta(days=30))
+        
+        # Convertir a int para buscar usuario
+        user_id = int(current_user_id) if current_user_id else None
+        
+        from models.user import User
+        usuario = User.find_by_id(user_id) if user_id else None
+        
+        return jsonify({
+            'success': True,
+            'debug_info': {
+                'current_identity': current_user_id,
+                'identity_type': type(current_user_id).__name__,
+                'jwt_data_keys': list(jwt_data.keys()),
+                'jwt_exp': jwt_data.get('exp'),
+                'jwt_iat': jwt_data.get('iat'),
+                'jwt_type': jwt_data.get('type'),
+                'config_jwt_expires': str(jwt_expires),
+                'config_jwt_expires_days': jwt_expires.days,
+                'user_found': usuario is not None,
+                'user_id_from_db': usuario.id if usuario else None,
+                'user_name': usuario.nombre if usuario else None
+            }
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"❌ Error en debug-token: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Error en depuración',
+            'details': str(e)
         }), 500
