@@ -1,4 +1,4 @@
-# Backend/app.py - VERSIÓN COMPLETA Y UNIFICADA
+# Backend/app.py - VERSIÓN COMPLETA Y UNIFICADA - CORREGIDA
 import os
 import sys
 import logging
@@ -21,6 +21,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import text  # ¡IMPORTANTE! Importar text para SQLAlchemy 2.x
 
 # Configurar logging
 logging.basicConfig(
@@ -35,7 +36,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 print("\n" + "="*60)
-print("🚀 INICIANDO CAÑO SALAO - BACKEND API")
+print("🚀 INICIANDO CAÑO SALAO - BACKEND API - VERSIÓN CORREGIDA")
 print("="*60)
 
 # ========== CONFIGURACIÓN BÁSICA ==========
@@ -508,19 +509,32 @@ def create_app(config_class=Config):
     
     @app.route('/health')
     def health():
+        """
+        Health check endpoint - CORREGIDO para SQLAlchemy 2.x
+        """
         try:
-            db.session.execute('SELECT 1')
+            # ¡CORRECCIÓN APLICADA AQUÍ! Usar text() para consultas SQL
+            db.session.execute(text('SELECT 1'))
+            
+            # También podemos verificar algunos datos
+            user_count = User.query.count()
+            tour_count = Tour.query.count()
+            
             return jsonify({
                 'status': 'healthy',
                 'database': 'connected',
-                'timestamp': datetime.utcnow().isoformat()
+                'users': user_count,
+                'tours': tour_count,
+                'timestamp': datetime.utcnow().isoformat(),
+                'sqlalchemy_version': '2.x_compatible'
             })
         except Exception as e:
             logger.error(f"Health check error: {e}")
             return jsonify({
                 'status': 'unhealthy',
                 'database': 'disconnected',
-                'error': str(e)
+                'error': str(e),
+                'timestamp': datetime.utcnow().isoformat()
             }), 500
     
     # ========== RUTAS DE AUTENTICACIÓN UNIFICADAS ==========
@@ -1308,18 +1322,19 @@ def create_app(config_class=Config):
     
     # ========== IMPRIMIR RESUMEN ==========
     print("\n" + "="*60)
-    print("✅ APLICACIÓN CREADA EXITOSAMENTE")
+    print("✅ APLICACIÓN CREADA EXITOSAMENTE - VERSIÓN CORREGIDA")
     print(f"📡 URL: http://{app.config['HOST']}:{app.config['PORT']}")
     print(f"🗄️  Base de datos: {app.config['SQLALCHEMY_DATABASE_URI'][:50]}...")
     print(f"🔐 Admin: admin@canosalao.com / admin123")
     print(f"⏱️  Access Token: {app.config['JWT_ACCESS_TOKEN_EXPIRES']} (30 días)")
     print(f"🔄 Refresh Token: {app.config['JWT_REFRESH_TOKEN_EXPIRES']} (1 año)")
     print(f"🌍 CORS Origins: {len(app.config['CORS_ORIGINS'])} configurados")
+    print("✅ /health endpoint CORREGIDO para SQLAlchemy 2.x")
     print("="*60)
     print("📋 Endpoints disponibles:")
     print("  • GET  /                    - Página de inicio")
     print("  • GET  /api/status          - Estado del API")
-    print("  • GET  /health              - Health check")
+    print("  • GET  /health              - Health check (corregido)")
     print("  • POST /api/auth/login      - Iniciar sesión")
     print("  • POST /api/auth/register   - Registrarse")
     print("  • GET  /api/auth/verify     - Verificar token")
