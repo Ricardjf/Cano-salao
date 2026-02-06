@@ -710,7 +710,7 @@
                         </div>
                         
                         <div class="checkbox-group">
-                            <input type="checkbox" id="remember-me">
+                            <input type="checkbox" id="remember-me" checked>
                             <label for="remember-me">Recordar sesión</label>
                         </div>
                         
@@ -803,6 +803,9 @@
                         <button class="debug-btn" onclick="showSessionInfo()">
                             <i class="bi bi-eye"></i> Ver Sesión
                         </button>
+                        <button class="debug-btn" onclick="testLoginDirectly()">
+                            <i class="bi bi-person-check"></i> Test Login
+                        </button>
                         <button class="debug-btn" onclick="redirectToIndex()">
                             <i class="bi bi-house"></i> Ir al Inicio
                         </button>
@@ -860,8 +863,9 @@
             const API_BASE_URL = 'https://cano-salao.onrender.com/api';
             const STORAGE_KEYS = {
                 TOKEN: 'cano_salao_token',
+                REFRESH_TOKEN: 'cano_salao_refresh_token',
                 USER: 'cano_salao_user',
-                SESSION_CHECK: 'cano_last_session_check'
+                SESSION_EXPIRES: 'cano_salao_expires'
             };
             
             // Estado global
@@ -954,16 +958,31 @@
             }
             
             // ========== MANEJO DE SESIÓN ==========
-            function saveSession(token, userData) {
+            function saveSession(token, userData, refreshToken = null) {
                 try {
+                    console.log('💾 Guardando sesión:', { 
+                        token: token ? token.substring(0, 20) + '...' : 'null',
+                        user: userData.nombre,
+                        refreshToken: refreshToken ? 'presente' : 'ausente'
+                    });
+                    
                     localStorage.setItem(STORAGE_KEYS.TOKEN, token);
                     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
-                    localStorage.setItem(STORAGE_KEYS.SESSION_CHECK, Date.now().toString());
+                    
+                    // También guardar refresh token si está disponible
+                    if (refreshToken) {
+                        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+                    }
+                    
+                    // Establecer expiración a 30 días
+                    const expires = new Date();
+                    expires.setDate(expires.getDate() + 30);
+                    localStorage.setItem(STORAGE_KEYS.SESSION_EXPIRES, expires.toISOString());
                     
                     currentUser = userData;
                     isAuthenticated = true;
                     
-                    console.log('✅ Sesión guardada:', userData.nombre);
+                    console.log('✅ Sesión guardada exitosamente');
                     notifications.show(`Sesión guardada para ${userData.nombre}`, 'success');
                     
                     // Actualizar UI
@@ -971,21 +990,21 @@
                     
                     return true;
                 } catch (error) {
-                    console.error('Error guardando sesión:', error);
+                    console.error('❌ Error guardando sesión:', error);
                     notifications.show('Error guardando sesión', 'error');
                     return false;
                 }
             }
             
             function clearSession() {
-                localStorage.removeItem(STORAGE_KEYS.TOKEN);
-                localStorage.removeItem(STORAGE_KEYS.USER);
-                localStorage.removeItem(STORAGE_KEYS.SESSION_CHECK);
+                Object.values(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(key);
+                });
                 
                 currentUser = null;
                 isAuthenticated = false;
                 
-                console.log('✅ Sesión limpiada');
+                console.log('✅ Sesión completamente limpiada');
                 notifications.show('Sesión limpiada correctamente', 'info');
                 
                 // Actualizar UI
@@ -998,6 +1017,18 @@
             function loadSession() {
                 const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
                 const userData = localStorage.getItem(STORAGE_KEYS.USER);
+                const expires = localStorage.getItem(STORAGE_KEYS.SESSION_EXPIRES);
+                
+                // Verificar expiración
+                if (expires) {
+                    const now = new Date();
+                    const expiresDate = new Date(expires);
+                    if (now > expiresDate) {
+                        console.log('⚠️ Sesión expirada');
+                        clearSession();
+                        return { success: false, error: 'Sesión expirada' };
+                    }
+                }
                 
                 if (token && userData) {
                     try {
@@ -1024,26 +1055,28 @@
                 }
                 
                 try {
-                    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+                    const response = await fetch(`${API_BASE_URL}/auth/verify`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     });
                     
                     if (response.ok) {
-                        const userData = await response.json();
-                        // Actualizar datos de usuario
-                        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
-                        currentUser = userData;
-                        return { valid: true, user: userData };
-                    } else {
-                        // Token inválido
-                        clearSession();
-                        return { valid: false, reason: 'Token inválido' };
+                        const data = await response.json();
+                        if (data.valid && data.user) {
+                            // Actualizar datos de usuario
+                            saveSession(token, data.user);
+                            return { valid: true, user: data.user };
+                        }
                     }
+                    
+                    // Token inválido
+                    clearSession();
+                    return { valid: false, reason: 'Token inválido' };
+                    
                 } catch (error) {
                     console.error('Error validando sesión:', error);
-                    // Si hay error de red pero hay datos locales, usarlos
+                    // Si hay error de red pero hay datos locales, mantener sesión
                     const localData = loadSession();
                     if (localData.success) {
                         return { valid: true, user: localData.user, cached: true };
@@ -1082,13 +1115,21 @@
             function showSessionInfo() {
                 const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
                 const userData = localStorage.getItem(STORAGE_KEYS.USER);
+                const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+                const expires = localStorage.getItem(STORAGE_KEYS.SESSION_EXPIRES);
                 
                 let info = '=== INFORMACIÓN DE SESIÓN ===\n\n';
                 info += `Token: ${token ? 'PRESENTE' : 'AUSENTE'}\n`;
+                info += `Refresh Token: ${refreshToken ? 'PRESENTE' : 'AUSENTE'}\n`;
+                info += `Expira: ${expires ? new Date(expires).toLocaleString() : 'N/A'}\n`;
                 
                 if (token) {
                     info += `Token (inicio): ${token.substring(0, 30)}...\n`;
                     info += `Token (longitud): ${token.length} caracteres\n`;
+                }
+                
+                if (refreshToken) {
+                    info += `Refresh (inicio): ${refreshToken.substring(0, 30)}...\n`;
                 }
                 
                 if (userData) {
@@ -1113,6 +1154,9 @@
                 try {
                     notifications.show('Conectando con el servidor...', 'info');
                     
+                    console.log('📤 Enviando login a:', `${API_BASE_URL}/auth/login`);
+                    console.log('📝 Datos:', { email, password });
+                    
                     const response = await fetch(`${API_BASE_URL}/auth/login`, {
                         method: 'POST',
                         headers: {
@@ -1122,21 +1166,49 @@
                         body: JSON.stringify({ email, password })
                     });
                     
-                    const data = await response.json();
-                    console.log('Respuesta del servidor:', data);
+                    console.log('📨 Status de respuesta:', response.status);
+                    
+                    // Primero intentar obtener el texto de la respuesta
+                    const responseText = await response.text();
+                    console.log('📋 Texto de respuesta:', responseText);
+                    
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                        console.log('✅ JSON parseado:', data);
+                    } catch (parseError) {
+                        console.error('❌ Error parseando JSON:', parseError);
+                        console.error('Texto que no se pudo parsear:', responseText);
+                        throw new Error('Respuesta inválida del servidor');
+                    }
                     
                     if (!response.ok) {
-                        throw new Error(data.error || data.message || 'Credenciales incorrectas');
+                        throw new Error(data.error || data.message || `Error ${response.status}`);
                     }
                     
-                    if (!data.token || !data.user) {
-                        throw new Error('Respuesta del servidor incompleta');
+                    // CORRECCIÓN PRINCIPAL: El backend devuelve 'access_token' no 'token'
+                    if (!data.access_token || !data.user) {
+                        console.error('❌ Faltan datos en respuesta:', data);
+                        throw new Error('Respuesta incompleta: falta access_token o user');
                     }
                     
-                    return data;
+                    console.log('🎉 Login exitoso, estructura de datos:', {
+                        hasAccessToken: !!data.access_token,
+                        hasRefreshToken: !!data.refresh_token,
+                        hasUser: !!data.user,
+                        userName: data.user?.nombre
+                    });
+                    
+                    // Retornar en el formato esperado por el frontend
+                    return {
+                        token: data.access_token,      // <-- IMPORTANTE: Convertir access_token a token
+                        refresh_token: data.refresh_token,
+                        user: data.user,
+                        message: data.message
+                    };
                     
                 } catch (error) {
-                    console.error('Error en loginWithAPI:', error);
+                    console.error('❌ Error completo en loginWithAPI:', error);
                     throw error;
                 }
             }
@@ -1158,17 +1230,36 @@
                         })
                     });
                     
-                    const data = await response.json();
-                    console.log('Respuesta del registro:', data);
+                    const responseText = await response.text();
+                    console.log('📋 Respuesta registro:', responseText);
+                    
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (parseError) {
+                        console.error('❌ Error parseando JSON:', parseError);
+                        throw new Error('Respuesta inválida del servidor');
+                    }
                     
                     if (!response.ok) {
                         throw new Error(data.error || data.message || 'Error en el registro');
                     }
                     
-                    return data;
+                    console.log('✅ Registro exitoso:', {
+                        hasAccessToken: !!data.access_token,
+                        hasUser: !!data.user
+                    });
+                    
+                    // El backend devuelve access_token, no token
+                    return {
+                        token: data.access_token,      // <-- IMPORTANTE: Convertir access_token a token
+                        refresh_token: data.refresh_token,
+                        user: data.user,
+                        message: data.message
+                    };
                     
                 } catch (error) {
-                    console.error('Error en registerWithAPI:', error);
+                    console.error('❌ Error en registerWithAPI:', error);
                     throw error;
                 }
             }
@@ -1177,11 +1268,11 @@
                 try {
                     notifications.show('Probando conexión con API...', 'info');
                     
-                    const response = await fetch(`${API_BASE_URL}/tours`);
+                    const response = await fetch(`${API_BASE_URL}/health`);
                     const data = await response.json();
                     
                     if (response.ok) {
-                        notifications.show(`✅ API conectada. ${data.length || 0} tours disponibles`, 'success');
+                        notifications.show(`✅ API conectada. Estado: ${data.status}`, 'success');
                         return true;
                     } else {
                         notifications.show(`❌ API error: ${response.status}`, 'error');
@@ -1190,6 +1281,55 @@
                 } catch (error) {
                     notifications.show(`❌ Error de conexión: ${error.message}`, 'error');
                     return false;
+                }
+            }
+            
+            async function testLoginDirectly() {
+                try {
+                    notifications.show('Probando login directo...', 'info');
+                    
+                    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: 'admin@canosalao.com',
+                            password: 'admin123'
+                        })
+                    });
+                    
+                    console.log('🔍 Respuesta directa:', {
+                        status: response.status,
+                        ok: response.ok,
+                        headers: Object.fromEntries(response.headers.entries())
+                    });
+                    
+                    const text = await response.text();
+                    console.log('📄 Texto completo:', text);
+                    
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('✅ JSON parseado:', data);
+                        
+                        // Verificar estructura específica
+                        console.log('🔍 Estructura de respuesta:');
+                        console.log('- access_token:', data.access_token ? 'PRESENTE' : 'AUSENTE');
+                        console.log('- refresh_token:', data.refresh_token ? 'PRESENTE' : 'AUSENTE');
+                        console.log('- user:', data.user ? 'PRESENTE' : 'AUSENTE');
+                        console.log('- success:', data.success);
+                        
+                        notifications.show(`✅ Login test: ${data.success ? 'ÉXITO' : 'FALLO'} - Access Token: ${data.access_token ? 'SI' : 'NO'}`, 
+                            data.success ? 'success' : 'error');
+                            
+                    } catch (e) {
+                        console.error('❌ No es JSON:', text);
+                        notifications.show('❌ El servidor no devolvió JSON válido', 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error en test directo:', error);
+                    notifications.show(`❌ Error de conexión: ${error.message}`, 'error');
                 }
             }
             
@@ -1255,27 +1395,45 @@
                         // Intentar login con API
                         const loginData = await loginWithAPI(email, password);
                         
-                        // Guardar sesión
-                        const saved = saveSession(loginData.token, loginData.user);
+                        console.log('🎉 Login exitoso, datos recibidos:', {
+                            token: loginData.token ? 'PRESENTE' : 'AUSENTE',
+                            user: loginData.user?.nombre,
+                            refreshToken: loginData.refresh_token ? 'PRESENTE' : 'AUSENTE'
+                        });
+                        
+                        // Guardar sesión (pasar todos los datos necesarios)
+                        const saved = saveSession(
+                            loginData.token, 
+                            loginData.user, 
+                            loginData.refresh_token
+                        );
                         
                         if (saved) {
                             showAlert(alertDiv, `¡Inicio de sesión exitoso! Bienvenido/a, ${loginData.user.nombre}`, 'success');
                             
-                            // Esperar 2 segundos antes de redirigir para que el usuario vea el mensaje
+                            // Esperar 2 segundos antes de redirigir
                             setTimeout(() => {
                                 redirectToIndex();
                             }, 2000);
+                        } else {
+                            showAlert(alertDiv, 'Error guardando la sesión', 'error');
+                            loginBtn.disabled = false;
+                            loginBtn.innerHTML = originalText;
                         }
                         
                     } catch (error) {
-                        console.error('Error completo en login:', error);
+                        console.error('❌ Error en login:', error);
                         
-                        // Mostrar error
+                        // Mostrar error específico
                         let errorMessage = error.message || 'Error desconocido';
                         
-                        // Si es error de red, sugerir usar credenciales demo
-                        if (error.message.includes('Network') || error.message.includes('Failed to fetch')) {
-                            errorMessage = 'No se puede conectar al servidor. Usa credenciales demo o intenta más tarde.';
+                        // Mejorar mensajes de error
+                        if (errorMessage.includes('Network') || errorMessage.includes('Failed to fetch')) {
+                            errorMessage = 'No se puede conectar al servidor. Verifica tu conexión a internet.';
+                        } else if (errorMessage.includes('401') || errorMessage.includes('Credenciales')) {
+                            errorMessage = 'Credenciales incorrectas. Usa: admin@canosalao.com / admin123';
+                        } else if (errorMessage.includes('Respuesta incompleta')) {
+                            errorMessage = 'El servidor no respondió correctamente. Verifica la consola para más detalles.';
                         }
                         
                         showAlert(alertDiv, `Error: ${errorMessage}`, 'error');
@@ -1333,8 +1491,13 @@
                         // Intentar registro con API
                         const registerData = await registerWithAPI(name, email, password);
                         
+                        console.log('✅ Registro exitoso:', {
+                            token: registerData.token ? 'PRESENTE' : 'AUSENTE',
+                            user: registerData.user?.nombre
+                        });
+                        
                         // Guardar sesión automáticamente después del registro
-                        const saved = saveSession(registerData.token, registerData.user);
+                        const saved = saveSession(registerData.token, registerData.user, registerData.refresh_token);
                         
                         if (saved) {
                             showAlert(alertDiv, `¡Cuenta creada exitosamente! Bienvenido/a, ${name}. Te hemos logeado automáticamente.`, 'success');
@@ -1343,10 +1506,14 @@
                             setTimeout(() => {
                                 redirectToIndex();
                             }, 2000);
+                        } else {
+                            showAlert(alertDiv, 'Error guardando la sesión después del registro', 'error');
+                            registerBtn.disabled = false;
+                            registerBtn.innerHTML = originalText;
                         }
                         
                     } catch (error) {
-                        console.error('Error completo en registro:', error);
+                        console.error('❌ Error en registro:', error);
                         
                         // Mostrar error
                         let errorMessage = error.message || 'Error desconocido';
@@ -1522,6 +1689,7 @@
                 loadSession,
                 validateSession,
                 testAPIConnection,
+                testLoginDirectly,
                 showSessionInfo,
                 loadDemoCredentials,
                 getCurrentUser: () => currentUser,
