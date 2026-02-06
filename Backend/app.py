@@ -1,4 +1,4 @@
-# Backend/app.py - APLICACIÓN FLASK PARA RENDER.COM
+# Backend/app.py - APLICACIÓN FLASK CORREGIDA CON JWT FUNCIONAL
 import os
 import sys
 import logging
@@ -8,13 +8,13 @@ from flask import Flask, jsonify, request, make_response
 from flask_jwt_extended import (
     JWTManager, 
     create_access_token, 
-    create_refresh_token,  # ¡NUEVO IMPORT!
+    create_refresh_token,
     jwt_required, 
     get_jwt_identity,
     get_jwt,
-    set_access_cookies,    # ¡NUEVO IMPORT para cookies!
-    set_refresh_cookies,   # ¡NUEVO IMPORT para cookies!
-    unset_jwt_cookies      # ¡NUEVO IMPORT para cookies!
+    set_access_cookies,
+    set_refresh_cookies,
+    unset_jwt_cookies
 )
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -109,7 +109,40 @@ def create_app(config_class=Config):
     # Inicializar JWT
     jwt = JWTManager(app)
     
-    # ========== CALLBACKS JWT MEJORADOS ==========
+    # ========== CALLBACKS JWT CORREGIDOS ==========
+    
+    # ¡IMPORTANTE! user_identity_lookup debe devolver un STRING, no un dict
+    @jwt.user_identity_loader
+    def user_identity_lookup(user):
+        """
+        user_identity_lookup debe devolver un STRING (no dict)
+        Se llama cuando creamos un token
+        """
+        # user es un dict con datos del usuario
+        # Devolvemos solo el ID como string
+        return str(user.get('id', ''))
+    
+    # ¡IMPORTANTE! user_lookup_callback se usa cuando verificamos un token
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        """
+        Se llama cuando verificamos un token
+        jwt_data["sub"] contiene el identity (el string que devolvimos arriba)
+        """
+        identity = jwt_data["sub"]  # Esto es el string ID del usuario
+        
+        # Buscar usuario en base de datos
+        user = User.query.get(int(identity)) if identity else None
+        
+        if user:
+            # Devolvemos un dict con los datos del usuario
+            return {
+                'id': user.id,
+                'email': user.email,
+                'nombre': user.nombre,
+                'rol': user.rol
+            }
+        return None
     
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
@@ -139,20 +172,6 @@ def create_app(config_class=Config):
             'message': 'No autorizado - Token faltante'
         }), 401
     
-    @jwt.user_identity_loader
-    def user_identity_lookup(user):
-        return {
-            'id': user['id'],
-            'email': user['email'],
-            'nombre': user['nombre'],
-            'rol': user['rol']
-        }
-    
-    @jwt.user_lookup_loader
-    def user_lookup_callback(_jwt_header, jwt_data):
-        identity = jwt_data["sub"]
-        return identity
-    
     print("✅ JWT configurado con tiempos extendidos")
     
     # Inicializar base de datos
@@ -178,6 +197,27 @@ def create_app(config_class=Config):
         last_activity = db.Column(db.DateTime)
         created_at = db.Column(db.DateTime, default=datetime.utcnow)
         updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        
+        def to_dict(self):
+            return {
+                'id': self.id,
+                'nombre': self.nombre,
+                'email': self.email,
+                'rol': self.rol,
+                'activo': self.activo,
+                'telefono': self.telefono,
+                'last_login': self.last_login.isoformat() if self.last_login else None,
+                'created_at': self.created_at.isoformat() if self.created_at else None
+            }
+        
+        def to_auth_dict(self):
+            return {
+                'id': self.id,
+                'nombre': self.nombre,
+                'email': self.email,
+                'rol': self.rol,
+                'telefono': self.telefono
+            }
     
     class Tour(db.Model):
         id = db.Column(db.Integer, primary_key=True)
@@ -190,6 +230,18 @@ def create_app(config_class=Config):
         imagen_url = db.Column(db.String(500))
         created_at = db.Column(db.DateTime, default=datetime.utcnow)
         updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        
+        def to_dict(self):
+            return {
+                'id': self.id,
+                'nombre': self.nombre,
+                'descripcion': self.descripcion,
+                'precio': self.precio,
+                'capacidad': self.capacidad,
+                'disponible': self.disponible,
+                'duracion': self.duracion,
+                'imagen_url': self.imagen_url
+            }
     
     class Booking(db.Model):
         id = db.Column(db.Integer, primary_key=True)
@@ -205,6 +257,19 @@ def create_app(config_class=Config):
         
         user = db.relationship('User', backref='bookings')
         tour = db.relationship('Tour', backref='bookings')
+        
+        def to_dict(self):
+            return {
+                'id': self.id,
+                'codigo': self.codigo,
+                'user_id': self.user_id,
+                'tour_id': self.tour_id,
+                'fecha': self.fecha.isoformat() if self.fecha else None,
+                'personas': self.personas,
+                'total': self.total,
+                'estado': self.estado,
+                'created_at': self.created_at.isoformat() if self.created_at else None
+            }
     
     class BlogPost(db.Model):
         id = db.Column(db.Integer, primary_key=True)
@@ -218,6 +283,19 @@ def create_app(config_class=Config):
         vistas = db.Column(db.Integer, default=0)
         created_at = db.Column(db.DateTime, default=datetime.utcnow)
         updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+        
+        def to_dict(self):
+            return {
+                'id': self.id,
+                'titulo': self.titulo,
+                'excerpt': self.excerpt,
+                'categoria': self.categoria,
+                'autor': self.autor,
+                'imagen_url': self.imagen_url,
+                'publicado': self.publicado,
+                'vistas': self.vistas,
+                'created_at': self.created_at.isoformat() if self.created_at else None
+            }
     
     # ========== INICIALIZAR BASE DE DATOS ==========
     with app.app_context():
@@ -321,7 +399,7 @@ def create_app(config_class=Config):
         except:
             return jsonify({'status': 'unhealthy', 'database': 'disconnected'}), 500
     
-    # ========== RUTAS DE AUTENTICACIÓN MEJORADAS ==========
+    # ========== RUTAS DE AUTENTICACIÓN CORREGIDAS ==========
     
     @app.route('/api/auth/login', methods=['POST'])
     def login():
@@ -329,8 +407,6 @@ def create_app(config_class=Config):
             data = request.get_json()
             if not data or not data.get('email') or not data.get('password'):
                 return jsonify({'success': False, 'error': 'Email y contraseña requeridos'}), 400
-            
-            remember_me = data.get('remember_me', True)  # Por defecto TRUE para sesiones persistentes
             
             user = User.query.filter_by(email=data['email'], activo=True).first()
             if not user:
@@ -344,42 +420,29 @@ def create_app(config_class=Config):
             user.last_activity = datetime.utcnow()
             db.session.commit()
             
-            # Crear tokens
+            # Crear tokens - ¡IMPORTANTE: identity debe ser un STRING (el ID del usuario)
+            identity = str(user.id)  # Convertir ID a string
+            
             access_token = create_access_token(
-                identity={
-                    'id': user.id,
-                    'email': user.email,
-                    'nombre': user.nombre,
-                    'rol': user.rol
-                }
+                identity=identity,
+                expires_delta=app.config['JWT_ACCESS_TOKEN_EXPIRES']
             )
             
-            # SIEMPRE crear refresh token para sesiones persistentes
             refresh_token = create_refresh_token(
-                identity={
-                    'id': user.id,
-                    'email': user.email,
-                    'nombre': user.nombre,
-                    'rol': user.rol
-                }
+                identity=identity,
+                expires_delta=app.config['JWT_REFRESH_TOKEN_EXPIRES']
             )
             
             response_data = {
                 'success': True,
-                'access_token': access_token,
+                'token': access_token,  # El frontend busca "token"
+                'access_token': access_token,  # Para compatibilidad
                 'refresh_token': refresh_token,
-                'user': {
-                    'id': user.id,
-                    'nombre': user.nombre,
-                    'email': user.email,
-                    'rol': user.rol,
-                    'telefono': user.telefono,
-                    'last_login': user.last_login.isoformat() if user.last_login else None
-                },
+                'user': user.to_auth_dict(),
                 'token_type': 'Bearer',
                 'expires_in': int(app.config['JWT_ACCESS_TOKEN_EXPIRES'].total_seconds()),
                 'refresh_expires_in': int(app.config['JWT_REFRESH_TOKEN_EXPIRES'].total_seconds()),
-                'persistent_session': True  # Indicar que es sesión persistente
+                'persistent_session': True
             }
             
             return jsonify(response_data)
@@ -394,10 +457,10 @@ def create_app(config_class=Config):
     @jwt_required(refresh=True)
     def refresh():
         try:
-            current_user = get_jwt_identity()
+            current_user_id = get_jwt_identity()  # Esto es un string ID
             
             # Verificar usuario
-            user = User.query.get(current_user['id'])
+            user = User.query.get(int(current_user_id))
             if not user or not user.activo:
                 return jsonify({
                     'success': False,
@@ -410,34 +473,22 @@ def create_app(config_class=Config):
             
             # Crear nuevo access token
             new_access_token = create_access_token(
-                identity={
-                    'id': user.id,
-                    'email': user.email,
-                    'nombre': user.nombre,
-                    'rol': user.rol
-                }
+                identity=current_user_id,  # Ya es string
+                expires_delta=app.config['JWT_ACCESS_TOKEN_EXPIRES']
             )
             
             # Opcional: también refrescar el refresh token (rotación)
             new_refresh_token = create_refresh_token(
-                identity={
-                    'id': user.id,
-                    'email': user.email,
-                    'nombre': user.nombre,
-                    'rol': user.rol
-                }
+                identity=current_user_id,
+                expires_delta=app.config['JWT_REFRESH_TOKEN_EXPIRES']
             )
             
             return jsonify({
                 'success': True,
+                'token': new_access_token,  # El frontend busca "token"
                 'access_token': new_access_token,
                 'refresh_token': new_refresh_token,
-                'user': {
-                    'id': user.id,
-                    'nombre': user.nombre,
-                    'email': user.email,
-                    'rol': user.rol
-                },
+                'user': user.to_auth_dict(),
                 'message': 'Token refrescado exitosamente',
                 'expires_in': int(app.config['JWT_ACCESS_TOKEN_EXPIRES'].total_seconds())
             })
@@ -455,10 +506,10 @@ def create_app(config_class=Config):
     @jwt_required()
     def verify_token():
         try:
-            current_user = get_jwt_identity()
+            current_user_id = get_jwt_identity()  # String ID
             jwt_data = get_jwt()
             
-            user = User.query.get(current_user['id'])
+            user = User.query.get(int(current_user_id))
             if not user or not user.activo:
                 return jsonify({
                     'success': False,
@@ -469,19 +520,21 @@ def create_app(config_class=Config):
             # Actualizar actividad
             update_user_activity(user.id)
             
+            # Calcular tiempo restante
+            expires_at = jwt_data.get('exp')
+            import time
+            current_time = time.time()
+            time_left = expires_at - current_time if expires_at else 0
+            
             return jsonify({
                 'success': True,
                 'valid': True,
-                'user': {
-                    'id': user.id,
-                    'nombre': user.nombre,
-                    'email': user.email,
-                    'rol': user.rol,
-                    'telefono': user.telefono
-                },
+                'user': user.to_auth_dict(),
                 'token_info': {
-                    'expires_at': jwt_data['exp'],
-                    'issued_at': jwt_data['iat'],
+                    'expires_at': expires_at,
+                    'issued_at': jwt_data.get('iat'),
+                    'time_left_seconds': time_left,
+                    'time_left_days': time_left / (24 * 3600) if time_left > 0 else 0,
                     'type': 'access' if 'fresh' in jwt_data and jwt_data['fresh'] else 'refresh'
                 }
             })
@@ -519,34 +572,24 @@ def create_app(config_class=Config):
             db.session.commit()
             
             # Crear tokens automáticamente después de registro
+            identity = str(new_user.id)  # Convertir ID a string
+            
             access_token = create_access_token(
-                identity={
-                    'id': new_user.id,
-                    'email': new_user.email,
-                    'nombre': new_user.nombre,
-                    'rol': new_user.rol
-                }
+                identity=identity,
+                expires_delta=app.config['JWT_ACCESS_TOKEN_EXPIRES']
             )
             
             refresh_token = create_refresh_token(
-                identity={
-                    'id': new_user.id,
-                    'email': new_user.email,
-                    'nombre': new_user.nombre,
-                    'rol': new_user.rol
-                }
+                identity=identity,
+                expires_delta=app.config['JWT_REFRESH_TOKEN_EXPIRES']
             )
             
             return jsonify({
                 'success': True,
+                'token': access_token,  # El frontend busca "token"
                 'access_token': access_token,
                 'refresh_token': refresh_token,
-                'user': {
-                    'id': new_user.id,
-                    'nombre': new_user.nombre,
-                    'email': new_user.email,
-                    'rol': new_user.rol
-                },
+                'user': new_user.to_auth_dict(),
                 'message': 'Usuario registrado exitosamente'
             }), 201
             
@@ -563,18 +606,11 @@ def create_app(config_class=Config):
             tours = Tour.query.filter_by(disponible=True).order_by(Tour.precio).all()
             tours_list = []
             for tour in tours:
-                tours_list.append({
-                    'id': tour.id,
-                    'nombre': tour.nombre,
-                    'descripcion': tour.descripcion,
-                    'precio': tour.precio,
-                    'capacidad': tour.capacidad,
-                    'duracion': tour.duracion,
-                    'imagen_url': tour.imagen_url
-                })
+                tours_list.append(tour.to_dict())
             return jsonify(tours_list)
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            logger.error(f"Error obteniendo tours: {e}")
+            return jsonify({'error': 'Error obteniendo tours'}), 500
     
     @app.route('/api/blog', methods=['GET'])
     def get_blog_posts():
@@ -582,19 +618,11 @@ def create_app(config_class=Config):
             posts = BlogPost.query.filter_by(publicado=True).order_by(BlogPost.created_at.desc()).limit(10).all()
             posts_list = []
             for post in posts:
-                posts_list.append({
-                    'id': post.id,
-                    'titulo': post.titulo,
-                    'excerpt': post.excerpt,
-                    'categoria': post.categoria,
-                    'autor': post.autor,
-                    'imagen_url': post.imagen_url,
-                    'vistas': post.vistas,
-                    'created_at': post.created_at.isoformat()
-                })
+                posts_list.append(post.to_dict())
             return jsonify(posts_list)
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            logger.error(f"Error obteniendo posts: {e}")
+            return jsonify({'error': 'Error obteniendo posts'}), 500
     
     # ========== RUTAS PROTEGIDAS ==========
     
@@ -602,47 +630,36 @@ def create_app(config_class=Config):
     @jwt_required()
     def get_profile():
         try:
-            current_user = get_jwt_identity()
-            update_user_activity(current_user['id'])
+            current_user_id = get_jwt_identity()  # String ID
+            update_user_activity(int(current_user_id))
             
-            user = User.query.get(current_user['id'])
+            user = User.query.get(int(current_user_id))
             if not user:
                 return jsonify({'error': 'Usuario no encontrado'}), 404
             
-            return jsonify({
-                'id': user.id,
-                'nombre': user.nombre,
-                'email': user.email,
-                'rol': user.rol,
-                'telefono': user.telefono,
-                'created_at': user.created_at.isoformat(),
-                'last_login': user.last_login.isoformat() if user.last_login else None,
-                'last_activity': user.last_activity.isoformat() if user.last_activity else None
-            })
+            return jsonify(user.to_dict())
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            logger.error(f"Error obteniendo perfil: {e}")
+            return jsonify({'error': 'Error obteniendo perfil'}), 500
     
     @app.route('/api/user/bookings', methods=['GET'])
     @jwt_required()
     def get_user_bookings():
         try:
-            current_user = get_jwt_identity()
-            update_user_activity(current_user['id'])
+            current_user_id = get_jwt_identity()  # String ID
+            update_user_activity(int(current_user_id))
             
-            bookings = Booking.query.filter_by(user_id=current_user['id']).order_by(Booking.created_at.desc()).all()
+            bookings = Booking.query.filter_by(user_id=int(current_user_id)).order_by(Booking.created_at.desc()).all()
             bookings_list = []
             
             for booking in bookings:
-                bookings_list.append({
-                    'id': booking.id,
-                    'codigo': booking.codigo,
-                    'tour_nombre': booking.tour.nombre if booking.tour else 'Tour no disponible',
-                    'fecha': booking.fecha.isoformat(),
-                    'personas': booking.personas,
-                    'total': booking.total,
-                    'estado': booking.estado,
-                    'created_at': booking.created_at.isoformat()
-                })
+                booking_dict = booking.to_dict()
+                if booking.tour:
+                    booking_dict['tour_nombre'] = booking.tour.nombre
+                else:
+                    booking_dict['tour_nombre'] = 'Tour no disponible'
+                
+                bookings_list.append(booking_dict)
             
             return jsonify({
                 'success': True,
@@ -658,8 +675,8 @@ def create_app(config_class=Config):
     @jwt_required()
     def create_booking():
         try:
-            current_user = get_jwt_identity()
-            update_user_activity(current_user['id'])
+            current_user_id = get_jwt_identity()  # String ID
+            update_user_activity(int(current_user_id))
             
             data = request.get_json()
             
@@ -671,11 +688,11 @@ def create_app(config_class=Config):
                 return jsonify({'error': 'Tour no disponible'}), 400
             
             total = tour.precio * data['personas']
-            codigo = f"RES-{datetime.now().strftime('%Y%m%d%H%M%S')}-{current_user['id']:03d}"
+            codigo = f"RES-{datetime.now().strftime('%Y%m%d%H%M%S')}-{current_user_id.zfill(3)}"
             
             new_booking = Booking(
                 codigo=codigo,
-                user_id=current_user['id'],
+                user_id=int(current_user_id),
                 tour_id=tour.id,
                 fecha=datetime.strptime(data['fecha'], '%Y-%m-%d').date(),
                 personas=data['personas'],
@@ -725,10 +742,11 @@ def create_app(config_class=Config):
         @functools.wraps(fn)
         @jwt_required()
         def wrapper(*args, **kwargs):
-            current_user = get_jwt_identity()
-            if current_user['rol'] != 'admin':
+            current_user_id = get_jwt_identity()
+            user = User.query.get(int(current_user_id))
+            if not user or user.rol != 'admin':
                 return jsonify({'error': 'Acceso solo para administradores'}), 403
-            update_user_activity(current_user['id'])
+            update_user_activity(user.id)
             return fn(*args, **kwargs)
         return wrapper
     
@@ -750,7 +768,8 @@ def create_app(config_class=Config):
             
             return jsonify(stats)
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            logger.error(f"Error dashboard admin: {e}")
+            return jsonify({'error': 'Error obteniendo estadísticas'}), 500
     
     # ========== MANEJADORES DE ERROR ==========
     
@@ -777,8 +796,8 @@ def create_app(config_class=Config):
     print(f"📡 URL: http://{app.config['HOST']}:{app.config['PORT']}")
     print(f"🗄️  Base de datos: {app.config['SQLALCHEMY_DATABASE_URI'][:50]}...")
     print(f"🔐 Admin: admin@canosalao.com / admin123")
-    print(f"⏱️  Access Token: {app.config['JWT_ACCESS_TOKEN_EXPIRES']}")
-    print(f"🔄 Refresh Token: {app.config['JWT_REFRESH_TOKEN_EXPIRES']}")
+    print(f"⏱️  Access Token: {app.config['JWT_ACCESS_TOKEN_EXPIRES']} (30 días)")
+    print(f"🔄 Refresh Token: {app.config['JWT_REFRESH_TOKEN_EXPIRES']} (1 año)")
     print("="*60)
     
     return app
