@@ -913,6 +913,17 @@
             <!-- Alert Container -->
             <div id="admin-alert" class="alert" style="display: none;"></div>
             
+            <!-- Connection Troubleshooter (temporal) -->
+            <div id="connection-troubleshooter" class="alert alert-warning" style="display: none;">
+                <h4><i class="bi bi-exclamation-triangle"></i> Problemas de Conexión</h4>
+                <p id="troubleshooter-message"></p>
+                <div style="margin-top: 10px;">
+                    <button class="btn" onclick="testConnectionOptions()" style="background: var(--admin-primary); padding: 8px 15px; font-size: 13px;">
+                        <i class="bi bi-plug"></i> Probar Conexiones Alternativas
+                    </button>
+                </div>
+            </div>
+            
             <!-- Admin Navigation -->
             <nav class="admin-nav">
                 <ul>
@@ -931,7 +942,8 @@
                 <div class="quick-actions">
                     <button class="btn" onclick="refreshDashboard()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
                     <button class="btn" onclick="showSystemInfo()" style="background: var(--admin-primary);"><i class="bi bi-info-circle"></i> Info Sistema</button>
-                    <button class="btn" onclick="generateQuickReport()" style="background: var(--admin-success);"><i class="bi bi-file-text"></i> Reporte Rápido</button>
+                    <button class="btn" onclick="testBackendConnection()" style="background: var(--admin-warning);"><i class="bi bi-plug"></i> Probar Conexión</button>
+                    <button class="btn" onclick="forceReloadToken()" style="background: var(--admin-success);"><i class="bi bi-key"></i> Recargar Token</button>
                 </div>
 
                 <!-- Stats Cards -->
@@ -1149,6 +1161,7 @@
                 <div class="content-tabs">
                     <button class="content-tab active" data-tab="profile">Mi Perfil</button>
                     <button class="content-tab" data-tab="system">Sistema</button>
+                    <button class="content-tab" data-tab="connection">Conexión</button>
                 </div>
 
                 <!-- Configuración del perfil -->
@@ -1201,9 +1214,10 @@
                         <div class="form-group">
                             <label><i class="bi bi-link"></i> URL del Backend</label>
                             <div style="display: flex; gap: 10px;">
-                                <input type="text" id="backend-url" class="form-control" value="http://localhost:5000" readonly>
+                                <input type="text" id="backend-url" class="form-control" value="http://localhost:5000" placeholder="http://localhost:5000">
                                 <button class="btn" onclick="testBackendConnection()" style="background: var(--admin-warning);"><i class="bi bi-plug"></i> Probar</button>
                             </div>
+                            <small class="text-muted">Si localhost:5000 no funciona, prueba con 127.0.0.1:5000</small>
                         </div>
                         <div class="form-group">
                             <label><i class="bi bi-clock-history"></i> Auto-refresh</label>
@@ -1222,6 +1236,34 @@
                         </div>
                         <div class="form-actions">
                             <button class="btn" onclick="saveSystemSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Configuración</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración de conexión -->
+                <div id="connection-tab" class="tab-content">
+                    <div class="admin-form">
+                        <h3><i class="bi bi-wifi"></i> Configuración de Conexión</h3>
+                        <div class="form-group">
+                            <label><i class="bi bi-link"></i> Endpoints de Prueba</label>
+                            <div style="margin: 10px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                <p><strong>Endpoints disponibles:</strong></p>
+                                <div id="endpoint-test-results">
+                                    <p><i class="bi bi-clock"></i> Haz clic en "Probar Endpoints" para verificar la conexión</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>URLs Alternativas</label>
+                            <div style="margin-top: 10px;">
+                                <button class="btn" onclick="testUrl('http://localhost:5000')" style="margin-right: 10px; margin-bottom: 10px;">localhost:5000</button>
+                                <button class="btn" onclick="testUrl('http://127.0.0.1:5000')" style="margin-right: 10px; margin-bottom: 10px;">127.0.0.1:5000</button>
+                                <button class="btn" onclick="testUrl('http://0.0.0.0:5000')" style="margin-bottom: 10px;">0.0.0.0:5000</button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" onclick="testAllEndpoints()" style="background: var(--admin-primary);"><i class="bi bi-wifi"></i> Probar Endpoints</button>
+                            <button class="btn" onclick="resetConnectionSettings()" style="background: var(--admin-warning);"><i class="bi bi-arrow-clockwise"></i> Restablecer</button>
                         </div>
                     </div>
                 </div>
@@ -1257,6 +1299,7 @@
                     <p><strong>Usuarios cargados:</strong> <span id="footer-users-count">0</span></p>
                     <p><strong>Tours cargados:</strong> <span id="footer-tours-count">0</span></p>
                     <p><strong>Token válido:</strong> <span id="footer-token-valid">No</span></p>
+                    <p><strong>Conexión:</strong> <span id="footer-connection-status">Desconectado</span></p>
                 </div>
             </div>
             <div class="copyright">
@@ -1460,11 +1503,18 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL COMPLETO Y FUNCIONAL - CON ENDPOINTS CORRECTOS -->
+    <!-- SCRIPT PRINCIPAL CORREGIDO - CON MEJOR MANEJO DE CONEXIÓN -->
     <script>
-        // ========== CONFIGURACIÓN ==========
-        // Usa la misma configuración que tu index.html
-        const API_BASE_URL = 'http://localhost:5000/api';
+        // ========== CONFIGURACIÓN MEJORADA ==========
+        // Opciones de conexión - probar diferentes URLs
+        const API_URL_OPTIONS = [
+            'http://localhost:5000',
+            'http://127.0.0.1:5000', 
+            'http://0.0.0.0:5000'
+        ];
+        
+        // Usar localStorage para guardar la URL que funciona
+        let API_BASE_URL = localStorage.getItem('cano_salao_api_url') || 'http://localhost:5000';
         
         // ========== ESTADO GLOBAL ==========
         let currentUser = null;
@@ -1473,25 +1523,36 @@
         let autoRefreshInterval = null;
         let isAdmin = false;
         
-        // ========== INICIALIZACIÓN ==========
+        // ========== INICIALIZACIÓN MEJORADA ==========
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Inicializando Panel Administrativo...');
+            console.log('🔗 URL del API:', API_BASE_URL);
             
-            // Verificar autenticación y permisos de administrador
-            checkAuthAndAdmin();
+            // Actualizar UI con URL actual
+            document.getElementById('backend-url').value = API_BASE_URL;
             
-            // Inicializar UI
+            // Inicializar UI primero
             initNavigation();
             initTabs();
             initUserMenu();
             initEventListeners();
             
+            // Verificar conexión primero
+            testBackendConnection().then(isConnected => {
+                if (isConnected) {
+                    console.log('✅ Backend conectado, verificando autenticación...');
+                    // Si hay conexión, verificar autenticación
+                    checkAuthAndAdmin();
+                } else {
+                    console.log('❌ No hay conexión al backend');
+                    // Mostrar mensaje de error
+                    showTroubleshooter('No se pudo conectar al backend Flask. Verifica que el servidor esté corriendo.');
+                }
+            });
+            
             // Iniciar timers
             updateCurrentTime();
             setInterval(updateCurrentTime, 1000);
-            
-            // Verificar conexión con backend
-            testBackendConnection();
             
             console.log('✅ Panel inicializado correctamente');
         });
@@ -1514,9 +1575,250 @@
                     });
                 }
             });
+            
+            // Actualizar URL del backend cuando cambia
+            document.getElementById('backend-url').addEventListener('change', function() {
+                API_BASE_URL = this.value;
+                localStorage.setItem('cano_salao_api_url', API_BASE_URL);
+                console.log('🔄 URL actualizada:', API_BASE_URL);
+            });
         }
         
-        // ========== AUTENTICACIÓN Y VERIFICACIÓN DE ADMIN ==========
+        // ========== FUNCIONES DE CONEXIÓN MEJORADAS ==========
+        async function testBackendConnection() {
+            console.log('🔌 Probando conexión con backend en:', API_BASE_URL);
+            
+            const statusElement = document.getElementById('backend-status');
+            const connectionStatus = document.getElementById('connection-status');
+            const statusText = document.getElementById('status-text');
+            const footerConnection = document.getElementById('footer-connection-status');
+            
+            // Mostrar estado de prueba
+            statusElement.textContent = 'Probando...';
+            statusElement.style.color = '#f39c12';
+            connectionStatus.className = 'connection-status connection-offline';
+            statusText.textContent = 'Probando conexión...';
+            
+            try {
+                // Intentar primero el endpoint básico
+                const response = await fetch(`${API_BASE_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    // Añadir timeout
+                    signal: AbortSignal.timeout(5000)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Actualizar estado
+                    statusElement.textContent = 'Conectado ✓';
+                    statusElement.style.color = '#27ae60';
+                    connectionStatus.className = 'connection-status connection-online';
+                    statusText.textContent = 'Conectado al Backend';
+                    footerConnection.textContent = 'Conectado';
+                    footerConnection.style.color = '#27ae60';
+                    
+                    // Ocultar solucionador de problemas
+                    document.getElementById('connection-troubleshooter').style.display = 'none';
+                    
+                    console.log('✅ Conexión exitosa:', data);
+                    showAlert(`✅ Conexión establecida con ${API_BASE_URL}`, 'success');
+                    
+                    // Probar también el endpoint principal
+                    testApiStatus();
+                    
+                    return true;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('❌ Error conectando al backend:', error);
+                
+                // Actualizar estado
+                statusElement.textContent = 'Desconectado ✗';
+                statusElement.style.color = '#e74c3c';
+                connectionStatus.className = 'connection-status connection-offline';
+                statusText.textContent = 'Error de conexión';
+                footerConnection.textContent = 'Desconectado';
+                footerConnection.style.color = '#e74c3c';
+                
+                // Mostrar solucionador de problemas
+                showTroubleshooter(`No se pudo conectar a ${API_BASE_URL}. Error: ${error.message}`);
+                
+                return false;
+            }
+        }
+        
+        async function testApiStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/status`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ API Status:', data);
+                    
+                    // Actualizar footer con datos
+                    document.getElementById('footer-last-update').textContent = 
+                        new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                    
+                    return true;
+                }
+            } catch (error) {
+                console.warn('⚠️ No se pudo obtener status del API:', error);
+                return false;
+            }
+        }
+        
+        function showTroubleshooter(message) {
+            const troubleshooter = document.getElementById('connection-troubleshooter');
+            const messageElement = document.getElementById('troubleshooter-message');
+            
+            messageElement.innerHTML = `
+                <strong>Problema detectado:</strong> ${message}<br><br>
+                <strong>Posibles soluciones:</strong>
+                <ol>
+                    <li>Asegúrate de que el servidor Flask esté ejecutándose</li>
+                    <li>Verifica que esté en el puerto 5000</li>
+                    <li>Prueba con diferentes URLs usando el botón de abajo</li>
+                    <li>Revisa la consola del backend Flask para errores</li>
+                </ol>
+            `;
+            
+            troubleshooter.style.display = 'block';
+        }
+        
+        async function testConnectionOptions() {
+            console.log('🔄 Probando opciones de conexión...');
+            
+            showAlert('Probando diferentes opciones de conexión...', 'info');
+            
+            for (const url of API_URL_OPTIONS) {
+                try {
+                    console.log(`Probando: ${url}`);
+                    const response = await fetch(`${url}/health`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        signal: AbortSignal.timeout(3000)
+                    });
+                    
+                    if (response.ok) {
+                        console.log(`✅ ¡Conexión exitosa a ${url}!`);
+                        
+                        // Guardar esta URL como la que funciona
+                        API_BASE_URL = url;
+                        localStorage.setItem('cano_salao_api_url', url);
+                        document.getElementById('backend-url').value = url;
+                        
+                        showAlert(`✅ ¡Conexión establecida con ${url}! Actualizando...`, 'success');
+                        
+                        // Recargar la página para usar la nueva URL
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                        
+                        return;
+                    }
+                } catch (error) {
+                    console.log(`❌ ${url} no disponible: ${error.message}`);
+                }
+            }
+            
+            showAlert('❌ Ninguna de las URLs probadas funciona. Verifica que el servidor Flask esté corriendo.', 'error');
+        }
+        
+        async function testUrl(url) {
+            try {
+                const response = await fetch(`${url}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    signal: AbortSignal.timeout(3000)
+                });
+                
+                if (response.ok) {
+                    showAlert(`✅ ${url} funciona correctamente`, 'success');
+                    
+                    // Guardar esta URL como la que funciona
+                    API_BASE_URL = url;
+                    localStorage.setItem('cano_salao_api_url', url);
+                    document.getElementById('backend-url').value = url;
+                    
+                    // Actualizar conexión
+                    setTimeout(() => {
+                        testBackendConnection();
+                    }, 1000);
+                    
+                    return true;
+                } else {
+                    showAlert(`❌ ${url} no responde (HTTP ${response.status})`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                showAlert(`❌ ${url} no disponible: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function testAllEndpoints() {
+            const resultsDiv = document.getElementById('endpoint-test-results');
+            resultsDiv.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; margin: 10px auto;"></div><p>Probando endpoints...</p>';
+            
+            const endpoints = [
+                { path: '/health', name: 'Health Check' },
+                { path: '/', name: 'Home' },
+                { path: '/api/status', name: 'API Status' },
+                { path: '/api/tours', name: 'Tours' },
+                { path: '/api/blog', name: 'Blog' }
+            ];
+            
+            let html = '<div style="margin-top: 10px;">';
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}${endpoint.path}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        signal: AbortSignal.timeout(5000)
+                    });
+                    
+                    if (response.ok) {
+                        html += `<p><i class="bi bi-check-circle" style="color: #27ae60;"></i> ${endpoint.name}: <span style="color: #27ae60;">Funciona</span></p>`;
+                    } else {
+                        html += `<p><i class="bi bi-x-circle" style="color: #e74c3c;"></i> ${endpoint.name}: <span style="color: #e74c3c;">Error ${response.status}</span></p>`;
+                    }
+                } catch (error) {
+                    html += `<p><i class="bi bi-x-circle" style="color: #e74c3c;"></i> ${endpoint.name}: <span style="color: #e74c3c;">No disponible</span></p>`;
+                }
+            }
+            
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+            
+            showAlert('Prueba de endpoints completada', 'info');
+        }
+        
+        function resetConnectionSettings() {
+            localStorage.removeItem('cano_salao_api_url');
+            API_BASE_URL = 'http://localhost:5000';
+            document.getElementById('backend-url').value = API_BASE_URL;
+            showAlert('Configuración de conexión restablecida', 'success');
+            testBackendConnection();
+        }
+        
+        // ========== AUTENTICACIÓN MEJORADA ==========
         async function checkAuthAndAdmin() {
             console.log('🔐 Verificando autenticación y permisos de administrador...');
             
@@ -1532,8 +1834,7 @@
             
             try {
                 console.log('🔍 Verificando token...');
-                // Usar el endpoint correcto según tu app.py
-                const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+                const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1573,20 +1874,27 @@
                         // Intentar nuevamente después de refrescar
                         return checkAuthAndAdmin();
                     } else {
-                        logout();
+                        // Redirigir a login si no se puede refrescar
+                        showAlert('Sesión expirada. Por favor inicia sesión nuevamente.', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
                         return false;
                     }
                 } else {
                     console.error('Error verificando token:', response.status);
                     showAlert('Error de autenticación', 'error');
-                    logout();
+                    // No cerrar sesión automáticamente, dar opción
                     return false;
                 }
             } catch (error) {
                 console.error('Error verificando permisos:', error);
-                showAlert('Error de conexión con el servidor', 'error');
-                // Verificar si el backend está corriendo
-                testBackendConnection();
+                // Mostrar error específico de conexión
+                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    showAlert('Error de conexión con el servidor. Verifica que el backend esté corriendo.', 'error');
+                } else {
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
                 return false;
             }
             
@@ -1602,7 +1910,7 @@
             }
             
             try {
-                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${refreshToken}`,
@@ -1633,6 +1941,22 @@
             }
             
             return false;
+        }
+        
+        function forceReloadToken() {
+            token = localStorage.getItem('cano_salao_token');
+            refreshToken = localStorage.getItem('cano_salao_refresh_token');
+            
+            if (!token) {
+                showAlert('No hay token disponible. Por favor inicia sesión.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+                return;
+            }
+            
+            console.log('🔄 Forzando recarga de token...');
+            checkAuthAndAdmin();
         }
         
         function updateUserUI() {
@@ -1681,28 +2005,12 @@
         
         function logout() {
             if (confirm('¿Estás seguro de cerrar sesión?')) {
-                // Opcional: llamar al endpoint de logout del backend
-                fetch(`${API_BASE_URL}/auth/logout`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }).catch(error => {
-                    console.error('Error en logout:', error);
-                });
-                
                 // Limpiar datos locales
                 localStorage.removeItem('cano_salao_token');
                 localStorage.removeItem('cano_salao_refresh_token');
                 localStorage.removeItem('cano_salao_user');
                 localStorage.removeItem('admin_auto_refresh');
                 localStorage.removeItem('admin_notifications');
-                
-                token = null;
-                refreshToken = null;
-                currentUser = null;
-                isAdmin = false;
                 
                 // Detener auto-refresh
                 if (autoRefreshInterval) {
@@ -1753,14 +2061,16 @@
             if (targetSection) {
                 targetSection.classList.add('active');
                 
-                // Cargar datos específicos de la sección
-                switch(sectionId) {
-                    case 'dashboard': loadDashboardData(); break;
-                    case 'users': loadUsers(); break;
-                    case 'tours': loadTours(); break;
-                    case 'bookings': loadBookings(); break;
-                    case 'blog': loadBlogPosts(); break;
-                    case 'settings': loadProfile(); break;
+                // Cargar datos específicos de la sección solo si está autenticado
+                if (isAdmin) {
+                    switch(sectionId) {
+                        case 'dashboard': loadDashboardData(); break;
+                        case 'users': loadUsers(); break;
+                        case 'tours': loadTours(); break;
+                        case 'bookings': loadBookings(); break;
+                        case 'blog': loadBlogPosts(); break;
+                        case 'settings': loadProfile(); break;
+                    }
                 }
             }
         }
@@ -1789,6 +2099,9 @@
             alertDiv.className = `alert alert-${type}`;
             alertDiv.style.display = 'block';
             
+            // Desplazar hacia la alerta
+            alertDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
             setTimeout(() => {
                 alertDiv.style.display = 'none';
             }, 5000);
@@ -1807,7 +2120,6 @@
             document.getElementById('confirm-message').textContent = message;
             const confirmBtn = document.getElementById('confirm-action-btn');
             
-            // Guardar referencia temporal al callback
             confirmBtn.onclick = function() {
                 callback();
                 closeModal('modal-confirm');
@@ -1827,7 +2139,6 @@
             }
             
             loadDashboardData();
-            updateCurrentTime();
             
             // Cargar configuración guardada
             const savedAutoRefresh = localStorage.getItem('admin_auto_refresh') || '0';
@@ -1843,42 +2154,6 @@
             }
         }
         
-        function testBackendConnection() {
-            console.log('🔌 Probando conexión con backend...');
-            
-            // Primero probar con el endpoint básico
-            fetch('http://localhost:5000/health', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json().then(data => {
-                        const statusElement = document.getElementById('backend-status');
-                        statusElement.textContent = 'Conectado';
-                        statusElement.style.color = '#27ae60';
-                        document.getElementById('connection-status').className = 'connection-status connection-online';
-                        document.getElementById('status-text').textContent = 'Conectado al Backend';
-                        showAlert('✅ Conexión con el backend establecida correctamente', 'success');
-                        return true;
-                    });
-                }
-                throw new Error('Backend no responde');
-            })
-            .catch(error => {
-                console.error('Error conectando al backend:', error);
-                const statusElement = document.getElementById('backend-status');
-                statusElement.textContent = 'Desconectado';
-                statusElement.style.color = '#e74c3c';
-                document.getElementById('connection-status').className = 'connection-status connection-offline';
-                document.getElementById('status-text').textContent = 'Error de conexión';
-                showAlert('❌ No se pudo conectar al backend. Verifica que el servidor Flask esté ejecutándose en http://localhost:5000', 'error');
-                return false;
-            });
-        }
-        
         // ========== DASHBOARD ==========
         function loadDashboardData() {
             if (!token || !isAdmin) {
@@ -1888,7 +2163,7 @@
             
             console.log('📈 Cargando datos del dashboard...');
             
-            fetch(`${API_BASE_URL}/admin/dashboard`, {
+            fetch(`${API_BASE_URL}/api/admin/dashboard`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -1910,20 +2185,46 @@
                     return;
                 } else if (response.status === 401) {
                     console.error('401: Token expirado');
-                    // Intentar refrescar token
+                    showAlert('Sesión expirada. Recargando...', 'warning');
                     refreshAuthToken().then(refreshed => {
                         if (refreshed) {
                             loadDashboardData(); // Reintentar
                         }
                     });
                     return;
+                } else if (response.status === 0) {
+                    // Error de conexión
+                    throw new Error('No hay conexión con el servidor');
                 }
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             })
             .catch(error => {
                 console.error('Error cargando dashboard:', error);
                 showAlert('Error cargando datos del dashboard: ' + error.message, 'error');
+                
+                // Mostrar datos de ejemplo si hay error de conexión
+                if (error.message.includes('conexión') || error.message.includes('Failed to fetch')) {
+                    showExampleDashboardData();
+                }
             });
+        }
+        
+        function showExampleDashboardData() {
+            // Datos de ejemplo para cuando no hay conexión
+            const exampleStats = {
+                total_users: 5,
+                total_tours: 2,
+                total_bookings: 12,
+                total_blog_posts: 3,
+                pending_bookings: 2,
+                active_tours: 2,
+                active_users: 5,
+                active_sessions: 1,
+                recent_registrations: 1
+            };
+            
+            updateDashboardStats(exampleStats);
+            showAlert('⚠️ Mostrando datos de ejemplo - No hay conexión con el backend', 'warning');
         }
         
         function updateDashboardStats(stats) {
@@ -2085,7 +2386,7 @@
                 </tr>
             `;
             
-            fetch(`${API_BASE_URL}/admin/users`, {
+            fetch(`${API_BASE_URL}/api/admin/users`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -2211,7 +2512,7 @@
             
             showFormAlert('add-user-alert', 'Creando usuario...', 'info');
             
-            fetch(`${API_BASE_URL}/auth/register`, {
+            fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2322,7 +2623,7 @@
         function loadTours() {
             console.log('🚤 Cargando tours...');
             
-            fetch(`${API_BASE_URL}/tours`, {
+            fetch(`${API_BASE_URL}/api/tours`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -2480,7 +2781,7 @@
             
             console.log('📅 Cargando reservas...');
             
-            fetch(`${API_BASE_URL}/user/bookings`, {
+            fetch(`${API_BASE_URL}/api/user/bookings`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -2574,7 +2875,7 @@
         function loadBlogPosts() {
             console.log('📰 Cargando artículos del blog...');
             
-            fetch(`${API_BASE_URL}/blog`, {
+            fetch(`${API_BASE_URL}/api/blog`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -2919,7 +3220,7 @@
             
             showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
             
-            fetch(`${API_BASE_URL}/auth/profile`, {
+            fetch(`${API_BASE_URL}/api/auth/profile`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -2987,16 +3288,16 @@
         function showSystemInfo() {
             const info = `
                 <strong><i class="bi bi-info-circle"></i> Información del Sistema:</strong><br><br>
-                • Backend: http://localhost:5000<br>
-                • API Base: ${API_BASE_URL}<br>
+                • Backend: ${API_BASE_URL}<br>
                 • Usuario: ${currentUser?.nombre || 'No cargado'}<br>
                 • Email: ${currentUser?.email || 'No cargado'}<br>
                 • Rol: ${currentUser?.rol || 'Desconocido'}<br>
                 • Es administrador: ${isAdmin ? 'Sí' : 'No'}<br>
                 • Token válido: ${token ? 'Sí' : 'No'}<br>
+                • Token: ${token ? token.substring(0, 20) + '...' : 'No'}<br>
                 • Auto-refresh: ${localStorage.getItem('admin_auto_refresh') || '0'} segundos<br>
                 • Notificaciones: ${localStorage.getItem('admin_notifications') !== 'false' ? 'Activadas' : 'Desactivadas'}<br>
-                • Navegador: ${navigator.userAgent.substring(0, 50)}...
+                • Última conexión: ${new Date().toLocaleTimeString()}
             `;
             
             showAlert(info, 'info');
