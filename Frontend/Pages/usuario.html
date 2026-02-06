@@ -25,13 +25,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.5;
             overflow-x: hidden;
-            opacity: 0;
-            animation: fadeIn 0.3s ease-out forwards;
             background: #fff;
-        }
-        
-        @keyframes fadeIn {
-            to { opacity: 1; }
         }
         
         .container {
@@ -103,6 +97,17 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        /* Estilo para spinners giratorios */
+        .spinner-small {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
         }
         
         /* Sistema de notificaciones */
@@ -347,6 +352,32 @@
                 transform: translateY(0);
             }
         }
+        
+        /* Mensaje de no autenticado */
+        .unauthenticated-message {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .unauthenticated-message i {
+            font-size: 64px;
+            color: #ddd;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .unauthenticated-message h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .unauthenticated-message p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
     </style>
     
     <!-- Cargar CSS principal de forma no bloqueante -->
@@ -481,7 +512,7 @@
             color: white;
         }
         
-        .user-avatar {
+        .user-avatar-large {
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -576,6 +607,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             overflow: hidden;
+            min-height: 400px;
         }
         
         .user-section {
@@ -1016,7 +1048,7 @@
                 padding: 20px;
             }
             
-            .user-avatar {
+            .user-avatar-large {
                 width: 80px;
                 height: 80px;
                 font-size: 28px;
@@ -1153,7 +1185,7 @@
                 <!-- Sistema de usuario -->
                 <div class="auth-section">
                     <div class="user-menu-container" id="user-menu-container">
-                        <a href="../index.html" class="login-btn" id="login-btn">
+                        <a href="../index.html" class="login-btn" id="login-btn" style="display: none;">
                             <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
                         </a>
                         
@@ -1195,638 +1227,651 @@
 
     <!-- Contenido Principal -->
     <main class="user-container">
-        <div class="user-layout">
-            <!-- Sidebar - Se actualizará dinámicamente según el rol -->
-            <aside class="user-sidebar">
-                <div class="user-profile-card" id="profile-card">
-                    <div class="user-avatar" id="user-avatar">U</div>
-                    <h3 class="user-name" id="user-name">Cargando...</h3>
-                    <p class="user-email" id="user-email">cargando@ejemplo.com</p>
-                    <div class="user-role-badge" id="user-role-badge">Usuario</div>
-                </div>
-                
-                <nav class="user-menu" id="user-menu">
-                    <!-- Menú para usuario normal -->
-                    <div id="normal-user-menu">
-                        <a href="#" class="user-menu-item active" data-section="dashboard">
-                            <i class="bi bi-speedometer2"></i> Panel Principal
-                        </a>
-                        <a href="#" class="user-menu-item" data-section="bookings">
-                            <i class="bi bi-calendar-check"></i> Mis Reservas
-                        </a>
-                        <a href="#" class="user-menu-item" data-section="profile">
-                            <i class="bi bi-person"></i> Mi Perfil
-                        </a>
-                        <a href="#" class="user-menu-item" data-section="preferences">
-                            <i class="bi bi-gear"></i> Preferencias
-                        </a>
-                        <a href="#" class="user-menu-item" data-section="help">
-                            <i class="bi bi-question-circle"></i> Ayuda
-                        </a>
-                    </div>
-                    
-                    <!-- Menú para administrador -->
-                    <div id="admin-menu" style="display: none;">
-                        <a href="#" class="user-menu-item active" data-section="admin-dashboard">
-                            <i class="bi bi-speedometer2"></i> Panel Administrativo
-                        </a>
-                        <a href="admin.html" class="user-menu-item">
-                            <i class="bi bi-gear"></i> Panel de Control Completo
-                        </a>
-                        <a href="#" class="user-menu-item" data-section="admin-profile">
-                            <i class="bi bi-person-badge"></i> Perfil de Administrador
-                        </a>
-                        <a href="#" class="user-menu-item" data-section="admin-users">
-                            <i class="bi bi-people"></i> Usuarios del Sistema
-                        </a>
-                    </div>
-                    
-                    <button class="logout-btn" id="logout-btn">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                    </button>
-                </nav>
-            </aside>
+        <!-- Mensaje cuando no hay sesión -->
+        <div id="unauthenticated-message" class="unauthenticated-message" style="display: none;">
+            <i class="bi bi-shield-lock"></i>
+            <h2>Acceso Restringido</h2>
+            <p>Debes iniciar sesión para acceder a tu cuenta. Serás redirigido automáticamente a la página de inicio...</p>
+            <a href="../index.html" class="btn-user">
+                <i class="bi bi-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
 
-            <!-- Contenido Principal -->
-            <div class="user-content">
-                <!-- Alertas -->
-                <div id="user-alert" class="alert" style="display: none;"></div>
-                
-                <!-- ========== SECCIONES PARA USUARIO NORMAL ========== -->
-                
-                <!-- Sección: Dashboard (Usuario Normal) -->
-                <div id="dashboard" class="user-section active">
-                    <div class="section-header">
-                        <h2><i class="bi bi-speedometer2"></i> Panel Principal</h2>
-                        <button class="btn-user" onclick="refreshDashboard()">
-                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+        <!-- Contenido de usuario autenticado -->
+        <div id="authenticated-content" style="display: none;">
+            <div class="user-layout">
+                <!-- Sidebar - Se actualizará dinámicamente según el rol -->
+                <aside class="user-sidebar">
+                    <div class="user-profile-card" id="profile-card">
+                        <div class="user-avatar-large" id="user-avatar">U</div>
+                        <h3 class="user-name" id="user-name">Cargando...</h3>
+                        <p class="user-email" id="user-email">cargando@ejemplo.com</p>
+                        <div class="user-role-badge" id="user-role-badge">Usuario</div>
+                    </div>
+                    
+                    <nav class="user-menu" id="user-menu">
+                        <!-- Menú para usuario normal -->
+                        <div id="normal-user-menu" style="display: none;">
+                            <a href="#" class="user-menu-item active" data-section="dashboard">
+                                <i class="bi bi-speedometer2"></i> Panel Principal
+                            </a>
+                            <a href="#" class="user-menu-item" data-section="bookings">
+                                <i class="bi bi-calendar-check"></i> Mis Reservas
+                            </a>
+                            <a href="#" class="user-menu-item" data-section="profile">
+                                <i class="bi bi-person"></i> Mi Perfil
+                            </a>
+                            <a href="#" class="user-menu-item" data-section="preferences">
+                                <i class="bi bi-gear"></i> Preferencias
+                            </a>
+                            <a href="#" class="user-menu-item" data-section="help">
+                                <i class="bi bi-question-circle"></i> Ayuda
+                            </a>
+                        </div>
+                        
+                        <!-- Menú para administrador -->
+                        <div id="admin-menu" style="display: none;">
+                            <a href="#" class="user-menu-item active" data-section="admin-dashboard">
+                                <i class="bi bi-speedometer2"></i> Panel Administrativo
+                            </a>
+                            <a href="admin.html" class="user-menu-item">
+                                <i class="bi bi-gear"></i> Panel de Control Completo
+                            </a>
+                            <a href="#" class="user-menu-item" data-section="admin-profile">
+                                <i class="bi bi-person-badge"></i> Perfil de Administrador
+                            </a>
+                            <a href="#" class="user-menu-item" data-section="admin-users">
+                                <i class="bi bi-people"></i> Usuarios del Sistema
+                            </a>
+                        </div>
+                        
+                        <button class="logout-btn" id="logout-btn">
+                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                         </button>
-                    </div>
+                    </nav>
+                </aside>
+
+                <!-- Contenido Principal -->
+                <div class="user-content">
+                    <!-- Alertas -->
+                    <div id="user-alert" class="alert" style="display: none;"></div>
                     
-                    <!-- Estadísticas -->
-                    <div class="user-stats">
-                        <div class="stat-card">
-                            <i class="bi bi-calendar-check"></i>
-                            <div class="stat-number" id="total-bookings">0</div>
-                            <div class="stat-label">Reservas Totales</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <i class="bi bi-clock-history"></i>
-                            <div class="stat-number" id="pending-bookings">0</div>
-                            <div class="stat-label">Pendientes</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <i class="bi bi-check-circle"></i>
-                            <div class="stat-number" id="confirmed-bookings">0</div>
-                            <div class="stat-label">Confirmadas</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <i class="bi bi-currency-dollar"></i>
-                            <div class="stat-number" id="total-spent">$0</div>
-                            <div class="stat-label">Total Gastado</div>
-                        </div>
-                    </div>
+                    <!-- ========== SECCIONES PARA USUARIO NORMAL ========== -->
                     
-                    <!-- Reservas Recientes -->
-                    <div class="section-header">
-                        <h2><i class="bi bi-clock-history"></i> Reservas Recientes</h2>
-                        <button class="btn-user" onclick="showSection('bookings')">
-                            <i class="bi bi-eye"></i> Ver Todas
-                        </button>
-                    </div>
-                    
-                    <div class="user-table-container">
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Tour</th>
-                                    <th>Fecha</th>
-                                    <th>Personas</th>
-                                    <th>Total</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recent-bookings">
-                                <tr>
-                                    <td colspan="6" class="empty-state">
-                                        <div class="spinner"></div>
-                                        <p>Cargando reservas...</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Acciones Rápidas -->
-                    <div class="section-header" style="margin-top: 40px;">
-                        <h2><i class="bi bi-lightning"></i> Acciones Rápidas</h2>
-                    </div>
-                    
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn-user" onclick="nuevaReserva()">
-                            <i class="bi bi-calendar-plus"></i> Nueva Reserva
-                        </button>
-                        <button class="btn-user btn-user-secondary" onclick="showSection('profile')">
-                            <i class="bi bi-pencil"></i> Editar Perfil
-                        </button>
-                        <button class="btn-user btn-user-secondary" onclick="verMisReservas()">
-                            <i class="bi bi-list-check"></i> Ver Todas las Reservas
-                        </button>
-                        <button class="btn-user btn-user-success" onclick="contactarSoporte()">
-                            <i class="bi bi-chat-dots"></i> Contactar Soporte
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Sección: Mis Reservas (Usuario Normal) -->
-                <div id="bookings" class="user-section">
-                    <div class="section-header">
-                        <h2><i class="bi bi-calendar-check"></i> Mis Reservas</h2>
-                        <button class="btn-user" onclick="nuevaReserva()">
-                            <i class="bi bi-plus-circle"></i> Nueva Reserva
-                        </button>
-                    </div>
-                    
-                    <!-- Filtros -->
-                    <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                        <select id="booking-filter" class="form-control" style="max-width: 200px;" onchange="filterBookings()">
-                            <option value="all">Todas las reservas</option>
-                            <option value="pending">Pendientes</option>
-                            <option value="confirmed">Confirmadas</option>
-                            <option value="cancelled">Canceladas</option>
-                            <option value="completed">Completadas</option>
-                        </select>
-                        
-                        <input type="text" id="booking-search" class="form-control" placeholder="Buscar por código o tour..." style="flex: 1;" onkeyup="searchBookings()">
-                    </div>
-                    
-                    <!-- Tabla de reservas -->
-                    <div class="user-table-container">
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Tour</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Personas</th>
-                                    <th>Total</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bookings-table-body">
-                                <tr>
-                                    <td colspan="8" class="empty-state">
-                                        <div class="spinner"></div>
-                                        <p>Cargando reservas...</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Paginación -->
-                    <div class="pagination" id="bookings-pagination" style="display: none;">
-                        <button class="page-btn" onclick="prevBookingsPage()"><i class="bi bi-chevron-left"></i></button>
-                        <span id="bookings-page-info" style="padding: 8px 15px;">Página 1</span>
-                        <button class="page-btn" onclick="nextBookingsPage()"><i class="bi bi-chevron-right"></i></button>
-                    </div>
-                </div>
-                
-                <!-- Sección: Mi Perfil (Usuario Normal) -->
-                <div id="profile" class="user-section">
-                    <div class="section-header">
-                        <h2><i class="bi bi-person"></i> Mi Perfil</h2>
-                    </div>
-                    
-                    <form id="profile-form" class="user-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="bi bi-person"></i> Nombre Completo *</label>
-                                <input type="text" id="profile-name" class="form-control" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label><i class="bi bi-envelope"></i> Correo Electrónico *</label>
-                                <input type="email" id="profile-email" class="form-control" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="bi bi-telephone"></i> Teléfono</label>
-                                <input type="tel" id="profile-phone" class="form-control">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label><i class="bi bi-calendar"></i> Fecha de Nacimiento</label>
-                                <input type="date" id="profile-birthdate" class="form-control">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label><i class="bi bi-geo-alt"></i> Dirección</label>
-                            <input type="text" id="profile-address" class="form-control" placeholder="Dirección completa">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label><i class="bi bi-chat-text"></i> Sobre mí</label>
-                            <textarea id="profile-bio" class="form-control" rows="4" placeholder="Cuéntanos algo sobre ti..."></textarea>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="button" class="btn-user btn-user-secondary" onclick="cancelarEdicion()">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </button>
-                            <button type="submit" class="btn-user" id="save-profile-btn">
-                                <i class="bi bi-check-circle"></i> Guardar Cambios
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <!-- Sección de Cambio de Contraseña -->
-                    <div class="password-section">
-                        <h3><i class="bi bi-shield-lock"></i> Cambiar Contraseña</h3>
-                        
-                        <form id="password-form" class="user-form">
-                            <div class="form-group">
-                                <label><i class="bi bi-key"></i> Contraseña Actual *</label>
-                                <input type="password" id="current-password" class="form-control" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label><i class="bi bi-key-fill"></i> Nueva Contraseña *</label>
-                                <input type="password" id="new-password" class="form-control" required minlength="6">
-                                <small style="color: #666; display: block; margin-top: 5px;">Mínimo 6 caracteres</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label><i class="bi bi-key-fill"></i> Confirmar Nueva Contraseña *</label>
-                                <input type="password" id="confirm-password" class="form-control" required>
-                                <small style="color: #666; display: block; margin-top: 5px;">Repite la nueva contraseña</small>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="submit" class="btn-user" id="save-password-btn">
-                                    <i class="bi bi-check-circle"></i> Cambiar Contraseña
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                
-                <!-- Sección: Preferencias (Usuario Normal) -->
-                <div id="preferences" class="user-section">
-                    <div class="section-header">
-                        <h2><i class="bi bi-gear"></i> Preferencias</h2>
-                    </div>
-                    
-                    <form id="preferences-form" class="user-form">
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="pref-newsletter" checked> 
-                                <i class="bi bi-envelope"></i> Recibir newsletter y promociones
-                            </label>
-                            <small style="display: block; color: #666; margin-top: 5px;">
-                                Recibe correos con novedades, ofertas especiales y consejos de viaje
-                            </small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="pref-notifications" checked> 
-                                <i class="bi bi-bell"></i> Notificaciones por email
-                            </label>
-                            <small style="display: block; color: #666; margin-top: 5px;">
-                                Recibe notificaciones sobre el estado de tus reservas y recordatorios
-                            </small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="pref-sms" checked> 
-                                <i class="bi bi-chat-text"></i> Notificaciones por SMS
-                            </label>
-                            <small style="display: block; color: #666; margin-top: 5px;">
-                                Recibe mensajes de texto con información importante de tus reservas
-                            </small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label><i class="bi bi-globe"></i> Idioma Preferido</label>
-                            <select id="pref-language" class="form-control">
-                                <option value="es" selected>Español</option>
-                                <option value="en">English</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label><i class="bi bi-currency-dollar"></i> Moneda Preferida</label>
-                            <select id="pref-currency" class="form-control">
-                                <option value="USD" selected>Dólares (USD)</option>
-                                <option value="EUR">Euros (EUR)</option>
-                                <option value="VES">Bolívares (VES)</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="submit" class="btn-user">
-                                <i class="bi bi-check-circle"></i> Guardar Preferencias
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                
-                <!-- Sección: Ayuda (Usuario Normal) -->
-                <div id="help" class="user-section">
-                    <div class="section-header">
-                        <h2><i class="bi bi-question-circle"></i> Ayuda y Soporte</h2>
-                    </div>
-                    
-                    <div style="margin-bottom: 30px;">
-                        <h3><i class="bi bi-chat-dots"></i> Preguntas Frecuentes</h3>
-                        
-                        <div style="margin-top: 20px;">
-                            <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                                <strong>¿Cómo puedo modificar una reserva?</strong>
-                                <p style="margin-top: 5px; color: #666;">Puedes modificar tus reservas desde la sección "Mis Reservas". Selecciona la reserva que deseas modificar y haz clic en "Editar".</p>
-                            </div>
-                            
-                            <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                                <strong>¿Cuál es la política de cancelación?</strong>
-                                <p style="margin-top: 5px; color: #666;">Las cancelaciones con más de 48 horas de anticipación reciben reembolso del 90%. Entre 24 y 48 horas, reembolso del 50%. Menos de 24 horas, no hay reembolso.</p>
-                            </div>
-                            
-                            <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                                <strong>¿Qué debo llevar al tour?</strong>
-                                <p style="margin-top: 5px; color: #666;">Recomendamos llevar protector solar, gorra, agua, cámara fotográfica y ropa cómoda. En caso de lluvia, contamos con ponchos disponibles.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h3><i class="bi bi-headset"></i> Contactar Soporte</h3>
-                        
-                        <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                            <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
-                                <i class="bi bi-telephone" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
-                                <h4 style="margin: 10px 0;">Teléfono</h4>
-                                <p style="color: #666;">+58 412-205-6558</p>
-                                <small style="color: #999;">Lunes a Domingo 8:00 AM - 6:00 PM</small>
-                            </div>
-                            
-                            <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
-                                <i class="bi bi-envelope" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
-                                <h4 style="margin: 10px 0;">Email</h4>
-                                <p style="color: #666;">soporte@canosalaotours.com</p>
-                                <small style="color: #999;">Respuesta en 24 horas</small>
-                            </div>
-                            
-                            <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
-                                <i class="bi bi-whatsapp" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
-                                <h4 style="margin: 10px 0;">WhatsApp</h4>
-                                <p style="color: #666;">+58 412-205-6558</p>
-                                <small style="color: #999;">Respuesta inmediata</small>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 30px;">
-                            <h4><i class="bi bi-chat-text"></i> Enviar Mensaje Directo</h4>
-                            <textarea id="support-message" class="form-control" rows="4" placeholder="Describe tu consulta o problema..." style="margin-top: 10px;"></textarea>
-                            <button class="btn-user" onclick="enviarMensajeSoporte()" style="margin-top: 15px;">
-                                <i class="bi bi-send"></i> Enviar Mensaje
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- ========== SECCIONES PARA ADMINISTRADOR ========== -->
-                
-                <!-- Sección: Dashboard Administrativo -->
-                <div id="admin-dashboard" class="user-section">
-                    <div class="section-header">
-                        <h2><i class="bi bi-speedometer2"></i> Panel Administrativo</h2>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn-user" onclick="irAlPanelCompleto()">
-                                <i class="bi bi-gear"></i> Panel Completo
-                            </button>
-                            <button class="btn-user" onclick="refreshAdminDashboard()">
+                    <!-- Sección: Dashboard (Usuario Normal) -->
+                    <div id="dashboard" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-speedometer2"></i> Panel Principal</h2>
+                            <button class="btn-user" onclick="refreshDashboard()">
                                 <i class="bi bi-arrow-clockwise"></i> Actualizar
                             </button>
                         </div>
-                    </div>
-                    
-                    <!-- Estadísticas del Sistema -->
-                    <div class="admin-stats">
-                        <div class="admin-stat-card">
-                            <i class="bi bi-people"></i>
-                            <div class="admin-stat-number" id="admin-total-users">0</div>
-                            <div class="admin-stat-label">Usuarios Registrados</div>
-                        </div>
                         
-                        <div class="admin-stat-card">
-                            <i class="bi bi-calendar-check"></i>
-                            <div class="admin-stat-number" id="admin-total-bookings">0</div>
-                            <div class="admin-stat-label">Reservas Totales</div>
-                        </div>
-                        
-                        <div class="admin-stat-card">
-                            <i class="bi bi-currency-dollar"></i>
-                            <div class="admin-stat-number" id="admin-total-revenue">$0</div>
-                            <div class="admin-stat-label">Ingresos Totales</div>
-                        </div>
-                        
-                        <div class="admin-stat-card">
-                            <i class="bi bi-clock-history"></i>
-                            <div class="admin-stat-number" id="admin-pending-bookings">0</div>
-                            <div class="admin-stat-label">Reservas Pendientes</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Acciones Rápidas para Admin -->
-                    <div class="section-header">
-                        <h2><i class="bi bi-lightning"></i> Acciones Rápidas</h2>
-                    </div>
-                    
-                    <div class="admin-quick-actions">
-                        <a href="admin.html?section=bookings" class="quick-action-card">
-                            <i class="bi bi-calendar-check"></i>
-                            <h3>Gestionar Reservas</h3>
-                            <p>Revisa, confirma o cancela reservas de usuarios</p>
-                        </a>
-                        
-                        <a href="admin.html?section=tours" class="quick-action-card">
-                            <i class="bi bi-map"></i>
-                            <h3>Gestionar Tours</h3>
-                            <p>Agrega, edita o elimina tours disponibles</p>
-                        </a>
-                        
-                        <a href="#" class="quick-action-card" onclick="showSection('admin-users')">
-                            <i class="bi bi-people"></i>
-                            <h3>Ver Usuarios</h3>
-                            <p>Consulta la lista de usuarios registrados</p>
-                        </a>
-                        
-                        <a href="#" class="quick-action-card" onclick="generarReporte()">
-                            <i class="bi bi-graph-up"></i>
-                            <h3>Generar Reporte</h3>
-                            <p>Crea reportes de ingresos y estadísticas</p>
-                        </a>
-                    </div>
-                    
-                    <!-- Últimas Reservas del Sistema -->
-                    <div class="section-header">
-                        <h2><i class="bi bi-clock-history"></i> Últimas Reservas</h2>
-                        <button class="btn-user" onclick="verTodasLasReservas()">
-                            <i class="bi bi-eye"></i> Ver Todas
-                        </button>
-                    </div>
-                    
-                    <div class="user-table-container">
-                        <table class="user-table">
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Usuario</th>
-                                    <th>Tour</th>
-                                    <th>Fecha</th>
-                                    <th>Total</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-recent-bookings">
-                                <tr>
-                                    <td colspan="6" class="empty-state">
-                                        <div class="spinner"></div>
-                                        <p>Cargando reservas recientes...</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <!-- Sección: Perfil de Administrador -->
-                <div id="admin-profile" class="user-section">
-                    <div class="section-header">
-                        <h2><i class="bi bi-person-badge"></i> Perfil de Administrador</h2>
-                    </div>
-                    
-                    <div style="background: rgba(44, 130, 201, 0.05); padding: 25px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid var(--user-primary);">
-                        <h3 style="color: var(--user-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            <i class="bi bi-shield-check"></i> Cuenta de Administrador
-                        </h3>
-                        <p>Esta es una cuenta de administrador con acceso completo al sistema. Puedes gestionar todos los aspectos de la plataforma Caño Salao.</p>
-                    </div>
-                    
-                    <form id="admin-profile-form" class="user-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label><i class="bi bi-person-badge"></i> Nombre del Administrador *</label>
-                                <input type="text" id="admin-profile-name" class="form-control" required>
+                        <!-- Estadísticas -->
+                        <div class="user-stats" id="user-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                            <div class="stat-card">
+                                <i class="bi bi-calendar-check"></i>
+                                <div class="stat-number" id="total-bookings">0</div>
+                                <div class="stat-label">Reservas Totales</div>
                             </div>
                             
-                            <div class="form-group">
-                                <label><i class="bi bi-envelope"></i> Correo Electrónico *</label>
-                                <input type="email" id="admin-profile-email" class="form-control" required>
+                            <div class="stat-card">
+                                <i class="bi bi-clock-history"></i>
+                                <div class="stat-number" id="pending-bookings">0</div>
+                                <div class="stat-label">Pendientes</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <i class="bi bi-check-circle"></i>
+                                <div class="stat-number" id="confirmed-bookings">0</div>
+                                <div class="stat-label">Confirmadas</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <i class="bi bi-currency-dollar"></i>
+                                <div class="stat-number" id="total-spent">$0</div>
+                                <div class="stat-label">Total Gastado</div>
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label><i class="bi bi-telephone"></i> Teléfono de Contacto</label>
-                            <input type="tel" id="admin-profile-phone" class="form-control">
-                            <small style="color: #666; display: block; margin-top: 5px;">Para emergencias del sistema</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label><i class="bi bi-chat-text"></i> Notas del Administrador</label>
-                            <textarea id="admin-profile-notes" class="form-control" rows="4" placeholder="Notas importantes sobre esta cuenta..."></textarea>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="button" class="btn-user btn-user-secondary" onclick="cancelarEdicionAdmin()">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </button>
-                            <button type="submit" class="btn-user" id="save-admin-profile-btn">
-                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                        <!-- Reservas Recientes -->
+                        <div class="section-header">
+                            <h2><i class="bi bi-clock-history"></i> Reservas Recientes</h2>
+                            <button class="btn-user" onclick="showSection('bookings')">
+                                <i class="bi bi-eye"></i> Ver Todas
                             </button>
                         </div>
-                    </form>
-                    
-                    <!-- Sección de Cambio de Contraseña para Admin -->
-                    <div class="password-section">
-                        <h3><i class="bi bi-shield-lock"></i> Cambiar Contraseña de Administrador</h3>
                         
-                        <form id="admin-password-form" class="user-form">
-                            <div class="form-group">
-                                <label><i class="bi bi-key"></i> Contraseña Actual *</label>
-                                <input type="password" id="admin-current-password" class="form-control" required>
+                        <div class="user-table-container">
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Tour</th>
+                                        <th>Fecha</th>
+                                        <th>Personas</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-bookings">
+                                    <tr>
+                                        <td colspan="6" class="empty-state">
+                                            <div class="loader-spinner" style="width: 30px; height: 30px;"></div>
+                                            <p>Cargando reservas...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Acciones Rápidas -->
+                        <div class="section-header" style="margin-top: 40px;">
+                            <h2><i class="bi bi-lightning"></i> Acciones Rápidas</h2>
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button class="btn-user" onclick="nuevaReserva()">
+                                <i class="bi bi-calendar-plus"></i> Nueva Reserva
+                            </button>
+                            <button class="btn-user btn-user-secondary" onclick="showSection('profile')">
+                                <i class="bi bi-pencil"></i> Editar Perfil
+                            </button>
+                            <button class="btn-user btn-user-secondary" onclick="verMisReservas()">
+                                <i class="bi bi-list-check"></i> Ver Todas las Reservas
+                            </button>
+                            <button class="btn-user btn-user-success" onclick="contactarSoporte()">
+                                <i class="bi bi-chat-dots"></i> Contactar Soporte
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección: Mis Reservas (Usuario Normal) -->
+                    <div id="bookings" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-calendar-check"></i> Mis Reservas</h2>
+                            <button class="btn-user" onclick="nuevaReserva()">
+                                <i class="bi bi-plus-circle"></i> Nueva Reserva
+                            </button>
+                        </div>
+                        
+                        <!-- Filtros -->
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                            <select id="booking-filter" class="form-control" style="max-width: 200px;" onchange="filterBookings()">
+                                <option value="all">Todas las reservas</option>
+                                <option value="pending">Pendientes</option>
+                                <option value="confirmed">Confirmadas</option>
+                                <option value="cancelled">Canceladas</option>
+                                <option value="completed">Completadas</option>
+                            </select>
+                            
+                            <input type="text" id="booking-search" class="form-control" placeholder="Buscar por código o tour..." style="flex: 1;" onkeyup="searchBookings()">
+                        </div>
+                        
+                        <!-- Tabla de reservas -->
+                        <div class="user-table-container">
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Tour</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Personas</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookings-table-body">
+                                    <tr>
+                                        <td colspan="8" class="empty-state">
+                                            <div class="loader-spinner" style="width: 30px; height: 30px;"></div>
+                                            <p>Cargando reservas...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Paginación -->
+                        <div class="pagination" id="bookings-pagination" style="display: none;">
+                            <button class="page-btn" onclick="prevBookingsPage()"><i class="bi bi-chevron-left"></i></button>
+                            <span id="bookings-page-info" style="padding: 8px 15px;">Página 1</span>
+                            <button class="page-btn" onclick="nextBookingsPage()"><i class="bi bi-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección: Mi Perfil (Usuario Normal) -->
+                    <div id="profile" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-person"></i> Mi Perfil</h2>
+                        </div>
+                        
+                        <form id="profile-form" class="user-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="bi bi-person"></i> Nombre Completo *</label>
+                                    <input type="text" id="profile-name" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="bi bi-envelope"></i> Correo Electrónico *</label>
+                                    <input type="email" id="profile-email" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="bi bi-telephone"></i> Teléfono</label>
+                                    <input type="tel" id="profile-phone" class="form-control">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="bi bi-calendar"></i> Fecha de Nacimiento</label>
+                                    <input type="date" id="profile-birthdate" class="form-control">
+                                </div>
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="bi bi-key-fill"></i> Nueva Contraseña *</label>
-                                <input type="password" id="admin-new-password" class="form-control" required minlength="8">
-                                <small style="color: #666; display: block; margin-top: 5px;">Mínimo 8 caracteres (recomendado: 12+ con mayúsculas, números y símbolos)</small>
+                                <label><i class="bi bi-geo-alt"></i> Dirección</label>
+                                <input type="text" id="profile-address" class="form-control" placeholder="Dirección completa">
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="bi bi-key-fill"></i> Confirmar Nueva Contraseña *</label>
-                                <input type="password" id="admin-confirm-password" class="form-control" required>
+                                <label><i class="bi bi-chat-text"></i> Sobre mí</label>
+                                <textarea id="profile-bio" class="form-control" rows="4" placeholder="Cuéntanos algo sobre ti..."></textarea>
                             </div>
                             
                             <div class="form-actions">
-                                <button type="submit" class="btn-user" id="save-admin-password-btn">
-                                    <i class="bi bi-shield-check"></i> Cambiar Contraseña
+                                <button type="button" class="btn-user btn-user-secondary" onclick="cancelarEdicion()">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </button>
+                                <button type="submit" class="btn-user" id="save-profile-btn">
+                                    <i class="bi bi-check-circle"></i> Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Sección de Cambio de Contraseña -->
+                        <div class="password-section">
+                            <h3><i class="bi bi-shield-lock"></i> Cambiar Contraseña</h3>
+                            
+                            <form id="password-form" class="user-form">
+                                <div class="form-group">
+                                    <label><i class="bi bi-key"></i> Contraseña Actual *</label>
+                                    <input type="password" id="current-password" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="bi bi-key-fill"></i> Nueva Contraseña *</label>
+                                    <input type="password" id="new-password" class="form-control" required minlength="6">
+                                    <small style="color: #666; display: block; margin-top: 5px;">Mínimo 6 caracteres</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="bi bi-key-fill"></i> Confirmar Nueva Contraseña *</label>
+                                    <input type="password" id="confirm-password" class="form-control" required>
+                                    <small style="color: #666; display: block; margin-top: 5px;">Repite la nueva contraseña</small>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-user" id="save-password-btn">
+                                        <i class="bi bi-check-circle"></i> Cambiar Contraseña
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección: Preferencias (Usuario Normal) -->
+                    <div id="preferences" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-gear"></i> Preferencias</h2>
+                        </div>
+                        
+                        <form id="preferences-form" class="user-form">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="pref-newsletter" checked> 
+                                    <i class="bi bi-envelope"></i> Recibir newsletter y promociones
+                                </label>
+                                <small style="display: block; color: #666; margin-top: 5px;">
+                                    Recibe correos con novedades, ofertas especiales y consejos de viaje
+                                </small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="pref-notifications" checked> 
+                                    <i class="bi bi-bell"></i> Notificaciones por email
+                                </label>
+                                <small style="display: block; color: #666; margin-top: 5px;">
+                                    Recibe notificaciones sobre el estado de tus reservas y recordatorios
+                                </small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="pref-sms" checked> 
+                                    <i class="bi bi-chat-text"></i> Notificaciones por SMS
+                                </label>
+                                <small style="display: block; color: #666; margin-top: 5px;">
+                                    Recibe mensajes de texto con información importante de tus reservas
+                                </small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-globe"></i> Idioma Preferido</label>
+                                <select id="pref-language" class="form-control">
+                                    <option value="es" selected>Español</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-currency-dollar"></i> Moneda Preferida</label>
+                                <select id="pref-currency" class="form-control">
+                                    <option value="USD" selected>Dólares (USD)</option>
+                                    <option value="EUR">Euros (EUR)</option>
+                                    <option value="VES">Bolívares (VES)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-user">
+                                    <i class="bi bi-check-circle"></i> Guardar Preferencias
                                 </button>
                             </div>
                         </form>
                     </div>
-                </div>
-                
-                <!-- Sección: Usuarios del Sistema -->
-                <div id="admin-users" class="user-section">
-                    <div class="section-header">
-                        <h2><i class="bi bi-people"></i> Usuarios del Sistema</h2>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="user-search" class="form-control" placeholder="Buscar usuario..." style="max-width: 250px;" onkeyup="searchUsers()">
-                            <button class="btn-user" onclick="exportarUsuarios()">
-                                <i class="bi bi-download"></i> Exportar
-                            </button>
+                    
+                    <!-- Sección: Ayuda (Usuario Normal) -->
+                    <div id="help" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-question-circle"></i> Ayuda y Soporte</h2>
+                        </div>
+                        
+                        <div style="margin-bottom: 30px;">
+                            <h3><i class="bi bi-chat-dots"></i> Preguntas Frecuentes</h3>
+                            
+                            <div style="margin-top: 20px;">
+                                <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                    <strong>¿Cómo puedo modificar una reserva?</strong>
+                                    <p style="margin-top: 5px; color: #666;">Puedes modificar tus reservas desde la sección "Mis Reservas". Selecciona la reserva que deseas modificar y haz clic en "Editar".</p>
+                                </div>
+                                
+                                <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                    <strong>¿Cuál es la política de cancelación?</strong>
+                                    <p style="margin-top: 5px; color: #666;">Las cancelaciones con más de 48 horas de anticipación reciben reembolso del 90%. Entre 24 y 48 horas, reembolso del 50%. Menos de 24 horas, no hay reembolso.</p>
+                                </div>
+                                
+                                <div style="background: var(--user-light); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                    <strong>¿Qué debo llevar al tour?</strong>
+                                    <p style="margin-top: 5px; color: #666;">Recomendamos llevar protector solar, gorra, agua, cámara fotográfica y ropa cómoda. En caso de lluvia, contamos con ponchos disponibles.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3><i class="bi bi-headset"></i> Contactar Soporte</h3>
+                            
+                            <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                                <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
+                                    <i class="bi bi-telephone" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
+                                    <h4 style="margin: 10px 0;">Teléfono</h4>
+                                    <p style="color: #666;">+58 412-205-6558</p>
+                                    <small style="color: #999;">Lunes a Domingo 8:00 AM - 6:00 PM</small>
+                                </div>
+                                
+                                <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
+                                    <i class="bi bi-envelope" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
+                                    <h4 style="margin: 10px 0;">Email</h4>
+                                    <p style="color: #666;">soporte@canosalaotours.com</p>
+                                    <small style="color: #999;">Respuesta en 24 horas</small>
+                                </div>
+                                
+                                <div style="text-align: center; padding: 20px; background: var(--user-light); border-radius: 8px;">
+                                    <i class="bi bi-whatsapp" style="font-size: 30px; color: var(--user-primary); margin-bottom: 10px;"></i>
+                                    <h4 style="margin: 10px 0;">WhatsApp</h4>
+                                    <p style="color: #666;">+58 412-205-6558</p>
+                                    <small style="color: #999;">Respuesta inmediata</small>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 30px;">
+                                <h4><i class="bi bi-chat-text"></i> Enviar Mensaje Directo</h4>
+                                <textarea id="support-message" class="form-control" rows="4" placeholder="Describe tu consulta o problema..." style="margin-top: 10px;"></textarea>
+                                <button class="btn-user" onclick="enviarMensajeSoporte()" style="margin-top: 15px;">
+                                    <i class="bi bi-send"></i> Enviar Mensaje
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="user-table-container">
-                        <table class="user-table admin-users-table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Email</th>
-                                    <th>Rol</th>
-                                    <th>Fecha Registro</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-users-table-body">
-                                <tr>
-                                    <td colspan="6" class="empty-state">
-                                        <div class="spinner"></div>
-                                        <p>Cargando usuarios del sistema...</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <!-- ========== SECCIONES PARA ADMINISTRADOR ========== -->
+                    
+                    <!-- Sección: Dashboard Administrativo -->
+                    <div id="admin-dashboard" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-speedometer2"></i> Panel Administrativo</h2>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-user" onclick="irAlPanelCompleto()">
+                                    <i class="bi bi-gear"></i> Panel Completo
+                                </button>
+                                <button class="btn-user" onclick="refreshAdminDashboard()">
+                                    <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Estadísticas del Sistema -->
+                        <div class="admin-stats">
+                            <div class="admin-stat-card">
+                                <i class="bi bi-people"></i>
+                                <div class="admin-stat-number" id="admin-total-users">0</div>
+                                <div class="admin-stat-label">Usuarios Registrados</div>
+                            </div>
+                            
+                            <div class="admin-stat-card">
+                                <i class="bi bi-calendar-check"></i>
+                                <div class="admin-stat-number" id="admin-total-bookings">0</div>
+                                <div class="admin-stat-label">Reservas Totales</div>
+                            </div>
+                            
+                            <div class="admin-stat-card">
+                                <i class="bi bi-currency-dollar"></i>
+                                <div class="admin-stat-number" id="admin-total-revenue">$0</div>
+                                <div class="admin-stat-label">Ingresos Totales</div>
+                            </div>
+                            
+                            <div class="admin-stat-card">
+                                <i class="bi bi-clock-history"></i>
+                                <div class="admin-stat-number" id="admin-pending-bookings">0</div>
+                                <div class="admin-stat-label">Reservas Pendientes</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Acciones Rápidas para Admin -->
+                        <div class="section-header">
+                            <h2><i class="bi bi-lightning"></i> Acciones Rápidas</h2>
+                        </div>
+                        
+                        <div class="admin-quick-actions">
+                            <a href="admin.html?section=bookings" class="quick-action-card">
+                                <i class="bi bi-calendar-check"></i>
+                                <h3>Gestionar Reservas</h3>
+                                <p>Revisa, confirma o cancela reservas de usuarios</p>
+                            </a>
+                            
+                            <a href="admin.html?section=tours" class="quick-action-card">
+                                <i class="bi bi-map"></i>
+                                <h3>Gestionar Tours</h3>
+                                <p>Agrega, edita o elimina tours disponibles</p>
+                            </a>
+                            
+                            <a href="#" class="quick-action-card" onclick="showSection('admin-users')">
+                                <i class="bi bi-people"></i>
+                                <h3>Ver Usuarios</h3>
+                                <p>Consulta la lista de usuarios registrados</p>
+                            </a>
+                            
+                            <a href="#" class="quick-action-card" onclick="generarReporte()">
+                                <i class="bi bi-graph-up"></i>
+                                <h3>Generar Reporte</h3>
+                                <p>Crea reportes de ingresos y estadísticas</p>
+                            </a>
+                        </div>
+                        
+                        <!-- Últimas Reservas del Sistema -->
+                        <div class="section-header">
+                            <h2><i class="bi bi-clock-history"></i> Últimas Reservas</h2>
+                            <button class="btn-user" onclick="verTodasLasReservas()">
+                                <i class="bi bi-eye"></i> Ver Todas
+                            </button>
+                        </div>
+                        
+                        <div class="user-table-container">
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Usuario</th>
+                                        <th>Tour</th>
+                                        <th>Fecha</th>
+                                        <th>Total</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-recent-bookings">
+                                    <tr>
+                                        <td colspan="6" class="empty-state">
+                                            <div class="loader-spinner" style="width: 30px; height: 30px;"></div>
+                                            <p>Cargando reservas recientes...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     
-                    <div class="pagination" id="users-pagination" style="display: none;">
-                        <button class="page-btn" onclick="prevUsersPage()"><i class="bi bi-chevron-left"></i></button>
-                        <span id="users-page-info" style="padding: 8px 15px;">Página 1</span>
-                        <button class="page-btn" onclick="nextUsersPage()"><i class="bi bi-chevron-right"></i></button>
+                    <!-- Sección: Perfil de Administrador -->
+                    <div id="admin-profile" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-person-badge"></i> Perfil de Administrador</h2>
+                        </div>
+                        
+                        <div style="background: rgba(44, 130, 201, 0.05); padding: 25px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid var(--user-primary);">
+                            <h3 style="color: var(--user-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <i class="bi bi-shield-check"></i> Cuenta de Administrador
+                            </h3>
+                            <p>Esta es una cuenta de administrador con acceso completo al sistema. Puedes gestionar todos los aspectos de la plataforma Caño Salao.</p>
+                        </div>
+                        
+                        <form id="admin-profile-form" class="user-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="bi bi-person-badge"></i> Nombre del Administrador *</label>
+                                    <input type="text" id="admin-profile-name" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="bi bi-envelope"></i> Correo Electrónico *</label>
+                                    <input type="email" id="admin-profile-email" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-telephone"></i> Teléfono de Contacto</label>
+                                <input type="tel" id="admin-profile-phone" class="form-control">
+                                <small style="color: #666; display: block; margin-top: 5px;">Para emergencias del sistema</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="bi bi-chat-text"></i> Notas del Administrador</label>
+                                <textarea id="admin-profile-notes" class="form-control" rows="4" placeholder="Notas importantes sobre esta cuenta..."></textarea>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-user btn-user-secondary" onclick="cancelarEdicionAdmin()">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </button>
+                                <button type="submit" class="btn-user" id="save-admin-profile-btn">
+                                    <i class="bi bi-check-circle"></i> Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Sección de Cambio de Contraseña para Admin -->
+                        <div class="password-section">
+                            <h3><i class="bi bi-shield-lock"></i> Cambiar Contraseña de Administrador</h3>
+                            
+                            <form id="admin-password-form" class="user-form">
+                                <div class="form-group">
+                                    <label><i class="bi bi-key"></i> Contraseña Actual *</label>
+                                    <input type="password" id="admin-current-password" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="bi bi-key-fill"></i> Nueva Contraseña *</label>
+                                    <input type="password" id="admin-new-password" class="form-control" required minlength="8">
+                                    <small style="color: #666; display: block; margin-top: 5px;">Mínimo 8 caracteres (recomendado: 12+ con mayúsculas, números y símbolos)</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="bi bi-key-fill"></i> Confirmar Nueva Contraseña *</label>
+                                    <input type="password" id="admin-confirm-password" class="form-control" required>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-user" id="save-admin-password-btn">
+                                        <i class="bi bi-shield-check"></i> Cambiar Contraseña
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección: Usuarios del Sistema -->
+                    <div id="admin-users" class="user-section">
+                        <div class="section-header">
+                            <h2><i class="bi bi-people"></i> Usuarios del Sistema</h2>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="user-search" class="form-control" placeholder="Buscar usuario..." style="max-width: 250px;" onkeyup="searchUsers()">
+                                <button class="btn-user" onclick="exportarUsuarios()">
+                                    <i class="bi bi-download"></i> Exportar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="user-table-container">
+                            <table class="user-table admin-users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Email</th>
+                                        <th>Rol</th>
+                                        <th>Fecha Registro</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-table-body">
+                                    <tr>
+                                        <td colspan="6" class="empty-state">
+                                            <div class="loader-spinner" style="width: 30px; height: 30px;"></div>
+                                            <p>Cargando usuarios del sistema...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="pagination" id="users-pagination" style="display: none;">
+                            <button class="page-btn" onclick="prevUsersPage()"><i class="bi bi-chevron-left"></i></button>
+                            <span id="users-page-info" style="padding: 8px 15px;">Página 1</span>
+                            <button class="page-btn" onclick="nextUsersPage()"><i class="bi bi-chevron-right"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1912,16 +1957,6 @@
             let isAuthenticated = false;
             let isAdmin = false;
             let userData = null;
-            let userBookings = [];
-            let allUsers = [];
-            let systemBookings = [];
-            let currentBookingsPage = 1;
-            let currentUsersPage = 1;
-            const bookingsPerPage = 10;
-            const usersPerPage = 10;
-            let currentModalAction = null;
-            let isRefreshingToken = false;
-            let failedRequestsQueue = [];
             
             // ========== SISTEMA DE NOTIFICACIONES ==========
             class NotificationSystem {
@@ -1938,7 +1973,6 @@
                     const notification = document.createElement('div');
                     notification.className = `notification ${type}`;
                     
-                    // Icono según tipo
                     let icon = 'bi-info-circle';
                     if (type === 'success') icon = 'bi-check-circle';
                     if (type === 'error') icon = 'bi-exclamation-triangle';
@@ -1954,13 +1988,11 @@
                     
                     this.container.appendChild(notification);
                     
-                    // Configurar botón de cerrar
                     const closeBtn = notification.querySelector('.close-btn');
                     closeBtn.addEventListener('click', () => {
                         this.remove(notification);
                     });
                     
-                    // Auto-remover después de duración
                     if (duration > 0) {
                         setTimeout(() => {
                             this.remove(notification);
@@ -1986,360 +2018,22 @@
             
             const notifications = new NotificationSystem();
             
-            // ========== SISTEMA DE SESIÓN PERSISTENTE ==========
-            
-            // Funciones de almacenamiento
-            function getStorageItem(key) {
-                return localStorage.getItem(key);
-            }
-            
-            function setStorageItem(key, value) {
-                localStorage.setItem(key, value);
-            }
-            
-            function removeStorageItem(key) {
-                localStorage.removeItem(key);
-            }
-            
-            function saveTokens(accessToken, refreshToken) {
-                setStorageItem(STORAGE_KEYS.TOKEN, accessToken);
-                setStorageItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-            }
-            
-            function saveUserData(user) {
-                setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user));
-            }
-            
-            function updateSessionExpiration() {
-                const expires = new Date();
-                expires.setDate(expires.getDate() + 30);
-                setStorageItem(STORAGE_KEYS.SESSION_EXPIRES, expires.toISOString());
-            }
-            
-            function updateLastActivity() {
-                const now = new Date().toISOString();
-                setStorageItem(STORAGE_KEYS.LAST_ACTIVITY, now);
-            }
-            
-            function isSessionExpired() {
-                const expiresStr = getStorageItem(STORAGE_KEYS.SESSION_EXPIRES);
-                if (!expiresStr) return true;
-                
-                try {
-                    const expires = new Date(expiresStr);
-                    const now = new Date();
-                    return now > expires;
-                } catch (error) {
-                    console.error('Error verificando expiración:', error);
-                    return true;
-                }
-            }
-            
-            function clearUserSession() {
-                Object.values(STORAGE_KEYS).forEach(key => {
-                    localStorage.removeItem(key);
-                });
-                currentUser = null;
-                isAuthenticated = false;
-                isAdmin = false;
-                console.log('✅ Sesión limpiada');
-            }
-            
-            function redirectToLogin() {
-                notifications.show('Por favor inicia sesión para acceder a esta página', 'error');
-                setTimeout(() => {
-                    window.location.href = '../index.html';
-                }, 2000);
-            }
-            
-            function showLoginInterface() {
-                const loginBtn = document.getElementById('login-btn');
-                const loggedUser = document.getElementById('logged-user');
-                
-                if (loginBtn) loginBtn.style.display = 'flex';
-                if (loggedUser) loggedUser.style.display = 'none';
-            }
-            
-            function showUserInterface() {
-                const loginBtn = document.getElementById('login-btn');
-                const loggedUser = document.getElementById('logged-user');
-                
-                if (loginBtn) loginBtn.style.display = 'none';
-                if (loggedUser) loggedUser.style.display = 'flex';
-                
-                updateUserInfo();
-            }
-            
-            function updateUserInfo() {
-                if (!currentUser) return;
-                
-                const userName = document.getElementById('header-user-name');
-                const userRole = document.getElementById('header-user-role');
-                const userAvatar = document.getElementById('header-user-avatar');
-                
-                if (userName) {
-                    userName.textContent = currentUser.nombre || currentUser.email.split('@')[0];
-                }
-                
-                if (userRole) {
-                    userRole.textContent = currentUser.rol || 'user';
-                    userRole.className = 'user-role ' + (currentUser.rol === 'admin' ? 'admin' : '');
-                }
-                
-                if (userAvatar && currentUser) {
-                    const letter = currentUser.nombre 
-                        ? currentUser.nombre.charAt(0).toUpperCase() 
-                        : currentUser.email.charAt(0).toUpperCase();
-                    
-                    userAvatar.textContent = letter;
-                    
-                    if (currentUser.rol === 'admin') {
-                        userAvatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
-                    } else {
-                        userAvatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
-                    }
-                }
-            }
-            
-            // ========== SISTEMA DE GESTIÓN DE TOKENS ==========
-            
-            async function fetchWithAuth(url, options = {}) {
-                const accessToken = getStorageItem(STORAGE_KEYS.TOKEN);
-                
-                if (!accessToken) {
-                    console.warn('⚠️ No hay token de acceso disponible');
-                    return fetch(url, options);
-                }
-                
-                options.headers = {
-                    ...options.headers,
-                    'Authorization': `Bearer ${accessToken}`
-                };
-                
-                try {
-                    const response = await fetch(url, options);
-                    
-                    if (response.status === 401) {
-                        const responseData = await response.json().catch(() => ({}));
-                        
-                        if (responseData.error === 'token_expired' || responseData.error === 'invalid_token') {
-                            console.log('🔄 Token expirado, intentando refrescar...');
-                            
-                            if (isRefreshingToken) {
-                                return new Promise((resolve, reject) => {
-                                    failedRequestsQueue.push({ resolve, reject });
-                                }).then(newToken => {
-                                    options.headers = {
-                                        ...options.headers,
-                                        'Authorization': `Bearer ${newToken}`
-                                    };
-                                    return fetch(url, options);
-                                }).catch(err => {
-                                    console.error('Error en cola de refresco:', err);
-                                    return response;
-                                });
-                            }
-                            
-                            isRefreshingToken = true;
-                            
-                            try {
-                                const newTokens = await refreshTokens();
-                                
-                                if (newTokens && newTokens.access_token) {
-                                    options.headers = {
-                                        ...options.headers,
-                                        'Authorization': `Bearer ${newTokens.access_token}`
-                                    };
-                                    
-                                    const retryResponse = await fetch(url, options);
-                                    isRefreshingToken = false;
-                                    return retryResponse;
-                                } else {
-                                    throw new Error('No se pudo refrescar el token');
-                                }
-                            } catch (refreshError) {
-                                console.error('❌ Error refrescando token:', refreshError);
-                                isRefreshingToken = false;
-                                
-                                clearUserSession();
-                                showLoginInterface();
-                                notifications.show('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
-                                
-                                return response;
-                            }
-                        }
-                    }
-                    
-                    if (response.ok && currentUser) {
-                        updateLastActivity();
-                    }
-                    
-                    return response;
-                    
-                } catch (error) {
-                    console.error('❌ Error en fetchWithAuth:', error);
-                    throw error;
-                }
-            }
-            
-            async function refreshTokens() {
-                const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
-                
-                if (!refreshToken) {
-                    console.warn('⚠️ No hay refresh token disponible');
-                    return null;
-                }
-                
-                try {
-                    console.log('🔄 Refrescando tokens...');
-                    
-                    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${refreshToken}`,
-                            'Content-Type': 'application/json'
-                        },
-                        credentials: 'include'
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        
-                        saveTokens(data.access_token || data.token, data.refresh_token);
-                        
-                        if (data.user) {
-                            saveUserData(data.user);
-                            currentUser = data.user;
-                            updateUserInfo();
-                        }
-                        
-                        updateSessionExpiration();
-                        
-                        console.log('✅ Tokens refrescados exitosamente');
-                        return {
-                            access_token: data.access_token || data.token,
-                            refresh_token: data.refresh_token
-                        };
-                    } else {
-                        console.error('❌ Error en respuesta de refresh:', response.status);
-                        return null;
-                    }
-                } catch (error) {
-                    console.error('❌ Error en refreshTokens:', error);
-                    return null;
-                }
-            }
-            
-            // ========== MANEJO DE SESIÓN ==========
-            async function checkAuthentication() {
-                if (isSessionExpired()) {
-                    console.log('⚠️ Sesión expirada, limpiando...');
-                    clearUserSession();
-                    redirectToLogin();
-                    return false;
-                }
-                
-                const token = getStorageItem(STORAGE_KEYS.TOKEN);
-                const userData = getStorageItem(STORAGE_KEYS.USER);
-                
-                if (!token || !userData) {
-                    console.log('❌ No hay sesión activa');
-                    redirectToLogin();
-                    return false;
-                }
-                
-                try {
-                    const response = await fetchWithAuth(`${API_BASE_URL}/auth/verify`);
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.valid && data.user) {
-                            currentUser = data.user;
-                            isAuthenticated = true;
-                            isAdmin = currentUser.rol === 'admin';
-                            
-                            console.log('✅ Sesión válida:', currentUser.nombre);
-                            
-                            setupUIByRole();
-                            loadUserData();
-                            loadUserBookings();
-                            if (isAdmin) {
-                                loadAdminData();
-                            }
-                            updateDashboard();
-                            
-                            return true;
-                        } else {
-                            throw new Error('Token inválido');
-                        }
-                    } else {
-                        throw new Error('Error verificando sesión');
-                    }
-                } catch (error) {
-                    console.error('Error verificando autenticación:', error);
-                    
-                    if (userData) {
-                        try {
-                            currentUser = JSON.parse(userData);
-                            isAuthenticated = true;
-                            isAdmin = currentUser.rol === 'admin';
-                            
-                            console.log('⚠️ Usando datos de usuario de localStorage (modo offline):', currentUser.nombre);
-                            
-                            setupUIByRole();
-                            loadUserDataFromLocalStorage();
-                            loadUserBookingsFromLocalStorage();
-                            if (isAdmin) {
-                                loadAdminDataFromLocalStorage();
-                            }
-                            updateDashboard();
-                            
-                            notifications.show('⚠️ Modo offline - usando datos locales', 'warning');
-                            return true;
-                        } catch (e) {
-                            console.error('Error parseando datos de usuario:', e);
-                            clearUserSession();
-                            redirectToLogin();
-                            return false;
-                        }
-                    } else {
-                        clearUserSession();
-                        redirectToLogin();
-                        return false;
-                    }
-                }
-            }
-            
-            function logout() {
-                if (confirm('¿Estás seguro de cerrar sesión?')) {
-                    clearUserSession();
-                    notifications.show('Sesión cerrada correctamente', 'success');
-                    setTimeout(() => {
-                        window.location.href = '../index.html';
-                    }, 1000);
-                }
-            }
-            
             // ========== FUNCIONES DE UTILIDAD ==========
-            function showAlert(alertDiv, message, type) {
-                const alertElement = document.getElementById(alertDiv);
-                if (!alertElement) return;
+            function showAlert(message, type = 'info') {
+                const alertDiv = document.getElementById('user-alert');
+                if (!alertDiv) return;
                 
-                alertElement.textContent = message;
-                alertElement.className = `alert alert-${type}`;
-                alertElement.style.display = 'block';
+                alertDiv.textContent = message;
+                alertDiv.className = `alert alert-${type}`;
+                alertDiv.style.display = 'block';
                 
                 notifications.show(message, type);
                 
                 if (type !== 'success') {
                     setTimeout(() => {
-                        alertElement.style.display = 'none';
+                        alertDiv.style.display = 'none';
                     }, 5000);
                 }
-            }
-            
-            function showUserAlert(message, type = 'info') {
-                showAlert('user-alert', message, type);
             }
             
             function validateEmail(email) {
@@ -2367,6 +2061,193 @@
                 }
             }
             
+            // ========== SISTEMA DE SESIÓN ==========
+            function getStorageItem(key) {
+                return localStorage.getItem(key);
+            }
+            
+            function setStorageItem(key, value) {
+                localStorage.setItem(key, value);
+            }
+            
+            function saveUserData(user) {
+                setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user));
+            }
+            
+            function clearUserSession() {
+                Object.values(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(key);
+                });
+                currentUser = null;
+                isAuthenticated = false;
+                isAdmin = false;
+                console.log('✅ Sesión limpiada');
+            }
+            
+            function redirectToHome() {
+                showAlert('No tienes sesión activa. Serás redirigido...', 'warning');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 2000);
+            }
+            
+            function showUnauthenticatedMessage() {
+                const unauthenticatedMsg = document.getElementById('unauthenticated-message');
+                const authenticatedContent = document.getElementById('authenticated-content');
+                
+                if (unauthenticatedMsg) unauthenticatedMsg.style.display = 'block';
+                if (authenticatedContent) authenticatedContent.style.display = 'none';
+                
+                // Redirigir después de 5 segundos
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 5000);
+            }
+            
+            function showAuthenticatedContent() {
+                const unauthenticatedMsg = document.getElementById('unauthenticated-message');
+                const authenticatedContent = document.getElementById('authenticated-content');
+                
+                if (unauthenticatedMsg) unauthenticatedMsg.style.display = 'none';
+                if (authenticatedContent) authenticatedContent.style.display = 'block';
+            }
+            
+            // ========== MANEJO DE SESIÓN ==========
+            async function checkAuthentication() {
+                console.log('🔐 Verificando autenticación...');
+                
+                // Verificar si hay datos de usuario en localStorage
+                const userDataStr = getStorageItem(STORAGE_KEYS.USER);
+                const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                
+                if (!userDataStr || !token) {
+                    console.log('❌ No hay datos de sesión');
+                    showUnauthenticatedMessage();
+                    return false;
+                }
+                
+                try {
+                    // Intentar parsear los datos del usuario
+                    currentUser = JSON.parse(userDataStr);
+                    isAuthenticated = true;
+                    isAdmin = currentUser.rol === 'admin';
+                    
+                    console.log('✅ Usuario encontrado:', currentUser.nombre, 'Rol:', currentUser.rol);
+                    
+                    // Mostrar contenido autenticado
+                    showAuthenticatedContent();
+                    
+                    // Configurar la UI según el rol
+                    setupUIByRole();
+                    
+                    // Actualizar información del usuario
+                    updateUserUI();
+                    
+                    // Verificar sesión con el servidor
+                    await validateSessionWithServer();
+                    
+                    return true;
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando datos de usuario:', error);
+                    showUnauthenticatedMessage();
+                    return false;
+                }
+            }
+            
+            async function validateSessionWithServer() {
+                if (!currentUser) return;
+                
+                const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                if (!token) return;
+                
+                try {
+                    console.log('🔄 Validando sesión con servidor...');
+                    
+                    const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Sesión válida en servidor:', data);
+                        
+                        // Actualizar datos del usuario si están disponibles
+                        if (data.user) {
+                            currentUser = { ...currentUser, ...data.user };
+                            saveUserData(currentUser);
+                            updateUserUI();
+                        }
+                        
+                        // Actualizar interfaz si es admin
+                        if (data.user?.rol === 'admin') {
+                            isAdmin = true;
+                            setupAdminUI();
+                        }
+                        
+                    } else {
+                        console.warn('⚠️ Sesión no válida en servidor');
+                        // Intentar usar refresh token
+                        await tryRefreshToken();
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error validando sesión:', error);
+                    // Continuar en modo offline con datos locales
+                }
+            }
+            
+            async function tryRefreshToken() {
+                const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+                if (!refreshToken) {
+                    console.warn('⚠️ No hay refresh token disponible');
+                    return false;
+                }
+                
+                try {
+                    console.log('🔄 Intentando refrescar token...');
+                    
+                    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${refreshToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Guardar nuevo token
+                        setStorageItem(STORAGE_KEYS.TOKEN, data.access_token || data.token);
+                        
+                        console.log('✅ Token refrescado exitosamente');
+                        return true;
+                    } else {
+                        console.warn('❌ No se pudo refrescar el token');
+                        return false;
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error refrescando token:', error);
+                    return false;
+                }
+            }
+            
+            function logout() {
+                if (confirm('¿Estás seguro de cerrar sesión?')) {
+                    clearUserSession();
+                    showAlert('Sesión cerrada correctamente', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                }
+            }
+            
             // ========== UI FUNCTIONS ==========
             function setupUIByRole() {
                 if (isAdmin) {
@@ -2374,11 +2255,12 @@
                 } else {
                     setupNormalUserUI();
                 }
-                updateUserUI();
-                showUserInterface();
+                updateHeaderUI();
             }
             
             function setupAdminUI() {
+                console.log('👑 Configurando UI de administrador');
+                
                 document.getElementById('hero-title').textContent = 'Panel de Administrador';
                 document.getElementById('hero-subtitle').textContent = 'Gestiona el sistema Caño Salao desde tu panel administrativo';
                 document.getElementById('breadcrumb-text').textContent = 'Panel de Administrador';
@@ -2396,6 +2278,8 @@
             }
             
             function setupNormalUserUI() {
+                console.log('👤 Configurando UI de usuario normal');
+                
                 document.getElementById('admin-menu').style.display = 'none';
                 
                 document.querySelectorAll('.user-section').forEach(section => {
@@ -2407,17 +2291,71 @@
                 showSection('dashboard');
             }
             
+            function updateHeaderUI() {
+                if (!currentUser) return;
+                
+                const headerUserName = document.getElementById('header-user-name');
+                const headerUserRole = document.getElementById('header-user-avatar');
+                const loggedUser = document.getElementById('logged-user');
+                const loginBtn = document.getElementById('login-btn');
+                
+                if (headerUserName) {
+                    headerUserName.textContent = currentUser.nombre || currentUser.email.split('@')[0];
+                }
+                
+                if (headerUserRole) {
+                    const letter = currentUser.nombre 
+                        ? currentUser.nombre.charAt(0).toUpperCase() 
+                        : currentUser.email.charAt(0).toUpperCase();
+                    
+                    headerUserRole.textContent = letter;
+                    
+                    if (currentUser.rol === 'admin') {
+                        headerUserRole.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    } else {
+                        headerUserRole.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
+                    }
+                }
+                
+                if (loggedUser) loggedUser.style.display = 'flex';
+                if (loginBtn) loginBtn.style.display = 'none';
+            }
+            
             function updateUserUI() {
                 if (!currentUser) return;
                 
-                document.getElementById('user-name').textContent = currentUser.nombre || 'Usuario';
-                document.getElementById('user-email').textContent = currentUser.email || 'usuario@ejemplo.com';
-                const letter = currentUser.nombre 
-                    ? currentUser.nombre.charAt(0).toUpperCase() 
-                    : 'U';
-                document.getElementById('user-avatar').textContent = letter;
-                document.getElementById('user-role-badge').textContent = isAdmin ? 'Administrador' : 'Usuario';
+                console.log('🔄 Actualizando UI del usuario:', currentUser.nombre);
                 
+                const userName = document.getElementById('user-name');
+                const userEmail = document.getElementById('user-email');
+                const userAvatar = document.getElementById('user-avatar');
+                const userRoleBadge = document.getElementById('user-role-badge');
+                
+                if (userName) {
+                    userName.textContent = currentUser.nombre || 'Usuario';
+                }
+                
+                if (userEmail) {
+                    userEmail.textContent = currentUser.email || 'usuario@ejemplo.com';
+                }
+                
+                if (userAvatar) {
+                    const letter = currentUser.nombre 
+                        ? currentUser.nombre.charAt(0).toUpperCase() 
+                        : currentUser.email.charAt(0).toUpperCase();
+                    
+                    userAvatar.textContent = letter;
+                    
+                    if (currentUser.rol === 'admin') {
+                        userAvatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    }
+                }
+                
+                if (userRoleBadge) {
+                    userRoleBadge.textContent = isAdmin ? 'Administrador' : 'Usuario';
+                }
+                
+                // Actualizar formularios
                 if (isAdmin) {
                     document.getElementById('admin-profile-name').value = currentUser.nombre || '';
                     document.getElementById('admin-profile-email').value = currentUser.email || '';
@@ -2434,301 +2372,141 @@
             }
             
             function showSection(sectionId) {
+                console.log('📱 Mostrando sección:', sectionId);
+                
+                // Ocultar todas las secciones
                 document.querySelectorAll('.user-section').forEach(section => {
                     section.classList.remove('active');
                 });
                 
+                // Actualizar menú activo
                 document.querySelectorAll('.user-menu-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 
+                // Activar menú correspondiente
                 const menuItem = document.querySelector(`[data-section="${sectionId}"]`);
                 if (menuItem) menuItem.classList.add('active');
                 
+                // Mostrar sección seleccionada
                 const targetSection = document.getElementById(sectionId);
                 if (targetSection) {
                     targetSection.classList.add('active');
                     
+                    // Cargar datos específicos si es necesario
                     switch(sectionId) {
-                        case 'bookings':
-                            loadUserBookings();
-                            break;
-                        case 'profile':
-                            loadProfileForm();
-                            break;
                         case 'admin-dashboard':
                             loadAdminDashboardData();
                             break;
                         case 'admin-users':
                             loadSystemUsers();
                             break;
-                        case 'admin-profile':
-                            loadAdminProfileForm();
-                            break;
                     }
                 }
-            }
-            
-            function initEventListeners() {
-                document.querySelectorAll('.user-menu-item').forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const sectionId = this.getAttribute('data-section');
-                        if (sectionId) {
-                            showSection(sectionId);
-                        }
-                    });
-                });
-                
-                document.getElementById('logout-btn').addEventListener('click', logout);
-                
-                if (document.getElementById('profile-form')) {
-                    document.getElementById('profile-form').addEventListener('submit', saveProfile);
-                }
-                
-                if (document.getElementById('admin-profile-form')) {
-                    document.getElementById('admin-profile-form').addEventListener('submit', saveAdminProfile);
-                }
-                
-                if (document.getElementById('password-form')) {
-                    document.getElementById('password-form').addEventListener('submit', changePassword);
-                }
-                
-                if (document.getElementById('admin-password-form')) {
-                    document.getElementById('admin-password-form').addEventListener('submit', changeAdminPassword);
-                }
-                
-                if (document.getElementById('preferences-form')) {
-                    document.getElementById('preferences-form').addEventListener('submit', savePreferences);
-                }
-                
-                document.getElementById('confirm-action-btn').addEventListener('click', function() {
-                    if (currentModalAction) {
-                        currentModalAction();
-                    }
-                });
-            }
-            
-            // ========== USER DATA ==========
-            async function loadUserData() {
-                if (!currentUser) return;
-                
-                try {
-                    const response = await fetchWithAuth(`${API_BASE_URL}/auth/profile`);
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.profile) {
-                            userData = data.profile;
-                            currentUser = { ...currentUser, ...userData };
-                            updateUserUI();
-                            console.log('✅ Datos de usuario cargados desde API');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error cargando datos de usuario:', error);
-                    loadUserDataFromLocalStorage();
-                }
-            }
-            
-            function loadUserDataFromLocalStorage() {
-                const users = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                const user = users.find(u => u.email === currentUser.email);
-                
-                if (user) {
-                    userData = user;
-                    currentUser = { ...currentUser, ...user };
-                    updateUserUI();
-                }
-            }
-            
-            function loadProfileForm() {
-                if (!userData || isAdmin) return;
-                
-                document.getElementById('profile-name').value = userData.nombre || '';
-                document.getElementById('profile-email').value = userData.email || '';
-                document.getElementById('profile-phone').value = userData.telefono || '';
-                document.getElementById('profile-birthdate').value = userData.fecha_nacimiento || '';
-                document.getElementById('profile-address').value = userData.direccion || '';
-                document.getElementById('profile-bio').value = userData.bio || '';
-                
-                document.getElementById('current-password').value = '';
-                document.getElementById('new-password').value = '';
-                document.getElementById('confirm-password').value = '';
-            }
-            
-            function loadAdminProfileForm() {
-                if (!userData || !isAdmin) return;
-                
-                document.getElementById('admin-profile-name').value = userData.nombre || '';
-                document.getElementById('admin-profile-email').value = userData.email || '';
-                document.getElementById('admin-profile-phone').value = userData.telefono || '';
-                document.getElementById('admin-profile-notes').value = userData.notas || '';
-                
-                document.getElementById('admin-current-password').value = '';
-                document.getElementById('admin-new-password').value = '';
-                document.getElementById('admin-confirm-password').value = '';
             }
             
             // ========== ADMIN FUNCTIONS ==========
-            async function loadAdminData() {
-                if (!isAdmin) return;
-                
-                try {
-                    const usersResponse = await fetchWithAuth(`${API_BASE_URL}/admin/users`);
-                    
-                    if (usersResponse.ok) {
-                        const data = await usersResponse.json();
-                        if (data.users) {
-                            allUsers = data.users;
-                        }
-                    }
-                    
-                    const bookingsResponse = await fetchWithAuth(`${API_BASE_URL}/admin/bookings`);
-                    
-                    if (bookingsResponse.ok) {
-                        const data = await bookingsResponse.json();
-                        if (data.bookings) {
-                            systemBookings = data.bookings;
-                        }
-                    }
-                    
-                    console.log('✅ Datos administrativos cargados');
-                    
-                } catch (error) {
-                    console.error('Error cargando datos administrativos:', error);
-                    loadAdminDataFromLocalStorage();
-                }
-            }
-            
-            function loadAdminDataFromLocalStorage() {
-                allUsers = JSON.parse(localStorage.getItem('cano_salao_users') || '[]');
-                systemBookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
-                console.log('⚠️ Datos administrativos cargados desde localStorage');
-            }
-            
             async function loadAdminDashboardData() {
                 if (!isAdmin) return;
                 
+                console.log('📊 Cargando datos del dashboard administrativo...');
+                
                 try {
-                    const statsResponse = await fetchWithAuth(`${API_BASE_URL}/admin/dashboard`);
+                    const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                    if (!token) return;
+                    
+                    // Cargar estadísticas
+                    const statsResponse = await fetch(`${API_BASE_URL}/admin/dashboard`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
                     
                     if (statsResponse.ok) {
                         const stats = await statsResponse.json();
                         
-                        document.getElementById('admin-total-users').textContent = stats.total_users || allUsers.length;
-                        document.getElementById('admin-total-bookings').textContent = stats.total_bookings || systemBookings.length;
-                        document.getElementById('admin-pending-bookings').textContent = stats.pending_bookings || systemBookings.filter(b => b.estado === 'pending').length;
+                        // Actualizar UI con los datos reales
+                        document.getElementById('admin-total-users').textContent = stats.total_users || '0';
+                        document.getElementById('admin-total-bookings').textContent = stats.total_bookings || '0';
+                        document.getElementById('admin-pending-bookings').textContent = stats.pending_bookings || '0';
                         
-                        const totalRevenue = systemBookings
-                            .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
-                            .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
-                        document.getElementById('admin-total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
+                        if (stats.total_revenue) {
+                            document.getElementById('admin-total-revenue').textContent = `$${stats.total_revenue.toFixed(2)}`;
+                        }
+                        
+                        console.log('✅ Estadísticas cargadas:', stats);
+                    } else {
+                        console.warn('⚠️ No se pudieron cargar las estadísticas');
+                        // Mostrar datos de ejemplo
+                        showSampleAdminData();
                     }
                     
-                    loadRecentSystemBookings();
-                    
                 } catch (error) {
-                    console.error('Error cargando dashboard administrativo:', error);
-                    updateAdminDashboardFromLocalStorage();
+                    console.error('❌ Error cargando dashboard administrativo:', error);
+                    showSampleAdminData();
                 }
             }
             
-            function updateAdminDashboardFromLocalStorage() {
-                const totalUsers = allUsers.length;
-                const totalBookings = systemBookings.length;
-                const pendingBookings = systemBookings.filter(b => b.estado === 'pending').length;
-                const totalRevenue = systemBookings
-                    .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
-                    .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
+            function showSampleAdminData() {
+                // Datos de ejemplo para desarrollo
+                document.getElementById('admin-total-users').textContent = '15';
+                document.getElementById('admin-total-bookings').textContent = '42';
+                document.getElementById('admin-pending-bookings').textContent = '8';
+                document.getElementById('admin-total-revenue').textContent = '$1,250.00';
                 
-                document.getElementById('admin-total-users').textContent = totalUsers;
-                document.getElementById('admin-total-bookings').textContent = totalBookings;
-                document.getElementById('admin-pending-bookings').textContent = pendingBookings;
-                document.getElementById('admin-total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
-                
-                loadRecentSystemBookings();
-            }
-            
-            function loadRecentSystemBookings() {
-                const tbody = document.getElementById('admin-recent-bookings');
-                const recentBookings = systemBookings.slice(0, 5);
-                
-                if (recentBookings.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="empty-state">
-                                <i class="bi bi-calendar-x" style="font-size: 36px;"></i>
-                                <p>No hay reservas en el sistema</p>
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    tbody.innerHTML = '';
-                    recentBookings.forEach(booking => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><strong>${booking.codigo || 'N/A'}</strong></td>
-                            <td>${booking.usuario_nombre || booking.usuario_email || 'Usuario'}</td>
-                            <td>${booking.tour_nombre || 'Tour no disponible'}</td>
-                            <td>${formatDate(booking.fecha)}</td>
-                            <td>$${booking.total || '0.00'}</td>
-                            <td><span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                }
+                // Mostrar notificación
+                showAlert('Usando datos de ejemplo para desarrollo', 'info');
             }
             
             async function loadSystemUsers() {
                 if (!isAdmin) return;
                 
-                const tbody = document.getElementById('admin-users-table-body');
-                const searchTerm = document.getElementById('user-search')?.value?.toLowerCase() || '';
+                console.log('👥 Cargando usuarios del sistema...');
                 
                 try {
-                    const response = await fetchWithAuth(`${API_BASE_URL}/admin/users`);
+                    const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                    if (!token) return;
+                    
+                    const response = await fetch(`${API_BASE_URL}/admin/users`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
                     
                     if (response.ok) {
                         const data = await response.json();
-                        if (data.users) {
-                            allUsers = data.users;
-                        }
+                        renderSystemUsers(data.users || []);
+                    } else {
+                        console.warn('⚠️ No se pudieron cargar los usuarios');
+                        renderSystemUsers([]);
                     }
                     
                 } catch (error) {
-                    console.error('Error cargando usuarios:', error);
+                    console.error('❌ Error cargando usuarios:', error);
+                    renderSystemUsers([]);
                 }
+            }
+            
+            function renderSystemUsers(users) {
+                const tbody = document.getElementById('admin-users-table-body');
+                if (!tbody) return;
                 
-                let filteredUsers = [...allUsers];
-                
-                if (searchTerm) {
-                    filteredUsers = filteredUsers.filter(user => 
-                        user.nombre?.toLowerCase().includes(searchTerm) ||
-                        user.email?.toLowerCase().includes(searchTerm) ||
-                        user.rol?.toLowerCase().includes(searchTerm)
-                    );
-                }
-                
-                const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-                const startIndex = (currentUsersPage - 1) * usersPerPage;
-                const endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
-                const pageUsers = filteredUsers.slice(startIndex, endIndex);
-                
-                if (pageUsers.length === 0) {
+                if (!users || users.length === 0) {
                     tbody.innerHTML = `
                         <tr>
                             <td colspan="6" class="empty-state">
                                 <i class="bi bi-people" style="font-size: 48px;"></i>
                                 <h3>No hay usuarios</h3>
-                                <p>${searchTerm ? 'No se encontraron usuarios con ese criterio' : 'No hay usuarios registrados en el sistema'}</p>
+                                <p>No se encontraron usuarios en el sistema</p>
                             </td>
                         </tr>
                     `;
                     document.getElementById('users-pagination').style.display = 'none';
                 } else {
                     tbody.innerHTML = '';
-                    pageUsers.forEach(user => {
+                    users.forEach(user => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${user.nombre || 'Sin nombre'}</td>
@@ -2753,193 +2531,44 @@
                     });
                     
                     document.getElementById('users-pagination').style.display = 'flex';
-                    document.getElementById('users-page-info').textContent = `Página ${currentUsersPage} de ${totalPages}`;
                 }
             }
             
-            // ========== BOOKINGS MANAGEMENT ==========
-            async function loadUserBookings() {
-                if (!currentUser) return;
-                
-                try {
-                    const response = await fetchWithAuth(`${API_BASE_URL}/user/bookings`);
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.bookings) {
-                            userBookings = data.bookings;
-                            console.log('✅ Reservas del usuario cargadas desde API:', userBookings.length);
-                            updateBookingsTable();
-                            updateDashboard();
+            // ========== EVENT LISTENERS ==========
+            function initEventListeners() {
+                // Navegación del menú
+                document.querySelectorAll('.user-menu-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const sectionId = this.getAttribute('data-section');
+                        if (sectionId) {
+                            showSection(sectionId);
                         }
-                    } else {
-                        throw new Error('Error cargando reservas');
-                    }
-                    
-                } catch (error) {
-                    console.error('Error cargando reservas:', error);
-                    loadUserBookingsFromLocalStorage();
-                }
-            }
-            
-            function loadUserBookingsFromLocalStorage() {
-                const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
-                
-                userBookings = bookings.filter(booking => 
-                    booking.usuario_id == currentUser?.id || 
-                    booking.usuario_email === currentUser.email
-                );
-                
-                console.log('⚠️ Reservas del usuario cargadas desde localStorage:', userBookings.length);
-                updateBookingsTable();
-                updateDashboard();
-            }
-            
-            function updateBookingsTable() {
-                const tbody = document.getElementById('bookings-table-body');
-                const filter = document.getElementById('booking-filter')?.value || 'all';
-                const searchTerm = document.getElementById('booking-search')?.value?.toLowerCase() || '';
-                
-                let filteredBookings = [...userBookings];
-                
-                if (filter !== 'all') {
-                    filteredBookings = filteredBookings.filter(b => b.estado === filter);
-                }
-                
-                if (searchTerm) {
-                    filteredBookings = filteredBookings.filter(b => 
-                        b.codigo?.toLowerCase().includes(searchTerm) ||
-                        b.tour_nombre?.toLowerCase().includes(searchTerm) ||
-                        b.tour_id?.toString().includes(searchTerm)
-                    );
-                }
-                
-                const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
-                const startIndex = (currentBookingsPage - 1) * bookingsPerPage;
-                const endIndex = Math.min(startIndex + bookingsPerPage, filteredBookings.length);
-                const pageBookings = filteredBookings.slice(startIndex, endIndex);
-                
-                if (pageBookings.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="8" class="empty-state">
-                                <i class="bi bi-calendar-x" style="font-size: 48px;"></i>
-                                <h3>No hay reservas</h3>
-                                <p>${filter !== 'all' ? 'No hay reservas con este filtro' : 'Aún no tienes reservas realizadas'}</p>
-                                ${filter !== 'all' ? 
-                                    '<button class="btn-user" onclick="document.getElementById(\'booking-filter\').value=\'all\'; filterBookings()">Ver todas las reservas</button>' : 
-                                    '<button class="btn-user" onclick="nuevaReserva()">Hacer mi primera reserva</button>'
-                                }
-                            </td>
-                        </tr>
-                    `;
-                    document.getElementById('bookings-pagination').style.display = 'none';
-                } else {
-                    tbody.innerHTML = '';
-                    pageBookings.forEach(booking => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><strong>${booking.codigo || 'N/A'}</strong></td>
-                            <td>${booking.tour_nombre || 'Tour no disponible'}</td>
-                            <td>${formatDate(booking.fecha)}</td>
-                            <td>${booking.hora || 'N/A'}</td>
-                            <td>${booking.personas || '1'}</td>
-                            <td>$${booking.total || '0.00'}</td>
-                            <td><span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></td>
-                            <td>
-                                <div style="display: flex; gap: 5px;">
-                                    <button class="btn-user" style="padding: 5px 10px; font-size: 0.8rem;" onclick="verDetallesReserva('${booking.id}')" title="Ver detalles">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    ${booking.estado === 'pending' ? `
-                                        <button class="btn-user btn-user-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="cancelarReserva('${booking.id}')" title="Cancelar">
-                                            <i class="bi bi-x-circle"></i>
-                                        </button>
-                                    ` : ''}
-                                </div>
-                            </td>
-                        `;
-                        tbody.appendChild(row);
                     });
-                    
-                    document.getElementById('bookings-pagination').style.display = 'flex';
-                    document.getElementById('bookings-page-info').textContent = `Página ${currentBookingsPage} de ${totalPages}`;
+                });
+                
+                // Botón de logout
+                document.getElementById('logout-btn').addEventListener('click', logout);
+                
+                // Formulario de perfil normal
+                if (document.getElementById('profile-form')) {
+                    document.getElementById('profile-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        saveProfile();
+                    });
                 }
                 
-                updateRecentBookingsTable();
-            }
-            
-            function updateRecentBookingsTable() {
-                const tbody = document.getElementById('recent-bookings');
-                const recentBookings = userBookings.slice(0, 5);
-                
-                if (recentBookings.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="empty-state">
-                                <i class="bi bi-calendar-plus" style="font-size: 36px;"></i>
-                                <p>No tienes reservas recientes</p>
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    tbody.innerHTML = '';
-                    recentBookings.forEach(booking => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><strong>${booking.codigo || 'N/A'}</strong></td>
-                            <td>${booking.tour_nombre || 'Tour no disponible'}</td>
-                            <td>${formatDate(booking.fecha)}</td>
-                            <td>${booking.personas || '1'}</td>
-                            <td>$${booking.total || '0.00'}</td>
-                            <td><span class="status-badge ${getBookingStatusClass(booking.estado)}">${getBookingStatusText(booking.estado)}</span></td>
-                        `;
-                        tbody.appendChild(row);
+                // Formulario de perfil admin
+                if (document.getElementById('admin-profile-form')) {
+                    document.getElementById('admin-profile-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        saveAdminProfile();
                     });
                 }
             }
             
-            function getBookingStatusClass(status) {
-                switch(status) {
-                    case 'confirmed': return 'status-confirmed';
-                    case 'pending': return 'status-pending';
-                    case 'cancelled': return 'status-cancelled';
-                    case 'completed': return 'status-completed';
-                    default: return 'status-pending';
-                }
-            }
-            
-            function getBookingStatusText(status) {
-                switch(status) {
-                    case 'confirmed': return 'Confirmada';
-                    case 'pending': return 'Pendiente';
-                    case 'cancelled': return 'Cancelada';
-                    case 'completed': return 'Completada';
-                    default: return status;
-                }
-            }
-            
-            // ========== DASHBOARD ==========
-            function updateDashboard() {
-                if (isAdmin) return;
-                
-                const totalBookings = userBookings.length;
-                const pendingBookings = userBookings.filter(b => b.estado === 'pending').length;
-                const confirmedBookings = userBookings.filter(b => b.estado === 'confirmed' || b.estado === 'completed').length;
-                const totalSpent = userBookings
-                    .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
-                    .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
-                
-                document.getElementById('total-bookings').textContent = totalBookings;
-                document.getElementById('pending-bookings').textContent = pendingBookings;
-                document.getElementById('confirmed-bookings').textContent = confirmedBookings;
-                document.getElementById('total-spent').textContent = `$${totalSpent.toFixed(2)}`;
-            }
-            
-            // ========== FORM HANDLERS ==========
-            async function saveProfile(e) {
-                e.preventDefault();
-                
+            // ========== FUNCIONES DE FORMULARIOS ==========
+            async function saveProfile() {
                 const name = document.getElementById('profile-name').value.trim();
                 const email = document.getElementById('profile-email').value.trim().toLowerCase();
                 const phone = document.getElementById('profile-phone').value.trim();
@@ -2949,23 +2578,27 @@
                 const saveBtn = document.getElementById('save-profile-btn');
                 
                 if (!name || !email) {
-                    showUserAlert('Por favor completa los campos obligatorios', 'error');
+                    showAlert('Por favor completa los campos obligatorios', 'error');
                     return;
                 }
                 
                 if (!validateEmail(email)) {
-                    showUserAlert('Email inválido', 'error');
+                    showAlert('Email inválido', 'error');
                     return;
                 }
                 
                 saveBtn.disabled = true;
                 const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                saveBtn.innerHTML = '<div class="spinner-small"></div>';
                 
                 try {
-                    const response = await fetchWithAuth(`${API_BASE_URL}/auth/profile`, {
+                    const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                    if (!token) throw new Error('No hay token de sesión');
+                    
+                    const response = await fetch(`${API_BASE_URL}/auth/profile`, {
                         method: 'PUT',
                         headers: {
+                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
@@ -2983,9 +2616,8 @@
                         if (data.profile) {
                             currentUser = { ...currentUser, ...data.profile };
                             saveUserData(currentUser);
-                            
-                            showUserAlert('✅ Perfil actualizado exitosamente', 'success');
                             updateUserUI();
+                            showAlert('✅ Perfil actualizado exitosamente', 'success');
                         }
                     } else {
                         const error = await response.json();
@@ -2994,63 +2626,68 @@
                     
                 } catch (error) {
                     console.error('Error actualizando perfil:', error);
-                    showUserAlert(`Error: ${error.message}`, 'error');
+                    showAlert(`Error: ${error.message}`, 'error');
                 } finally {
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = originalText;
                 }
             }
             
-            async function changePassword(e) {
-                e.preventDefault();
+            async function saveAdminProfile() {
+                const name = document.getElementById('admin-profile-name').value.trim();
+                const email = document.getElementById('admin-profile-email').value.trim().toLowerCase();
+                const phone = document.getElementById('admin-profile-phone').value.trim();
+                const notes = document.getElementById('admin-profile-notes').value.trim();
+                const saveBtn = document.getElementById('save-admin-profile-btn');
                 
-                const currentPassword = document.getElementById('current-password').value;
-                const newPassword = document.getElementById('new-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-                const saveBtn = document.getElementById('save-password-btn');
-                
-                if (!currentPassword || !newPassword || !confirmPassword) {
-                    showUserAlert('Por favor completa todos los campos', 'error');
+                if (!name || !email) {
+                    showAlert('Por favor completa los campos obligatorios', 'error');
                     return;
                 }
                 
-                if (newPassword.length < 6) {
-                    showUserAlert('La nueva contraseña debe tener al menos 6 caracteres', 'error');
-                    return;
-                }
-                
-                if (newPassword !== confirmPassword) {
-                    showUserAlert('Las contraseñas no coinciden', 'error');
+                if (!validateEmail(email)) {
+                    showAlert('Email inválido', 'error');
                     return;
                 }
                 
                 saveBtn.disabled = true;
                 const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
+                saveBtn.innerHTML = '<div class="spinner-small"></div>';
                 
                 try {
-                    const response = await fetchWithAuth(`${API_BASE_URL}/user/change-password`, {
-                        method: 'POST',
+                    const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                    if (!token) throw new Error('No hay token de sesión');
+                    
+                    const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+                        method: 'PUT',
                         headers: {
+                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            currentPassword: currentPassword,
-                            newPassword: newPassword
+                            nombre: name,
+                            email: email,
+                            telefono: phone,
+                            notas: notes
                         })
                     });
                     
                     if (response.ok) {
-                        showUserAlert('✅ Contraseña cambiada exitosamente', 'success');
-                        document.getElementById('password-form').reset();
+                        const data = await response.json();
+                        if (data.profile) {
+                            currentUser = { ...currentUser, ...data.profile };
+                            saveUserData(currentUser);
+                            updateUserUI();
+                            showAlert('✅ Perfil de administrador actualizado exitosamente', 'success');
+                        }
                     } else {
                         const error = await response.json();
-                        throw new Error(error.message || 'Error cambiando contraseña');
+                        throw new Error(error.message || 'Error actualizando perfil');
                     }
                     
                 } catch (error) {
-                    console.error('Error cambiando contraseña:', error);
-                    showUserAlert(`Error: ${error.message}`, 'error');
+                    console.error('Error actualizando perfil admin:', error);
+                    showAlert(`Error: ${error.message}`, 'error');
                 } finally {
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = originalText;
@@ -3058,6 +2695,24 @@
             }
             
             // ========== ACCIONES RÁPIDAS ==========
+            function refreshDashboard() {
+                if (isAdmin) {
+                    loadAdminDashboardData();
+                    showAlert('Panel administrativo actualizado', 'success');
+                } else {
+                    showAlert('Dashboard actualizado', 'success');
+                }
+            }
+            
+            function refreshAdminDashboard() {
+                loadAdminDashboardData();
+                showAlert('Panel administrativo actualizado', 'success');
+            }
+            
+            function irAlPanelCompleto() {
+                window.location.href = 'admin.html';
+            }
+            
             function nuevaReserva() {
                 window.location.href = 'Servicios.html';
             }
@@ -3073,41 +2728,20 @@
             function enviarMensajeSoporte() {
                 const message = document.getElementById('support-message').value.trim();
                 if (!message) {
-                    showUserAlert('Por favor escribe un mensaje', 'error');
+                    showAlert('Por favor escribe un mensaje', 'error');
                     return;
                 }
                 
-                showUserAlert('Mensaje enviado al soporte. Te contactaremos pronto.', 'success');
+                showAlert('Mensaje enviado al soporte. Te contactaremos pronto.', 'success');
                 document.getElementById('support-message').value = '';
             }
             
             function cancelarEdicion() {
-                loadProfileForm();
-                showUserAlert('Edición cancelada', 'info');
+                showAlert('Edición cancelada', 'info');
             }
             
             function cancelarEdicionAdmin() {
-                loadAdminProfileForm();
-                showUserAlert('Edición cancelada', 'info');
-            }
-            
-            function refreshDashboard() {
-                if (isAdmin) {
-                    loadAdminDashboardData();
-                    notifications.show('Panel administrativo actualizado', 'success');
-                } else {
-                    loadUserBookings();
-                    notifications.show('Dashboard actualizado', 'success');
-                }
-            }
-            
-            function refreshAdminDashboard() {
-                loadAdminData();
-                notifications.show('Panel administrativo actualizado', 'success');
-            }
-            
-            function irAlPanelCompleto() {
-                window.location.href = 'admin.html';
+                showAlert('Edición cancelada', 'info');
             }
             
             function verTodasLasReservas() {
@@ -3115,44 +2749,12 @@
             }
             
             function generarReporte() {
-                notifications.show('Función de generación de reportes en desarrollo', 'info');
+                showAlert('Función de generación de reportes en desarrollo', 'info');
             }
             
             function exportarUsuarios() {
-                notifications.show('Función de exportación de usuarios en desarrollo', 'info');
+                showAlert('Función de exportación de usuarios en desarrollo', 'info');
             }
-            
-            // ========== MODAL FUNCTIONS ==========
-            function openModal(modalId) {
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                }
-            }
-            
-            function closeModal() {
-                const modals = document.querySelectorAll('.modal.active');
-                modals.forEach(modal => {
-                    modal.classList.remove('active');
-                });
-                document.body.style.overflow = '';
-                currentModalAction = null;
-            }
-            
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeModal();
-                    }
-                });
-            });
-            
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
             
             // ========== INICIALIZACIÓN ==========
             function init() {
@@ -3161,13 +2763,19 @@
                 hideLoader();
                 initEventListeners();
                 
-                if (checkAuthentication()) {
-                    console.log('✅ Autenticación verificada');
-                }
+                // Verificar autenticación
+                checkAuthentication().then(authenticated => {
+                    if (!authenticated) {
+                        console.log('❌ Usuario no autenticado');
+                    } else {
+                        console.log('✅ Usuario autenticado correctamente');
+                    }
+                });
                 
-                console.log('✅ Página de usuario inicializada correctamente');
+                console.log('✅ Página de usuario inicializada');
             }
             
+            // Inicializar cuando el DOM esté listo
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {
@@ -3188,7 +2796,6 @@
             window.verTodasLasReservas = verTodasLasReservas;
             window.generarReporte = generarReporte;
             window.exportarUsuarios = exportarUsuarios;
-            window.closeModal = closeModal;
             
         })();
     </script>
