@@ -85,6 +85,12 @@
             transition: opacity 0.3s ease;
         }
         
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
         .loader-spinner {
             width: 40px;
             height: 40px;
@@ -97,11 +103,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        
-        /* Prevenir scroll durante carga */
-        body.loading {
-            overflow: hidden;
         }
         
         /* Sistema de notificaciones */
@@ -159,6 +160,191 @@
             to {
                 opacity: 1;
                 transform: translateX(0);
+            }
+        }
+        
+        /* Sección de autenticación en header */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+        
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            min-height: 44px;
+        }
+        
+        .login-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        /* Sistema de usuario */
+        .user-menu-container {
+            position: relative;
+            z-index: 1002;
+        }
+        
+        .logged-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 44px;
+        }
+        
+        .logged-user:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        
+        .user-role.admin {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Dropdown menu styles */
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 220px;
+            z-index: 1001;
+            overflow: hidden;
+            margin-top: 5px;
+            display: none;
+            animation: fadeInDown 0.2s ease;
+            border: 1px solid #eee;
+        }
+        
+        .user-dropdown-menu.show {
+            display: block;
+        }
+        
+        .user-dropdown-header {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #1a7fb8, #0d3b66);
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 2px;
+        }
+        
+        .user-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .user-dropdown-menu a:hover {
+            background: #f5f5f5;
+        }
+        
+        .user-dropdown-menu a:last-child {
+            border-bottom: none;
+            color: #e74c3c;
+        }
+        
+        .user-dropdown-menu a:last-child:hover {
+            background: #ffeaea;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: auto;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
@@ -932,7 +1118,7 @@
         }
     </style>
 </head>
-<body class="loading">
+<body>
     <!-- Sistema de notificaciones -->
     <div class="notification-system" id="notification-system"></div>
     
@@ -964,11 +1150,21 @@
                     </nav>
                 </div>
 
-                <!-- Botón Mi Cuenta a la derecha -->
+                <!-- Sistema de usuario -->
                 <div class="auth-section">
-                    <a href="usuario.html" class="login-btn">
-                        <i class="bi bi-person-circle"></i> Mi Cuenta
-                    </a>
+                    <div class="user-menu-container" id="user-menu-container">
+                        <a href="../index.html" class="login-btn" id="login-btn">
+                            <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
+                        </a>
+                        
+                        <div class="logged-user" id="logged-user" style="display: none;">
+                            <div class="user-avatar" id="header-user-avatar" aria-label="Menú de usuario" role="button" tabindex="0" title="Menú de usuario">U</div>
+                            <div class="user-info">
+                                <div class="user-name" id="header-user-name">Usuario</div>
+                                <div class="user-role" id="header-user-role">user</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <button class="menu-toggle" aria-label="Menú">
@@ -1705,7 +1901,10 @@
             const API_BASE_URL = 'https://cano-salao.onrender.com/api';
             const STORAGE_KEYS = {
                 TOKEN: 'cano_salao_token',
-                USER: 'cano_salao_user'
+                REFRESH_TOKEN: 'cano_salao_refresh_token',
+                USER: 'cano_salao_user',
+                SESSION_EXPIRES: 'cano_salao_expires',
+                LAST_ACTIVITY: 'cano_salao_last_activity'
             };
             
             // Estado global
@@ -1721,6 +1920,8 @@
             const bookingsPerPage = 10;
             const usersPerPage = 10;
             let currentModalAction = null;
+            let isRefreshingToken = false;
+            let failedRequestsQueue = [];
             
             // ========== SISTEMA DE NOTIFICACIONES ==========
             class NotificationSystem {
@@ -1785,6 +1986,340 @@
             
             const notifications = new NotificationSystem();
             
+            // ========== SISTEMA DE SESIÓN PERSISTENTE ==========
+            
+            // Funciones de almacenamiento
+            function getStorageItem(key) {
+                return localStorage.getItem(key);
+            }
+            
+            function setStorageItem(key, value) {
+                localStorage.setItem(key, value);
+            }
+            
+            function removeStorageItem(key) {
+                localStorage.removeItem(key);
+            }
+            
+            function saveTokens(accessToken, refreshToken) {
+                setStorageItem(STORAGE_KEYS.TOKEN, accessToken);
+                setStorageItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+            }
+            
+            function saveUserData(user) {
+                setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user));
+            }
+            
+            function updateSessionExpiration() {
+                const expires = new Date();
+                expires.setDate(expires.getDate() + 30);
+                setStorageItem(STORAGE_KEYS.SESSION_EXPIRES, expires.toISOString());
+            }
+            
+            function updateLastActivity() {
+                const now = new Date().toISOString();
+                setStorageItem(STORAGE_KEYS.LAST_ACTIVITY, now);
+            }
+            
+            function isSessionExpired() {
+                const expiresStr = getStorageItem(STORAGE_KEYS.SESSION_EXPIRES);
+                if (!expiresStr) return true;
+                
+                try {
+                    const expires = new Date(expiresStr);
+                    const now = new Date();
+                    return now > expires;
+                } catch (error) {
+                    console.error('Error verificando expiración:', error);
+                    return true;
+                }
+            }
+            
+            function clearUserSession() {
+                Object.values(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(key);
+                });
+                currentUser = null;
+                isAuthenticated = false;
+                isAdmin = false;
+                console.log('✅ Sesión limpiada');
+            }
+            
+            function redirectToLogin() {
+                notifications.show('Por favor inicia sesión para acceder a esta página', 'error');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 2000);
+            }
+            
+            function showLoginInterface() {
+                const loginBtn = document.getElementById('login-btn');
+                const loggedUser = document.getElementById('logged-user');
+                
+                if (loginBtn) loginBtn.style.display = 'flex';
+                if (loggedUser) loggedUser.style.display = 'none';
+            }
+            
+            function showUserInterface() {
+                const loginBtn = document.getElementById('login-btn');
+                const loggedUser = document.getElementById('logged-user');
+                
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (loggedUser) loggedUser.style.display = 'flex';
+                
+                updateUserInfo();
+            }
+            
+            function updateUserInfo() {
+                if (!currentUser) return;
+                
+                const userName = document.getElementById('header-user-name');
+                const userRole = document.getElementById('header-user-role');
+                const userAvatar = document.getElementById('header-user-avatar');
+                
+                if (userName) {
+                    userName.textContent = currentUser.nombre || currentUser.email.split('@')[0];
+                }
+                
+                if (userRole) {
+                    userRole.textContent = currentUser.rol || 'user';
+                    userRole.className = 'user-role ' + (currentUser.rol === 'admin' ? 'admin' : '');
+                }
+                
+                if (userAvatar && currentUser) {
+                    const letter = currentUser.nombre 
+                        ? currentUser.nombre.charAt(0).toUpperCase() 
+                        : currentUser.email.charAt(0).toUpperCase();
+                    
+                    userAvatar.textContent = letter;
+                    
+                    if (currentUser.rol === 'admin') {
+                        userAvatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    } else {
+                        userAvatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
+                    }
+                }
+            }
+            
+            // ========== SISTEMA DE GESTIÓN DE TOKENS ==========
+            
+            async function fetchWithAuth(url, options = {}) {
+                const accessToken = getStorageItem(STORAGE_KEYS.TOKEN);
+                
+                if (!accessToken) {
+                    console.warn('⚠️ No hay token de acceso disponible');
+                    return fetch(url, options);
+                }
+                
+                options.headers = {
+                    ...options.headers,
+                    'Authorization': `Bearer ${accessToken}`
+                };
+                
+                try {
+                    const response = await fetch(url, options);
+                    
+                    if (response.status === 401) {
+                        const responseData = await response.json().catch(() => ({}));
+                        
+                        if (responseData.error === 'token_expired' || responseData.error === 'invalid_token') {
+                            console.log('🔄 Token expirado, intentando refrescar...');
+                            
+                            if (isRefreshingToken) {
+                                return new Promise((resolve, reject) => {
+                                    failedRequestsQueue.push({ resolve, reject });
+                                }).then(newToken => {
+                                    options.headers = {
+                                        ...options.headers,
+                                        'Authorization': `Bearer ${newToken}`
+                                    };
+                                    return fetch(url, options);
+                                }).catch(err => {
+                                    console.error('Error en cola de refresco:', err);
+                                    return response;
+                                });
+                            }
+                            
+                            isRefreshingToken = true;
+                            
+                            try {
+                                const newTokens = await refreshTokens();
+                                
+                                if (newTokens && newTokens.access_token) {
+                                    options.headers = {
+                                        ...options.headers,
+                                        'Authorization': `Bearer ${newTokens.access_token}`
+                                    };
+                                    
+                                    const retryResponse = await fetch(url, options);
+                                    isRefreshingToken = false;
+                                    return retryResponse;
+                                } else {
+                                    throw new Error('No se pudo refrescar el token');
+                                }
+                            } catch (refreshError) {
+                                console.error('❌ Error refrescando token:', refreshError);
+                                isRefreshingToken = false;
+                                
+                                clearUserSession();
+                                showLoginInterface();
+                                notifications.show('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
+                                
+                                return response;
+                            }
+                        }
+                    }
+                    
+                    if (response.ok && currentUser) {
+                        updateLastActivity();
+                    }
+                    
+                    return response;
+                    
+                } catch (error) {
+                    console.error('❌ Error en fetchWithAuth:', error);
+                    throw error;
+                }
+            }
+            
+            async function refreshTokens() {
+                const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+                
+                if (!refreshToken) {
+                    console.warn('⚠️ No hay refresh token disponible');
+                    return null;
+                }
+                
+                try {
+                    console.log('🔄 Refrescando tokens...');
+                    
+                    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${refreshToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include'
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        saveTokens(data.access_token || data.token, data.refresh_token);
+                        
+                        if (data.user) {
+                            saveUserData(data.user);
+                            currentUser = data.user;
+                            updateUserInfo();
+                        }
+                        
+                        updateSessionExpiration();
+                        
+                        console.log('✅ Tokens refrescados exitosamente');
+                        return {
+                            access_token: data.access_token || data.token,
+                            refresh_token: data.refresh_token
+                        };
+                    } else {
+                        console.error('❌ Error en respuesta de refresh:', response.status);
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('❌ Error en refreshTokens:', error);
+                    return null;
+                }
+            }
+            
+            // ========== MANEJO DE SESIÓN ==========
+            async function checkAuthentication() {
+                if (isSessionExpired()) {
+                    console.log('⚠️ Sesión expirada, limpiando...');
+                    clearUserSession();
+                    redirectToLogin();
+                    return false;
+                }
+                
+                const token = getStorageItem(STORAGE_KEYS.TOKEN);
+                const userData = getStorageItem(STORAGE_KEYS.USER);
+                
+                if (!token || !userData) {
+                    console.log('❌ No hay sesión activa');
+                    redirectToLogin();
+                    return false;
+                }
+                
+                try {
+                    const response = await fetchWithAuth(`${API_BASE_URL}/auth/verify`);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.valid && data.user) {
+                            currentUser = data.user;
+                            isAuthenticated = true;
+                            isAdmin = currentUser.rol === 'admin';
+                            
+                            console.log('✅ Sesión válida:', currentUser.nombre);
+                            
+                            setupUIByRole();
+                            loadUserData();
+                            loadUserBookings();
+                            if (isAdmin) {
+                                loadAdminData();
+                            }
+                            updateDashboard();
+                            
+                            return true;
+                        } else {
+                            throw new Error('Token inválido');
+                        }
+                    } else {
+                        throw new Error('Error verificando sesión');
+                    }
+                } catch (error) {
+                    console.error('Error verificando autenticación:', error);
+                    
+                    if (userData) {
+                        try {
+                            currentUser = JSON.parse(userData);
+                            isAuthenticated = true;
+                            isAdmin = currentUser.rol === 'admin';
+                            
+                            console.log('⚠️ Usando datos de usuario de localStorage (modo offline):', currentUser.nombre);
+                            
+                            setupUIByRole();
+                            loadUserDataFromLocalStorage();
+                            loadUserBookingsFromLocalStorage();
+                            if (isAdmin) {
+                                loadAdminDataFromLocalStorage();
+                            }
+                            updateDashboard();
+                            
+                            notifications.show('⚠️ Modo offline - usando datos locales', 'warning');
+                            return true;
+                        } catch (e) {
+                            console.error('Error parseando datos de usuario:', e);
+                            clearUserSession();
+                            redirectToLogin();
+                            return false;
+                        }
+                    } else {
+                        clearUserSession();
+                        redirectToLogin();
+                        return false;
+                    }
+                }
+            }
+            
+            function logout() {
+                if (confirm('¿Estás seguro de cerrar sesión?')) {
+                    clearUserSession();
+                    notifications.show('Sesión cerrada correctamente', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                }
+            }
+            
             // ========== FUNCIONES DE UTILIDAD ==========
             function showAlert(alertDiv, message, type) {
                 const alertElement = document.getElementById(alertDiv);
@@ -1794,10 +2329,8 @@
                 alertElement.className = `alert alert-${type}`;
                 alertElement.style.display = 'block';
                 
-                // También mostrar notificación
                 notifications.show(message, type);
                 
-                // Auto-ocultar después de 5 segundos
                 if (type !== 'success') {
                     setTimeout(() => {
                         alertElement.style.display = 'none';
@@ -1830,118 +2363,7 @@
             function hideLoader() {
                 const loader = document.getElementById('page-loader');
                 if (loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                        document.body.classList.remove('loading');
-                        document.body.style.overflow = 'visible';
-                    }, 300);
-                }
-            }
-            
-            // ========== MANEJO DE SESIÓN ==========
-            async function checkAuthentication() {
-                const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                const userData = localStorage.getItem(STORAGE_KEYS.USER);
-                
-                if (!token || !userData) {
-                    console.log('❌ No hay sesión activa');
-                    redirectToLogin();
-                    return false;
-                }
-                
-                try {
-                    // Verificar sesión con el servidor
-                    const response = await fetch(`${API_BASE_URL}/user/profile`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const user = await response.json();
-                        currentUser = user;
-                        isAuthenticated = true;
-                        isAdmin = user.rol === 'admin';
-                        
-                        console.log('✅ Sesión válida:', currentUser.nombre);
-                        
-                        // Actualizar UI según rol
-                        setupUIByRole();
-                        loadUserData();
-                        loadUserBookings();
-                        if (isAdmin) {
-                            loadAdminData();
-                        }
-                        updateDashboard();
-                        
-                        return true;
-                    } else {
-                        // Token inválido
-                        console.log('❌ Token inválido');
-                        clearSession();
-                        redirectToLogin();
-                        return false;
-                    }
-                } catch (error) {
-                    console.error('Error verificando autenticación:', error);
-                    
-                    // Si hay error de red pero hay datos de usuario, usar esos datos
-                    if (userData) {
-                        try {
-                            currentUser = JSON.parse(userData);
-                            isAuthenticated = true;
-                            isAdmin = currentUser.rol === 'admin';
-                            
-                            console.log('⚠️ Usando datos de usuario de localStorage (modo offline):', currentUser.nombre);
-                            
-                            // Actualizar UI según rol
-                            setupUIByRole();
-                            loadUserDataFromLocalStorage();
-                            loadUserBookingsFromLocalStorage();
-                            if (isAdmin) {
-                                loadAdminDataFromLocalStorage();
-                            }
-                            updateDashboard();
-                            
-                            notifications.show('⚠️ Modo offline - usando datos locales', 'warning');
-                            return true;
-                        } catch (e) {
-                            console.error('Error parseando datos de usuario:', e);
-                            clearSession();
-                            redirectToLogin();
-                            return false;
-                        }
-                    } else {
-                        clearSession();
-                        redirectToLogin();
-                        return false;
-                    }
-                }
-            }
-            
-            function clearSession() {
-                localStorage.removeItem(STORAGE_KEYS.TOKEN);
-                localStorage.removeItem(STORAGE_KEYS.USER);
-                currentUser = null;
-                isAuthenticated = false;
-                isAdmin = false;
-            }
-            
-            function redirectToLogin() {
-                notifications.show('Por favor inicia sesión para acceder a esta página', 'error');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
-            }
-            
-            function logout() {
-                if (confirm('¿Estás seguro de cerrar sesión?')) {
-                    clearSession();
-                    notifications.show('Sesión cerrada correctamente', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1000);
+                    loader.classList.add('hidden');
                 }
             }
             
@@ -1953,54 +2375,49 @@
                     setupNormalUserUI();
                 }
                 updateUserUI();
+                showUserInterface();
             }
             
             function setupAdminUI() {
-                // Actualizar hero section
                 document.getElementById('hero-title').textContent = 'Panel de Administrador';
                 document.getElementById('hero-subtitle').textContent = 'Gestiona el sistema Caño Salao desde tu panel administrativo';
                 document.getElementById('breadcrumb-text').textContent = 'Panel de Administrador';
                 
-                // Mostrar menú de admin y ocultar menú normal
                 document.getElementById('normal-user-menu').style.display = 'none';
                 document.getElementById('admin-menu').style.display = 'block';
                 
-                // Ocultar secciones de usuario normal
                 document.querySelectorAll('.user-section').forEach(section => {
                     if (!section.id.startsWith('admin-')) {
                         section.style.display = 'none';
                     }
                 });
                 
-                // Mostrar dashboard de admin por defecto
                 showSection('admin-dashboard');
             }
             
             function setupNormalUserUI() {
-                // Ocultar menú de admin
                 document.getElementById('admin-menu').style.display = 'none';
                 
-                // Ocultar secciones de admin
                 document.querySelectorAll('.user-section').forEach(section => {
                     if (section.id.startsWith('admin-')) {
                         section.style.display = 'none';
                     }
                 });
                 
-                // Mostrar dashboard normal por defecto
                 showSection('dashboard');
             }
             
             function updateUserUI() {
                 if (!currentUser) return;
                 
-                // Actualizar información del usuario
                 document.getElementById('user-name').textContent = currentUser.nombre || 'Usuario';
                 document.getElementById('user-email').textContent = currentUser.email || 'usuario@ejemplo.com';
-                document.getElementById('user-avatar').textContent = (currentUser.nombre?.charAt(0) || 'U').toUpperCase();
+                const letter = currentUser.nombre 
+                    ? currentUser.nombre.charAt(0).toUpperCase() 
+                    : 'U';
+                document.getElementById('user-avatar').textContent = letter;
                 document.getElementById('user-role-badge').textContent = isAdmin ? 'Administrador' : 'Usuario';
                 
-                // Actualizar formularios según el rol
                 if (isAdmin) {
                     document.getElementById('admin-profile-name').value = currentUser.nombre || '';
                     document.getElementById('admin-profile-email').value = currentUser.email || '';
@@ -2017,26 +2434,21 @@
             }
             
             function showSection(sectionId) {
-                // Ocultar todas las secciones
                 document.querySelectorAll('.user-section').forEach(section => {
                     section.classList.remove('active');
                 });
                 
-                // Actualizar menú activo
                 document.querySelectorAll('.user-menu-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 
-                // Activar menú correspondiente
                 const menuItem = document.querySelector(`[data-section="${sectionId}"]`);
                 if (menuItem) menuItem.classList.add('active');
                 
-                // Mostrar sección seleccionada
                 const targetSection = document.getElementById(sectionId);
                 if (targetSection) {
                     targetSection.classList.add('active');
                     
-                    // Cargar datos específicos si es necesario
                     switch(sectionId) {
                         case 'bookings':
                             loadUserBookings();
@@ -2058,7 +2470,6 @@
             }
             
             function initEventListeners() {
-                // Navegación del menú
                 document.querySelectorAll('.user-menu-item').forEach(item => {
                     item.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -2069,35 +2480,28 @@
                     });
                 });
                 
-                // Botón de logout
                 document.getElementById('logout-btn').addEventListener('click', logout);
                 
-                // Formulario de perfil normal
                 if (document.getElementById('profile-form')) {
                     document.getElementById('profile-form').addEventListener('submit', saveProfile);
                 }
                 
-                // Formulario de perfil admin
                 if (document.getElementById('admin-profile-form')) {
                     document.getElementById('admin-profile-form').addEventListener('submit', saveAdminProfile);
                 }
                 
-                // Formulario de contraseña normal
                 if (document.getElementById('password-form')) {
                     document.getElementById('password-form').addEventListener('submit', changePassword);
                 }
                 
-                // Formulario de contraseña admin
                 if (document.getElementById('admin-password-form')) {
                     document.getElementById('admin-password-form').addEventListener('submit', changeAdminPassword);
                 }
                 
-                // Formulario de preferencias
                 if (document.getElementById('preferences-form')) {
                     document.getElementById('preferences-form').addEventListener('submit', savePreferences);
                 }
                 
-                // Configurar modal de confirmación
                 document.getElementById('confirm-action-btn').addEventListener('click', function() {
                     if (currentModalAction) {
                         currentModalAction();
@@ -2110,18 +2514,16 @@
                 if (!currentUser) return;
                 
                 try {
-                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                    const response = await fetch(`${API_BASE_URL}/user/profile`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                    const response = await fetchWithAuth(`${API_BASE_URL}/auth/profile`);
                     
                     if (response.ok) {
-                        userData = await response.json();
-                        currentUser = userData;
-                        updateUserUI();
-                        console.log('✅ Datos de usuario cargados desde API');
+                        const data = await response.json();
+                        if (data.profile) {
+                            userData = data.profile;
+                            currentUser = { ...currentUser, ...userData };
+                            updateUserUI();
+                            console.log('✅ Datos de usuario cargados desde API');
+                        }
                     }
                 } catch (error) {
                     console.error('Error cargando datos de usuario:', error);
@@ -2150,7 +2552,6 @@
                 document.getElementById('profile-address').value = userData.direccion || '';
                 document.getElementById('profile-bio').value = userData.bio || '';
                 
-                // Limpiar formulario de contraseña
                 document.getElementById('current-password').value = '';
                 document.getElementById('new-password').value = '';
                 document.getElementById('confirm-password').value = '';
@@ -2164,7 +2565,6 @@
                 document.getElementById('admin-profile-phone').value = userData.telefono || '';
                 document.getElementById('admin-profile-notes').value = userData.notas || '';
                 
-                // Limpiar formulario de contraseña
                 document.getElementById('admin-current-password').value = '';
                 document.getElementById('admin-new-password').value = '';
                 document.getElementById('admin-confirm-password').value = '';
@@ -2175,28 +2575,22 @@
                 if (!isAdmin) return;
                 
                 try {
-                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                    
-                    // Cargar usuarios
-                    const usersResponse = await fetch(`${API_BASE_URL}/admin/users`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                    const usersResponse = await fetchWithAuth(`${API_BASE_URL}/admin/users`);
                     
                     if (usersResponse.ok) {
-                        allUsers = await usersResponse.json();
+                        const data = await usersResponse.json();
+                        if (data.users) {
+                            allUsers = data.users;
+                        }
                     }
                     
-                    // Cargar reservas
-                    const bookingsResponse = await fetch(`${API_BASE_URL}/admin/bookings`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                    const bookingsResponse = await fetchWithAuth(`${API_BASE_URL}/admin/bookings`);
                     
                     if (bookingsResponse.ok) {
-                        systemBookings = await bookingsResponse.json();
+                        const data = await bookingsResponse.json();
+                        if (data.bookings) {
+                            systemBookings = data.bookings;
+                        }
                     }
                     
                     console.log('✅ Datos administrativos cargados');
@@ -2217,26 +2611,21 @@
                 if (!isAdmin) return;
                 
                 try {
-                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                    
-                    // Cargar estadísticas
-                    const statsResponse = await fetch(`${API_BASE_URL}/admin/stats`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                    const statsResponse = await fetchWithAuth(`${API_BASE_URL}/admin/dashboard`);
                     
                     if (statsResponse.ok) {
                         const stats = await statsResponse.json();
                         
-                        // Actualizar UI
-                        document.getElementById('admin-total-users').textContent = stats.totalUsers || allUsers.length;
-                        document.getElementById('admin-total-bookings').textContent = stats.totalBookings || systemBookings.length;
-                        document.getElementById('admin-pending-bookings').textContent = stats.pendingBookings || systemBookings.filter(b => b.estado === 'pending').length;
-                        document.getElementById('admin-total-revenue').textContent = `$${(stats.totalRevenue || 0).toFixed(2)}`;
+                        document.getElementById('admin-total-users').textContent = stats.total_users || allUsers.length;
+                        document.getElementById('admin-total-bookings').textContent = stats.total_bookings || systemBookings.length;
+                        document.getElementById('admin-pending-bookings').textContent = stats.pending_bookings || systemBookings.filter(b => b.estado === 'pending').length;
+                        
+                        const totalRevenue = systemBookings
+                            .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
+                            .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
+                        document.getElementById('admin-total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
                     }
                     
-                    // Cargar reservas recientes
                     loadRecentSystemBookings();
                     
                 } catch (error) {
@@ -2253,7 +2642,6 @@
                     .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
                     .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
                 
-                // Actualizar UI
                 document.getElementById('admin-total-users').textContent = totalUsers;
                 document.getElementById('admin-total-bookings').textContent = totalBookings;
                 document.getElementById('admin-pending-bookings').textContent = pendingBookings;
@@ -2299,22 +2687,19 @@
                 const searchTerm = document.getElementById('user-search')?.value?.toLowerCase() || '';
                 
                 try {
-                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                    const response = await fetch(`${API_BASE_URL}/admin/users`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                    const response = await fetchWithAuth(`${API_BASE_URL}/admin/users`);
                     
                     if (response.ok) {
-                        allUsers = await response.json();
+                        const data = await response.json();
+                        if (data.users) {
+                            allUsers = data.users;
+                        }
                     }
                     
                 } catch (error) {
                     console.error('Error cargando usuarios:', error);
                 }
                 
-                // Filtrar usuarios
                 let filteredUsers = [...allUsers];
                 
                 if (searchTerm) {
@@ -2325,7 +2710,6 @@
                     );
                 }
                 
-                // Calcular paginación
                 const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
                 const startIndex = (currentUsersPage - 1) * usersPerPage;
                 const endIndex = Math.min(startIndex + usersPerPage, filteredUsers.length);
@@ -2368,7 +2752,6 @@
                         tbody.appendChild(row);
                     });
                     
-                    // Mostrar paginación
                     document.getElementById('users-pagination').style.display = 'flex';
                     document.getElementById('users-page-info').textContent = `Página ${currentUsersPage} de ${totalPages}`;
                 }
@@ -2379,18 +2762,16 @@
                 if (!currentUser) return;
                 
                 try {
-                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                    const response = await fetch(`${API_BASE_URL}/bookings/my-bookings`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                    const response = await fetchWithAuth(`${API_BASE_URL}/user/bookings`);
                     
                     if (response.ok) {
-                        userBookings = await response.json();
-                        console.log('✅ Reservas del usuario cargadas desde API:', userBookings.length);
-                        updateBookingsTable();
-                        updateDashboard();
+                        const data = await response.json();
+                        if (data.bookings) {
+                            userBookings = data.bookings;
+                            console.log('✅ Reservas del usuario cargadas desde API:', userBookings.length);
+                            updateBookingsTable();
+                            updateDashboard();
+                        }
                     } else {
                         throw new Error('Error cargando reservas');
                     }
@@ -2404,7 +2785,6 @@
             function loadUserBookingsFromLocalStorage() {
                 const bookings = JSON.parse(localStorage.getItem('admin_bookings_cache') || '[]');
                 
-                // Filtrar reservas del usuario actual
                 userBookings = bookings.filter(booking => 
                     booking.usuario_id == currentUser?.id || 
                     booking.usuario_email === currentUser.email
@@ -2420,7 +2800,6 @@
                 const filter = document.getElementById('booking-filter')?.value || 'all';
                 const searchTerm = document.getElementById('booking-search')?.value?.toLowerCase() || '';
                 
-                // Aplicar filtros
                 let filteredBookings = [...userBookings];
                 
                 if (filter !== 'all') {
@@ -2435,13 +2814,11 @@
                     );
                 }
                 
-                // Calcular paginación
                 const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
                 const startIndex = (currentBookingsPage - 1) * bookingsPerPage;
                 const endIndex = Math.min(startIndex + bookingsPerPage, filteredBookings.length);
                 const pageBookings = filteredBookings.slice(startIndex, endIndex);
                 
-                // Renderizar tabla
                 if (pageBookings.length === 0) {
                     tbody.innerHTML = `
                         <tr>
@@ -2485,12 +2862,10 @@
                         tbody.appendChild(row);
                     });
                     
-                    // Mostrar paginación
                     document.getElementById('bookings-pagination').style.display = 'flex';
                     document.getElementById('bookings-page-info').textContent = `Página ${currentBookingsPage} de ${totalPages}`;
                 }
                 
-                // Actualizar tabla de reservas recientes (dashboard)
                 updateRecentBookingsTable();
             }
             
@@ -2548,7 +2923,6 @@
             function updateDashboard() {
                 if (isAdmin) return;
                 
-                // Calcular estadísticas
                 const totalBookings = userBookings.length;
                 const pendingBookings = userBookings.filter(b => b.estado === 'pending').length;
                 const confirmedBookings = userBookings.filter(b => b.estado === 'confirmed' || b.estado === 'completed').length;
@@ -2556,7 +2930,6 @@
                     .filter(b => b.estado === 'confirmed' || b.estado === 'completed')
                     .reduce((sum, b) => sum + (parseFloat(b.total) || 0), 0);
                 
-                // Actualizar UI
                 document.getElementById('total-bookings').textContent = totalBookings;
                 document.getElementById('pending-bookings').textContent = pendingBookings;
                 document.getElementById('confirmed-bookings').textContent = confirmedBookings;
@@ -2575,7 +2948,6 @@
                 const bio = document.getElementById('profile-bio').value.trim();
                 const saveBtn = document.getElementById('save-profile-btn');
                 
-                // Validación
                 if (!name || !email) {
                     showUserAlert('Por favor completa los campos obligatorios', 'error');
                     return;
@@ -2586,17 +2958,14 @@
                     return;
                 }
                 
-                // Deshabilitar botón y mostrar loading
                 saveBtn.disabled = true;
                 const originalText = saveBtn.innerHTML;
                 saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
                 
                 try {
-                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+                    const response = await fetchWithAuth(`${API_BASE_URL}/auth/profile`, {
                         method: 'PUT',
                         headers: {
-                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
@@ -2610,12 +2979,14 @@
                     });
                     
                     if (response.ok) {
-                        const updatedUser = await response.json();
-                        currentUser = updatedUser;
-                        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
-                        
-                        showUserAlert('✅ Perfil actualizado exitosamente', 'success');
-                        updateUserUI();
+                        const data = await response.json();
+                        if (data.profile) {
+                            currentUser = { ...currentUser, ...data.profile };
+                            saveUserData(currentUser);
+                            
+                            showUserAlert('✅ Perfil actualizado exitosamente', 'success');
+                            updateUserUI();
+                        }
                     } else {
                         const error = await response.json();
                         throw new Error(error.message || 'Error actualizando perfil');
@@ -2625,7 +2996,6 @@
                     console.error('Error actualizando perfil:', error);
                     showUserAlert(`Error: ${error.message}`, 'error');
                 } finally {
-                    // Re-enable button
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = originalText;
                 }
@@ -2639,7 +3009,6 @@
                 const confirmPassword = document.getElementById('confirm-password').value;
                 const saveBtn = document.getElementById('save-password-btn');
                 
-                // Validación
                 if (!currentPassword || !newPassword || !confirmPassword) {
                     showUserAlert('Por favor completa todos los campos', 'error');
                     return;
@@ -2655,17 +3024,14 @@
                     return;
                 }
                 
-                // Deshabilitar botón y mostrar loading
                 saveBtn.disabled = true;
                 const originalText = saveBtn.innerHTML;
                 saveBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; border-width: 2px; margin: 0 auto; border-color: white;"></div>';
                 
                 try {
-                    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-                    const response = await fetch(`${API_BASE_URL}/user/change-password`, {
+                    const response = await fetchWithAuth(`${API_BASE_URL}/user/change-password`, {
                         method: 'POST',
                         headers: {
-                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
@@ -2686,7 +3052,6 @@
                     console.error('Error cambiando contraseña:', error);
                     showUserAlert(`Error: ${error.message}`, 'error');
                 } finally {
-                    // Re-enable button
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = originalText;
                 }
@@ -2775,7 +3140,6 @@
                 currentModalAction = null;
             }
             
-            // Cerrar modal al hacer clic fuera
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('click', function(e) {
                     if (e.target === this) {
@@ -2784,7 +3148,6 @@
                 });
             });
             
-            // Cerrar modal con Escape
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closeModal();
@@ -2794,7 +3157,6 @@
             // ========== INICIALIZACIÓN ==========
             function init() {
                 console.log('🚀 Inicializando página de usuario...');
-                console.log('🌐 URL API:', API_BASE_URL);
                 
                 hideLoader();
                 initEventListeners();
@@ -2806,7 +3168,6 @@
                 console.log('✅ Página de usuario inicializada correctamente');
             }
             
-            // Inicializar cuando el DOM esté listo
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {
