@@ -1168,6 +1168,20 @@
                 <div class="quick-actions">
                     <button class="btn" onclick="showAddBlogPostModal()" style="background: var(--admin-success);"><i class="bi bi-plus-circle"></i> Nuevo Artículo</button>
                     <button class="btn" onclick="loadBlogPosts()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
+                    <div class="filter-controls">
+                        <select id="blog-filter-category" class="filter-select" onchange="filterBlogPosts()">
+                            <option value="all">Todas las categorías</option>
+                            <option value="noticias">Noticias</option>
+                            <option value="tours">Tours</option>
+                            <option value="consejos">Consejos</option>
+                            <option value="eventos">Eventos</option>
+                        </select>
+                        <select id="blog-filter-status" class="filter-select" onchange="filterBlogPosts()">
+                            <option value="all">Todos los estados</option>
+                            <option value="published">Publicados</option>
+                            <option value="draft">Borradores</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="admin-table-container">
@@ -1555,13 +1569,13 @@
             <div class="modal-body">
                 <div id="add-blog-alert" class="alert" style="display: none;"></div>
                 <div class="form-group">
-                    <label>Título del Artículo</label>
+                    <label>Título del Artículo *</label>
                     <input type="text" id="blog-title" class="form-control" placeholder="Ej: Nuevo tour por los manglares" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="blog-category" class="form-control">
+                        <label>Categoría *</label>
+                        <select id="blog-category" class="form-control" required>
                             <option value="noticias">Noticias</option>
                             <option value="tours">Tours</option>
                             <option value="consejos">Consejos</option>
@@ -1571,8 +1585,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Autor</label>
-                        <input type="text" id="blog-author" class="form-control" placeholder="Nombre del autor">
+                        <label>Autor *</label>
+                        <input type="text" id="blog-author" class="form-control" placeholder="Nombre del autor" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -1587,8 +1601,8 @@
                     <textarea id="blog-excerpt" class="form-control" rows="3" placeholder="Breve resumen que aparecerá en la lista de artículos"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Contenido</label>
-                    <div id="blog-content-editor" class="content-editor"></div>
+                    <label>Contenido *</label>
+                    <textarea id="blog-content-textarea" class="form-control" rows="10" placeholder="Escribe el contenido del artículo aquí..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>
@@ -1615,13 +1629,13 @@
                 <div id="edit-blog-alert" class="alert" style="display: none;"></div>
                 <input type="hidden" id="edit-blog-id">
                 <div class="form-group">
-                    <label>Título del Artículo</label>
+                    <label>Título del Artículo *</label>
                     <input type="text" id="edit-blog-title" class="form-control" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Categoría</label>
-                        <select id="edit-blog-category" class="form-control">
+                        <label>Categoría *</label>
+                        <select id="edit-blog-category" class="form-control" required>
                             <option value="noticias">Noticias</option>
                             <option value="tours">Tours</option>
                             <option value="consejos">Consejos</option>
@@ -1629,8 +1643,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Autor</label>
-                        <input type="text" id="edit-blog-author" class="form-control">
+                        <label>Autor *</label>
+                        <input type="text" id="edit-blog-author" class="form-control" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -1645,8 +1659,8 @@
                     <textarea id="edit-blog-excerpt" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Contenido</label>
-                    <div id="edit-blog-content-editor" class="content-editor"></div>
+                    <label>Contenido *</label>
+                    <textarea id="edit-blog-content-textarea" class="form-control" rows="10"></textarea>
                 </div>
                 <div class="form-group">
                     <label>
@@ -1712,6 +1726,7 @@
         let autoRefreshInterval = null;
         let toursData = [];
         let blogPostsData = [];
+        let allBlogPosts = [];
         
         // ========== INICIALIZACIÓN ==========
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1725,9 +1740,6 @@
             initTabs();
             initUserMenu();
             initEventListeners();
-            
-            // Inicializar TinyMCE
-            initTinyMCE();
             
             // Verificar conexión y permisos
             const isConnected = await testBackendConnection();
@@ -1743,38 +1755,6 @@
             
             console.log('✅ Panel inicializado correctamente');
         });
-        
-        function initTinyMCE() {
-            // Configuración de TinyMCE para el editor de blog
-            const tinymceConfig = {
-                selector: '#blog-content-editor, #edit-blog-content-editor',
-                height: 400,
-                menubar: true,
-                plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                ],
-                toolbar: 'undo redo | blocks | ' +
-                    'bold italic forecolor | alignleft aligncenter ' +
-                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                    'removeformat | help | image | link',
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                images_upload_url: 'https://cano-salao.onrender.com/api/upload',
-                automatic_uploads: false,
-                paste_data_images: true,
-                language: 'es',
-                branding: false
-            };
-            
-            // Solo inicializar si TinyMCE está disponible
-            if (typeof tinymce !== 'undefined') {
-                tinymce.init(tinymceConfig);
-                console.log('✅ TinyMCE inicializado');
-            } else {
-                console.warn('⚠️ TinyMCE no cargado, usando textarea simple');
-            }
-        }
         
         function initEventListeners() {
             // Cerrar modales al hacer clic fuera
@@ -1796,12 +1776,12 @@
             });
             
             // Previsualización de imágenes en tiempo real
-            document.getElementById('new-tour-image')?.addEventListener('input', function() {
-                updateImagePreview(this.value, 'tour-image-preview');
-            });
-            
             document.getElementById('blog-image')?.addEventListener('input', function() {
                 updateImagePreview(this.value, 'blog-image-preview');
+            });
+            
+            document.getElementById('edit-blog-image')?.addEventListener('input', function() {
+                updateImagePreview(this.value, 'edit-blog-image-preview');
             });
         }
         
@@ -2742,14 +2722,14 @@
             });
         }
         
-        // ========== BLOG ==========
+        // ========== BLOG - FUNCIONALIDAD COMPLETA ==========
         async function loadBlogPosts() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/blog`);
                 
                 if (response.ok) {
-                    blogPostsData = await response.json();
-                    renderBlogTable(blogPostsData);
+                    allBlogPosts = await response.json();
+                    filterBlogPosts();
                 } else {
                     throw new Error('Error cargando posts del blog');
                 }
@@ -2758,6 +2738,28 @@
                 showAlert('Error cargando artículos del blog', 'error');
                 renderEmptyBlogTable();
             }
+        }
+        
+        function filterBlogPosts() {
+            const categoryFilter = document.getElementById('blog-filter-category').value;
+            const statusFilter = document.getElementById('blog-filter-status').value;
+            
+            let filteredPosts = allBlogPosts;
+            
+            if (categoryFilter !== 'all') {
+                filteredPosts = filteredPosts.filter(post => post.categoria === categoryFilter);
+            }
+            
+            if (statusFilter !== 'all') {
+                if (statusFilter === 'published') {
+                    filteredPosts = filteredPosts.filter(post => post.publicado);
+                } else if (statusFilter === 'draft') {
+                    filteredPosts = filteredPosts.filter(post => !post.publicado);
+                }
+            }
+            
+            blogPostsData = filteredPosts;
+            renderBlogTable(filteredPosts);
         }
         
         function renderBlogTable(posts) {
@@ -2807,16 +2809,13 @@
         function showAddBlogPostModal() {
             document.getElementById('add-blog-alert').style.display = 'none';
             document.getElementById('blog-title').value = '';
+            document.getElementById('blog-category').value = 'noticias';
             document.getElementById('blog-author').value = currentUser?.nombre || '';
             document.getElementById('blog-excerpt').value = '';
             document.getElementById('blog-image').value = '';
+            document.getElementById('blog-content-textarea').value = '';
             document.getElementById('blog-published').checked = true;
             document.getElementById('blog-image-preview').style.display = 'none';
-            
-            // Limpiar editor TinyMCE
-            if (tinymce.get('blog-content-editor')) {
-                tinymce.get('blog-content-editor').setContent('');
-            }
             
             openModal('modal-add-blog');
         }
@@ -2824,18 +2823,24 @@
         async function saveBlogPost() {
             const title = document.getElementById('blog-title').value.trim();
             const category = document.getElementById('blog-category').value;
-            const author = document.getElementById('blog-author').value.trim() || currentUser?.nombre || 'Administrador';
+            const author = document.getElementById('blog-author').value.trim();
             const excerpt = document.getElementById('blog-excerpt').value.trim();
             const image = document.getElementById('blog-image').value.trim();
+            const content = document.getElementById('blog-content-textarea').value.trim();
             const published = document.getElementById('blog-published').checked;
             
-            let content = '';
-            if (tinymce.get('blog-content-editor')) {
-                content = tinymce.get('blog-content-editor').getContent();
+            if (!title) {
+                showFormAlert('add-blog-alert', 'El título es obligatorio', 'error');
+                return;
             }
             
-            if (!title || !content) {
-                showFormAlert('add-blog-alert', 'Título y contenido son obligatorios', 'error');
+            if (!author) {
+                showFormAlert('add-blog-alert', 'El autor es obligatorio', 'error');
+                return;
+            }
+            
+            if (!content) {
+                showFormAlert('add-blog-alert', 'El contenido es obligatorio', 'error');
                 return;
             }
             
@@ -2863,7 +2868,7 @@
                 
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.success && data.blog) {
                     showFormAlert('add-blog-alert', 'Artículo publicado correctamente', 'success');
                     setTimeout(() => {
                         closeModal('modal-add-blog');
@@ -2892,16 +2897,12 @@
                     document.getElementById('edit-blog-author').value = post.autor || '';
                     document.getElementById('edit-blog-excerpt').value = post.excerpt || '';
                     document.getElementById('edit-blog-image').value = post.imagen_url || '';
+                    document.getElementById('edit-blog-content-textarea').value = post.contenido || '';
                     document.getElementById('edit-blog-published').checked = post.publicado || false;
                     
                     if (post.imagen_url) {
                         document.getElementById('edit-blog-image-preview').src = post.imagen_url;
                         document.getElementById('edit-blog-image-preview').style.display = 'block';
-                    }
-                    
-                    // Cargar contenido en TinyMCE
-                    if (tinymce.get('edit-blog-content-editor')) {
-                        tinymce.get('edit-blog-content-editor').setContent(post.contenido || '');
                     }
                     
                     document.getElementById('edit-blog-alert').style.display = 'none';
@@ -2920,15 +2921,21 @@
             const author = document.getElementById('edit-blog-author').value.trim();
             const excerpt = document.getElementById('edit-blog-excerpt').value.trim();
             const image = document.getElementById('edit-blog-image').value.trim();
+            const content = document.getElementById('edit-blog-content-textarea').value.trim();
             const published = document.getElementById('edit-blog-published').checked;
             
-            let content = '';
-            if (tinymce.get('edit-blog-content-editor')) {
-                content = tinymce.get('edit-blog-content-editor').getContent();
+            if (!title) {
+                showFormAlert('edit-blog-alert', 'El título es obligatorio', 'error');
+                return;
             }
             
-            if (!title || !content) {
-                showFormAlert('edit-blog-alert', 'Título y contenido son obligatorios', 'error');
+            if (!author) {
+                showFormAlert('edit-blog-alert', 'El autor es obligatorio', 'error');
+                return;
+            }
+            
+            if (!content) {
+                showFormAlert('edit-blog-alert', 'El contenido es obligatorio', 'error');
                 return;
             }
             
@@ -2986,11 +2993,14 @@
                         <strong>Categoría:</strong> ${post.categoria || 'General'} |
                         <strong>Autor:</strong> ${post.autor || 'Anónimo'} |
                         <strong>Fecha:</strong> ${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'} |
-                        <strong>Vistas:</strong> ${post.vistas || 0}
+                        <strong>Vistas:</strong> ${post.vistas || 0} |
+                        <strong>Estado:</strong> ${post.publicado ? 'Publicado' : 'Borrador'}
                     </div>
                     ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" style="max-width: 100%; border-radius: 8px; margin-bottom: 20px;">` : ''}
                     ${post.excerpt ? `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-style: italic;">${post.excerpt}</div>` : ''}
-                    <div>${post.contenido || '<p>Contenido no disponible</p>'}</div>
+                    <div style="line-height: 1.6; font-size: 16px;">
+                        ${post.contenido ? post.contenido.replace(/\n/g, '<br>') : '<p>Contenido no disponible</p>'}
+                    </div>
                 </div>
             `;
             
@@ -3138,8 +3148,65 @@
             showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
         }
         
-        function updateProfile() {
-            showAlert('Funcionalidad en desarrollo - Actualizar perfil', 'info');
+        async function updateProfile() {
+            const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const phone = document.getElementById('profile-phone').value.trim();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            
+            if (!name || !email) {
+                showFormAlert('profile-form-alert', 'Nombre y email son obligatorios', 'error');
+                return;
+            }
+            
+            const profileData = {
+                nombre: name,
+                email: email,
+                telefono: phone
+            };
+            
+            if (currentPassword && newPassword) {
+                if (newPassword.length < 6) {
+                    showFormAlert('profile-form-alert', 'La nueva contraseña debe tener al menos 6 caracteres', 'error');
+                    return;
+                }
+                profileData.current_password = currentPassword;
+                profileData.new_password = newPassword;
+            }
+            
+            showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('profile-form-alert', 'Perfil actualizado correctamente', 'success');
+                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+                    currentUser = data.user;
+                    updateUserUI();
+                    
+                    setTimeout(() => {
+                        document.getElementById('profile-form-alert').style.display = 'none';
+                        document.getElementById('current-password').value = '';
+                        document.getElementById('new-password').value = '';
+                    }, 2000);
+                } else {
+                    showFormAlert('profile-form-alert', data.error || 'Error al actualizar perfil', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando perfil:', error);
+                showFormAlert('profile-form-alert', 'Error de conexión con el servidor', 'error');
+            }
         }
         
         function saveSystemSettings() {
