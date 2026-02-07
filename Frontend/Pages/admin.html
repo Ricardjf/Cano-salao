@@ -7,8 +7,6 @@
 
     <link rel="stylesheet" href="../index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Editor WYSIWYG TinyMCE con API key gratuita para desarrollo -->
-    <script src="https://cdn.tiny.cloud/1/w0ib1a4d5sq33dzqwc9g6r5u3dng8sjz78t4sif0tpeagipx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <!-- Para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
@@ -900,15 +898,10 @@
             transform: translateY(-2px);
         }
 
-        /* Estilos para TinyMCE */
-        .tox.tox-tinymce {
-            border-radius: 6px;
-            border: 1px solid #ddd !important;
-        }
-
         /* Vista previa de imagen */
         .image-preview-container {
             margin-top: 10px;
+            position: relative;
         }
 
         .image-preview {
@@ -936,6 +929,93 @@
 
         .price-input input {
             padding-left: 30px;
+        }
+        
+        /* Estilos para subida de archivos */
+        .file-upload-container {
+            margin-top: 10px;
+        }
+        
+        .file-upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .file-upload-label:hover {
+            background: #e9ecef;
+            border-color: var(--admin-accent);
+        }
+        
+        .file-upload-label i {
+            font-size: 24px;
+            color: var(--admin-accent);
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .file-upload-input {
+            display: none;
+        }
+        
+        .upload-progress {
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--admin-success);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .upload-status {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        
+        /* Opciones de imagen */
+        .image-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .image-option-btn {
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .image-option-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .image-option-btn.active {
+            background: var(--admin-accent);
+            color: white;
+            border-color: var(--admin-accent);
         }
     </style>
 </head>
@@ -1484,10 +1564,34 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>URL de Imagen (opcional)</label>
-                        <input type="url" id="new-tour-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                        <label>Imagen del Tour</label>
+                        <div class="image-options">
+                            <button type="button" class="image-option-btn active" onclick="toggleImageOption('upload')">Subir imagen</button>
+                            <button type="button" class="image-option-btn" onclick="toggleImageOption('url')">Usar URL</button>
+                        </div>
+                        
+                        <div id="image-upload-section">
+                            <label class="file-upload-label" for="tour-image-upload">
+                                <i class="bi bi-cloud-upload"></i>
+                                <span>Haz clic para subir una imagen</span>
+                                <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
+                            </label>
+                            <input type="file" id="tour-image-upload" class="file-upload-input" accept="image/*">
+                            <div class="upload-progress" id="tour-upload-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="tour-progress-fill"></div>
+                                </div>
+                                <div class="upload-status" id="tour-upload-status">0%</div>
+                            </div>
+                        </div>
+                        
+                        <div id="image-url-section" style="display: none;">
+                            <input type="url" id="new-tour-image-url" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                        </div>
+                        
                         <div class="image-preview-container">
                             <img id="tour-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                            <input type="hidden" id="tour-image-data">
                         </div>
                     </div>
                 </form>
@@ -1544,10 +1648,34 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>URL de Imagen</label>
-                        <input type="url" id="edit-tour-image" class="form-control">
+                        <label>Imagen del Tour</label>
+                        <div class="image-options">
+                            <button type="button" class="image-option-btn active" onclick="toggleEditImageOption('upload')">Subir imagen</button>
+                            <button type="button" class="image-option-btn" onclick="toggleEditImageOption('url')">Usar URL</button>
+                        </div>
+                        
+                        <div id="edit-image-upload-section">
+                            <label class="file-upload-label" for="edit-tour-image-upload">
+                                <i class="bi bi-cloud-upload"></i>
+                                <span>Haz clic para subir una nueva imagen</span>
+                                <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
+                            </label>
+                            <input type="file" id="edit-tour-image-upload" class="file-upload-input" accept="image/*">
+                            <div class="upload-progress" id="edit-tour-upload-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="edit-tour-progress-fill"></div>
+                                </div>
+                                <div class="upload-status" id="edit-tour-upload-status">0%</div>
+                            </div>
+                        </div>
+                        
+                        <div id="edit-image-url-section" style="display: none;">
+                            <input type="url" id="edit-tour-image-url" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                        </div>
+                        
                         <div class="image-preview-container">
                             <img id="edit-tour-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                            <input type="hidden" id="edit-tour-image-data">
                         </div>
                     </div>
                 </form>
@@ -1586,14 +1714,38 @@
                     </div>
                     <div class="form-group">
                         <label>Autor *</label>
-                        <input type="text" id="blog-author" class="form-control" placeholder="Nombre del autor" required>
+                        <input type="text" id="blog-author" class="form-control" placeholder="Nombre del autor" required value="Administrador">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Imagen Principal (URL)</label>
-                    <input type="url" id="blog-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                    <label>Imagen Principal</label>
+                    <div class="image-options">
+                        <button type="button" class="image-option-btn active" onclick="toggleBlogImageOption('upload')">Subir imagen</button>
+                        <button type="button" class="image-option-btn" onclick="toggleBlogImageOption('url')">Usar URL</button>
+                    </div>
+                    
+                    <div id="blog-image-upload-section">
+                        <label class="file-upload-label" for="blog-image-upload">
+                            <i class="bi bi-cloud-upload"></i>
+                            <span>Haz clic para subir una imagen</span>
+                            <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
+                        </label>
+                        <input type="file" id="blog-image-upload" class="file-upload-input" accept="image/*">
+                        <div class="upload-progress" id="blog-upload-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="blog-progress-fill"></div>
+                            </div>
+                            <div class="upload-status" id="blog-upload-status">0%</div>
+                        </div>
+                    </div>
+                    
+                    <div id="blog-image-url-section" style="display: none;">
+                        <input type="url" id="blog-image-url" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                    </div>
+                    
                     <div class="image-preview-container">
                         <img id="blog-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                        <input type="hidden" id="blog-image-data">
                     </div>
                 </div>
                 <div class="form-group">
@@ -1602,7 +1754,7 @@
                 </div>
                 <div class="form-group">
                     <label>Contenido *</label>
-                    <textarea id="blog-content-textarea" class="form-control" rows="10" placeholder="Escribe el contenido del artículo aquí..."></textarea>
+                    <textarea id="blog-content-textarea" class="form-control" rows="10" placeholder="Escribe el contenido del artículo aquí..." required></textarea>
                 </div>
                 <div class="form-group">
                     <label>
@@ -1648,10 +1800,34 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Imagen Principal (URL)</label>
-                    <input type="url" id="edit-blog-image" class="form-control">
+                    <label>Imagen Principal</label>
+                    <div class="image-options">
+                        <button type="button" class="image-option-btn active" onclick="toggleEditBlogImageOption('upload')">Subir imagen</button>
+                        <button type="button" class="image-option-btn" onclick="toggleEditBlogImageOption('url')">Usar URL</button>
+                    </div>
+                    
+                    <div id="edit-blog-image-upload-section">
+                        <label class="file-upload-label" for="edit-blog-image-upload">
+                            <i class="bi bi-cloud-upload"></i>
+                            <span>Haz clic para subir una nueva imagen</span>
+                            <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
+                        </label>
+                        <input type="file" id="edit-blog-image-upload" class="file-upload-input" accept="image/*">
+                        <div class="upload-progress" id="edit-blog-upload-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="edit-blog-progress-fill"></div>
+                            </div>
+                            <div class="upload-status" id="edit-blog-upload-status">0%</div>
+                        </div>
+                    </div>
+                    
+                    <div id="edit-blog-image-url-section" style="display: none;">
+                        <input type="url" id="edit-blog-image-url" class="form-control">
+                    </div>
+                    
                     <div class="image-preview-container">
                         <img id="edit-blog-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
+                        <input type="hidden" id="edit-blog-image-data">
                     </div>
                 </div>
                 <div class="form-group">
@@ -1660,7 +1836,7 @@
                 </div>
                 <div class="form-group">
                     <label>Contenido *</label>
-                    <textarea id="edit-blog-content-textarea" class="form-control" rows="10"></textarea>
+                    <textarea id="edit-blog-content-textarea" class="form-control" rows="10" required></textarea>
                 </div>
                 <div class="form-group">
                     <label>
@@ -1728,6 +1904,12 @@
         let blogPostsData = [];
         let allBlogPosts = [];
         
+        // Variables para manejo de imágenes
+        let currentImageOption = 'upload'; // 'upload' o 'url'
+        let currentBlogImageOption = 'upload';
+        let currentEditImageOption = 'upload';
+        let currentEditBlogImageOption = 'upload';
+        
         // ========== INICIALIZACIÓN ==========
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Inicializando Panel Administrativo...');
@@ -1740,6 +1922,7 @@
             initTabs();
             initUserMenu();
             initEventListeners();
+            initImageUploads();
             
             // Verificar conexión y permisos
             const isConnected = await testBackendConnection();
@@ -1755,6 +1938,38 @@
             
             console.log('✅ Panel inicializado correctamente');
         });
+        
+        function initImageUploads() {
+            // Inicializar eventos para subida de imágenes de tours
+            const tourImageUpload = document.getElementById('tour-image-upload');
+            const editTourImageUpload = document.getElementById('edit-tour-image-upload');
+            const blogImageUpload = document.getElementById('blog-image-upload');
+            const editBlogImageUpload = document.getElementById('edit-blog-image-upload');
+            
+            if (tourImageUpload) {
+                tourImageUpload.addEventListener('change', function(e) {
+                    handleImageUpload(e, 'tour-image-preview', 'tour-image-data', 'tour-upload-progress', 'tour-progress-fill', 'tour-upload-status');
+                });
+            }
+            
+            if (editTourImageUpload) {
+                editTourImageUpload.addEventListener('change', function(e) {
+                    handleImageUpload(e, 'edit-tour-image-preview', 'edit-tour-image-data', 'edit-tour-upload-progress', 'edit-tour-progress-fill', 'edit-tour-upload-status');
+                });
+            }
+            
+            if (blogImageUpload) {
+                blogImageUpload.addEventListener('change', function(e) {
+                    handleImageUpload(e, 'blog-image-preview', 'blog-image-data', 'blog-upload-progress', 'blog-progress-fill', 'blog-upload-status');
+                });
+            }
+            
+            if (editBlogImageUpload) {
+                editBlogImageUpload.addEventListener('change', function(e) {
+                    handleImageUpload(e, 'edit-blog-image-preview', 'edit-blog-image-data', 'edit-blog-upload-progress', 'edit-blog-progress-fill', 'edit-blog-upload-status');
+                });
+            }
+        }
         
         function initEventListeners() {
             // Cerrar modales al hacer clic fuera
@@ -1775,17 +1990,156 @@
                 }
             });
             
-            // Previsualización de imágenes en tiempo real
-            document.getElementById('blog-image')?.addEventListener('input', function() {
-                updateImagePreview(this.value, 'blog-image-preview');
+            // Previsualización de URLs en tiempo real
+            document.getElementById('blog-image-url')?.addEventListener('input', function() {
+                updateImagePreviewFromUrl(this.value, 'blog-image-preview');
             });
             
-            document.getElementById('edit-blog-image')?.addEventListener('input', function() {
-                updateImagePreview(this.value, 'edit-blog-image-preview');
+            document.getElementById('edit-blog-image-url')?.addEventListener('input', function() {
+                updateImagePreviewFromUrl(this.value, 'edit-blog-image-preview');
             });
         }
         
-        function updateImagePreview(url, previewId) {
+        // ========== FUNCIONES PARA SUBIDA DE IMÁGENES ==========
+        function toggleImageOption(option) {
+            currentImageOption = option;
+            const uploadSection = document.getElementById('image-upload-section');
+            const urlSection = document.getElementById('image-url-section');
+            const buttons = document.querySelectorAll('#modal-add-tour .image-option-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (option === 'upload') {
+                uploadSection.style.display = 'block';
+                urlSection.style.display = 'none';
+            } else {
+                uploadSection.style.display = 'none';
+                urlSection.style.display = 'block';
+            }
+        }
+        
+        function toggleEditImageOption(option) {
+            currentEditImageOption = option;
+            const uploadSection = document.getElementById('edit-image-upload-section');
+            const urlSection = document.getElementById('edit-image-url-section');
+            const buttons = document.querySelectorAll('#modal-edit-tour .image-option-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (option === 'upload') {
+                uploadSection.style.display = 'block';
+                urlSection.style.display = 'none';
+            } else {
+                uploadSection.style.display = 'none';
+                urlSection.style.display = 'block';
+            }
+        }
+        
+        function toggleBlogImageOption(option) {
+            currentBlogImageOption = option;
+            const uploadSection = document.getElementById('blog-image-upload-section');
+            const urlSection = document.getElementById('blog-image-url-section');
+            const buttons = document.querySelectorAll('#modal-add-blog .image-option-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (option === 'upload') {
+                uploadSection.style.display = 'block';
+                urlSection.style.display = 'none';
+            } else {
+                uploadSection.style.display = 'none';
+                urlSection.style.display = 'block';
+            }
+        }
+        
+        function toggleEditBlogImageOption(option) {
+            currentEditBlogImageOption = option;
+            const uploadSection = document.getElementById('edit-blog-image-upload-section');
+            const urlSection = document.getElementById('edit-blog-image-url-section');
+            const buttons = document.querySelectorAll('#modal-edit-blog .image-option-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (option === 'upload') {
+                uploadSection.style.display = 'block';
+                urlSection.style.display = 'none';
+            } else {
+                uploadSection.style.display = 'none';
+                urlSection.style.display = 'block';
+            }
+        }
+        
+        function handleImageUpload(event, previewId, dataInputId, progressId, progressFillId, statusId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validar tamaño (5MB máximo)
+            if (file.size > 5 * 1024 * 1024) {
+                showAlert('La imagen es demasiado grande. El tamaño máximo es 5MB.', 'error');
+                return;
+            }
+            
+            // Validar tipo
+            if (!file.type.match('image.*')) {
+                showAlert('Por favor, selecciona una imagen válida (JPEG, PNG, GIF).', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            const preview = document.getElementById(previewId);
+            const dataInput = document.getElementById(dataInputId);
+            const progressElement = document.getElementById(progressId);
+            const progressFill = document.getElementById(progressFillId);
+            const statusElement = document.getElementById(statusId);
+            
+            // Mostrar barra de progreso
+            progressElement.style.display = 'block';
+            progressFill.style.width = '0%';
+            statusElement.textContent = '0%';
+            
+            reader.onloadstart = function() {
+                progressFill.style.width = '10%';
+                statusElement.textContent = '10%';
+            };
+            
+            reader.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const percentLoaded = Math.round((e.loaded / e.total) * 100);
+                    progressFill.style.width = percentLoaded + '%';
+                    statusElement.textContent = percentLoaded + '%';
+                }
+            };
+            
+            reader.onload = function(e) {
+                progressFill.style.width = '100%';
+                statusElement.textContent = '100%';
+                
+                // Mostrar vista previa
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                
+                // Guardar datos de la imagen
+                dataInput.value = e.target.result;
+                
+                // Ocultar barra de progreso después de un momento
+                setTimeout(() => {
+                    progressElement.style.display = 'none';
+                }, 1000);
+            };
+            
+            reader.onerror = function() {
+                showAlert('Error al cargar la imagen.', 'error');
+                progressElement.style.display = 'none';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        function updateImagePreviewFromUrl(url, previewId) {
             const preview = document.getElementById(previewId);
             if (url && isValidUrl(url)) {
                 preview.src = url;
@@ -1886,6 +2240,9 @@
             document.getElementById('admin-user-role').textContent = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
             document.getElementById('admin-user-avatar').textContent = (currentUser.nombre?.charAt(0) || 'A').toUpperCase();
             document.getElementById('admin-subtitle').textContent = `Bienvenido, ${currentUser.nombre}`;
+            
+            // Establecer autor por defecto en formularios de blog
+            document.getElementById('blog-author').value = currentUser.nombre || 'Administrador';
         }
         
         function initUserMenu() {
@@ -1989,6 +2346,23 @@
             if (modal) {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
+                
+                // Resetear formularios y vistas previas
+                resetModalForms(modalId);
+            }
+        }
+        
+        function resetModalForms(modalId) {
+            if (modalId === 'modal-add-blog') {
+                document.getElementById('blog-title').value = '';
+                document.getElementById('blog-author').value = currentUser?.nombre || 'Administrador';
+                document.getElementById('blog-excerpt').value = '';
+                document.getElementById('blog-image-url').value = '';
+                document.getElementById('blog-content-textarea').value = '';
+                document.getElementById('blog-published').checked = true;
+                document.getElementById('blog-image-preview').style.display = 'none';
+                document.getElementById('blog-image-data').value = '';
+                document.getElementById('blog-upload-progress').style.display = 'none';
             }
         }
         
@@ -2235,7 +2609,793 @@
             showAlert(info, 'info');
         }
         
-        // ========== USUARIOS ==========
+        // ========== TOURS ==========
+        async function loadTours() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tours`);
+                
+                if (response.ok) {
+                    toursData = await response.json();
+                    renderToursTable(toursData);
+                } else {
+                    throw new Error('Error cargando tours');
+                }
+            } catch (error) {
+                console.error('Error cargando tours:', error);
+                showAlert('Error cargando tours', 'error');
+                renderEmptyToursTable();
+            }
+        }
+        
+        function renderToursTable(tours) {
+            const tbody = document.getElementById('tours-table-body');
+            if (!tbody) return;
+            
+            if (!tours || tours.length === 0) {
+                renderEmptyToursTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            tours.forEach(tour => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${tour.id}</td>
+                    <td><strong>${tour.nombre}</strong></td>
+                    <td>${tour.descripcion?.substring(0, 50)}${tour.descripcion?.length > 50 ? '...' : ''}</td>
+                    <td>$${tour.precio?.toFixed(2)}</td>
+                    <td>${tour.capacidad}</td>
+                    <td><span class="status-badge ${tour.disponible ? 'status-active' : 'status-inactive'}">${tour.disponible ? 'Disponible' : 'No disponible'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-edit" onclick="editTour(${tour.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteTour(${tour.id}, '${tour.nombre}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyToursTable() {
+            const tbody = document.getElementById('tours-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-signpost"></i>
+                        <h3>No hay tours disponibles</h3>
+                        <p>Agrega el primer tour</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function showAddTourModal() {
+            document.getElementById('add-tour-alert').style.display = 'none';
+            document.getElementById('add-tour-form').reset();
+            document.getElementById('tour-image-preview').style.display = 'none';
+            document.getElementById('tour-image-data').value = '';
+            document.getElementById('new-tour-image-url').value = '';
+            document.getElementById('tour-upload-progress').style.display = 'none';
+            
+            // Resetear opciones de imagen
+            currentImageOption = 'upload';
+            const uploadSection = document.getElementById('image-upload-section');
+            const urlSection = document.getElementById('image-url-section');
+            const buttons = document.querySelectorAll('#modal-add-tour .image-option-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons[0].classList.add('active');
+            uploadSection.style.display = 'block';
+            urlSection.style.display = 'none';
+            
+            openModal('modal-add-tour');
+        }
+        
+        async function addNewTour() {
+            const name = document.getElementById('new-tour-name').value.trim();
+            const desc = document.getElementById('new-tour-desc').value.trim();
+            const price = parseFloat(document.getElementById('new-tour-price').value);
+            const capacity = parseInt(document.getElementById('new-tour-capacity').value);
+            const duration = document.getElementById('new-tour-duration').value.trim();
+            const available = document.getElementById('new-tour-available').value === 'true';
+            
+            if (!name || !desc || !price || !capacity || !duration) {
+                showFormAlert('add-tour-alert', 'Todos los campos son obligatorios', 'error');
+                return;
+            }
+            
+            if (price <= 0) {
+                showFormAlert('add-tour-alert', 'El precio debe ser mayor a 0', 'error');
+                return;
+            }
+            
+            if (capacity <= 0) {
+                showFormAlert('add-tour-alert', 'La capacidad debe ser mayor a 0', 'error');
+                return;
+            }
+            
+            // Manejar la imagen
+            let imagen_url = null;
+            if (currentImageOption === 'upload') {
+                const imageData = document.getElementById('tour-image-data').value;
+                if (imageData) {
+                    // Para simplicidad, usaremos el data URL directamente
+                    // En producción, deberías subir la imagen al servidor
+                    imagen_url = imageData;
+                }
+            } else {
+                const imageUrl = document.getElementById('new-tour-image-url').value.trim();
+                if (imageUrl) {
+                    imagen_url = imageUrl;
+                }
+            }
+            
+            const tourData = {
+                nombre: name,
+                descripcion: desc,
+                precio: price,
+                capacidad: capacity,
+                duracion: duration,
+                disponible: available,
+                imagen_url: imagen_url
+            };
+            
+            showFormAlert('add-tour-alert', 'Creando tour...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/tours`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(tourData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('add-tour-alert', 'Tour creado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-add-tour');
+                        loadTours();
+                        loadDashboardData();
+                    }, 1500);
+                } else {
+                    showFormAlert('add-tour-alert', data.error || 'Error al crear tour', 'error');
+                }
+            } catch (error) {
+                console.error('Error creando tour:', error);
+                showFormAlert('add-tour-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function editTour(tourId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tours/${tourId}`);
+                
+                if (response.ok) {
+                    const tour = await response.json();
+                    
+                    document.getElementById('edit-tour-id').value = tour.id;
+                    document.getElementById('edit-tour-name').value = tour.nombre;
+                    document.getElementById('edit-tour-desc').value = tour.descripcion;
+                    document.getElementById('edit-tour-price').value = tour.precio;
+                    document.getElementById('edit-tour-capacity').value = tour.capacidad;
+                    document.getElementById('edit-tour-duration').value = tour.duracion || '';
+                    document.getElementById('edit-tour-available').value = tour.disponible ? 'true' : 'false';
+                    document.getElementById('edit-tour-image-url').value = tour.imagen_url || '';
+                    
+                    if (tour.imagen_url) {
+                        document.getElementById('edit-tour-image-preview').src = tour.imagen_url;
+                        document.getElementById('edit-tour-image-preview').style.display = 'block';
+                        
+                        // Si es una URL, mostrar esa opción
+                        if (tour.imagen_url.startsWith('http')) {
+                            toggleEditImageOption('url');
+                            document.getElementById('edit-tour-image-url').value = tour.imagen_url;
+                        } else {
+                            toggleEditImageOption('upload');
+                            document.getElementById('edit-tour-image-data').value = tour.imagen_url;
+                        }
+                    } else {
+                        document.getElementById('edit-tour-image-preview').style.display = 'none';
+                    }
+                    
+                    document.getElementById('edit-tour-alert').style.display = 'none';
+                    openModal('modal-edit-tour');
+                }
+            } catch (error) {
+                console.error('Error cargando tour:', error);
+                showAlert('Error cargando datos del tour', 'error');
+            }
+        }
+        
+        async function saveTourEdit() {
+            const id = document.getElementById('edit-tour-id').value;
+            const name = document.getElementById('edit-tour-name').value.trim();
+            const desc = document.getElementById('edit-tour-desc').value.trim();
+            const price = parseFloat(document.getElementById('edit-tour-price').value);
+            const capacity = parseInt(document.getElementById('edit-tour-capacity').value);
+            const duration = document.getElementById('edit-tour-duration').value.trim();
+            const available = document.getElementById('edit-tour-available').value === 'true';
+            
+            if (!name || !desc || !price || !capacity || !duration) {
+                showFormAlert('edit-tour-alert', 'Todos los campos son obligatorios', 'error');
+                return;
+            }
+            
+            // Manejar la imagen
+            let imagen_url = null;
+            if (currentEditImageOption === 'upload') {
+                const imageData = document.getElementById('edit-tour-image-data').value;
+                if (imageData) {
+                    imagen_url = imageData;
+                }
+            } else {
+                const imageUrl = document.getElementById('edit-tour-image-url').value.trim();
+                if (imageUrl) {
+                    imagen_url = imageUrl;
+                }
+            }
+            
+            const tourData = {
+                nombre: name,
+                descripcion: desc,
+                precio: price,
+                capacidad: capacity,
+                duracion: duration,
+                disponible: available,
+                imagen_url: imagen_url
+            };
+            
+            showFormAlert('edit-tour-alert', 'Actualizando tour...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/tours/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(tourData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-tour-alert', 'Tour actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-tour');
+                        loadTours();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-tour-alert', data.error || 'Error al actualizar tour', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando tour:', error);
+                showFormAlert('edit-tour-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function deleteTour(tourId, tourName) {
+            confirmAction(`¿Eliminar el tour "${tourName}"?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/admin/tours/${tourId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Tour eliminado correctamente', 'success');
+                        loadTours();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar tour', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando tour:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
+            });
+        }
+        
+        // ========== BLOG - FUNCIONALIDAD COMPLETA ==========
+        async function loadBlogPosts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blog`);
+                
+                if (response.ok) {
+                    allBlogPosts = await response.json();
+                    filterBlogPosts();
+                } else {
+                    throw new Error('Error cargando posts del blog');
+                }
+            } catch (error) {
+                console.error('Error cargando blog:', error);
+                showAlert('Error cargando artículos del blog', 'error');
+                renderEmptyBlogTable();
+            }
+        }
+        
+        function filterBlogPosts() {
+            const categoryFilter = document.getElementById('blog-filter-category').value;
+            const statusFilter = document.getElementById('blog-filter-status').value;
+            
+            let filteredPosts = allBlogPosts;
+            
+            if (categoryFilter !== 'all') {
+                filteredPosts = filteredPosts.filter(post => post.categoria === categoryFilter);
+            }
+            
+            if (statusFilter !== 'all') {
+                if (statusFilter === 'published') {
+                    filteredPosts = filteredPosts.filter(post => post.publicado);
+                } else if (statusFilter === 'draft') {
+                    filteredPosts = filteredPosts.filter(post => !post.publicado);
+                }
+            }
+            
+            blogPostsData = filteredPosts;
+            renderBlogTable(filteredPosts);
+        }
+        
+        function renderBlogTable(posts) {
+            const tbody = document.getElementById('blog-table-body');
+            if (!tbody) return;
+            
+            if (!posts || posts.length === 0) {
+                renderEmptyBlogTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            posts.forEach(post => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${post.titulo}</strong></td>
+                    <td><span class="status-badge status-pending">${post.categoria || 'General'}</span></td>
+                    <td>${post.autor || 'Anónimo'}</td>
+                    <td>${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td>${post.vistas || 0}</td>
+                    <td><span class="status-badge ${post.publicado ? 'status-active' : 'status-pending'}">${post.publicado ? 'Publicado' : 'Borrador'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-view" onclick="previewBlogPost(${post.id})"><i class="bi bi-eye"></i></button>
+                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteBlogPost(${post.id}, '${post.titulo}')"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyBlogTable() {
+            const tbody = document.getElementById('blog-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-newspaper"></i>
+                        <h3>No hay artículos de blog</h3>
+                        <p>Crea el primer artículo</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function showAddBlogPostModal() {
+            document.getElementById('add-blog-alert').style.display = 'none';
+            document.getElementById('blog-title').value = '';
+            document.getElementById('blog-category').value = 'noticias';
+            document.getElementById('blog-author').value = currentUser?.nombre || 'Administrador';
+            document.getElementById('blog-excerpt').value = '';
+            document.getElementById('blog-image-url').value = '';
+            document.getElementById('blog-content-textarea').value = '';
+            document.getElementById('blog-published').checked = true;
+            document.getElementById('blog-image-preview').style.display = 'none';
+            document.getElementById('blog-image-data').value = '';
+            document.getElementById('blog-upload-progress').style.display = 'none';
+            
+            // Resetear opciones de imagen
+            currentBlogImageOption = 'upload';
+            const uploadSection = document.getElementById('blog-image-upload-section');
+            const urlSection = document.getElementById('blog-image-url-section');
+            const buttons = document.querySelectorAll('#modal-add-blog .image-option-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons[0].classList.add('active');
+            uploadSection.style.display = 'block';
+            urlSection.style.display = 'none';
+            
+            openModal('modal-add-blog');
+        }
+        
+        async function saveBlogPost() {
+            const title = document.getElementById('blog-title').value.trim();
+            const category = document.getElementById('blog-category').value;
+            const author = document.getElementById('blog-author').value.trim();
+            const excerpt = document.getElementById('blog-excerpt').value.trim();
+            const content = document.getElementById('blog-content-textarea').value.trim();
+            const published = document.getElementById('blog-published').checked;
+            
+            if (!title) {
+                showFormAlert('add-blog-alert', 'El título es obligatorio', 'error');
+                return;
+            }
+            
+            if (!author) {
+                showFormAlert('add-blog-alert', 'El autor es obligatorio', 'error');
+                return;
+            }
+            
+            if (!content) {
+                showFormAlert('add-blog-alert', 'El contenido es obligatorio', 'error');
+                return;
+            }
+            
+            // Manejar la imagen
+            let imagen_url = null;
+            if (currentBlogImageOption === 'upload') {
+                const imageData = document.getElementById('blog-image-data').value;
+                if (imageData) {
+                    imagen_url = imageData;
+                }
+            } else {
+                const imageUrl = document.getElementById('blog-image-url').value.trim();
+                if (imageUrl) {
+                    imagen_url = imageUrl;
+                }
+            }
+            
+            const blogData = {
+                titulo: title,
+                contenido: content,
+                excerpt: excerpt,
+                categoria: category,
+                autor: author,
+                imagen_url: imagen_url,
+                publicado: published
+            };
+            
+            showFormAlert('add-blog-alert', 'Publicando artículo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/blog`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.blog) {
+                    showFormAlert('add-blog-alert', 'Artículo publicado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-add-blog');
+                        loadBlogPosts();
+                        loadDashboardData();
+                    }, 1500);
+                } else {
+                    showFormAlert('add-blog-alert', data.error || 'Error al publicar artículo', 'error');
+                }
+            } catch (error) {
+                console.error('Error publicando artículo:', error);
+                showFormAlert('add-blog-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function editBlogPost(postId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blog/${postId}`);
+                
+                if (response.ok) {
+                    const post = await response.json();
+                    
+                    document.getElementById('edit-blog-id').value = post.id;
+                    document.getElementById('edit-blog-title').value = post.titulo;
+                    document.getElementById('edit-blog-category').value = post.categoria || 'noticias';
+                    document.getElementById('edit-blog-author').value = post.autor || '';
+                    document.getElementById('edit-blog-excerpt').value = post.excerpt || '';
+                    document.getElementById('edit-blog-content-textarea').value = post.contenido || '';
+                    document.getElementById('edit-blog-published').checked = post.publicado || false;
+                    document.getElementById('edit-blog-image-url').value = post.imagen_url || '';
+                    
+                    if (post.imagen_url) {
+                        document.getElementById('edit-blog-image-preview').src = post.imagen_url;
+                        document.getElementById('edit-blog-image-preview').style.display = 'block';
+                        
+                        // Si es una URL, mostrar esa opción
+                        if (post.imagen_url.startsWith('http')) {
+                            toggleEditBlogImageOption('url');
+                            document.getElementById('edit-blog-image-url').value = post.imagen_url;
+                        } else {
+                            toggleEditBlogImageOption('upload');
+                            document.getElementById('edit-blog-image-data').value = post.imagen_url;
+                        }
+                    } else {
+                        document.getElementById('edit-blog-image-preview').style.display = 'none';
+                    }
+                    
+                    document.getElementById('edit-blog-alert').style.display = 'none';
+                    openModal('modal-edit-blog');
+                }
+            } catch (error) {
+                console.error('Error cargando artículo:', error);
+                showAlert('Error cargando datos del artículo', 'error');
+            }
+        }
+        
+        async function saveBlogEdit() {
+            const id = document.getElementById('edit-blog-id').value;
+            const title = document.getElementById('edit-blog-title').value.trim();
+            const category = document.getElementById('edit-blog-category').value;
+            const author = document.getElementById('edit-blog-author').value.trim();
+            const excerpt = document.getElementById('edit-blog-excerpt').value.trim();
+            const content = document.getElementById('edit-blog-content-textarea').value.trim();
+            const published = document.getElementById('edit-blog-published').checked;
+            
+            if (!title) {
+                showFormAlert('edit-blog-alert', 'El título es obligatorio', 'error');
+                return;
+            }
+            
+            if (!author) {
+                showFormAlert('edit-blog-alert', 'El autor es obligatorio', 'error');
+                return;
+            }
+            
+            if (!content) {
+                showFormAlert('edit-blog-alert', 'El contenido es obligatorio', 'error');
+                return;
+            }
+            
+            // Manejar la imagen
+            let imagen_url = null;
+            if (currentEditBlogImageOption === 'upload') {
+                const imageData = document.getElementById('edit-blog-image-data').value;
+                if (imageData) {
+                    imagen_url = imageData;
+                }
+            } else {
+                const imageUrl = document.getElementById('edit-blog-image-url').value.trim();
+                if (imageUrl) {
+                    imagen_url = imageUrl;
+                }
+            }
+            
+            const blogData = {
+                titulo: title,
+                contenido: content,
+                excerpt: excerpt,
+                categoria: category,
+                autor: author,
+                imagen_url: imagen_url,
+                publicado: published
+            };
+            
+            showFormAlert('edit-blog-alert', 'Actualizando artículo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/blog/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-blog-alert', 'Artículo actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-blog');
+                        loadBlogPosts();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-blog-alert', data.error || 'Error al actualizar artículo', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando artículo:', error);
+                showFormAlert('edit-blog-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function previewBlogPost(postId) {
+            const post = blogPostsData.find(p => p.id === postId);
+            if (!post) {
+                showAlert('Artículo no encontrado', 'error');
+                return;
+            }
+            
+            const previewContent = document.getElementById('blog-preview-content');
+            previewContent.innerHTML = `
+                <div class="blog-preview">
+                    <h1>${post.titulo}</h1>
+                    <div class="meta">
+                        <strong>Categoría:</strong> ${post.categoria || 'General'} |
+                        <strong>Autor:</strong> ${post.autor || 'Anónimo'} |
+                        <strong>Fecha:</strong> ${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'} |
+                        <strong>Vistas:</strong> ${post.vistas || 0} |
+                        <strong>Estado:</strong> ${post.publicado ? 'Publicado' : 'Borrador'}
+                    </div>
+                    ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" style="max-width: 100%; border-radius: 8px; margin-bottom: 20px;">` : ''}
+                    ${post.excerpt ? `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-style: italic;">${post.excerpt}</div>` : ''}
+                    <div style="line-height: 1.6; font-size: 16px;">
+                        ${post.contenido ? post.contenido.replace(/\n/g, '<br>') : '<p>Contenido no disponible</p>'}
+                    </div>
+                </div>
+            `;
+            
+            openModal('modal-preview-blog');
+        }
+        
+        function deleteBlogPost(postId, postTitle) {
+            confirmAction(`¿Eliminar el artículo "${postTitle}"?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/admin/blog/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Artículo eliminado correctamente', 'success');
+                        loadBlogPosts();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar artículo', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando artículo:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
+            });
+        }
+        
+        // ========== CONFIGURACIÓN ==========
+        function loadProfile() {
+            if (!currentUser) return;
+            
+            document.getElementById('profile-name').value = currentUser.nombre || '';
+            document.getElementById('profile-email').value = currentUser.email || '';
+            document.getElementById('profile-phone').value = currentUser.telefono || '';
+            document.getElementById('profile-role').value = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+        }
+        
+        // ========== UTILIDADES ==========
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = 
+                now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        
+        function setupDemoMode() {
+            console.log('🔄 Activando modo demo...');
+            document.getElementById('status-text').textContent = 'Modo Demo (Offline)';
+            document.getElementById('backend-status').textContent = 'Modo Demo';
+            document.getElementById('backend-status').style.color = '#f39c12';
+            showAlert('Usando modo demo. Algunas funcionalidades estarán limitadas.', 'warning');
+        }
+        
+        // Funciones placeholder para funcionalidades futuras
+        function exportUsersToCSV() {
+            showAlert('Funcionalidad en desarrollo - Exportar a CSV', 'info');
+        }
+        
+        function exportBookingsToCSV() {
+            showAlert('Funcionalidad en desarrollo - Exportar a CSV', 'info');
+        }
+        
+        function generateDashboardReport() {
+            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
+        }
+        
+        function generateUsersReport() {
+            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
+        }
+        
+        function generateBookingsReport() {
+            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
+        }
+        
+        async function updateProfile() {
+            const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const phone = document.getElementById('profile-phone').value.trim();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            
+            if (!name || !email) {
+                showFormAlert('profile-form-alert', 'Nombre y email son obligatorios', 'error');
+                return;
+            }
+            
+            const profileData = {
+                nombre: name,
+                email: email,
+                telefono: phone
+            };
+            
+            if (currentPassword && newPassword) {
+                if (newPassword.length < 6) {
+                    showFormAlert('profile-form-alert', 'La nueva contraseña debe tener al menos 6 caracteres', 'error');
+                    return;
+                }
+                profileData.current_password = currentPassword;
+                profileData.new_password = newPassword;
+            }
+            
+            showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('profile-form-alert', 'Perfil actualizado correctamente', 'success');
+                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+                    currentUser = data.user;
+                    updateUserUI();
+                    
+                    setTimeout(() => {
+                        document.getElementById('profile-form-alert').style.display = 'none';
+                        document.getElementById('current-password').value = '';
+                        document.getElementById('new-password').value = '';
+                    }, 2000);
+                } else {
+                    showFormAlert('profile-form-alert', data.error || 'Error al actualizar perfil', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando perfil:', error);
+                showFormAlert('profile-form-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function saveSystemSettings() {
+            const autoRefresh = document.getElementById('auto-refresh').value;
+            const notifications = document.getElementById('notifications-enabled').checked;
+            
+            localStorage.setItem('admin_auto_refresh', autoRefresh);
+            localStorage.setItem('admin_notifications', notifications);
+            
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            if (autoRefresh > 0) {
+                autoRefreshInterval = setInterval(loadDashboardData, autoRefresh * 1000);
+            }
+            
+            showAlert('Configuración guardada correctamente', 'success');
+        }
+        
+        // Funciones para usuarios y reservas (mantenidas del código anterior)
         async function loadUsers() {
             if (!isAdmin) {
                 showAlert('No tienes permisos de administrador', 'error');
@@ -2479,562 +3639,6 @@
             });
         }
         
-        // ========== TOURS ==========
-        async function loadTours() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tours`);
-                
-                if (response.ok) {
-                    toursData = await response.json();
-                    renderToursTable(toursData);
-                } else {
-                    throw new Error('Error cargando tours');
-                }
-            } catch (error) {
-                console.error('Error cargando tours:', error);
-                showAlert('Error cargando tours', 'error');
-                renderEmptyToursTable();
-            }
-        }
-        
-        function renderToursTable(tours) {
-            const tbody = document.getElementById('tours-table-body');
-            if (!tbody) return;
-            
-            if (!tours || tours.length === 0) {
-                renderEmptyToursTable();
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            tours.forEach(tour => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${tour.id}</td>
-                    <td><strong>${tour.nombre}</strong></td>
-                    <td>${tour.descripcion?.substring(0, 50)}${tour.descripcion?.length > 50 ? '...' : ''}</td>
-                    <td>$${tour.precio?.toFixed(2)}</td>
-                    <td>${tour.capacidad}</td>
-                    <td><span class="status-badge ${tour.disponible ? 'status-active' : 'status-inactive'}">${tour.disponible ? 'Disponible' : 'No disponible'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="editTour(${tour.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteTour(${tour.id}, '${tour.nombre}')"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function renderEmptyToursTable() {
-            const tbody = document.getElementById('tours-table-body');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-state">
-                        <i class="bi bi-signpost"></i>
-                        <h3>No hay tours disponibles</h3>
-                        <p>Agrega el primer tour</p>
-                    </td>
-                </tr>
-            `;
-        }
-        
-        function showAddTourModal() {
-            document.getElementById('add-tour-alert').style.display = 'none';
-            document.getElementById('add-tour-form').reset();
-            document.getElementById('tour-image-preview').style.display = 'none';
-            openModal('modal-add-tour');
-        }
-        
-        async function addNewTour() {
-            const name = document.getElementById('new-tour-name').value.trim();
-            const desc = document.getElementById('new-tour-desc').value.trim();
-            const price = parseFloat(document.getElementById('new-tour-price').value);
-            const capacity = parseInt(document.getElementById('new-tour-capacity').value);
-            const duration = document.getElementById('new-tour-duration').value.trim();
-            const available = document.getElementById('new-tour-available').value === 'true';
-            const image = document.getElementById('new-tour-image').value.trim();
-            
-            if (!name || !desc || !price || !capacity || !duration) {
-                showFormAlert('add-tour-alert', 'Todos los campos excepto imagen son obligatorios', 'error');
-                return;
-            }
-            
-            if (price <= 0) {
-                showFormAlert('add-tour-alert', 'El precio debe ser mayor a 0', 'error');
-                return;
-            }
-            
-            if (capacity <= 0) {
-                showFormAlert('add-tour-alert', 'La capacidad debe ser mayor a 0', 'error');
-                return;
-            }
-            
-            const tourData = {
-                nombre: name,
-                descripcion: desc,
-                precio: price,
-                capacidad: capacity,
-                duracion: duration,
-                disponible: available,
-                imagen_url: image || null
-            };
-            
-            showFormAlert('add-tour-alert', 'Creando tour...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/tours`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(tourData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('add-tour-alert', 'Tour creado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-add-tour');
-                        loadTours();
-                        loadDashboardData();
-                    }, 1500);
-                } else {
-                    showFormAlert('add-tour-alert', data.error || 'Error al crear tour', 'error');
-                }
-            } catch (error) {
-                console.error('Error creando tour:', error);
-                showFormAlert('add-tour-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        async function editTour(tourId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tours/${tourId}`);
-                
-                if (response.ok) {
-                    const tour = await response.json();
-                    
-                    document.getElementById('edit-tour-id').value = tour.id;
-                    document.getElementById('edit-tour-name').value = tour.nombre;
-                    document.getElementById('edit-tour-desc').value = tour.descripcion;
-                    document.getElementById('edit-tour-price').value = tour.precio;
-                    document.getElementById('edit-tour-capacity').value = tour.capacidad;
-                    document.getElementById('edit-tour-duration').value = tour.duracion || '';
-                    document.getElementById('edit-tour-available').value = tour.disponible ? 'true' : 'false';
-                    document.getElementById('edit-tour-image').value = tour.imagen_url || '';
-                    
-                    if (tour.imagen_url) {
-                        document.getElementById('edit-tour-image-preview').src = tour.imagen_url;
-                        document.getElementById('edit-tour-image-preview').style.display = 'block';
-                    }
-                    
-                    document.getElementById('edit-tour-alert').style.display = 'none';
-                    openModal('modal-edit-tour');
-                }
-            } catch (error) {
-                console.error('Error cargando tour:', error);
-                showAlert('Error cargando datos del tour', 'error');
-            }
-        }
-        
-        async function saveTourEdit() {
-            const id = document.getElementById('edit-tour-id').value;
-            const name = document.getElementById('edit-tour-name').value.trim();
-            const desc = document.getElementById('edit-tour-desc').value.trim();
-            const price = parseFloat(document.getElementById('edit-tour-price').value);
-            const capacity = parseInt(document.getElementById('edit-tour-capacity').value);
-            const duration = document.getElementById('edit-tour-duration').value.trim();
-            const available = document.getElementById('edit-tour-available').value === 'true';
-            const image = document.getElementById('edit-tour-image').value.trim();
-            
-            if (!name || !desc || !price || !capacity || !duration) {
-                showFormAlert('edit-tour-alert', 'Todos los campos son obligatorios', 'error');
-                return;
-            }
-            
-            const tourData = {
-                nombre: name,
-                descripcion: desc,
-                precio: price,
-                capacidad: capacity,
-                duracion: duration,
-                disponible: available,
-                imagen_url: image || null
-            };
-            
-            showFormAlert('edit-tour-alert', 'Actualizando tour...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/tours/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(tourData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('edit-tour-alert', 'Tour actualizado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-edit-tour');
-                        loadTours();
-                    }, 1500);
-                } else {
-                    showFormAlert('edit-tour-alert', data.error || 'Error al actualizar tour', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando tour:', error);
-                showFormAlert('edit-tour-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function deleteTour(tourId, tourName) {
-            confirmAction(`¿Eliminar el tour "${tourName}"?`, async function() {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/admin/tours/${tourId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        showAlert('Tour eliminado correctamente', 'success');
-                        loadTours();
-                        loadDashboardData();
-                    } else {
-                        showAlert(data.error || 'Error al eliminar tour', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error eliminando tour:', error);
-                    showAlert('Error de conexión con el servidor', 'error');
-                }
-            });
-        }
-        
-        // ========== BLOG - FUNCIONALIDAD COMPLETA ==========
-        async function loadBlogPosts() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/blog`);
-                
-                if (response.ok) {
-                    allBlogPosts = await response.json();
-                    filterBlogPosts();
-                } else {
-                    throw new Error('Error cargando posts del blog');
-                }
-            } catch (error) {
-                console.error('Error cargando blog:', error);
-                showAlert('Error cargando artículos del blog', 'error');
-                renderEmptyBlogTable();
-            }
-        }
-        
-        function filterBlogPosts() {
-            const categoryFilter = document.getElementById('blog-filter-category').value;
-            const statusFilter = document.getElementById('blog-filter-status').value;
-            
-            let filteredPosts = allBlogPosts;
-            
-            if (categoryFilter !== 'all') {
-                filteredPosts = filteredPosts.filter(post => post.categoria === categoryFilter);
-            }
-            
-            if (statusFilter !== 'all') {
-                if (statusFilter === 'published') {
-                    filteredPosts = filteredPosts.filter(post => post.publicado);
-                } else if (statusFilter === 'draft') {
-                    filteredPosts = filteredPosts.filter(post => !post.publicado);
-                }
-            }
-            
-            blogPostsData = filteredPosts;
-            renderBlogTable(filteredPosts);
-        }
-        
-        function renderBlogTable(posts) {
-            const tbody = document.getElementById('blog-table-body');
-            if (!tbody) return;
-            
-            if (!posts || posts.length === 0) {
-                renderEmptyBlogTable();
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            posts.forEach(post => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${post.titulo}</strong></td>
-                    <td><span class="status-badge status-pending">${post.categoria || 'General'}</span></td>
-                    <td>${post.autor || 'Anónimo'}</td>
-                    <td>${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'}</td>
-                    <td>${post.vistas || 0}</td>
-                    <td><span class="status-badge ${post.publicado ? 'status-active' : 'status-pending'}">${post.publicado ? 'Publicado' : 'Borrador'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-view" onclick="previewBlogPost(${post.id})"><i class="bi bi-eye"></i></button>
-                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteBlogPost(${post.id}, '${post.titulo}')"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function renderEmptyBlogTable() {
-            const tbody = document.getElementById('blog-table-body');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-state">
-                        <i class="bi bi-newspaper"></i>
-                        <h3>No hay artículos de blog</h3>
-                        <p>Crea el primer artículo</p>
-                    </td>
-                </tr>
-            `;
-        }
-        
-        function showAddBlogPostModal() {
-            document.getElementById('add-blog-alert').style.display = 'none';
-            document.getElementById('blog-title').value = '';
-            document.getElementById('blog-category').value = 'noticias';
-            document.getElementById('blog-author').value = currentUser?.nombre || '';
-            document.getElementById('blog-excerpt').value = '';
-            document.getElementById('blog-image').value = '';
-            document.getElementById('blog-content-textarea').value = '';
-            document.getElementById('blog-published').checked = true;
-            document.getElementById('blog-image-preview').style.display = 'none';
-            
-            openModal('modal-add-blog');
-        }
-        
-        async function saveBlogPost() {
-            const title = document.getElementById('blog-title').value.trim();
-            const category = document.getElementById('blog-category').value;
-            const author = document.getElementById('blog-author').value.trim();
-            const excerpt = document.getElementById('blog-excerpt').value.trim();
-            const image = document.getElementById('blog-image').value.trim();
-            const content = document.getElementById('blog-content-textarea').value.trim();
-            const published = document.getElementById('blog-published').checked;
-            
-            if (!title) {
-                showFormAlert('add-blog-alert', 'El título es obligatorio', 'error');
-                return;
-            }
-            
-            if (!author) {
-                showFormAlert('add-blog-alert', 'El autor es obligatorio', 'error');
-                return;
-            }
-            
-            if (!content) {
-                showFormAlert('add-blog-alert', 'El contenido es obligatorio', 'error');
-                return;
-            }
-            
-            const blogData = {
-                titulo: title,
-                contenido: content,
-                excerpt: excerpt,
-                categoria: category,
-                autor: author,
-                imagen_url: image || null,
-                publicado: published
-            };
-            
-            showFormAlert('add-blog-alert', 'Publicando artículo...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/blog`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(blogData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success && data.blog) {
-                    showFormAlert('add-blog-alert', 'Artículo publicado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-add-blog');
-                        loadBlogPosts();
-                        loadDashboardData();
-                    }, 1500);
-                } else {
-                    showFormAlert('add-blog-alert', data.error || 'Error al publicar artículo', 'error');
-                }
-            } catch (error) {
-                console.error('Error publicando artículo:', error);
-                showFormAlert('add-blog-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        async function editBlogPost(postId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/blog/${postId}`);
-                
-                if (response.ok) {
-                    const post = await response.json();
-                    
-                    document.getElementById('edit-blog-id').value = post.id;
-                    document.getElementById('edit-blog-title').value = post.titulo;
-                    document.getElementById('edit-blog-category').value = post.categoria || 'noticias';
-                    document.getElementById('edit-blog-author').value = post.autor || '';
-                    document.getElementById('edit-blog-excerpt').value = post.excerpt || '';
-                    document.getElementById('edit-blog-image').value = post.imagen_url || '';
-                    document.getElementById('edit-blog-content-textarea').value = post.contenido || '';
-                    document.getElementById('edit-blog-published').checked = post.publicado || false;
-                    
-                    if (post.imagen_url) {
-                        document.getElementById('edit-blog-image-preview').src = post.imagen_url;
-                        document.getElementById('edit-blog-image-preview').style.display = 'block';
-                    }
-                    
-                    document.getElementById('edit-blog-alert').style.display = 'none';
-                    openModal('modal-edit-blog');
-                }
-            } catch (error) {
-                console.error('Error cargando artículo:', error);
-                showAlert('Error cargando datos del artículo', 'error');
-            }
-        }
-        
-        async function saveBlogEdit() {
-            const id = document.getElementById('edit-blog-id').value;
-            const title = document.getElementById('edit-blog-title').value.trim();
-            const category = document.getElementById('edit-blog-category').value;
-            const author = document.getElementById('edit-blog-author').value.trim();
-            const excerpt = document.getElementById('edit-blog-excerpt').value.trim();
-            const image = document.getElementById('edit-blog-image').value.trim();
-            const content = document.getElementById('edit-blog-content-textarea').value.trim();
-            const published = document.getElementById('edit-blog-published').checked;
-            
-            if (!title) {
-                showFormAlert('edit-blog-alert', 'El título es obligatorio', 'error');
-                return;
-            }
-            
-            if (!author) {
-                showFormAlert('edit-blog-alert', 'El autor es obligatorio', 'error');
-                return;
-            }
-            
-            if (!content) {
-                showFormAlert('edit-blog-alert', 'El contenido es obligatorio', 'error');
-                return;
-            }
-            
-            const blogData = {
-                titulo: title,
-                contenido: content,
-                excerpt: excerpt,
-                categoria: category,
-                autor: author,
-                imagen_url: image || null,
-                publicado: published
-            };
-            
-            showFormAlert('edit-blog-alert', 'Actualizando artículo...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/blog/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(blogData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('edit-blog-alert', 'Artículo actualizado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-edit-blog');
-                        loadBlogPosts();
-                    }, 1500);
-                } else {
-                    showFormAlert('edit-blog-alert', data.error || 'Error al actualizar artículo', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando artículo:', error);
-                showFormAlert('edit-blog-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function previewBlogPost(postId) {
-            const post = blogPostsData.find(p => p.id === postId);
-            if (!post) {
-                showAlert('Artículo no encontrado', 'error');
-                return;
-            }
-            
-            const previewContent = document.getElementById('blog-preview-content');
-            previewContent.innerHTML = `
-                <div class="blog-preview">
-                    <h1>${post.titulo}</h1>
-                    <div class="meta">
-                        <strong>Categoría:</strong> ${post.categoria || 'General'} |
-                        <strong>Autor:</strong> ${post.autor || 'Anónimo'} |
-                        <strong>Fecha:</strong> ${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'} |
-                        <strong>Vistas:</strong> ${post.vistas || 0} |
-                        <strong>Estado:</strong> ${post.publicado ? 'Publicado' : 'Borrador'}
-                    </div>
-                    ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" style="max-width: 100%; border-radius: 8px; margin-bottom: 20px;">` : ''}
-                    ${post.excerpt ? `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-style: italic;">${post.excerpt}</div>` : ''}
-                    <div style="line-height: 1.6; font-size: 16px;">
-                        ${post.contenido ? post.contenido.replace(/\n/g, '<br>') : '<p>Contenido no disponible</p>'}
-                    </div>
-                </div>
-            `;
-            
-            openModal('modal-preview-blog');
-        }
-        
-        function deleteBlogPost(postId, postTitle) {
-            confirmAction(`¿Eliminar el artículo "${postTitle}"?`, async function() {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/admin/blog/${postId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        showAlert('Artículo eliminado correctamente', 'success');
-                        loadBlogPosts();
-                        loadDashboardData();
-                    } else {
-                        showAlert(data.error || 'Error al eliminar artículo', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error eliminando artículo:', error);
-                    showAlert('Error de conexión con el servidor', 'error');
-                }
-            });
-        }
-        
-        // ========== RESERVAS ==========
         async function loadBookings() {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/user/bookings`, {
@@ -3098,133 +3702,6 @@
                     </td>
                 </tr>
             `;
-        }
-        
-        // ========== CONFIGURACIÓN ==========
-        function loadProfile() {
-            if (!currentUser) return;
-            
-            document.getElementById('profile-name').value = currentUser.nombre || '';
-            document.getElementById('profile-email').value = currentUser.email || '';
-            document.getElementById('profile-phone').value = currentUser.telefono || '';
-            document.getElementById('profile-role').value = currentUser.rol === 'admin' ? 'Administrador' : 'Usuario';
-            document.getElementById('current-password').value = '';
-            document.getElementById('new-password').value = '';
-        }
-        
-        // ========== UTILIDADES ==========
-        function updateCurrentTime() {
-            const now = new Date();
-            document.getElementById('current-time').textContent = 
-                now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        }
-        
-        function setupDemoMode() {
-            console.log('🔄 Activando modo demo...');
-            document.getElementById('status-text').textContent = 'Modo Demo (Offline)';
-            document.getElementById('backend-status').textContent = 'Modo Demo';
-            document.getElementById('backend-status').style.color = '#f39c12';
-            showAlert('Usando modo demo. Algunas funcionalidades estarán limitadas.', 'warning');
-        }
-        
-        // Funciones placeholder para funcionalidades futuras
-        function exportUsersToCSV() {
-            showAlert('Funcionalidad en desarrollo - Exportar a CSV', 'info');
-        }
-        
-        function exportBookingsToCSV() {
-            showAlert('Funcionalidad en desarrollo - Exportar a CSV', 'info');
-        }
-        
-        function generateDashboardReport() {
-            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
-        }
-        
-        function generateUsersReport() {
-            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
-        }
-        
-        function generateBookingsReport() {
-            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
-        }
-        
-        async function updateProfile() {
-            const name = document.getElementById('profile-name').value.trim();
-            const email = document.getElementById('profile-email').value.trim();
-            const phone = document.getElementById('profile-phone').value.trim();
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            
-            if (!name || !email) {
-                showFormAlert('profile-form-alert', 'Nombre y email son obligatorios', 'error');
-                return;
-            }
-            
-            const profileData = {
-                nombre: name,
-                email: email,
-                telefono: phone
-            };
-            
-            if (currentPassword && newPassword) {
-                if (newPassword.length < 6) {
-                    showFormAlert('profile-form-alert', 'La nueva contraseña debe tener al menos 6 caracteres', 'error');
-                    return;
-                }
-                profileData.current_password = currentPassword;
-                profileData.new_password = newPassword;
-            }
-            
-            showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(profileData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('profile-form-alert', 'Perfil actualizado correctamente', 'success');
-                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
-                    currentUser = data.user;
-                    updateUserUI();
-                    
-                    setTimeout(() => {
-                        document.getElementById('profile-form-alert').style.display = 'none';
-                        document.getElementById('current-password').value = '';
-                        document.getElementById('new-password').value = '';
-                    }, 2000);
-                } else {
-                    showFormAlert('profile-form-alert', data.error || 'Error al actualizar perfil', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando perfil:', error);
-                showFormAlert('profile-form-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function saveSystemSettings() {
-            const autoRefresh = document.getElementById('auto-refresh').value;
-            const notifications = document.getElementById('notifications-enabled').checked;
-            
-            localStorage.setItem('admin_auto_refresh', autoRefresh);
-            localStorage.setItem('admin_notifications', notifications);
-            
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            
-            if (autoRefresh > 0) {
-                autoRefreshInterval = setInterval(loadDashboardData, autoRefresh * 1000);
-            }
-            
-            showAlert('Configuración guardada correctamente', 'success');
         }
         
         function editBooking(bookingId) {
