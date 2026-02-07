@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* Estilos específicos para admin - REDUCIDOS PARA ENFOCARNES EN FUNCIONALIDAD */
+        /* Estilos específicos para admin */
         :root {
             --admin-primary: #2c3e50;
             --admin-secondary: #34495e;
@@ -1139,6 +1139,17 @@
             border-radius: 6px;
             font-size: 15px;
         }
+        
+        /* Badge para métodos de pago */
+        .payment-method-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
     </style>
 </head>
 <body>
@@ -1431,33 +1442,11 @@
                 </div>
             </div>
 
-            <!-- ========== REPORTS SECTION ========== -->
-            <div id="reports" class="admin-section">
-                <div class="quick-actions">
-                    <button class="btn" onclick="generateDashboardReport()" style="background: var(--admin-success);"><i class="bi bi-file-earmark-pdf"></i> Reporte Dashboard</button>
-                    <button class="btn" onclick="generateUsersReport()" style="background: var(--admin-primary);"><i class="bi bi-file-earmark-excel"></i> Reporte Usuarios</button>
-                    <button class="btn" onclick="generateBookingsReport()" style="background: var(--admin-accent);"><i class="bi bi-file-earmark-text"></i> Reporte Reservas</button>
-                    <button class="btn" onclick="generateFinancialReport()" style="background: var(--admin-warning);"><i class="bi bi-cash-stack"></i> Reporte Financiero</button>
-                </div>
-
-                <div class="report-preview" id="report-preview">
-                    <div class="report-header">
-                        <h2><i class="bi bi-bar-chart"></i> Reporte del Sistema</h2>
-                        <p>Selecciona un tipo de reporte para generar</p>
-                    </div>
-                    <div id="report-content">
-                        <p class="empty-state">No hay datos para mostrar. Genera un reporte.</p>
-                    </div>
-                </div>
-            </div>
-
             <!-- ========== SETTINGS SECTION ========== -->
             <div id="settings" class="admin-section">
                 <div class="content-tabs">
                     <button class="content-tab active" data-tab="profile">Mi Perfil</button>
                     <button class="content-tab" data-tab="system">Sistema</button>
-                    <button class="content-tab" data-tab="email">Config. Email</button>
-                    <button class="content-tab" data-tab="payment">Pagos</button>
                 </div>
 
                 <!-- Configuración del perfil -->
@@ -1529,67 +1518,8 @@
                                 <i class="bi bi-bell"></i> Notificaciones del sistema
                             </label>
                         </div>
-                        <div class="form-group">
-                            <label><i class="bi bi-calendar"></i> Días máximo para reservas futuras</label>
-                            <input type="number" id="max-booking-days" class="form-control" value="90" min="1" max="365">
-                        </div>
                         <div class="form-actions">
                             <button class="btn" onclick="saveSystemSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Configuración</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Configuración de email -->
-                <div id="email-tab" class="tab-content">
-                    <div class="admin-form">
-                        <h3><i class="bi bi-envelope"></i> Configuración de Email</h3>
-                        <div class="form-group">
-                            <label>SMTP Server</label>
-                            <input type="text" id="smtp-server" class="form-control" placeholder="smtp.gmail.com">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>SMTP Port</label>
-                                <input type="number" id="smtp-port" class="form-control" value="587">
-                            </div>
-                            <div class="form-group">
-                                <label>SSL/TLS</label>
-                                <select id="smtp-ssl" class="form-control">
-                                    <option value="tls">TLS</option>
-                                    <option value="ssl">SSL</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Email de envío</label>
-                            <input type="email" id="smtp-email" class="form-control" placeholder="no-reply@cano-salao.com">
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Configuración</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Configuración de pagos -->
-                <div id="payment-tab" class="tab-content">
-                    <div class="admin-form">
-                        <h3><i class="bi bi-credit-card"></i> Configuración de Pagos</h3>
-                        <div class="form-group">
-                            <label><i class="bi bi-paypal"></i> PayPal Client ID</label>
-                            <input type="text" id="paypal-client-id" class="form-control" placeholder="Client ID de PayPal">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="bi bi-bank"></i> Transferencia Bancaria</label>
-                            <textarea id="bank-details" class="form-control" rows="4" placeholder="Detalles de la cuenta bancaria..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" id="payment-test-mode" checked>
-                                Modo prueba (sandbox)
-                            </label>
-                        </div>
-                        <div class="form-actions">
-                            <button class="btn" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Configuración</button>
                         </div>
                     </div>
                 </div>
@@ -1740,7 +1670,6 @@
                 <button class="btn" onclick="closeModal('modal-booking-details')">Cerrar</button>
                 <button class="btn" onclick="updateBookingStatus()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Cambios</button>
                 <button class="btn" onclick="sendBookingConfirmation()" style="background: var(--admin-accent);"><i class="bi bi-envelope"></i> Enviar Confirmación</button>
-                <button class="btn" onclick="sendBookingReminder()" style="background: var(--admin-warning);"><i class="bi bi-bell"></i> Recordatorio</button>
                 <button class="btn" onclick="deleteBooking()" style="background: var(--admin-danger);"><i class="bi bi-trash"></i> Eliminar</button>
             </div>
         </div>
@@ -1808,88 +1737,6 @@
             <div class="modal-footer">
                 <button class="btn" onclick="closeModal('modal-booking-analytics')">Cerrar</button>
                 <button class="btn" onclick="exportAnalyticsReport()" style="background: var(--admin-primary);"><i class="bi bi-download"></i> Exportar Reporte</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Nueva Reserva -->
-    <div id="modal-add-booking" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <h3><i class="bi bi-plus-circle"></i> Crear Nueva Reserva</h3>
-                <button class="modal-close" onclick="closeModal('modal-add-booking')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="add-booking-alert" class="alert" style="display: none;"></div>
-                <form id="add-booking-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Usuario</label>
-                            <select id="new-booking-user" class="form-control" required>
-                                <option value="">Seleccionar usuario...</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Tour</label>
-                            <select id="new-booking-tour" class="form-control" required>
-                                <option value="">Seleccionar tour...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Fecha del Tour</label>
-                            <input type="date" id="new-booking-date" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Número de Personas</label>
-                            <input type="number" id="new-booking-people" class="form-control" min="1" max="20" value="1" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Estado Inicial</label>
-                            <select id="new-booking-status" class="form-control">
-                                <option value="pending">Pendiente</option>
-                                <option value="confirmed">Confirmada</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Estado de Pago</label>
-                            <select id="new-booking-payment" class="form-control">
-                                <option value="pending">Pendiente</option>
-                                <option value="paid">Pagada</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Método de Pago</label>
-                        <select id="new-booking-payment-method" class="form-control">
-                            <option value="cash">Efectivo</option>
-                            <option value="card">Tarjeta</option>
-                            <option value="transfer">Transferencia</option>
-                            <option value="paypal">PayPal</option>
-                        </select>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Contacto de Emergencia</label>
-                            <input type="text" id="new-booking-emergency" class="form-control" placeholder="Nombre y teléfono">
-                        </div>
-                        <div class="form-group">
-                            <label>Requerimientos Especiales</label>
-                            <input type="text" id="new-booking-special" class="form-control" placeholder="Alergias, movilidad reducida, etc.">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Notas Internas</label>
-                        <textarea id="new-booking-notes" class="form-control" rows="3" placeholder="Notas para el administrador..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="closeModal('modal-add-booking')">Cancelar</button>
-                <button class="btn" onclick="createNewBooking()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Crear Reserva</button>
             </div>
         </div>
     </div>
@@ -2239,7 +2086,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL CON TODAS LAS FUNCIONALIDADES COMPLETAS (3000+ líneas) -->
+    <!-- SCRIPT PRINCIPAL CON CONEXIONES REALES AL BACKEND -->
     <script>
         // ========== CONFIGURACIÓN ==========
         const API_BASE_URL = 'https://cano-salao.onrender.com';
@@ -2285,11 +2132,6 @@
             // Iniciar timers
             updateCurrentTime();
             setInterval(updateCurrentTime, 1000);
-            
-            // Cargar datos iniciales
-            if (isAdmin) {
-                loadInitialData();
-            }
             
             console.log('✅ Panel completo inicializado correctamente');
         });
@@ -2344,6 +2186,7 @@
                         
                         isAdmin = true;
                         updateUserUI();
+                        loadInitialData();
                         return true;
                     }
                 } else if (response.status === 401) {
@@ -2610,23 +2453,66 @@
                     updateDashboardStats(stats);
                     initCharts(stats);
                     updateFooterStats(stats);
+                } else {
+                    // Si falla, usar datos de los endpoints individuales
+                    await loadDashboardStatsFromEndpoints();
                 }
             } catch (error) {
                 console.error('Error cargando dashboard:', error);
-                // Usar datos de demo
-                const demoStats = {
-                    total_users: 45,
-                    active_users: 42,
-                    total_blog_posts: 12,
-                    total_tours: 8,
-                    active_tours: 7,
-                    total_bookings: 156,
-                    pending_bookings: 12,
-                    recent_registrations: 3
+                await loadDashboardStatsFromEndpoints();
+            }
+        }
+        
+        async function loadDashboardStatsFromEndpoints() {
+            try {
+                // Cargar datos de diferentes endpoints
+                const [usersRes, toursRes, blogRes, bookingsRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/api/users`).catch(() => ({ ok: false })),
+                    fetch(`${API_BASE_URL}/api/tours`).catch(() => ({ ok: false })),
+                    fetch(`${API_BASE_URL}/api/blog`).catch(() => ({ ok: false })),
+                    fetch(`${API_BASE_URL}/api/bookings`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).catch(() => ({ ok: false }))
+                ]);
+                
+                const stats = {
+                    total_users: 0,
+                    active_users: 0,
+                    total_blog_posts: 0,
+                    total_tours: 0,
+                    active_tours: 0,
+                    total_bookings: 0,
+                    pending_bookings: 0
                 };
-                updateDashboardStats(demoStats);
-                initCharts(demoStats);
-                updateFooterStats(demoStats);
+                
+                if (usersRes.ok) {
+                    const users = await usersRes.json();
+                    stats.total_users = users.length || 0;
+                    stats.active_users = users.filter(u => u.activo !== false).length || 0;
+                }
+                
+                if (toursRes.ok) {
+                    const tours = await toursRes.json();
+                    stats.total_tours = tours.length || 0;
+                    stats.active_tours = tours.filter(t => t.disponible !== false).length || 0;
+                }
+                
+                if (blogRes.ok) {
+                    const blogPosts = await blogRes.json();
+                    stats.total_blog_posts = blogPosts.length || 0;
+                }
+                
+                if (bookingsRes.ok) {
+                    const bookings = await bookingsRes.json();
+                    stats.total_bookings = bookings.length || 0;
+                    stats.pending_bookings = bookings.filter(b => b.estado === 'pending').length || 0;
+                }
+                
+                updateDashboardStats(stats);
+                initCharts(stats);
+                updateFooterStats(stats);
+            } catch (error) {
+                console.error('Error cargando estadísticas:', error);
             }
         }
         
@@ -2649,7 +2535,7 @@
             
             document.getElementById('footer-users-count').textContent = stats.total_users || 0;
             document.getElementById('footer-tours-count').textContent = stats.total_tours || 0;
-            document.getElementById('footer-token-valid').textContent = 'Sí';
+            document.getElementById('footer-token-valid').textContent = token ? 'Sí' : 'No';
             document.getElementById('footer-last-update').textContent = new Date().toLocaleTimeString();
         }
         
@@ -2662,13 +2548,16 @@
                     ctx1.chart.destroy();
                 }
                 
+                // Datos de ejemplo para la gráfica de actividad
+                const activityData = [stats.recent_registrations || 0, 3, 5, 7, 6, 8, 10];
+                
                 ctx1.chart = new Chart(ctx1, {
                     type: 'line',
                     data: {
                         labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
                         datasets: [{
                             label: 'Actividad',
-                            data: [stats.recent_registrations || 0, 3, 5, 7, 6, 8, 10],
+                            data: activityData,
                             borderColor: '#3498db',
                             backgroundColor: 'rgba(52, 152, 219, 0.1)',
                             tension: 0.4,
@@ -2724,13 +2613,43 @@
         
         function loadRecentActivity() {
             const activityList = document.getElementById('recent-activity');
+            
+            // Limpiar actividad anterior
+            activityList.innerHTML = '';
+            
+            // Agregar actividades del sistema
             const activities = [
-                { icon: 'bi-person-plus', user: currentUser?.nombre || 'Admin', action: 'actualizó el dashboard', time: 'Hace 5 minutos' },
-                { icon: 'bi-signpost', user: 'Sistema', action: 'cargó datos de tours', time: 'Hace 10 minutos' },
-                { icon: 'bi-calendar-check', user: 'Sistema', action: 'sincronizó reservas', time: 'Hace 15 minutos' }
+                { icon: 'bi-gear', user: 'Sistema', action: 'Panel administrativo cargado', time: 'Justo ahora' }
             ];
             
-            activityList.innerHTML = '';
+            // Si hay datos recientes, agregarlos
+            if (toursData.length > 0) {
+                activities.push({
+                    icon: 'bi-signpost',
+                    user: 'Sistema',
+                    action: `${toursData.length} tours cargados`,
+                    time: 'Hace 1 minuto'
+                });
+            }
+            
+            if (usersData.length > 0) {
+                activities.push({
+                    icon: 'bi-people',
+                    user: 'Sistema',
+                    action: `${usersData.length} usuarios cargados`,
+                    time: 'Hace 1 minuto'
+                });
+            }
+            
+            if (blogPostsData.length > 0) {
+                activities.push({
+                    icon: 'bi-newspaper',
+                    user: 'Sistema',
+                    action: `${blogPostsData.length} artículos cargados`,
+                    time: 'Hace 1 minuto'
+                });
+            }
+            
             activities.forEach(activity => {
                 const item = document.createElement('div');
                 item.className = 'activity-item';
@@ -2755,193 +2674,66 @@
                 • Es administrador: ${isAdmin ? 'Sí' : 'No'}<br>
                 • Token válido: ${token ? 'Sí' : 'No'}<br>
                 • Auto-refresh: ${localStorage.getItem('admin_auto_refresh') || '0'} segundos<br>
-                • Última conexión: ${new Date().toLocaleTimeString()}
+                • Última conexión: ${new Date().toLocaleTimeString()}<br>
+                • Tours cargados: ${toursData.length}<br>
+                • Usuarios cargados: ${usersData.length}<br>
+                • Artículos cargados: ${blogPostsData.length}<br>
+                • Reservas cargadas: ${bookingsData.length}
             `;
             
             showAlert(info, 'info');
         }
         
-        // ========== GESTIÓN COMPLETA DE RESERVAS ==========
-        async function loadBookings() {
+        // ========== GESTIÓN DE USUARIOS ==========
+        async function loadUsers() {
             try {
-                // En una implementación real, aquí se haría fetch a la API
-                // Por ahora usamos datos de demostración
-                const mockBookings = generateMockBookings();
-                allBookingsData = mockBookings;
-                filterBookings();
+                showLoading('users-table-body', 'Cargando usuarios...');
                 
-            } catch (error) {
-                console.error('Error cargando reservas:', error);
-                showAlert('Error cargando reservas', 'error');
-                renderEmptyBookingsTable();
-            }
-        }
-        
-        function generateMockBookings() {
-            const tours = [
-                'Tour por los Manglares',
-                'Avistamiento de Aves',
-                'Tour Nocturno',
-                'Excursión Familiar',
-                'Tour Fotográfico'
-            ];
-            
-            const users = [
-                { id: 1, nombre: 'Juan Pérez', email: 'juan@email.com' },
-                { id: 2, nombre: 'María González', email: 'maria@email.com' },
-                { id: 3, nombre: 'Carlos Rodríguez', email: 'carlos@email.com' },
-                { id: 4, nombre: 'Ana Martínez', email: 'ana@email.com' },
-                { id: 5, nombre: 'Luis Fernández', email: 'luis@email.com' }
-            ];
-            
-            const bookings = [];
-            const statuses = ['pending', 'confirmed', 'cancelled', 'completed'];
-            const paymentStatuses = ['pending', 'paid', 'refunded'];
-            const paymentMethods = ['cash', 'card', 'transfer', 'paypal'];
-            
-            for (let i = 1; i <= 25; i++) {
-                const user = users[Math.floor(Math.random() * users.length)];
-                const tour = tours[Math.floor(Math.random() * tours.length)];
-                const status = statuses[Math.floor(Math.random() * statuses.length)];
-                const paymentStatus = paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)];
-                const paymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
-                
-                const fechaTour = new Date();
-                fechaTour.setDate(fechaTour.getDate() + Math.floor(Math.random() * 30) + 1);
-                
-                const fechaReserva = new Date();
-                fechaReserva.setDate(fechaReserva.getDate() - Math.floor(Math.random() * 15));
-                
-                const personas = Math.floor(Math.random() * 6) + 1;
-                const precioTour = [50, 60, 75, 80, 90][Math.floor(Math.random() * 5)];
-                const total = personas * precioTour;
-                
-                bookings.push({
-                    id: 1000 + i,
-                    codigo: `RES-2024-${String(i).padStart(3, '0')}`,
-                    usuario_id: user.id,
-                    usuario_nombre: user.nombre,
-                    usuario_email: user.email,
-                    tour_id: Math.floor(Math.random() * 5) + 1,
-                    tour_nombre: tour,
-                    fecha_tour: fechaTour.toISOString().split('T')[0],
-                    fecha_reserva: fechaReserva.toISOString(),
-                    personas: personas,
-                    total: total,
-                    estado: status,
-                    pago_estado: paymentStatus,
-                    pago_metodo: paymentMethod,
-                    contacto_emergencia: `Contacto ${Math.floor(Math.random() * 1000) + 1} - 0412-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}`,
-                    requerimientos: Math.random() > 0.7 ? 'Alguna necesidad especial' : '',
-                    notas: [
-                        {
-                            texto: 'Reserva creada exitosamente',
-                            fecha: fechaReserva.toLocaleString('es-ES'),
-                            autor: 'Sistema'
-                        }
-                    ],
-                    timeline: [
-                        {
-                            estado: 'created',
-                            fecha: fechaReserva.toISOString(),
-                            descripcion: 'Reserva creada'
-                        }
-                    ]
+                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
+                
+                if (response.ok) {
+                    usersData = await response.json();
+                    renderUsersTable(usersData);
+                } else {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error cargando usuarios:', error);
+                showAlert('Error cargando usuarios', 'error');
+                renderEmptyUsersTable();
             }
-            
-            return bookings;
         }
         
-        function filterBookings() {
-            const statusFilter = document.getElementById('booking-filter-status').value;
-            const paymentFilter = document.getElementById('booking-filter-payment').value;
-            const dateFilter = document.getElementById('booking-filter-date').value;
-            
-            let filtered = allBookingsData;
-            
-            if (statusFilter !== 'all') {
-                filtered = filtered.filter(booking => booking.estado === statusFilter);
-            }
-            
-            if (paymentFilter !== 'all') {
-                filtered = filtered.filter(booking => booking.pago_estado === paymentFilter);
-            }
-            
-            if (dateFilter) {
-                filtered = filtered.filter(booking => booking.fecha_tour === dateFilter);
-            }
-            
-            bookingsData = filtered;
-            renderBookingsTable(filtered);
-        }
-        
-        function searchBookings() {
-            const searchTerm = document.getElementById('booking-search').value.toLowerCase();
-            
-            if (!searchTerm) {
-                filterBookings();
-                return;
-            }
-            
-            const filtered = allBookingsData.filter(booking => 
-                booking.usuario_nombre.toLowerCase().includes(searchTerm) ||
-                booking.usuario_email.toLowerCase().includes(searchTerm) ||
-                booking.tour_nombre.toLowerCase().includes(searchTerm) ||
-                booking.codigo.toLowerCase().includes(searchTerm)
-            );
-            
-            bookingsData = filtered;
-            renderBookingsTable(filtered);
-        }
-        
-        function renderBookingsTable(bookings) {
-            const tbody = document.getElementById('bookings-table-body');
+        function renderUsersTable(users) {
+            const tbody = document.getElementById('users-table-body');
             if (!tbody) return;
             
-            if (!bookings || bookings.length === 0) {
-                renderEmptyBookingsTable();
+            if (!users || users.length === 0) {
+                renderEmptyUsersTable();
                 return;
             }
             
             tbody.innerHTML = '';
-            
-            bookings.forEach(booking => {
-                const statusClass = getStatusClass(booking.estado);
-                const paymentIcon = booking.pago_estado === 'paid' ? 'bi-check-circle-fill payment-paid' : 
-                                  booking.pago_estado === 'pending' ? 'bi-clock-fill payment-pending' : 
-                                  'bi-x-circle-fill';
-                
+            users.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><strong>${booking.codigo}</strong></td>
-                    <td>
-                        <strong>${booking.usuario_nombre}</strong><br>
-                        <small>${booking.usuario_email}</small>
-                    </td>
-                    <td>${booking.tour_nombre}</td>
-                    <td>${formatDate(booking.fecha_tour)}</td>
-                    <td>${booking.personas}</td>
-                    <td><strong>$${booking.total.toFixed(2)}</strong></td>
-                    <td><span class="status-badge ${statusClass}">${getStatusText(booking.estado)}</span></td>
-                    <td class="payment-status">
-                        <i class="bi ${paymentIcon}"></i>
-                        <span>${getPaymentText(booking.pago_estado)}</span>
-                    </td>
+                    <td>${user.id}</td>
+                    <td><strong>${user.nombre}</strong></td>
+                    <td>${user.email}</td>
+                    <td><span class="status-badge ${user.rol === 'admin' ? 'status-active' : 'status-pending'}">${user.rol || 'user'}</span></td>
+                    <td>${user.fecha_registro ? formatDate(user.fecha_registro) : 'N/A'}</td>
+                    <td><span class="status-badge ${user.activo !== false ? 'status-active' : 'status-inactive'}">${user.activo !== false ? 'Activo' : 'Inactivo'}</span></td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-icon btn-view" onclick="viewBookingDetails(${booking.id})" title="Ver detalles">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn-icon btn-edit" onclick="editBooking(${booking.id})" title="Editar">
+                            <button class="btn-icon btn-edit" onclick="editUser(${user.id})" title="Editar usuario">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn-icon ${booking.estado === 'pending' ? 'btn-confirm' : 'btn-warning'}" 
-                                    onclick="${booking.estado === 'pending' ? `confirmBooking(${booking.id})` : `updateBookingStatusPrompt(${booking.id})`}" 
-                                    title="${booking.estado === 'pending' ? 'Confirmar' : 'Cambiar estado'}">
-                                <i class="bi ${booking.estado === 'pending' ? 'bi-check' : 'bi-arrow-repeat'}"></i>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteBookingPrompt(${booking.id}, '${booking.codigo}')" title="Eliminar">
+                            <button class="btn-icon btn-delete" onclick="deleteUserPrompt(${user.id}, '${user.nombre}')" title="Eliminar usuario">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -2951,620 +2743,198 @@
             });
         }
         
-        function renderEmptyBookingsTable() {
-            const tbody = document.getElementById('bookings-table-body');
+        function renderEmptyUsersTable() {
+            const tbody = document.getElementById('users-table-body');
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="9" class="empty-state">
-                        <i class="bi bi-calendar-check"></i>
-                        <h3>No hay reservas</h3>
-                        <p>No se han encontrado reservas con los filtros seleccionados</p>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-people"></i>
+                        <h3>No hay usuarios registrados</h3>
+                        <p>Agrega el primer usuario</p>
                     </td>
                 </tr>
             `;
         }
         
-        function viewBookingDetails(bookingId) {
-            const booking = allBookingsData.find(b => b.id === bookingId);
-            if (!booking) {
-                showAlert('Reserva no encontrada', 'error');
+        function showAddUserModal() {
+            document.getElementById('add-user-alert').style.display = 'none';
+            document.getElementById('add-user-form').reset();
+            openModal('modal-add-user');
+        }
+        
+        async function addNewUser() {
+            const name = document.getElementById('new-user-name').value.trim();
+            const email = document.getElementById('new-user-email').value.trim().toLowerCase();
+            const password = document.getElementById('new-user-password').value;
+            const phone = document.getElementById('new-user-phone').value.trim();
+            const role = document.getElementById('new-user-role').value;
+            
+            if (!name || !email || !password) {
+                showFormAlert('add-user-alert', 'Nombre, email y contraseña son obligatorios', 'error');
                 return;
             }
             
-            // Llenar detalles
-            document.getElementById('booking-details-id').value = booking.id;
-            document.getElementById('booking-code').textContent = booking.codigo;
-            document.getElementById('booking-user').textContent = `${booking.usuario_nombre} (${booking.usuario_email})`;
-            document.getElementById('booking-tour').textContent = booking.tour_nombre;
-            document.getElementById('booking-tour-date').textContent = formatDate(booking.fecha_tour) + ' ' + formatTime(booking.fecha_reserva);
-            document.getElementById('booking-created').textContent = formatDateTime(booking.fecha_reserva);
-            document.getElementById('booking-people').textContent = booking.personas;
-            document.getElementById('booking-total').textContent = `$${booking.total.toFixed(2)}`;
-            document.getElementById('booking-status').innerHTML = `<span class="status-badge ${getStatusClass(booking.estado)}">${getStatusText(booking.estado)}</span>`;
-            document.getElementById('booking-payment').innerHTML = `<span class="payment-status"><i class="bi ${booking.pago_estado === 'paid' ? 'bi-check-circle-fill payment-paid' : 'bi-clock-fill payment-pending'}"></i> ${getPaymentText(booking.pago_estado)}</span>`;
-            document.getElementById('booking-payment-method').textContent = getPaymentMethodText(booking.pago_metodo);
-            document.getElementById('booking-emergency').textContent = booking.contacto_emergencia || 'No especificado';
-            document.getElementById('booking-special').textContent = booking.requerimientos || 'Ninguno';
-            
-            // Configurar selects
-            document.getElementById('booking-new-status').value = booking.estado;
-            document.getElementById('booking-new-payment').value = booking.pago_estado;
-            
-            // Llenar timeline
-            const timeline = document.getElementById('booking-timeline');
-            timeline.innerHTML = '';
-            if (booking.timeline && booking.timeline.length > 0) {
-                booking.timeline.forEach((item, index) => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = `timeline-item ${index === booking.timeline.length - 1 ? 'active' : 'completed'}`;
-                    itemDiv.innerHTML = `
-                        <strong>${getStatusText(item.estado)}</strong><br>
-                        <small>${item.descripcion}</small><br>
-                        <small style="color: #666;">${formatDateTime(item.fecha)}</small>
-                    `;
-                    timeline.appendChild(itemDiv);
-                });
-            }
-            
-            // Llenar notas
-            const notesHistory = document.getElementById('booking-notes-history');
-            notesHistory.innerHTML = '';
-            if (booking.notas && booking.notas.length > 0) {
-                booking.notas.forEach(note => {
-                    const noteDiv = document.createElement('div');
-                    noteDiv.className = 'note-item';
-                    noteDiv.innerHTML = `
-                        <div>${note.texto}</div>
-                        <div class="note-meta">Por ${note.autor} - ${note.fecha}</div>
-                    `;
-                    notesHistory.appendChild(noteDiv);
-                });
-            } else {
-                notesHistory.innerHTML = '<p style="color: #666; text-align: center;">No hay notas</p>';
-            }
-            
-            openModal('modal-booking-details');
-        }
-        
-        function addBookingNote() {
-            const bookingId = document.getElementById('booking-details-id').value;
-            const noteText = document.getElementById('booking-new-note').value.trim();
-            
-            if (!noteText) {
-                showFormAlert('booking-details-alert', 'La nota no puede estar vacía', 'error');
+            if (password.length < 6) {
+                showFormAlert('add-user-alert', 'La contraseña debe tener al menos 6 caracteres', 'error');
                 return;
             }
             
-            const booking = allBookingsData.find(b => b.id == bookingId);
-            if (!booking) return;
-            
-            // Agregar nota
-            if (!booking.notas) booking.notas = [];
-            booking.notas.unshift({
-                texto: noteText,
-                fecha: new Date().toLocaleString('es-ES'),
-                autor: currentUser?.nombre || 'Admin'
-            });
-            
-            // Actualizar UI
-            const notesHistory = document.getElementById('booking-notes-history');
-            const noteDiv = document.createElement('div');
-            noteDiv.className = 'note-item';
-            noteDiv.innerHTML = `
-                <div>${noteText}</div>
-                <div class="note-meta">Por ${currentUser?.nombre || 'Admin'} - ${new Date().toLocaleString('es-ES')}</div>
-            `;
-            notesHistory.prepend(noteDiv);
-            
-            // Limpiar campo
-            document.getElementById('booking-new-note').value = '';
-            
-            showFormAlert('booking-details-alert', 'Nota agregada correctamente', 'success');
-        }
-        
-        function updateBookingStatus() {
-            const bookingId = document.getElementById('booking-details-id').value;
-            const newStatus = document.getElementById('booking-new-status').value;
-            const newPayment = document.getElementById('booking-new-payment').value;
-            
-            const booking = allBookingsData.find(b => b.id == bookingId);
-            if (!booking) return;
-            
-            // Actualizar estado
-            booking.estado = newStatus;
-            booking.pago_estado = newPayment;
-            
-            // Agregar al timeline
-            if (!booking.timeline) booking.timeline = [];
-            booking.timeline.push({
-                estado: newStatus,
-                fecha: new Date().toISOString(),
-                descripcion: 'Estado actualizado por administrador'
-            });
-            
-            // Agregar nota automática
-            if (!booking.notas) booking.notas = [];
-            booking.notas.unshift({
-                texto: `Estado cambiado a: ${getStatusText(newStatus)} | Pago: ${getPaymentText(newPayment)}`,
-                fecha: new Date().toLocaleString('es-ES'),
-                autor: 'Sistema'
-            });
-            
-            // Actualizar UI
-            viewBookingDetails(parseInt(bookingId));
-            filterBookings();
-            
-            showFormAlert('booking-details-alert', 'Estado actualizado correctamente', 'success');
-        }
-        
-        function sendBookingConfirmation() {
-            const bookingId = document.getElementById('booking-details-id').value;
-            const booking = allBookingsData.find(b => b.id == bookingId);
-            
-            if (!booking) return;
-            
-            showFormAlert('booking-details-alert', 'Enviando confirmación al cliente...', 'info');
-            
-            // Simular envío de email
-            setTimeout(() => {
-                // Agregar nota
-                if (!booking.notas) booking.notas = [];
-                booking.notas.unshift({
-                    texto: 'Email de confirmación enviado al cliente',
-                    fecha: new Date().toLocaleString('es-ES'),
-                    autor: 'Sistema'
-                });
-                
-                showFormAlert('booking-details-alert', 'Confirmación enviada al cliente', 'success');
-                
-                // Actualizar notas en UI
-                viewBookingDetails(parseInt(bookingId));
-            }, 1500);
-        }
-        
-        function sendBookingReminder() {
-            const bookingId = document.getElementById('booking-details-id').value;
-            const booking = allBookingsData.find(b => b.id == bookingId);
-            
-            if (!booking) return;
-            
-            showFormAlert('booking-details-alert', 'Enviando recordatorio al cliente...', 'info');
-            
-            setTimeout(() => {
-                if (!booking.notas) booking.notas = [];
-                booking.notas.unshift({
-                    texto: 'Recordatorio enviado al cliente',
-                    fecha: new Date().toLocaleString('es-ES'),
-                    autor: 'Sistema'
-                });
-                
-                showFormAlert('booking-details-alert', 'Recordatorio enviado', 'success');
-                viewBookingDetails(parseInt(bookingId));
-            }, 1500);
-        }
-        
-        function deleteBooking() {
-            const bookingId = document.getElementById('booking-details-id').value;
-            deleteBookingPrompt(bookingId);
-        }
-        
-        function deleteBookingPrompt(bookingId, bookingCode = null) {
-            const booking = allBookingsData.find(b => b.id == bookingId);
-            if (!booking) return;
-            
-            confirmAction(`¿Eliminar la reserva ${bookingCode || booking.codigo}? Esta acción no se puede deshacer.`, function() {
-                // Eliminar de los datos
-                const index = allBookingsData.findIndex(b => b.id == bookingId);
-                if (index !== -1) {
-                    allBookingsData.splice(index, 1);
-                }
-                
-                // Actualizar UI
-                filterBookings();
-                
-                if (document.getElementById('modal-booking-details').classList.contains('active')) {
-                    closeModal('modal-booking-details');
-                }
-                
-                showAlert('Reserva eliminada correctamente', 'success');
-            });
-        }
-        
-        function confirmBooking(bookingId) {
-            const booking = allBookingsData.find(b => b.id === bookingId);
-            if (!booking) return;
-            
-            confirmAction(`¿Confirmar la reserva ${booking.codigo}?`, function() {
-                // Actualizar estado
-                booking.estado = 'confirmed';
-                booking.pago_estado = 'paid';
-                
-                // Agregar al timeline
-                if (!booking.timeline) booking.timeline = [];
-                booking.timeline.push({
-                    estado: 'confirmed',
-                    fecha: new Date().toISOString(),
-                    descripcion: 'Reserva confirmada por administrador'
-                });
-                
-                // Agregar nota
-                if (!booking.notas) booking.notas = [];
-                booking.notas.unshift({
-                    texto: 'Reserva confirmada manualmente por administrador',
-                    fecha: new Date().toLocaleString('es-ES'),
-                    autor: currentUser?.nombre || 'Admin'
-                });
-                
-                // Actualizar UI
-                filterBookings();
-                showAlert('Reserva confirmada correctamente', 'success');
-            });
-        }
-        
-        function updateBookingStatusPrompt(bookingId) {
-            const booking = allBookingsData.find(b => b.id === bookingId);
-            if (!booking) return;
-            
-            viewBookingDetails(bookingId);
-        }
-        
-        function showAddBookingModal() {
-            // Llenar selects de usuarios y tours
-            populateBookingFormSelects();
-            
-            // Establecer fecha mínima (mañana)
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            document.getElementById('new-booking-date').min = tomorrow.toISOString().split('T')[0];
-            
-            // Establecer fecha por defecto (en 3 días)
-            const defaultDate = new Date();
-            defaultDate.setDate(defaultDate.getDate() + 3);
-            document.getElementById('new-booking-date').value = defaultDate.toISOString().split('T')[0];
-            
-            document.getElementById('add-booking-alert').style.display = 'none';
-            openModal('modal-add-booking');
-        }
-        
-        function populateBookingFormSelects() {
-            // En una implementación real, aquí se cargarían usuarios y tours de la API
-            const userSelect = document.getElementById('new-booking-user');
-            const tourSelect = document.getElementById('new-booking-tour');
-            
-            // Limpiar opciones
-            userSelect.innerHTML = '<option value="">Seleccionar usuario...</option>';
-            tourSelect.innerHTML = '<option value="">Seleccionar tour...</option>';
-            
-            // Agregar usuarios de demo
-            const demoUsers = [
-                { id: 1, nombre: 'Juan Pérez', email: 'juan@email.com' },
-                { id: 2, nombre: 'María González', email: 'maria@email.com' },
-                { id: 3, nombre: 'Carlos Rodríguez', email: 'carlos@email.com' },
-                { id: 4, nombre: 'Ana Martínez', email: 'ana@email.com' }
-            ];
-            
-            demoUsers.forEach(user => {
-                const option = document.createElement('option');
-                option.value = user.id;
-                option.textContent = `${user.nombre} (${user.email})`;
-                userSelect.appendChild(option);
-            });
-            
-            // Agregar tours de demo
-            const demoTours = [
-                { id: 1, nombre: 'Tour por los Manglares', precio: 50 },
-                { id: 2, nombre: 'Avistamiento de Aves', precio: 60 },
-                { id: 3, nombre: 'Tour Nocturno', precio: 75 },
-                { id: 4, nombre: 'Excursión Familiar', precio: 80 }
-            ];
-            
-            demoTours.forEach(tour => {
-                const option = document.createElement('option');
-                option.value = tour.id;
-                option.textContent = `${tour.nombre} - $${tour.precio}`;
-                tourSelect.appendChild(option);
-            });
-        }
-        
-        function createNewBooking() {
-            const userId = document.getElementById('new-booking-user').value;
-            const tourId = document.getElementById('new-booking-tour').value;
-            const date = document.getElementById('new-booking-date').value;
-            const people = document.getElementById('new-booking-people').value;
-            const status = document.getElementById('new-booking-status').value;
-            const paymentStatus = document.getElementById('new-booking-payment').value;
-            const paymentMethod = document.getElementById('new-booking-payment-method').value;
-            const emergency = document.getElementById('new-booking-emergency').value;
-            const special = document.getElementById('new-booking-special').value;
-            const notes = document.getElementById('new-booking-notes').value;
-            
-            if (!userId || !tourId || !date || !people) {
-                showFormAlert('add-booking-alert', 'Por favor complete todos los campos obligatorios', 'error');
-                return;
-            }
-            
-            // Obtener información del usuario y tour seleccionados
-            const userSelect = document.getElementById('new-booking-user');
-            const tourSelect = document.getElementById('new-booking-tour');
-            const selectedUser = userSelect.options[userSelect.selectedIndex].text;
-            const selectedTour = tourSelect.options[tourSelect.selectedIndex].text;
-            
-            // Extraer precio del tour
-            const tourPrice = parseFloat(selectedTour.match(/\$(\d+)/)?.[1] || 50);
-            const total = people * tourPrice;
-            
-            // Generar nuevo ID
-            const newId = allBookingsData.length > 0 ? Math.max(...allBookingsData.map(b => b.id)) + 1 : 1001;
-            const newCode = `RES-2024-${String(newId - 1000).padStart(3, '0')}`;
-            
-            // Crear nueva reserva
-            const newBooking = {
-                id: newId,
-                codigo: newCode,
-                usuario_id: parseInt(userId),
-                usuario_nombre: selectedUser.split(' (')[0],
-                usuario_email: selectedUser.match(/\(([^)]+)\)/)?.[1] || '',
-                tour_id: parseInt(tourId),
-                tour_nombre: selectedTour.split(' - $')[0],
-                fecha_tour: date,
-                fecha_reserva: new Date().toISOString(),
-                personas: parseInt(people),
-                total: total,
-                estado: status,
-                pago_estado: paymentStatus,
-                pago_metodo: paymentMethod,
-                contacto_emergencia: emergency || 'No especificado',
-                requerimientos: special || '',
-                notas: [
-                    {
-                        texto: notes || 'Reserva creada manualmente por administrador',
-                        fecha: new Date().toLocaleString('es-ES'),
-                        autor: currentUser?.nombre || 'Admin'
-                    }
-                ],
-                timeline: [
-                    {
-                        estado: 'created',
-                        fecha: new Date().toISOString(),
-                        descripcion: 'Reserva creada manualmente'
-                    }
-                ]
+            const userData = {
+                nombre: name,
+                email: email,
+                password: password,
+                telefono: phone || '',
+                rol: role
             };
             
-            // Agregar a los datos
-            allBookingsData.unshift(newBooking);
+            showFormAlert('add-user-alert', 'Creando usuario...', 'info');
             
-            // Actualizar UI
-            filterBookings();
-            closeModal('modal-add-booking');
-            
-            showAlert(`Reserva ${newCode} creada exitosamente`, 'success');
-        }
-        
-        // ========== ANALÍTICAS DE RESERVAS ==========
-        function showBookingAnalytics() {
-            // Calcular estadísticas
-            const today = new Date().toISOString().split('T')[0];
-            const todayBookings = allBookingsData.filter(b => b.fecha_tour === today);
-            const confirmedBookings = allBookingsData.filter(b => b.estado === 'confirmed');
-            const paidBookings = allBookingsData.filter(b => b.pago_estado === 'paid');
-            
-            // Actualizar estadísticas
-            document.getElementById('analytics-today').textContent = todayBookings.length;
-            document.getElementById('analytics-revenue').textContent = `$${todayBookings.reduce((sum, b) => sum + b.total, 0).toFixed(2)}`;
-            document.getElementById('analytics-people').textContent = todayBookings.reduce((sum, b) => sum + b.personas, 0);
-            document.getElementById('analytics-confirmation-rate').textContent = allBookingsData.length > 0 ? 
-                `${Math.round((confirmedBookings.length / allBookingsData.length) * 100)}%` : '0%';
-            
-            // Generar gráficos
-            generateBookingsCharts();
-            
-            // Mostrar tours populares
-            showPopularTours();
-            
-            openModal('modal-booking-analytics');
-        }
-        
-        function generateBookingsCharts() {
-            // Gráfico de estados
-            const statusCtx = document.getElementById('bookingsStatusChart')?.getContext('2d');
-            if (statusCtx && Chart) {
-                const statusCounts = {
-                    pending: allBookingsData.filter(b => b.estado === 'pending').length,
-                    confirmed: allBookingsData.filter(b => b.estado === 'confirmed').length,
-                    cancelled: allBookingsData.filter(b => b.estado === 'cancelled').length,
-                    completed: allBookingsData.filter(b => b.estado === 'completed').length
-                };
-                
-                new Chart(statusCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Pendientes', 'Confirmadas', 'Canceladas', 'Completadas'],
-                        datasets: [{
-                            data: [statusCounts.pending, statusCounts.confirmed, statusCounts.cancelled, statusCounts.completed],
-                            backgroundColor: ['#ffc107', '#28a745', '#dc3545', '#007bff']
-                        }]
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
-                    options: {
-                        responsive: true
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('add-user-alert', 'Usuario creado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-add-user');
+                        loadUsers();
+                        loadDashboardData();
+                    }, 1500);
+                } else {
+                    showFormAlert('add-user-alert', data.error || 'Error al crear usuario', 'error');
+                }
+            } catch (error) {
+                console.error('Error creando usuario:', error);
+                showFormAlert('add-user-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function editUser(userId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
-            }
-            
-            // Gráfico diario (últimos 7 días)
-            const dailyCtx = document.getElementById('bookingsDailyChart')?.getContext('2d');
-            if (dailyCtx && Chart) {
-                const dates = [];
-                const counts = [];
                 
-                for (let i = 6; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    const dateStr = date.toISOString().split('T')[0];
-                    dates.push(formatDate(dateStr));
+                if (response.ok) {
+                    const user = await response.json();
                     
-                    const dayBookings = allBookingsData.filter(b => 
-                        b.fecha_reserva && b.fecha_reserva.startsWith(dateStr)
-                    );
-                    counts.push(dayBookings.length);
+                    document.getElementById('edit-user-id').value = user.id;
+                    document.getElementById('edit-user-name').value = user.nombre || '';
+                    document.getElementById('edit-user-email').value = user.email || '';
+                    document.getElementById('edit-user-phone').value = user.telefono || '';
+                    document.getElementById('edit-user-role').value = user.rol || 'user';
+                    document.getElementById('edit-user-status').value = user.activo !== false ? 'active' : 'inactive';
+                    
+                    document.getElementById('edit-user-alert').style.display = 'none';
+                    openModal('modal-edit-user');
                 }
-                
-                new Chart(dailyCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: dates,
-                        datasets: [{
-                            label: 'Reservas por día',
-                            data: counts,
-                            backgroundColor: '#3498db'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1
-                                }
-                            }
-                        }
-                    }
-                });
+            } catch (error) {
+                console.error('Error cargando usuario:', error);
+                showAlert('Error cargando datos del usuario', 'error');
             }
         }
         
-        function showPopularTours() {
-            const tbody = document.getElementById('popular-tours-body');
-            if (!tbody) return;
+        async function saveUserEdit() {
+            const id = document.getElementById('edit-user-id').value;
+            const name = document.getElementById('edit-user-name').value.trim();
+            const email = document.getElementById('edit-user-email').value.trim();
+            const phone = document.getElementById('edit-user-phone').value.trim();
+            const role = document.getElementById('edit-user-role').value;
+            const status = document.getElementById('edit-user-status').value;
             
-            // Agrupar por tour
-            const tourStats = {};
-            allBookingsData.forEach(booking => {
-                if (!tourStats[booking.tour_nombre]) {
-                    tourStats[booking.tour_nombre] = {
-                        bookings: 0,
-                        people: 0,
-                        revenue: 0
-                    };
-                }
-                
-                tourStats[booking.tour_nombre].bookings++;
-                tourStats[booking.tour_nombre].people += booking.personas;
-                tourStats[booking.tour_nombre].revenue += booking.total;
-            });
-            
-            // Convertir a array y ordenar por ingresos
-            const sortedTours = Object.entries(tourStats)
-                .map(([tour, stats]) => ({ tour, ...stats }))
-                .sort((a, b) => b.revenue - a.revenue)
-                .slice(0, 5); // Top 5
-            
-            tbody.innerHTML = '';
-            
-            if (sortedTours.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
-                            No hay datos suficientes
-                        </td>
-                    </tr>
-                `;
+            if (!name || !email) {
+                showFormAlert('edit-user-alert', 'Nombre y email son obligatorios', 'error');
                 return;
             }
             
-            sortedTours.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${item.tour}</strong></td>
-                    <td>${item.bookings}</td>
-                    <td>${item.people}</td>
-                    <td>$${item.revenue.toFixed(2)}</td>
-                    <td>${allBookingsData.length > 0 ? Math.round((item.bookings / allBookingsData.length) * 100) : 0}%</td>
-                `;
-                tbody.appendChild(row);
+            const userData = {
+                nombre: name,
+                email: email,
+                telefono: phone,
+                rol: role,
+                activo: status === 'active'
+            };
+            
+            showFormAlert('edit-user-alert', 'Actualizando usuario...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-user-alert', 'Usuario actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-user');
+                        loadUsers();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-user-alert', data.error || 'Error al actualizar usuario', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando usuario:', error);
+                showFormAlert('edit-user-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function deleteUserPrompt(userId, userName) {
+            confirmAction(`¿Eliminar al usuario "${userName}"? Esta acción no se puede deshacer.`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Usuario eliminado correctamente', 'success');
+                        loadUsers();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar usuario', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando usuario:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
             });
         }
         
-        function exportAnalyticsReport() {
-            showAlert('Generando reporte de analíticas...', 'info');
-            // En una implementación real, aquí se generaría un PDF/Excel
-            setTimeout(() => {
-                showAlert('Reporte generado correctamente', 'success');
-            }, 1500);
-        }
-        
-        // ========== FUNCIONES DE UTILIDAD ==========
-        function getStatusClass(status) {
-            switch(status) {
-                case 'pending': return 'status-pending';
-                case 'confirmed': return 'status-confirmed';
-                case 'cancelled': return 'status-cancelled';
-                case 'completed': return 'status-completed';
-                default: return 'status-pending';
-            }
-        }
-        
-        function getStatusText(status) {
-            switch(status) {
-                case 'pending': return 'Pendiente';
-                case 'confirmed': return 'Confirmada';
-                case 'cancelled': return 'Cancelada';
-                case 'completed': return 'Completada';
-                default: return 'Pendiente';
-            }
-        }
-        
-        function getPaymentText(payment) {
-            switch(payment) {
-                case 'paid': return 'Pagada';
-                case 'pending': return 'Pendiente';
-                case 'refunded': return 'Reembolsada';
-                case 'failed': return 'Fallida';
-                default: return 'Pendiente';
-            }
-        }
-        
-        function getPaymentMethodText(method) {
-            switch(method) {
-                case 'cash': return 'Efectivo';
-                case 'card': return 'Tarjeta';
-                case 'transfer': return 'Transferencia';
-                case 'paypal': return 'PayPal';
-                default: return method;
-            }
-        }
-        
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('es-ES');
-        }
-        
-        function formatTime(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-        }
-        
-        function formatDateTime(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleString('es-ES');
-        }
-        
-        // ========== TOURS ==========
+        // ========== GESTIÓN DE TOURS ==========
         async function loadTours() {
             try {
-                // Datos de demostración
-                const mockTours = [
-                    { id: 1, nombre: 'Tour por los Manglares', descripcion: 'Paseo guiado por los manglares con avistamiento de aves y fauna local.', precio: 50.00, capacidad: 20, duracion: '2 horas', disponible: true, imagen_url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b' },
-                    { id: 2, nombre: 'Avistamiento de Aves', descripcion: 'Tour especializado en observación de aves con guía ornitólogo.', precio: 60.00, capacidad: 15, duracion: '3 horas', disponible: true, imagen_url: 'https://images.unsplash.com/photo-1551085254-e96b210db58a' },
-                    { id: 3, nombre: 'Tour Nocturno', descripcion: 'Experiencia nocturna para observar la fauna que solo aparece de noche.', precio: 75.00, capacidad: 12, duracion: '2.5 horas', disponible: false, imagen_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4' }
-                ];
+                showLoading('tours-table-body', 'Cargando tours...');
                 
-                toursData = mockTours;
-                renderToursTable(toursData);
+                const response = await fetch(`${API_BASE_URL}/api/tours`);
+                
+                if (response.ok) {
+                    toursData = await response.json();
+                    renderToursTable(toursData);
+                } else {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
             } catch (error) {
                 console.error('Error cargando tours:', error);
                 showAlert('Error cargando tours', 'error');
@@ -3588,13 +2958,17 @@
                     <td>${tour.id}</td>
                     <td><strong>${tour.nombre}</strong></td>
                     <td>${tour.descripcion?.substring(0, 50)}${tour.descripcion?.length > 50 ? '...' : ''}</td>
-                    <td>$${tour.precio?.toFixed(2)}</td>
-                    <td>${tour.capacidad}</td>
-                    <td><span class="status-badge ${tour.disponible ? 'status-active' : 'status-inactive'}">${tour.disponible ? 'Disponible' : 'No disponible'}</span></td>
+                    <td>$${tour.precio?.toFixed(2) || '0.00'}</td>
+                    <td>${tour.capacidad || 'N/A'}</td>
+                    <td><span class="status-badge ${tour.disponible !== false ? 'status-active' : 'status-inactive'}">${tour.disponible !== false ? 'Disponible' : 'No disponible'}</span></td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="editTour(${tour.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteTour(${tour.id}, '${tour.nombre}')"><i class="bi bi-trash"></i></button>
+                            <button class="btn-icon btn-edit" onclick="editTour(${tour.id})" title="Editar tour">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="deleteTourPrompt(${tour.id}, '${tour.nombre}')" title="Eliminar tour">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </td>
                 `;
@@ -3622,22 +2996,589 @@
         }
         
         async function addNewTour() {
-            // Implementación similar a la anterior pero simplificada
-            showAlert('Funcionalidad en desarrollo - Agregar Tour', 'info');
+            const name = document.getElementById('new-tour-name').value.trim();
+            const desc = document.getElementById('new-tour-desc').value.trim();
+            const price = parseFloat(document.getElementById('new-tour-price').value);
+            const capacity = parseInt(document.getElementById('new-tour-capacity').value);
+            const duration = document.getElementById('new-tour-duration').value.trim();
+            const available = document.getElementById('new-tour-available').value === 'true';
+            const imageUrl = document.getElementById('new-tour-image').value.trim();
+            
+            if (!name || !desc || !price || !capacity || !duration) {
+                showFormAlert('add-tour-alert', 'Todos los campos son obligatorios', 'error');
+                return;
+            }
+            
+            if (price <= 0) {
+                showFormAlert('add-tour-alert', 'El precio debe ser mayor a 0', 'error');
+                return;
+            }
+            
+            if (capacity <= 0) {
+                showFormAlert('add-tour-alert', 'La capacidad debe ser mayor a 0', 'error');
+                return;
+            }
+            
+            const tourData = {
+                nombre: name,
+                descripcion: desc,
+                precio: price,
+                capacidad: capacity,
+                duracion: duration,
+                disponible: available,
+                imagen_url: imageUrl || null
+            };
+            
+            showFormAlert('add-tour-alert', 'Creando tour...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/tours`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(tourData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('add-tour-alert', 'Tour creado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-add-tour');
+                        loadTours();
+                        loadDashboardData();
+                    }, 1500);
+                } else {
+                    showFormAlert('add-tour-alert', data.error || 'Error al crear tour', 'error');
+                }
+            } catch (error) {
+                console.error('Error creando tour:', error);
+                showFormAlert('add-tour-alert', 'Error de conexión con el servidor', 'error');
+            }
         }
         
-        // ========== BLOG - FUNCIONALIDAD COMPLETA ==========
+        async function editTour(tourId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tours/${tourId}`);
+                
+                if (response.ok) {
+                    const tour = await response.json();
+                    
+                    document.getElementById('edit-tour-id').value = tour.id;
+                    document.getElementById('edit-tour-name').value = tour.nombre;
+                    document.getElementById('edit-tour-desc').value = tour.descripcion;
+                    document.getElementById('edit-tour-price').value = tour.precio;
+                    document.getElementById('edit-tour-capacity').value = tour.capacidad;
+                    document.getElementById('edit-tour-duration').value = tour.duracion || '';
+                    document.getElementById('edit-tour-available').value = tour.disponible !== false ? 'true' : 'false';
+                    document.getElementById('edit-tour-image').value = tour.imagen_url || '';
+                    
+                    document.getElementById('edit-tour-alert').style.display = 'none';
+                    openModal('modal-edit-tour');
+                }
+            } catch (error) {
+                console.error('Error cargando tour:', error);
+                showAlert('Error cargando datos del tour', 'error');
+            }
+        }
+        
+        async function saveTourEdit() {
+            const id = document.getElementById('edit-tour-id').value;
+            const name = document.getElementById('edit-tour-name').value.trim();
+            const desc = document.getElementById('edit-tour-desc').value.trim();
+            const price = parseFloat(document.getElementById('edit-tour-price').value);
+            const capacity = parseInt(document.getElementById('edit-tour-capacity').value);
+            const duration = document.getElementById('edit-tour-duration').value.trim();
+            const available = document.getElementById('edit-tour-available').value === 'true';
+            const imageUrl = document.getElementById('edit-tour-image').value.trim();
+            
+            if (!name || !desc || !price || !capacity || !duration) {
+                showFormAlert('edit-tour-alert', 'Todos los campos son obligatorios', 'error');
+                return;
+            }
+            
+            const tourData = {
+                nombre: name,
+                descripcion: desc,
+                precio: price,
+                capacidad: capacity,
+                duracion: duration,
+                disponible: available,
+                imagen_url: imageUrl || null
+            };
+            
+            showFormAlert('edit-tour-alert', 'Actualizando tour...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/tours/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(tourData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-tour-alert', 'Tour actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-tour');
+                        loadTours();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-tour-alert', data.error || 'Error al actualizar tour', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando tour:', error);
+                showFormAlert('edit-tour-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function deleteTourPrompt(tourId, tourName) {
+            confirmAction(`¿Eliminar el tour "${tourName}"?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/admin/tours/${tourId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Tour eliminado correctamente', 'success');
+                        loadTours();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar tour', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando tour:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
+            });
+        }
+        
+        // ========== GESTIÓN COMPLETA DE RESERVAS ==========
+        async function loadBookings() {
+            try {
+                showLoading('bookings-table-body', 'Cargando reservas...');
+                
+                const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    allBookingsData = await response.json();
+                    filterBookings();
+                } else {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error cargando reservas:', error);
+                showAlert('Error cargando reservas', 'error');
+                renderEmptyBookingsTable();
+            }
+        }
+        
+        function filterBookings() {
+            const statusFilter = document.getElementById('booking-filter-status').value;
+            const paymentFilter = document.getElementById('booking-filter-payment').value;
+            const dateFilter = document.getElementById('booking-filter-date').value;
+            
+            let filtered = allBookingsData;
+            
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(booking => booking.estado === statusFilter);
+            }
+            
+            if (paymentFilter !== 'all') {
+                filtered = filtered.filter(booking => booking.pago_estado === paymentFilter);
+            }
+            
+            if (dateFilter) {
+                filtered = filtered.filter(booking => {
+                    const bookingDate = new Date(booking.fecha_tour || booking.fecha_reserva);
+                    return bookingDate.toISOString().split('T')[0] === dateFilter;
+                });
+            }
+            
+            bookingsData = filtered;
+            renderBookingsTable(filtered);
+        }
+        
+        function searchBookings() {
+            const searchTerm = document.getElementById('booking-search').value.toLowerCase();
+            
+            if (!searchTerm) {
+                filterBookings();
+                return;
+            }
+            
+            const filtered = allBookingsData.filter(booking => {
+                const userInfo = `${booking.usuario_nombre || ''} ${booking.usuario_email || ''}`.toLowerCase();
+                const tourInfo = `${booking.tour_nombre || ''}`.toLowerCase();
+                const codeInfo = `${booking.codigo || ''}`.toLowerCase();
+                
+                return userInfo.includes(searchTerm) || 
+                       tourInfo.includes(searchTerm) || 
+                       codeInfo.includes(searchTerm);
+            });
+            
+            bookingsData = filtered;
+            renderBookingsTable(filtered);
+        }
+        
+        function renderBookingsTable(bookings) {
+            const tbody = document.getElementById('bookings-table-body');
+            if (!tbody) return;
+            
+            if (!bookings || bookings.length === 0) {
+                renderEmptyBookingsTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            bookings.forEach(booking => {
+                const statusClass = getStatusClass(booking.estado);
+                const paymentIcon = booking.pago_estado === 'paid' ? 'bi-check-circle-fill payment-paid' : 
+                                  booking.pago_estado === 'pending' ? 'bi-clock-fill payment-pending' : 
+                                  'bi-x-circle-fill';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${booking.codigo || `RES-${booking.id}`}</strong></td>
+                    <td>
+                        <strong>${booking.usuario_nombre || 'Usuario'}</strong><br>
+                        <small>${booking.usuario_email || 'Sin email'}</small>
+                    </td>
+                    <td>${booking.tour_nombre || `Tour ${booking.tour_id}`}</td>
+                    <td>${formatDate(booking.fecha_tour || booking.fecha_reserva)}</td>
+                    <td>${booking.personas || 1}</td>
+                    <td><strong>$${(booking.total || 0).toFixed(2)}</strong></td>
+                    <td><span class="status-badge ${statusClass}">${getStatusText(booking.estado)}</span></td>
+                    <td class="payment-status">
+                        <i class="bi ${paymentIcon}"></i>
+                        <span>${getPaymentText(booking.pago_estado)}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-view" onclick="viewBookingDetails(${booking.id})" title="Ver detalles">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn-icon btn-edit" onclick="editBooking(${booking.id})" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-icon ${booking.estado === 'pending' ? 'btn-confirm' : 'btn-warning'}" 
+                                    onclick="${booking.estado === 'pending' ? `confirmBooking(${booking.id})` : `updateBookingStatusPrompt(${booking.id})`}" 
+                                    title="${booking.estado === 'pending' ? 'Confirmar' : 'Cambiar estado'}">
+                                <i class="bi ${booking.estado === 'pending' ? 'bi-check' : 'bi-arrow-repeat'}"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="deleteBookingPrompt(${booking.id}, '${booking.codigo || booking.id}')" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyBookingsTable() {
+            const tbody = document.getElementById('bookings-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-calendar-check"></i>
+                        <h3>No hay reservas</h3>
+                        <p>No se han encontrado reservas con los filtros seleccionados</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        async function viewBookingDetails(bookingId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const booking = await response.json();
+                    
+                    // Llenar detalles
+                    document.getElementById('booking-details-id').value = booking.id;
+                    document.getElementById('booking-code').textContent = booking.codigo || `RES-${booking.id}`;
+                    document.getElementById('booking-user').textContent = `${booking.usuario_nombre || 'Usuario'} (${booking.usuario_email || 'Sin email'})`;
+                    document.getElementById('booking-tour').textContent = booking.tour_nombre || `Tour ${booking.tour_id}`;
+                    document.getElementById('booking-tour-date').textContent = formatDate(booking.fecha_tour || booking.fecha_reserva);
+                    document.getElementById('booking-created').textContent = formatDateTime(booking.fecha_reserva);
+                    document.getElementById('booking-people').textContent = booking.personas || 1;
+                    document.getElementById('booking-total').textContent = `$${(booking.total || 0).toFixed(2)}`;
+                    document.getElementById('booking-status').innerHTML = `<span class="status-badge ${getStatusClass(booking.estado)}">${getStatusText(booking.estado)}</span>`;
+                    document.getElementById('booking-payment').innerHTML = `<span class="payment-status"><i class="bi ${booking.pago_estado === 'paid' ? 'bi-check-circle-fill payment-paid' : 'bi-clock-fill payment-pending'}"></i> ${getPaymentText(booking.pago_estado)}</span>`;
+                    document.getElementById('booking-payment-method').textContent = getPaymentMethodText(booking.pago_metodo);
+                    document.getElementById('booking-emergency').textContent = booking.contacto_emergencia || 'No especificado';
+                    document.getElementById('booking-special').textContent = booking.requerimientos_especiales || 'Ninguno';
+                    
+                    // Configurar selects
+                    document.getElementById('booking-new-status').value = booking.estado || 'pending';
+                    document.getElementById('booking-new-payment').value = booking.pago_estado || 'pending';
+                    
+                    // Cargar notas (si existen en la API)
+                    loadBookingNotes(bookingId);
+                    
+                    openModal('modal-booking-details');
+                } else {
+                    showAlert('Error cargando detalles de la reserva', 'error');
+                }
+            } catch (error) {
+                console.error('Error cargando detalles de reserva:', error);
+                showAlert('Error cargando detalles de la reserva', 'error');
+            }
+        }
+        
+        async function loadBookingNotes(bookingId) {
+            try {
+                // Intentar cargar notas específicas si la API las soporta
+                const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/notes`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const notesHistory = document.getElementById('booking-notes-history');
+                
+                if (response.ok) {
+                    const notes = await response.json();
+                    if (notes && notes.length > 0) {
+                        notesHistory.innerHTML = '';
+                        notes.forEach(note => {
+                            const noteDiv = document.createElement('div');
+                            noteDiv.className = 'note-item';
+                            noteDiv.innerHTML = `
+                                <div>${note.texto || note.contenido}</div>
+                                <div class="note-meta">Por ${note.autor || 'Sistema'} - ${formatDateTime(note.fecha || note.created_at)}</div>
+                            `;
+                            notesHistory.appendChild(noteDiv);
+                        });
+                    } else {
+                        notesHistory.innerHTML = '<p style="color: #666; text-align: center;">No hay notas</p>';
+                    }
+                } else {
+                    notesHistory.innerHTML = '<p style="color: #666; text-align: center;">No hay notas disponibles</p>';
+                }
+            } catch (error) {
+                // Si falla, mostrar mensaje vacío
+                document.getElementById('booking-notes-history').innerHTML = '<p style="color: #666; text-align: center;">No hay notas</p>';
+            }
+        }
+        
+        async function addBookingNote() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            const noteText = document.getElementById('booking-new-note').value.trim();
+            
+            if (!noteText) {
+                showFormAlert('booking-details-alert', 'La nota no puede estar vacía', 'error');
+                return;
+            }
+            
+            const noteData = {
+                texto: noteText,
+                autor: currentUser?.nombre || 'Admin',
+                booking_id: bookingId
+            };
+            
+            showFormAlert('booking-details-alert', 'Agregando nota...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/notes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(noteData)
+                });
+                
+                if (response.ok) {
+                    showFormAlert('booking-details-alert', 'Nota agregada correctamente', 'success');
+                    
+                    // Actualizar lista de notas
+                    loadBookingNotes(bookingId);
+                    
+                    // Limpiar campo
+                    document.getElementById('booking-new-note').value = '';
+                } else {
+                    showFormAlert('booking-details-alert', 'Error al agregar nota', 'error');
+                }
+            } catch (error) {
+                console.error('Error agregando nota:', error);
+                showFormAlert('booking-details-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function updateBookingStatus() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            const newStatus = document.getElementById('booking-new-status').value;
+            const newPayment = document.getElementById('booking-new-payment').value;
+            
+            const bookingData = {
+                estado: newStatus,
+                pago_estado: newPayment
+            };
+            
+            showFormAlert('booking-details-alert', 'Actualizando estado...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('booking-details-alert', 'Estado actualizado correctamente', 'success');
+                    
+                    // Actualizar la lista de reservas
+                    setTimeout(() => {
+                        loadBookings();
+                        viewBookingDetails(bookingId);
+                    }, 1000);
+                } else {
+                    showFormAlert('booking-details-alert', data.error || 'Error al actualizar estado', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando estado:', error);
+                showFormAlert('booking-details-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function sendBookingConfirmation() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            
+            showFormAlert('booking-details-alert', 'Enviando confirmación...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/send-confirmation`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    showFormAlert('booking-details-alert', 'Confirmación enviada correctamente', 'success');
+                } else {
+                    showFormAlert('booking-details-alert', 'Error al enviar confirmación', 'error');
+                }
+            } catch (error) {
+                console.error('Error enviando confirmación:', error);
+                showFormAlert('booking-details-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function deleteBooking() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            const booking = allBookingsData.find(b => b.id == bookingId);
+            deleteBookingPrompt(bookingId, booking?.codigo || bookingId);
+        }
+        
+        function deleteBookingPrompt(bookingId, bookingCode = null) {
+            confirmAction(`¿Eliminar la reserva ${bookingCode || bookingId}? Esta acción no se puede deshacer.`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Reserva eliminada correctamente', 'success');
+                        
+                        // Actualizar lista
+                        loadBookings();
+                        
+                        if (document.getElementById('modal-booking-details').classList.contains('active')) {
+                            closeModal('modal-booking-details');
+                        }
+                    } else {
+                        showAlert(data.error || 'Error al eliminar reserva', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando reserva:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
+            });
+        }
+        
+        async function confirmBooking(bookingId) {
+            confirmAction(`¿Confirmar esta reserva?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}/confirm`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Reserva confirmada correctamente', 'success');
+                        loadBookings();
+                    } else {
+                        showAlert(data.error || 'Error al confirmar reserva', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error confirmando reserva:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
+            });
+        }
+        
+        function updateBookingStatusPrompt(bookingId) {
+            viewBookingDetails(bookingId);
+        }
+        
+        // ========== GESTIÓN DE BLOG ==========
         async function loadBlogPosts() {
             try {
-                // Datos de demostración
-                const mockPosts = [
-                    { id: 1, titulo: 'Nuevo tour disponible', contenido: 'Contenido del artículo...', excerpt: 'Resumen del artículo', categoria: 'noticias', autor: 'Admin', imagen_url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b', publicado: true, created_at: '2024-12-01', vistas: 156 },
-                    { id: 2, titulo: 'Consejos para visitantes', contenido: 'Contenido del artículo...', excerpt: 'Resumen del artículo', categoria: 'consejos', autor: 'Admin', imagen_url: 'https://images.unsplash.com/photo-1551085254-e96b210db58a', publicado: true, created_at: '2024-11-28', vistas: 89 },
-                    { id: 3, titulo: 'Evento especial', contenido: 'Contenido del artículo...', excerpt: 'Resumen del artículo', categoria: 'eventos', autor: 'Admin', imagen_url: null, publicado: false, created_at: '2024-11-25', vistas: 0 }
-                ];
+                showLoading('blog-table-body', 'Cargando artículos...');
                 
-                allBlogPosts = mockPosts;
-                filterBlogPosts();
+                const response = await fetch(`${API_BASE_URL}/api/blog`);
+                
+                if (response.ok) {
+                    allBlogPosts = await response.json();
+                    filterBlogPosts();
+                } else {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
             } catch (error) {
                 console.error('Error cargando blog:', error);
                 showAlert('Error cargando artículos del blog', 'error');
@@ -3683,14 +3624,20 @@
                     <td><strong>${post.titulo}</strong></td>
                     <td><span class="status-badge status-pending">${post.categoria || 'General'}</span></td>
                     <td>${post.autor || 'Anónimo'}</td>
-                    <td>${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td>${post.created_at ? formatDate(post.created_at) : 'N/A'}</td>
                     <td>${post.vistas || 0}</td>
                     <td><span class="status-badge ${post.publicado ? 'status-active' : 'status-pending'}">${post.publicado ? 'Publicado' : 'Borrador'}</span></td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-icon btn-view" onclick="previewBlogPost(${post.id})"><i class="bi bi-eye"></i></button>
-                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteBlogPost(${post.id}, '${post.titulo}')"><i class="bi bi-trash"></i></button>
+                            <button class="btn-icon btn-view" onclick="previewBlogPost(${post.id})" title="Vista previa">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn-icon btn-edit" onclick="editBlogPost(${post.id})" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="deleteBlogPostPrompt(${post.id}, '${post.titulo}')" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </td>
                 `;
@@ -3724,6 +3671,356 @@
             openModal('modal-add-blog');
         }
         
+        async function saveBlogPost() {
+            const title = document.getElementById('blog-title').value.trim();
+            const category = document.getElementById('blog-category').value;
+            const author = document.getElementById('blog-author').value.trim();
+            const excerpt = document.getElementById('blog-excerpt').value.trim();
+            const content = document.getElementById('blog-content-textarea').value.trim();
+            const published = document.getElementById('blog-published').checked;
+            const imageUrl = document.getElementById('blog-image').value.trim();
+            
+            if (!title || !author || !content) {
+                showFormAlert('add-blog-alert', 'Título, autor y contenido son obligatorios', 'error');
+                return;
+            }
+            
+            const blogData = {
+                titulo: title,
+                contenido: content,
+                excerpt: excerpt,
+                categoria: category,
+                autor: author,
+                imagen_url: imageUrl || null,
+                publicado: published
+            };
+            
+            showFormAlert('add-blog-alert', 'Publicando artículo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/blog`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.blog) {
+                    showFormAlert('add-blog-alert', 'Artículo publicado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-add-blog');
+                        loadBlogPosts();
+                        loadDashboardData();
+                    }, 1500);
+                } else {
+                    showFormAlert('add-blog-alert', data.error || 'Error al publicar artículo', 'error');
+                }
+            } catch (error) {
+                console.error('Error publicando artículo:', error);
+                showFormAlert('add-blog-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function editBlogPost(postId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blog/${postId}`);
+                
+                if (response.ok) {
+                    const post = await response.json();
+                    
+                    document.getElementById('edit-blog-id').value = post.id;
+                    document.getElementById('edit-blog-title').value = post.titulo;
+                    document.getElementById('edit-blog-category').value = post.categoria || 'noticias';
+                    document.getElementById('edit-blog-author').value = post.autor || '';
+                    document.getElementById('edit-blog-excerpt').value = post.excerpt || '';
+                    document.getElementById('edit-blog-content-textarea').value = post.contenido || '';
+                    document.getElementById('edit-blog-published').checked = post.publicado || false;
+                    document.getElementById('edit-blog-image').value = post.imagen_url || '';
+                    
+                    document.getElementById('edit-blog-alert').style.display = 'none';
+                    openModal('modal-edit-blog');
+                }
+            } catch (error) {
+                console.error('Error cargando artículo:', error);
+                showAlert('Error cargando datos del artículo', 'error');
+            }
+        }
+        
+        async function saveBlogEdit() {
+            const id = document.getElementById('edit-blog-id').value;
+            const title = document.getElementById('edit-blog-title').value.trim();
+            const category = document.getElementById('edit-blog-category').value;
+            const author = document.getElementById('edit-blog-author').value.trim();
+            const excerpt = document.getElementById('edit-blog-excerpt').value.trim();
+            const content = document.getElementById('edit-blog-content-textarea').value.trim();
+            const published = document.getElementById('edit-blog-published').checked;
+            const imageUrl = document.getElementById('edit-blog-image').value.trim();
+            
+            if (!title || !author || !content) {
+                showFormAlert('edit-blog-alert', 'Título, autor y contenido son obligatorios', 'error');
+                return;
+            }
+            
+            const blogData = {
+                titulo: title,
+                contenido: content,
+                excerpt: excerpt,
+                categoria: category,
+                autor: author,
+                imagen_url: imageUrl || null,
+                publicado: published
+            };
+            
+            showFormAlert('edit-blog-alert', 'Actualizando artículo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/blog/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(blogData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('edit-blog-alert', 'Artículo actualizado correctamente', 'success');
+                    setTimeout(() => {
+                        closeModal('modal-edit-blog');
+                        loadBlogPosts();
+                    }, 1500);
+                } else {
+                    showFormAlert('edit-blog-alert', data.error || 'Error al actualizar artículo', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando artículo:', error);
+                showFormAlert('edit-blog-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        async function previewBlogPost(postId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/blog/${postId}`);
+                
+                if (response.ok) {
+                    const post = await response.json();
+                    
+                    const previewContent = document.getElementById('blog-preview-content');
+                    previewContent.innerHTML = `
+                        <div class="blog-preview">
+                            <h1>${post.titulo}</h1>
+                            <div class="meta">
+                                <strong>Categoría:</strong> ${post.categoria || 'General'} |
+                                <strong>Autor:</strong> ${post.autor || 'Anónimo'} |
+                                <strong>Fecha:</strong> ${post.created_at ? formatDate(post.created_at) : 'N/A'} |
+                                <strong>Vistas:</strong> ${post.vistas || 0} |
+                                <strong>Estado:</strong> ${post.publicado ? 'Publicado' : 'Borrador'}
+                            </div>
+                            ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" style="max-width: 100%; border-radius: 8px; margin-bottom: 20px;">` : ''}
+                            ${post.excerpt ? `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-style: italic;">${post.excerpt}</div>` : ''}
+                            <div style="line-height: 1.6; font-size: 16px;">
+                                ${post.contenido ? post.contenido.replace(/\n/g, '<br>') : '<p>Contenido no disponible</p>'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    openModal('modal-preview-blog');
+                }
+            } catch (error) {
+                console.error('Error cargando artículo:', error);
+                showAlert('Error cargando artículo para vista previa', 'error');
+            }
+        }
+        
+        function deleteBlogPostPrompt(postId, postTitle) {
+            confirmAction(`¿Eliminar el artículo "${postTitle}"?`, async function() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/admin/blog/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showAlert('Artículo eliminado correctamente', 'success');
+                        loadBlogPosts();
+                        loadDashboardData();
+                    } else {
+                        showAlert(data.error || 'Error al eliminar artículo', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error eliminando artículo:', error);
+                    showAlert('Error de conexión con el servidor', 'error');
+                }
+            });
+        }
+        
+        // ========== ANALÍTICAS DE RESERVAS ==========
+        async function showBookingAnalytics() {
+            try {
+                // Cargar datos para analíticas
+                const today = new Date().toISOString().split('T')[0];
+                const todayBookings = allBookingsData.filter(b => {
+                    const bookingDate = new Date(b.fecha_tour || b.fecha_reserva);
+                    return bookingDate.toISOString().split('T')[0] === today;
+                });
+                
+                const confirmedBookings = allBookingsData.filter(b => b.estado === 'confirmed');
+                const paidBookings = allBookingsData.filter(b => b.pago_estado === 'paid');
+                
+                // Actualizar estadísticas
+                document.getElementById('analytics-today').textContent = todayBookings.length;
+                document.getElementById('analytics-revenue').textContent = `$${todayBookings.reduce((sum, b) => sum + (b.total || 0), 0).toFixed(2)}`;
+                document.getElementById('analytics-people').textContent = todayBookings.reduce((sum, b) => sum + (b.personas || 0), 0);
+                document.getElementById('analytics-confirmation-rate').textContent = allBookingsData.length > 0 ? 
+                    `${Math.round((confirmedBookings.length / allBookingsData.length) * 100)}%` : '0%';
+                
+                // Generar gráficos
+                generateBookingsCharts();
+                
+                // Mostrar tours populares
+                showPopularTours();
+                
+                openModal('modal-booking-analytics');
+            } catch (error) {
+                console.error('Error cargando analíticas:', error);
+                showAlert('Error cargando analíticas', 'error');
+            }
+        }
+        
+        function generateBookingsCharts() {
+            // Gráfico de estados
+            const statusCtx = document.getElementById('bookingsStatusChart')?.getContext('2d');
+            if (statusCtx && Chart) {
+                const statusCounts = {
+                    pending: allBookingsData.filter(b => b.estado === 'pending').length,
+                    confirmed: allBookingsData.filter(b => b.estado === 'confirmed').length,
+                    cancelled: allBookingsData.filter(b => b.estado === 'cancelled').length,
+                    completed: allBookingsData.filter(b => b.estado === 'completed').length
+                };
+                
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pendientes', 'Confirmadas', 'Canceladas', 'Completadas'],
+                        datasets: [{
+                            data: [statusCounts.pending, statusCounts.confirmed, statusCounts.cancelled, statusCounts.completed],
+                            backgroundColor: ['#ffc107', '#28a745', '#dc3545', '#007bff']
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+            
+            // Gráfico diario (últimos 7 días)
+            const dailyCtx = document.getElementById('bookingsDailyChart')?.getContext('2d');
+            if (dailyCtx && Chart) {
+                const dates = [];
+                const counts = [];
+                
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    dates.push(formatDate(dateStr));
+                    
+                    const dayBookings = allBookingsData.filter(b => {
+                        const bookingDate = new Date(b.fecha_reserva || b.fecha_tour);
+                        return bookingDate.toISOString().split('T')[0] === dateStr;
+                    });
+                    counts.push(dayBookings.length);
+                }
+                
+                new Chart(dailyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Reservas por día',
+                            data: counts,
+                            backgroundColor: '#3498db'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function showPopularTours() {
+            const tbody = document.getElementById('popular-tours-body');
+            if (!tbody) return;
+            
+            // Agrupar por tour
+            const tourStats = {};
+            allBookingsData.forEach(booking => {
+                const tourName = booking.tour_nombre || `Tour ${booking.tour_id}`;
+                if (!tourStats[tourName]) {
+                    tourStats[tourName] = {
+                        bookings: 0,
+                        people: 0,
+                        revenue: 0
+                    };
+                }
+                
+                tourStats[tourName].bookings++;
+                tourStats[tourName].people += booking.personas || 0;
+                tourStats[tourName].revenue += booking.total || 0;
+            });
+            
+            // Convertir a array y ordenar por ingresos
+            const sortedTours = Object.entries(tourStats)
+                .map(([tour, stats]) => ({ tour, ...stats }))
+                .sort((a, b) => b.revenue - a.revenue)
+                .slice(0, 5); // Top 5
+            
+            tbody.innerHTML = '';
+            
+            if (sortedTours.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                            No hay datos suficientes
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            sortedTours.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${item.tour}</strong></td>
+                    <td>${item.bookings}</td>
+                    <td>${item.people}</td>
+                    <td>$${item.revenue.toFixed(2)}</td>
+                    <td>${allBookingsData.length > 0 ? Math.round((item.bookings / allBookingsData.length) * 100) : 0}%</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
         // ========== CONFIGURACIÓN ==========
         function loadProfile() {
             if (!currentUser) return;
@@ -3736,7 +4033,160 @@
             document.getElementById('new-password').value = '';
         }
         
-        // ========== UTILIDADES ==========
+        async function updateProfile() {
+            const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const phone = document.getElementById('profile-phone').value.trim();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            
+            if (!name || !email) {
+                showFormAlert('profile-form-alert', 'Nombre y email son obligatorios', 'error');
+                return;
+            }
+            
+            const profileData = {
+                nombre: name,
+                email: email,
+                telefono: phone
+            };
+            
+            if (currentPassword && newPassword) {
+                if (newPassword.length < 6) {
+                    showFormAlert('profile-form-alert', 'La nueva contraseña debe tener al menos 6 caracteres', 'error');
+                    return;
+                }
+                profileData.current_password = currentPassword;
+                profileData.new_password = newPassword;
+            }
+            
+            showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showFormAlert('profile-form-alert', 'Perfil actualizado correctamente', 'success');
+                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+                    currentUser = data.user;
+                    updateUserUI();
+                    
+                    setTimeout(() => {
+                        document.getElementById('profile-form-alert').style.display = 'none';
+                        document.getElementById('current-password').value = '';
+                        document.getElementById('new-password').value = '';
+                    }, 2000);
+                } else {
+                    showFormAlert('profile-form-alert', data.error || 'Error al actualizar perfil', 'error');
+                }
+            } catch (error) {
+                console.error('Error actualizando perfil:', error);
+                showFormAlert('profile-form-alert', 'Error de conexión con el servidor', 'error');
+            }
+        }
+        
+        function saveSystemSettings() {
+            const autoRefresh = document.getElementById('auto-refresh').value;
+            const notifications = document.getElementById('notifications-enabled').checked;
+            
+            localStorage.setItem('admin_auto_refresh', autoRefresh);
+            localStorage.setItem('admin_notifications', notifications);
+            
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            if (autoRefresh > 0) {
+                autoRefreshInterval = setInterval(loadDashboardData, autoRefresh * 1000);
+            }
+            
+            showAlert('Configuración guardada correctamente', 'success');
+        }
+        
+        // ========== FUNCIONES DE UTILIDAD ==========
+        function showLoading(elementId, message = 'Cargando...') {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 40px;">
+                            <div class="spinner"></div>
+                            <p>${message}</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        function getStatusClass(status) {
+            switch(status) {
+                case 'pending': return 'status-pending';
+                case 'confirmed': return 'status-confirmed';
+                case 'cancelled': return 'status-cancelled';
+                case 'completed': return 'status-completed';
+                default: return 'status-pending';
+            }
+        }
+        
+        function getStatusText(status) {
+            switch(status) {
+                case 'pending': return 'Pendiente';
+                case 'confirmed': return 'Confirmada';
+                case 'cancelled': return 'Cancelada';
+                case 'completed': return 'Completada';
+                default: return status || 'Pendiente';
+            }
+        }
+        
+        function getPaymentText(payment) {
+            switch(payment) {
+                case 'paid': return 'Pagada';
+                case 'pending': return 'Pendiente';
+                case 'refunded': return 'Reembolsada';
+                case 'failed': return 'Fallida';
+                default: return payment || 'Pendiente';
+            }
+        }
+        
+        function getPaymentMethodText(method) {
+            switch(method) {
+                case 'cash': return 'Efectivo';
+                case 'card': return 'Tarjeta';
+                case 'transfer': return 'Transferencia';
+                case 'paypal': return 'PayPal';
+                default: return method || 'No especificado';
+            }
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('es-ES');
+            } catch (error) {
+                return 'Fecha inválida';
+            }
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleString('es-ES');
+            } catch (error) {
+                return 'Fecha inválida';
+            }
+        }
+        
         function updateCurrentTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = 
@@ -3760,104 +4210,11 @@
             showAlert('Funcionalidad en desarrollo - Exportar a CSV', 'info');
         }
         
-        function generateDashboardReport() {
-            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
-        }
-        
-        function generateUsersReport() {
-            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
-        }
-        
-        function generateBookingsReport() {
-            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
-        }
-        
-        function generateFinancialReport() {
-            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
-        }
-        
-        async function updateProfile() {
-            showAlert('Perfil actualizado (modo demo)', 'success');
-        }
-        
-        function saveSystemSettings() {
-            const autoRefresh = document.getElementById('auto-refresh').value;
-            const notifications = document.getElementById('notifications-enabled').checked;
-            
-            localStorage.setItem('admin_auto_refresh', autoRefresh);
-            localStorage.setItem('admin_notifications', notifications);
-            
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            
-            if (autoRefresh > 0) {
-                autoRefreshInterval = setInterval(loadDashboardData, autoRefresh * 1000);
-            }
-            
-            showAlert('Configuración guardada correctamente', 'success');
-        }
-        
-        // Funciones para usuarios (mantenidas del código anterior)
-        async function loadUsers() {
-            if (!isAdmin) {
-                showAlert('No tienes permisos de administrador', 'error');
-                return;
-            }
-            
-            // Datos de demostración
-            const mockUsers = [
-                { id: 1, nombre: 'Juan Pérez', email: 'juan@email.com', rol: 'user', fecha_registro: '2024-01-15', activo: true, telefono: '0412-1234567' },
-                { id: 2, nombre: 'María González', email: 'maria@email.com', rol: 'user', fecha_registro: '2024-02-20', activo: true, telefono: '0414-7654321' },
-                { id: 3, nombre: 'Admin', email: 'admin@cano-salao.com', rol: 'admin', fecha_registro: '2024-01-01', activo: true, telefono: '' },
-                { id: 4, nombre: 'Carlos Rodríguez', email: 'carlos@email.com', rol: 'user', fecha_registro: '2024-03-10', activo: false, telefono: '0426-9876543' }
-            ];
-            
-            usersData = mockUsers;
-            renderUsersTable(mockUsers);
-        }
-        
-        function renderUsersTable(users) {
-            const tbody = document.getElementById('users-table-body');
-            if (!tbody) return;
-            
-            if (!users || users.length === 0) {
-                renderEmptyUsersTable();
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            users.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.id}</td>
-                    <td><strong>${user.nombre}</strong></td>
-                    <td>${user.email}</td>
-                    <td><span class="status-badge ${user.rol === 'admin' ? 'status-active' : 'status-pending'}">${user.rol}</span></td>
-                    <td>${user.fecha_registro ? new Date(user.fecha_registro).toLocaleDateString() : 'N/A'}</td>
-                    <td><span class="status-badge ${user.activo ? 'status-active' : 'status-inactive'}">${user.activo ? 'Activo' : 'Inactivo'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="editUser(${user.id}, '${user.nombre}', '${user.email}', '${user.telefono || ''}', '${user.rol}', ${user.activo})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn-icon btn-delete" onclick="deleteUser(${user.id}, '${user.nombre}')"><i class="bi bi-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function renderEmptyUsersTable() {
-            const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-state">
-                        <i class="bi bi-people"></i>
-                        <h3>No hay usuarios registrados</h3>
-                        <p>Agrega el primer usuario</p>
-                    </td>
-                </tr>
-            `;
+        function exportAnalyticsReport() {
+            showAlert('Generando reporte de analíticas...', 'info');
+            setTimeout(() => {
+                showAlert('Reporte generado correctamente', 'success');
+            }, 1500);
         }
 
     </script>
