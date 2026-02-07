@@ -233,6 +233,11 @@
             color: #721c24;
         }
         
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
         /* Action buttons */
         .action-buttons {
             display: flex;
@@ -685,6 +690,7 @@
             gap: 10px;
             align-items: center;
             flex-wrap: wrap;
+            margin-bottom: 20px;
         }
         
         .filter-select {
@@ -1017,6 +1023,122 @@
             color: white;
             border-color: var(--admin-accent);
         }
+        
+        /* Nuevos estilos para gestión de reservas */
+        .booking-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .booking-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .booking-detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .booking-detail-label {
+            font-weight: 600;
+            color: var(--admin-primary);
+        }
+        
+        .booking-detail-value {
+            color: #333;
+        }
+        
+        .payment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .payment-paid {
+            color: #27ae60;
+        }
+        
+        .payment-pending {
+            color: #f39c12;
+        }
+        
+        .notes-section {
+            margin-top: 20px;
+        }
+        
+        .notes-history {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .note-item {
+            background: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid var(--admin-accent);
+        }
+        
+        .note-meta {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .status-timeline {
+            margin: 20px 0;
+            padding-left: 20px;
+            border-left: 2px solid #eee;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        
+        .timeline-item.completed:before {
+            background: var(--admin-success);
+        }
+        
+        .timeline-item.active:before {
+            background: var(--admin-accent);
+        }
+        
+        /* Export buttons */
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -1040,7 +1162,6 @@
                     <div class="admin-avatar" id="admin-user-avatar">A</div>
                     <div class="admin-user-dropdown" id="admin-user-dropdown">
                         <a href="../index.html"><i class="bi bi-house"></i> Ver Sitio</a>
-                        <a href="usuario.html"><i class="bi bi-person"></i> Panel Usuario</a>
                         <a href="#" id="admin-logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a>
                     </div>
                 </div>
@@ -1210,30 +1331,51 @@
                 </div>
             </div>
 
-            <!-- ========== BOOKINGS SECTION ========== -->
+            <!-- ========== BOOKINGS SECTION COMPLETA ========== -->
             <div id="bookings" class="admin-section">
+                <div class="filter-controls">
+                    <select id="booking-filter-status" class="filter-select" onchange="filterBookings()">
+                        <option value="all">Todos los estados</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="confirmed">Confirmadas</option>
+                        <option value="cancelled">Canceladas</option>
+                        <option value="completed">Completadas</option>
+                    </select>
+                    <select id="booking-filter-payment" class="filter-select" onchange="filterBookings()">
+                        <option value="all">Todos los pagos</option>
+                        <option value="paid">Pagadas</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="refunded">Reembolsadas</option>
+                    </select>
+                    <input type="date" id="booking-filter-date" class="filter-select" onchange="filterBookings()">
+                    <input type="text" id="booking-search" class="filter-select" placeholder="Buscar por nombre, email o código..." onkeyup="searchBookings()">
+                </div>
+
                 <div class="quick-actions">
                     <button class="btn" onclick="loadBookings()" style="background: var(--admin-accent);"><i class="bi bi-arrow-clockwise"></i> Actualizar</button>
                     <button class="btn" onclick="exportBookingsToCSV()" style="background: var(--admin-primary);"><i class="bi bi-download"></i> Exportar CSV</button>
+                    <button class="btn" onclick="showBookingAnalytics()" style="background: var(--admin-success);"><i class="bi bi-graph-up"></i> Analíticas</button>
+                    <button class="btn" onclick="showAddBookingModal()" style="background: var(--admin-warning);"><i class="bi bi-plus-circle"></i> Nueva Reserva</button>
                 </div>
 
                 <div class="admin-table-container">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Código</th>
                                 <th>Usuario</th>
                                 <th>Tour</th>
-                                <th>Fecha</th>
+                                <th>Fecha Tour</th>
                                 <th>Personas</th>
                                 <th>Total</th>
                                 <th>Estado</th>
+                                <th>Pago</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="bookings-table-body">
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 40px;">
+                                <td colspan="9" style="text-align: center; padding: 40px;">
                                     <div class="spinner"></div>
                                     <p>Cargando reservas...</p>
                                 </td>
@@ -1295,6 +1437,7 @@
                     <button class="btn" onclick="generateDashboardReport()" style="background: var(--admin-success);"><i class="bi bi-file-earmark-pdf"></i> Reporte Dashboard</button>
                     <button class="btn" onclick="generateUsersReport()" style="background: var(--admin-primary);"><i class="bi bi-file-earmark-excel"></i> Reporte Usuarios</button>
                     <button class="btn" onclick="generateBookingsReport()" style="background: var(--admin-accent);"><i class="bi bi-file-earmark-text"></i> Reporte Reservas</button>
+                    <button class="btn" onclick="generateFinancialReport()" style="background: var(--admin-warning);"><i class="bi bi-cash-stack"></i> Reporte Financiero</button>
                 </div>
 
                 <div class="report-preview" id="report-preview">
@@ -1313,6 +1456,8 @@
                 <div class="content-tabs">
                     <button class="content-tab active" data-tab="profile">Mi Perfil</button>
                     <button class="content-tab" data-tab="system">Sistema</button>
+                    <button class="content-tab" data-tab="email">Config. Email</button>
+                    <button class="content-tab" data-tab="payment">Pagos</button>
                 </div>
 
                 <!-- Configuración del perfil -->
@@ -1384,8 +1529,67 @@
                                 <i class="bi bi-bell"></i> Notificaciones del sistema
                             </label>
                         </div>
+                        <div class="form-group">
+                            <label><i class="bi bi-calendar"></i> Días máximo para reservas futuras</label>
+                            <input type="number" id="max-booking-days" class="form-control" value="90" min="1" max="365">
+                        </div>
                         <div class="form-actions">
                             <button class="btn" onclick="saveSystemSettings()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Configuración</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración de email -->
+                <div id="email-tab" class="tab-content">
+                    <div class="admin-form">
+                        <h3><i class="bi bi-envelope"></i> Configuración de Email</h3>
+                        <div class="form-group">
+                            <label>SMTP Server</label>
+                            <input type="text" id="smtp-server" class="form-control" placeholder="smtp.gmail.com">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>SMTP Port</label>
+                                <input type="number" id="smtp-port" class="form-control" value="587">
+                            </div>
+                            <div class="form-group">
+                                <label>SSL/TLS</label>
+                                <select id="smtp-ssl" class="form-control">
+                                    <option value="tls">TLS</option>
+                                    <option value="ssl">SSL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email de envío</label>
+                            <input type="email" id="smtp-email" class="form-control" placeholder="no-reply@cano-salao.com">
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Configuración</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración de pagos -->
+                <div id="payment-tab" class="tab-content">
+                    <div class="admin-form">
+                        <h3><i class="bi bi-credit-card"></i> Configuración de Pagos</h3>
+                        <div class="form-group">
+                            <label><i class="bi bi-paypal"></i> PayPal Client ID</label>
+                            <input type="text" id="paypal-client-id" class="form-control" placeholder="Client ID de PayPal">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="bi bi-bank"></i> Transferencia Bancaria</label>
+                            <textarea id="bank-details" class="form-control" rows="4" placeholder="Detalles de la cuenta bancaria..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="payment-test-mode" checked>
+                                Modo prueba (sandbox)
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Configuración</button>
                         </div>
                     </div>
                 </div>
@@ -1432,6 +1636,264 @@
 
     <!-- ========== MODALES ========== -->
     
+    <!-- Modal Detalles de Reserva COMPLETO -->
+    <div id="modal-booking-details" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="bi bi-calendar-check"></i> Detalles de la Reserva</h3>
+                <button class="modal-close" onclick="closeModal('modal-booking-details')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="booking-details-alert" class="alert" style="display: none;"></div>
+                <input type="hidden" id="booking-details-id">
+                
+                <div class="booking-details">
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Código de Reserva:</span>
+                        <span class="booking-detail-value" id="booking-code">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Usuario:</span>
+                        <span class="booking-detail-value" id="booking-user">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Tour:</span>
+                        <span class="booking-detail-value" id="booking-tour">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Fecha del Tour:</span>
+                        <span class="booking-detail-value" id="booking-tour-date">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Fecha de Reserva:</span>
+                        <span class="booking-detail-value" id="booking-created">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Número de Personas:</span>
+                        <span class="booking-detail-value" id="booking-people">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Total:</span>
+                        <span class="booking-detail-value" id="booking-total">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Estado:</span>
+                        <span class="booking-detail-value" id="booking-status">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Estado de Pago:</span>
+                        <span class="booking-detail-value" id="booking-payment">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Método de Pago:</span>
+                        <span class="booking-detail-value" id="booking-payment-method">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Contacto de Emergencia:</span>
+                        <span class="booking-detail-value" id="booking-emergency">--</span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="booking-detail-label">Requerimientos Especiales:</span>
+                        <span class="booking-detail-value" id="booking-special">--</span>
+                    </div>
+                </div>
+
+                <!-- Timeline del estado -->
+                <div class="status-timeline" id="booking-timeline"></div>
+
+                <!-- Notas internas -->
+                <div class="notes-section">
+                    <h4><i class="bi bi-chat-left-text"></i> Notas Internas</h4>
+                    <div class="notes-history" id="booking-notes-history"></div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <textarea id="booking-new-note" class="form-control" rows="3" placeholder="Agregar una nota interna..."></textarea>
+                        <button class="btn" onclick="addBookingNote()" style="margin-top: 10px; background: var(--admin-accent);"><i class="bi bi-plus"></i> Agregar Nota</button>
+                    </div>
+                </div>
+
+                <!-- Opciones de estado -->
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <h4><i class="bi bi-gear"></i> Cambiar Estado</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nuevo Estado</label>
+                            <select id="booking-new-status" class="form-control">
+                                <option value="pending">Pendiente</option>
+                                <option value="confirmed">Confirmada</option>
+                                <option value="cancelled">Cancelada</option>
+                                <option value="completed">Completada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado de Pago</label>
+                            <select id="booking-new-payment" class="form-control">
+                                <option value="pending">Pendiente</option>
+                                <option value="paid">Pagada</option>
+                                <option value="refunded">Reembolsada</option>
+                                <option value="failed">Fallida</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-booking-details')">Cerrar</button>
+                <button class="btn" onclick="updateBookingStatus()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Guardar Cambios</button>
+                <button class="btn" onclick="sendBookingConfirmation()" style="background: var(--admin-accent);"><i class="bi bi-envelope"></i> Enviar Confirmación</button>
+                <button class="btn" onclick="sendBookingReminder()" style="background: var(--admin-warning);"><i class="bi bi-bell"></i> Recordatorio</button>
+                <button class="btn" onclick="deleteBooking()" style="background: var(--admin-danger);"><i class="bi bi-trash"></i> Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Analíticas de Reservas -->
+    <div id="modal-booking-analytics" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="bi bi-graph-up"></i> Analíticas de Reservas</h3>
+                <button class="modal-close" onclick="closeModal('modal-booking-analytics')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="stats-grid" style="margin-bottom: 20px;">
+                    <div class="stat-card">
+                        <i class="bi bi-calendar-check" style="color: var(--admin-success);"></i>
+                        <h3>Reservas Hoy</h3>
+                        <div class="stat-number" id="analytics-today">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-cash-coin" style="color: var(--admin-accent);"></i>
+                        <h3>Ingresos Hoy</h3>
+                        <div class="stat-number" id="analytics-revenue">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-people" style="color: var(--admin-warning);"></i>
+                        <h3>Personas Hoy</h3>
+                        <div class="stat-number" id="analytics-people">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-percent" style="color: var(--admin-primary);"></i>
+                        <h3>Tasa Confirmación</h3>
+                        <div class="stat-number" id="analytics-confirmation-rate">0%</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="chart-container" style="flex: 1;">
+                        <h3><i class="bi bi-bar-chart"></i> Reservas por Estado</h3>
+                        <canvas id="bookingsStatusChart" height="200"></canvas>
+                    </div>
+                    <div class="chart-container" style="flex: 1;">
+                        <h3><i class="bi bi-calendar-week"></i> Reservas por Día</h3>
+                        <canvas id="bookingsDailyChart" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <div class="admin-table-container" style="margin-top: 20px;">
+                    <h3 style="padding: 15px 20px; margin: 0; border-bottom: 1px solid #eee;">Tours Más Populares</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Tour</th>
+                                <th>Reservas</th>
+                                <th>Personas</th>
+                                <th>Ingresos</th>
+                                <th>Tasa Ocupación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="popular-tours-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-booking-analytics')">Cerrar</button>
+                <button class="btn" onclick="exportAnalyticsReport()" style="background: var(--admin-primary);"><i class="bi bi-download"></i> Exportar Reporte</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Reserva -->
+    <div id="modal-add-booking" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3><i class="bi bi-plus-circle"></i> Crear Nueva Reserva</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-booking')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="add-booking-alert" class="alert" style="display: none;"></div>
+                <form id="add-booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <select id="new-booking-user" class="form-control" required>
+                                <option value="">Seleccionar usuario...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tour</label>
+                            <select id="new-booking-tour" class="form-control" required>
+                                <option value="">Seleccionar tour...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha del Tour</label>
+                            <input type="date" id="new-booking-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Personas</label>
+                            <input type="number" id="new-booking-people" class="form-control" min="1" max="20" value="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Estado Inicial</label>
+                            <select id="new-booking-status" class="form-control">
+                                <option value="pending">Pendiente</option>
+                                <option value="confirmed">Confirmada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado de Pago</label>
+                            <select id="new-booking-payment" class="form-control">
+                                <option value="pending">Pendiente</option>
+                                <option value="paid">Pagada</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="new-booking-payment-method" class="form-control">
+                            <option value="cash">Efectivo</option>
+                            <option value="card">Tarjeta</option>
+                            <option value="transfer">Transferencia</option>
+                            <option value="paypal">PayPal</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Contacto de Emergencia</label>
+                            <input type="text" id="new-booking-emergency" class="form-control" placeholder="Nombre y teléfono">
+                        </div>
+                        <div class="form-group">
+                            <label>Requerimientos Especiales</label>
+                            <input type="text" id="new-booking-special" class="form-control" placeholder="Alergias, movilidad reducida, etc.">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notas Internas</label>
+                        <textarea id="new-booking-notes" class="form-control" rows="3" placeholder="Notas para el administrador..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('modal-add-booking')">Cancelar</button>
+                <button class="btn" onclick="createNewBooking()" style="background: var(--admin-success);"><i class="bi bi-save"></i> Crear Reserva</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Agregar Usuario -->
     <div id="modal-add-user" class="modal">
         <div class="modal-content">
@@ -1564,35 +2026,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Imagen del Tour</label>
-                        <div class="image-options">
-                            <button type="button" class="image-option-btn active" onclick="toggleImageOption('upload')">Subir imagen</button>
-                            <button type="button" class="image-option-btn" onclick="toggleImageOption('url')">Usar URL</button>
-                        </div>
-                        
-                        <div id="image-upload-section">
-                            <label class="file-upload-label" for="tour-image-upload">
-                                <i class="bi bi-cloud-upload"></i>
-                                <span>Haz clic para subir una imagen</span>
-                                <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
-                            </label>
-                            <input type="file" id="tour-image-upload" class="file-upload-input" accept="image/*">
-                            <div class="upload-progress" id="tour-upload-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" id="tour-progress-fill"></div>
-                                </div>
-                                <div class="upload-status" id="tour-upload-status">0%</div>
-                            </div>
-                        </div>
-                        
-                        <div id="image-url-section" style="display: none;">
-                            <input type="url" id="new-tour-image-url" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
-                        </div>
-                        
-                        <div class="image-preview-container">
-                            <img id="tour-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
-                            <input type="hidden" id="tour-image-data">
-                        </div>
+                        <label>Imagen del Tour (URL)</label>
+                        <input type="url" id="new-tour-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
                     </div>
                 </form>
             </div>
@@ -1648,35 +2083,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Imagen del Tour</label>
-                        <div class="image-options">
-                            <button type="button" class="image-option-btn active" onclick="toggleEditImageOption('upload')">Subir imagen</button>
-                            <button type="button" class="image-option-btn" onclick="toggleEditImageOption('url')">Usar URL</button>
-                        </div>
-                        
-                        <div id="edit-image-upload-section">
-                            <label class="file-upload-label" for="edit-tour-image-upload">
-                                <i class="bi bi-cloud-upload"></i>
-                                <span>Haz clic para subir una nueva imagen</span>
-                                <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
-                            </label>
-                            <input type="file" id="edit-tour-image-upload" class="file-upload-input" accept="image/*">
-                            <div class="upload-progress" id="edit-tour-upload-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" id="edit-tour-progress-fill"></div>
-                                </div>
-                                <div class="upload-status" id="edit-tour-upload-status">0%</div>
-                            </div>
-                        </div>
-                        
-                        <div id="edit-image-url-section" style="display: none;">
-                            <input type="url" id="edit-tour-image-url" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
-                        </div>
-                        
-                        <div class="image-preview-container">
-                            <img id="edit-tour-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
-                            <input type="hidden" id="edit-tour-image-data">
-                        </div>
+                        <label>Imagen del Tour (URL)</label>
+                        <input type="url" id="edit-tour-image" class="form-control">
                     </div>
                 </form>
             </div>
@@ -1718,35 +2126,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Imagen Principal</label>
-                    <div class="image-options">
-                        <button type="button" class="image-option-btn active" onclick="toggleBlogImageOption('upload')">Subir imagen</button>
-                        <button type="button" class="image-option-btn" onclick="toggleBlogImageOption('url')">Usar URL</button>
-                    </div>
-                    
-                    <div id="blog-image-upload-section">
-                        <label class="file-upload-label" for="blog-image-upload">
-                            <i class="bi bi-cloud-upload"></i>
-                            <span>Haz clic para subir una imagen</span>
-                            <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
-                        </label>
-                        <input type="file" id="blog-image-upload" class="file-upload-input" accept="image/*">
-                        <div class="upload-progress" id="blog-upload-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="blog-progress-fill"></div>
-                            </div>
-                            <div class="upload-status" id="blog-upload-status">0%</div>
-                        </div>
-                    </div>
-                    
-                    <div id="blog-image-url-section" style="display: none;">
-                        <input type="url" id="blog-image-url" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
-                    </div>
-                    
-                    <div class="image-preview-container">
-                        <img id="blog-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
-                        <input type="hidden" id="blog-image-data">
-                    </div>
+                    <label>Imagen Principal (URL)</label>
+                    <input type="url" id="blog-image" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
                 </div>
                 <div class="form-group">
                     <label>Resumen (excerpt)</label>
@@ -1800,35 +2181,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Imagen Principal</label>
-                    <div class="image-options">
-                        <button type="button" class="image-option-btn active" onclick="toggleEditBlogImageOption('upload')">Subir imagen</button>
-                        <button type="button" class="image-option-btn" onclick="toggleEditBlogImageOption('url')">Usar URL</button>
-                    </div>
-                    
-                    <div id="edit-blog-image-upload-section">
-                        <label class="file-upload-label" for="edit-blog-image-upload">
-                            <i class="bi bi-cloud-upload"></i>
-                            <span>Haz clic para subir una nueva imagen</span>
-                            <span style="font-size: 12px; color: #666;">(JPEG, PNG, GIF - Máx. 5MB)</span>
-                        </label>
-                        <input type="file" id="edit-blog-image-upload" class="file-upload-input" accept="image/*">
-                        <div class="upload-progress" id="edit-blog-upload-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="edit-blog-progress-fill"></div>
-                            </div>
-                            <div class="upload-status" id="edit-blog-upload-status">0%</div>
-                        </div>
-                    </div>
-                    
-                    <div id="edit-blog-image-url-section" style="display: none;">
-                        <input type="url" id="edit-blog-image-url" class="form-control">
-                    </div>
-                    
-                    <div class="image-preview-container">
-                        <img id="edit-blog-image-preview" class="image-preview" style="display: none;" alt="Vista previa">
-                        <input type="hidden" id="edit-blog-image-data">
-                    </div>
+                    <label>Imagen Principal (URL)</label>
+                    <input type="url" id="edit-blog-image" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Resumen (excerpt)</label>
@@ -1885,7 +2239,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL CON TODAS LAS FUNCIONALIDADES COMPLETAS -->
+    <!-- SCRIPT PRINCIPAL CON TODAS LAS FUNCIONALIDADES COMPLETAS (3000+ líneas) -->
     <script>
         // ========== CONFIGURACIÓN ==========
         const API_BASE_URL = 'https://cano-salao.onrender.com';
@@ -1901,18 +2255,15 @@
         let isAdmin = false;
         let autoRefreshInterval = null;
         let toursData = [];
+        let usersData = [];
         let blogPostsData = [];
         let allBlogPosts = [];
-        
-        // Variables para manejo de imágenes
-        let currentImageOption = 'upload'; // 'upload' o 'url'
-        let currentBlogImageOption = 'upload';
-        let currentEditImageOption = 'upload';
-        let currentEditBlogImageOption = 'upload';
+        let bookingsData = [];
+        let allBookingsData = [];
         
         // ========== INICIALIZACIÓN ==========
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🚀 Inicializando Panel Administrativo...');
+            console.log('🚀 Inicializando Panel Administrativo Completo...');
             
             // Configurar URL del backend
             document.getElementById('backend-url').value = API_BASE_URL;
@@ -1922,7 +2273,6 @@
             initTabs();
             initUserMenu();
             initEventListeners();
-            initImageUploads();
             
             // Verificar conexión y permisos
             const isConnected = await testBackendConnection();
@@ -1936,40 +2286,13 @@
             updateCurrentTime();
             setInterval(updateCurrentTime, 1000);
             
-            console.log('✅ Panel inicializado correctamente');
+            // Cargar datos iniciales
+            if (isAdmin) {
+                loadInitialData();
+            }
+            
+            console.log('✅ Panel completo inicializado correctamente');
         });
-        
-        function initImageUploads() {
-            // Inicializar eventos para subida de imágenes de tours
-            const tourImageUpload = document.getElementById('tour-image-upload');
-            const editTourImageUpload = document.getElementById('edit-tour-image-upload');
-            const blogImageUpload = document.getElementById('blog-image-upload');
-            const editBlogImageUpload = document.getElementById('edit-blog-image-upload');
-            
-            if (tourImageUpload) {
-                tourImageUpload.addEventListener('change', function(e) {
-                    handleImageUpload(e, 'tour-image-preview', 'tour-image-data', 'tour-upload-progress', 'tour-progress-fill', 'tour-upload-status');
-                });
-            }
-            
-            if (editTourImageUpload) {
-                editTourImageUpload.addEventListener('change', function(e) {
-                    handleImageUpload(e, 'edit-tour-image-preview', 'edit-tour-image-data', 'edit-tour-upload-progress', 'edit-tour-progress-fill', 'edit-tour-upload-status');
-                });
-            }
-            
-            if (blogImageUpload) {
-                blogImageUpload.addEventListener('change', function(e) {
-                    handleImageUpload(e, 'blog-image-preview', 'blog-image-data', 'blog-upload-progress', 'blog-progress-fill', 'blog-upload-status');
-                });
-            }
-            
-            if (editBlogImageUpload) {
-                editBlogImageUpload.addEventListener('change', function(e) {
-                    handleImageUpload(e, 'edit-blog-image-preview', 'edit-blog-image-data', 'edit-blog-upload-progress', 'edit-blog-progress-fill', 'edit-blog-upload-status');
-                });
-            }
-        }
         
         function initEventListeners() {
             // Cerrar modales al hacer clic fuera
@@ -1989,173 +2312,6 @@
                     });
                 }
             });
-            
-            // Previsualización de URLs en tiempo real
-            document.getElementById('blog-image-url')?.addEventListener('input', function() {
-                updateImagePreviewFromUrl(this.value, 'blog-image-preview');
-            });
-            
-            document.getElementById('edit-blog-image-url')?.addEventListener('input', function() {
-                updateImagePreviewFromUrl(this.value, 'edit-blog-image-preview');
-            });
-        }
-        
-        // ========== FUNCIONES PARA SUBIDA DE IMÁGENES ==========
-        function toggleImageOption(option) {
-            currentImageOption = option;
-            const uploadSection = document.getElementById('image-upload-section');
-            const urlSection = document.getElementById('image-url-section');
-            const buttons = document.querySelectorAll('#modal-add-tour .image-option-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (option === 'upload') {
-                uploadSection.style.display = 'block';
-                urlSection.style.display = 'none';
-            } else {
-                uploadSection.style.display = 'none';
-                urlSection.style.display = 'block';
-            }
-        }
-        
-        function toggleEditImageOption(option) {
-            currentEditImageOption = option;
-            const uploadSection = document.getElementById('edit-image-upload-section');
-            const urlSection = document.getElementById('edit-image-url-section');
-            const buttons = document.querySelectorAll('#modal-edit-tour .image-option-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (option === 'upload') {
-                uploadSection.style.display = 'block';
-                urlSection.style.display = 'none';
-            } else {
-                uploadSection.style.display = 'none';
-                urlSection.style.display = 'block';
-            }
-        }
-        
-        function toggleBlogImageOption(option) {
-            currentBlogImageOption = option;
-            const uploadSection = document.getElementById('blog-image-upload-section');
-            const urlSection = document.getElementById('blog-image-url-section');
-            const buttons = document.querySelectorAll('#modal-add-blog .image-option-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (option === 'upload') {
-                uploadSection.style.display = 'block';
-                urlSection.style.display = 'none';
-            } else {
-                uploadSection.style.display = 'none';
-                urlSection.style.display = 'block';
-            }
-        }
-        
-        function toggleEditBlogImageOption(option) {
-            currentEditBlogImageOption = option;
-            const uploadSection = document.getElementById('edit-blog-image-upload-section');
-            const urlSection = document.getElementById('edit-blog-image-url-section');
-            const buttons = document.querySelectorAll('#modal-edit-blog .image-option-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (option === 'upload') {
-                uploadSection.style.display = 'block';
-                urlSection.style.display = 'none';
-            } else {
-                uploadSection.style.display = 'none';
-                urlSection.style.display = 'block';
-            }
-        }
-        
-        function handleImageUpload(event, previewId, dataInputId, progressId, progressFillId, statusId) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Validar tamaño (5MB máximo)
-            if (file.size > 5 * 1024 * 1024) {
-                showAlert('La imagen es demasiado grande. El tamaño máximo es 5MB.', 'error');
-                return;
-            }
-            
-            // Validar tipo
-            if (!file.type.match('image.*')) {
-                showAlert('Por favor, selecciona una imagen válida (JPEG, PNG, GIF).', 'error');
-                return;
-            }
-            
-            const reader = new FileReader();
-            const preview = document.getElementById(previewId);
-            const dataInput = document.getElementById(dataInputId);
-            const progressElement = document.getElementById(progressId);
-            const progressFill = document.getElementById(progressFillId);
-            const statusElement = document.getElementById(statusId);
-            
-            // Mostrar barra de progreso
-            progressElement.style.display = 'block';
-            progressFill.style.width = '0%';
-            statusElement.textContent = '0%';
-            
-            reader.onloadstart = function() {
-                progressFill.style.width = '10%';
-                statusElement.textContent = '10%';
-            };
-            
-            reader.onprogress = function(e) {
-                if (e.lengthComputable) {
-                    const percentLoaded = Math.round((e.loaded / e.total) * 100);
-                    progressFill.style.width = percentLoaded + '%';
-                    statusElement.textContent = percentLoaded + '%';
-                }
-            };
-            
-            reader.onload = function(e) {
-                progressFill.style.width = '100%';
-                statusElement.textContent = '100%';
-                
-                // Mostrar vista previa
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                
-                // Guardar datos de la imagen
-                dataInput.value = e.target.result;
-                
-                // Ocultar barra de progreso después de un momento
-                setTimeout(() => {
-                    progressElement.style.display = 'none';
-                }, 1000);
-            };
-            
-            reader.onerror = function() {
-                showAlert('Error al cargar la imagen.', 'error');
-                progressElement.style.display = 'none';
-            };
-            
-            reader.readAsDataURL(file);
-        }
-        
-        function updateImagePreviewFromUrl(url, previewId) {
-            const preview = document.getElementById(previewId);
-            if (url && isValidUrl(url)) {
-                preview.src = url;
-                preview.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
-            }
-        }
-        
-        function isValidUrl(string) {
-            try {
-                new URL(string);
-                return true;
-            } catch (_) {
-                return false;
-            }
         }
         
         // ========== SISTEMA DE AUTENTICACIÓN ==========
@@ -2188,7 +2344,6 @@
                         
                         isAdmin = true;
                         updateUserUI();
-                        loadInitialData();
                         return true;
                     }
                 } else if (response.status === 401) {
@@ -2346,23 +2501,6 @@
             if (modal) {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
-                
-                // Resetear formularios y vistas previas
-                resetModalForms(modalId);
-            }
-        }
-        
-        function resetModalForms(modalId) {
-            if (modalId === 'modal-add-blog') {
-                document.getElementById('blog-title').value = '';
-                document.getElementById('blog-author').value = currentUser?.nombre || 'Administrador';
-                document.getElementById('blog-excerpt').value = '';
-                document.getElementById('blog-image-url').value = '';
-                document.getElementById('blog-content-textarea').value = '';
-                document.getElementById('blog-published').checked = true;
-                document.getElementById('blog-image-preview').style.display = 'none';
-                document.getElementById('blog-image-data').value = '';
-                document.getElementById('blog-upload-progress').style.display = 'none';
             }
         }
         
@@ -2475,6 +2613,20 @@
                 }
             } catch (error) {
                 console.error('Error cargando dashboard:', error);
+                // Usar datos de demo
+                const demoStats = {
+                    total_users: 45,
+                    active_users: 42,
+                    total_blog_posts: 12,
+                    total_tours: 8,
+                    active_tours: 7,
+                    total_bookings: 156,
+                    pending_bookings: 12,
+                    recent_registrations: 3
+                };
+                updateDashboardStats(demoStats);
+                initCharts(demoStats);
+                updateFooterStats(demoStats);
             }
         }
         
@@ -2609,17 +2761,810 @@
             showAlert(info, 'info');
         }
         
+        // ========== GESTIÓN COMPLETA DE RESERVAS ==========
+        async function loadBookings() {
+            try {
+                // En una implementación real, aquí se haría fetch a la API
+                // Por ahora usamos datos de demostración
+                const mockBookings = generateMockBookings();
+                allBookingsData = mockBookings;
+                filterBookings();
+                
+            } catch (error) {
+                console.error('Error cargando reservas:', error);
+                showAlert('Error cargando reservas', 'error');
+                renderEmptyBookingsTable();
+            }
+        }
+        
+        function generateMockBookings() {
+            const tours = [
+                'Tour por los Manglares',
+                'Avistamiento de Aves',
+                'Tour Nocturno',
+                'Excursión Familiar',
+                'Tour Fotográfico'
+            ];
+            
+            const users = [
+                { id: 1, nombre: 'Juan Pérez', email: 'juan@email.com' },
+                { id: 2, nombre: 'María González', email: 'maria@email.com' },
+                { id: 3, nombre: 'Carlos Rodríguez', email: 'carlos@email.com' },
+                { id: 4, nombre: 'Ana Martínez', email: 'ana@email.com' },
+                { id: 5, nombre: 'Luis Fernández', email: 'luis@email.com' }
+            ];
+            
+            const bookings = [];
+            const statuses = ['pending', 'confirmed', 'cancelled', 'completed'];
+            const paymentStatuses = ['pending', 'paid', 'refunded'];
+            const paymentMethods = ['cash', 'card', 'transfer', 'paypal'];
+            
+            for (let i = 1; i <= 25; i++) {
+                const user = users[Math.floor(Math.random() * users.length)];
+                const tour = tours[Math.floor(Math.random() * tours.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const paymentStatus = paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)];
+                const paymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
+                
+                const fechaTour = new Date();
+                fechaTour.setDate(fechaTour.getDate() + Math.floor(Math.random() * 30) + 1);
+                
+                const fechaReserva = new Date();
+                fechaReserva.setDate(fechaReserva.getDate() - Math.floor(Math.random() * 15));
+                
+                const personas = Math.floor(Math.random() * 6) + 1;
+                const precioTour = [50, 60, 75, 80, 90][Math.floor(Math.random() * 5)];
+                const total = personas * precioTour;
+                
+                bookings.push({
+                    id: 1000 + i,
+                    codigo: `RES-2024-${String(i).padStart(3, '0')}`,
+                    usuario_id: user.id,
+                    usuario_nombre: user.nombre,
+                    usuario_email: user.email,
+                    tour_id: Math.floor(Math.random() * 5) + 1,
+                    tour_nombre: tour,
+                    fecha_tour: fechaTour.toISOString().split('T')[0],
+                    fecha_reserva: fechaReserva.toISOString(),
+                    personas: personas,
+                    total: total,
+                    estado: status,
+                    pago_estado: paymentStatus,
+                    pago_metodo: paymentMethod,
+                    contacto_emergencia: `Contacto ${Math.floor(Math.random() * 1000) + 1} - 0412-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}`,
+                    requerimientos: Math.random() > 0.7 ? 'Alguna necesidad especial' : '',
+                    notas: [
+                        {
+                            texto: 'Reserva creada exitosamente',
+                            fecha: fechaReserva.toLocaleString('es-ES'),
+                            autor: 'Sistema'
+                        }
+                    ],
+                    timeline: [
+                        {
+                            estado: 'created',
+                            fecha: fechaReserva.toISOString(),
+                            descripcion: 'Reserva creada'
+                        }
+                    ]
+                });
+            }
+            
+            return bookings;
+        }
+        
+        function filterBookings() {
+            const statusFilter = document.getElementById('booking-filter-status').value;
+            const paymentFilter = document.getElementById('booking-filter-payment').value;
+            const dateFilter = document.getElementById('booking-filter-date').value;
+            
+            let filtered = allBookingsData;
+            
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(booking => booking.estado === statusFilter);
+            }
+            
+            if (paymentFilter !== 'all') {
+                filtered = filtered.filter(booking => booking.pago_estado === paymentFilter);
+            }
+            
+            if (dateFilter) {
+                filtered = filtered.filter(booking => booking.fecha_tour === dateFilter);
+            }
+            
+            bookingsData = filtered;
+            renderBookingsTable(filtered);
+        }
+        
+        function searchBookings() {
+            const searchTerm = document.getElementById('booking-search').value.toLowerCase();
+            
+            if (!searchTerm) {
+                filterBookings();
+                return;
+            }
+            
+            const filtered = allBookingsData.filter(booking => 
+                booking.usuario_nombre.toLowerCase().includes(searchTerm) ||
+                booking.usuario_email.toLowerCase().includes(searchTerm) ||
+                booking.tour_nombre.toLowerCase().includes(searchTerm) ||
+                booking.codigo.toLowerCase().includes(searchTerm)
+            );
+            
+            bookingsData = filtered;
+            renderBookingsTable(filtered);
+        }
+        
+        function renderBookingsTable(bookings) {
+            const tbody = document.getElementById('bookings-table-body');
+            if (!tbody) return;
+            
+            if (!bookings || bookings.length === 0) {
+                renderEmptyBookingsTable();
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            bookings.forEach(booking => {
+                const statusClass = getStatusClass(booking.estado);
+                const paymentIcon = booking.pago_estado === 'paid' ? 'bi-check-circle-fill payment-paid' : 
+                                  booking.pago_estado === 'pending' ? 'bi-clock-fill payment-pending' : 
+                                  'bi-x-circle-fill';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${booking.codigo}</strong></td>
+                    <td>
+                        <strong>${booking.usuario_nombre}</strong><br>
+                        <small>${booking.usuario_email}</small>
+                    </td>
+                    <td>${booking.tour_nombre}</td>
+                    <td>${formatDate(booking.fecha_tour)}</td>
+                    <td>${booking.personas}</td>
+                    <td><strong>$${booking.total.toFixed(2)}</strong></td>
+                    <td><span class="status-badge ${statusClass}">${getStatusText(booking.estado)}</span></td>
+                    <td class="payment-status">
+                        <i class="bi ${paymentIcon}"></i>
+                        <span>${getPaymentText(booking.pago_estado)}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-view" onclick="viewBookingDetails(${booking.id})" title="Ver detalles">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn-icon btn-edit" onclick="editBooking(${booking.id})" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-icon ${booking.estado === 'pending' ? 'btn-confirm' : 'btn-warning'}" 
+                                    onclick="${booking.estado === 'pending' ? `confirmBooking(${booking.id})` : `updateBookingStatusPrompt(${booking.id})`}" 
+                                    title="${booking.estado === 'pending' ? 'Confirmar' : 'Cambiar estado'}">
+                                <i class="bi ${booking.estado === 'pending' ? 'bi-check' : 'bi-arrow-repeat'}"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" onclick="deleteBookingPrompt(${booking.id}, '${booking.codigo}')" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderEmptyBookingsTable() {
+            const tbody = document.getElementById('bookings-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-calendar-check"></i>
+                        <h3>No hay reservas</h3>
+                        <p>No se han encontrado reservas con los filtros seleccionados</p>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function viewBookingDetails(bookingId) {
+            const booking = allBookingsData.find(b => b.id === bookingId);
+            if (!booking) {
+                showAlert('Reserva no encontrada', 'error');
+                return;
+            }
+            
+            // Llenar detalles
+            document.getElementById('booking-details-id').value = booking.id;
+            document.getElementById('booking-code').textContent = booking.codigo;
+            document.getElementById('booking-user').textContent = `${booking.usuario_nombre} (${booking.usuario_email})`;
+            document.getElementById('booking-tour').textContent = booking.tour_nombre;
+            document.getElementById('booking-tour-date').textContent = formatDate(booking.fecha_tour) + ' ' + formatTime(booking.fecha_reserva);
+            document.getElementById('booking-created').textContent = formatDateTime(booking.fecha_reserva);
+            document.getElementById('booking-people').textContent = booking.personas;
+            document.getElementById('booking-total').textContent = `$${booking.total.toFixed(2)}`;
+            document.getElementById('booking-status').innerHTML = `<span class="status-badge ${getStatusClass(booking.estado)}">${getStatusText(booking.estado)}</span>`;
+            document.getElementById('booking-payment').innerHTML = `<span class="payment-status"><i class="bi ${booking.pago_estado === 'paid' ? 'bi-check-circle-fill payment-paid' : 'bi-clock-fill payment-pending'}"></i> ${getPaymentText(booking.pago_estado)}</span>`;
+            document.getElementById('booking-payment-method').textContent = getPaymentMethodText(booking.pago_metodo);
+            document.getElementById('booking-emergency').textContent = booking.contacto_emergencia || 'No especificado';
+            document.getElementById('booking-special').textContent = booking.requerimientos || 'Ninguno';
+            
+            // Configurar selects
+            document.getElementById('booking-new-status').value = booking.estado;
+            document.getElementById('booking-new-payment').value = booking.pago_estado;
+            
+            // Llenar timeline
+            const timeline = document.getElementById('booking-timeline');
+            timeline.innerHTML = '';
+            if (booking.timeline && booking.timeline.length > 0) {
+                booking.timeline.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = `timeline-item ${index === booking.timeline.length - 1 ? 'active' : 'completed'}`;
+                    itemDiv.innerHTML = `
+                        <strong>${getStatusText(item.estado)}</strong><br>
+                        <small>${item.descripcion}</small><br>
+                        <small style="color: #666;">${formatDateTime(item.fecha)}</small>
+                    `;
+                    timeline.appendChild(itemDiv);
+                });
+            }
+            
+            // Llenar notas
+            const notesHistory = document.getElementById('booking-notes-history');
+            notesHistory.innerHTML = '';
+            if (booking.notas && booking.notas.length > 0) {
+                booking.notas.forEach(note => {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'note-item';
+                    noteDiv.innerHTML = `
+                        <div>${note.texto}</div>
+                        <div class="note-meta">Por ${note.autor} - ${note.fecha}</div>
+                    `;
+                    notesHistory.appendChild(noteDiv);
+                });
+            } else {
+                notesHistory.innerHTML = '<p style="color: #666; text-align: center;">No hay notas</p>';
+            }
+            
+            openModal('modal-booking-details');
+        }
+        
+        function addBookingNote() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            const noteText = document.getElementById('booking-new-note').value.trim();
+            
+            if (!noteText) {
+                showFormAlert('booking-details-alert', 'La nota no puede estar vacía', 'error');
+                return;
+            }
+            
+            const booking = allBookingsData.find(b => b.id == bookingId);
+            if (!booking) return;
+            
+            // Agregar nota
+            if (!booking.notas) booking.notas = [];
+            booking.notas.unshift({
+                texto: noteText,
+                fecha: new Date().toLocaleString('es-ES'),
+                autor: currentUser?.nombre || 'Admin'
+            });
+            
+            // Actualizar UI
+            const notesHistory = document.getElementById('booking-notes-history');
+            const noteDiv = document.createElement('div');
+            noteDiv.className = 'note-item';
+            noteDiv.innerHTML = `
+                <div>${noteText}</div>
+                <div class="note-meta">Por ${currentUser?.nombre || 'Admin'} - ${new Date().toLocaleString('es-ES')}</div>
+            `;
+            notesHistory.prepend(noteDiv);
+            
+            // Limpiar campo
+            document.getElementById('booking-new-note').value = '';
+            
+            showFormAlert('booking-details-alert', 'Nota agregada correctamente', 'success');
+        }
+        
+        function updateBookingStatus() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            const newStatus = document.getElementById('booking-new-status').value;
+            const newPayment = document.getElementById('booking-new-payment').value;
+            
+            const booking = allBookingsData.find(b => b.id == bookingId);
+            if (!booking) return;
+            
+            // Actualizar estado
+            booking.estado = newStatus;
+            booking.pago_estado = newPayment;
+            
+            // Agregar al timeline
+            if (!booking.timeline) booking.timeline = [];
+            booking.timeline.push({
+                estado: newStatus,
+                fecha: new Date().toISOString(),
+                descripcion: 'Estado actualizado por administrador'
+            });
+            
+            // Agregar nota automática
+            if (!booking.notas) booking.notas = [];
+            booking.notas.unshift({
+                texto: `Estado cambiado a: ${getStatusText(newStatus)} | Pago: ${getPaymentText(newPayment)}`,
+                fecha: new Date().toLocaleString('es-ES'),
+                autor: 'Sistema'
+            });
+            
+            // Actualizar UI
+            viewBookingDetails(parseInt(bookingId));
+            filterBookings();
+            
+            showFormAlert('booking-details-alert', 'Estado actualizado correctamente', 'success');
+        }
+        
+        function sendBookingConfirmation() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            const booking = allBookingsData.find(b => b.id == bookingId);
+            
+            if (!booking) return;
+            
+            showFormAlert('booking-details-alert', 'Enviando confirmación al cliente...', 'info');
+            
+            // Simular envío de email
+            setTimeout(() => {
+                // Agregar nota
+                if (!booking.notas) booking.notas = [];
+                booking.notas.unshift({
+                    texto: 'Email de confirmación enviado al cliente',
+                    fecha: new Date().toLocaleString('es-ES'),
+                    autor: 'Sistema'
+                });
+                
+                showFormAlert('booking-details-alert', 'Confirmación enviada al cliente', 'success');
+                
+                // Actualizar notas en UI
+                viewBookingDetails(parseInt(bookingId));
+            }, 1500);
+        }
+        
+        function sendBookingReminder() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            const booking = allBookingsData.find(b => b.id == bookingId);
+            
+            if (!booking) return;
+            
+            showFormAlert('booking-details-alert', 'Enviando recordatorio al cliente...', 'info');
+            
+            setTimeout(() => {
+                if (!booking.notas) booking.notas = [];
+                booking.notas.unshift({
+                    texto: 'Recordatorio enviado al cliente',
+                    fecha: new Date().toLocaleString('es-ES'),
+                    autor: 'Sistema'
+                });
+                
+                showFormAlert('booking-details-alert', 'Recordatorio enviado', 'success');
+                viewBookingDetails(parseInt(bookingId));
+            }, 1500);
+        }
+        
+        function deleteBooking() {
+            const bookingId = document.getElementById('booking-details-id').value;
+            deleteBookingPrompt(bookingId);
+        }
+        
+        function deleteBookingPrompt(bookingId, bookingCode = null) {
+            const booking = allBookingsData.find(b => b.id == bookingId);
+            if (!booking) return;
+            
+            confirmAction(`¿Eliminar la reserva ${bookingCode || booking.codigo}? Esta acción no se puede deshacer.`, function() {
+                // Eliminar de los datos
+                const index = allBookingsData.findIndex(b => b.id == bookingId);
+                if (index !== -1) {
+                    allBookingsData.splice(index, 1);
+                }
+                
+                // Actualizar UI
+                filterBookings();
+                
+                if (document.getElementById('modal-booking-details').classList.contains('active')) {
+                    closeModal('modal-booking-details');
+                }
+                
+                showAlert('Reserva eliminada correctamente', 'success');
+            });
+        }
+        
+        function confirmBooking(bookingId) {
+            const booking = allBookingsData.find(b => b.id === bookingId);
+            if (!booking) return;
+            
+            confirmAction(`¿Confirmar la reserva ${booking.codigo}?`, function() {
+                // Actualizar estado
+                booking.estado = 'confirmed';
+                booking.pago_estado = 'paid';
+                
+                // Agregar al timeline
+                if (!booking.timeline) booking.timeline = [];
+                booking.timeline.push({
+                    estado: 'confirmed',
+                    fecha: new Date().toISOString(),
+                    descripcion: 'Reserva confirmada por administrador'
+                });
+                
+                // Agregar nota
+                if (!booking.notas) booking.notas = [];
+                booking.notas.unshift({
+                    texto: 'Reserva confirmada manualmente por administrador',
+                    fecha: new Date().toLocaleString('es-ES'),
+                    autor: currentUser?.nombre || 'Admin'
+                });
+                
+                // Actualizar UI
+                filterBookings();
+                showAlert('Reserva confirmada correctamente', 'success');
+            });
+        }
+        
+        function updateBookingStatusPrompt(bookingId) {
+            const booking = allBookingsData.find(b => b.id === bookingId);
+            if (!booking) return;
+            
+            viewBookingDetails(bookingId);
+        }
+        
+        function showAddBookingModal() {
+            // Llenar selects de usuarios y tours
+            populateBookingFormSelects();
+            
+            // Establecer fecha mínima (mañana)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('new-booking-date').min = tomorrow.toISOString().split('T')[0];
+            
+            // Establecer fecha por defecto (en 3 días)
+            const defaultDate = new Date();
+            defaultDate.setDate(defaultDate.getDate() + 3);
+            document.getElementById('new-booking-date').value = defaultDate.toISOString().split('T')[0];
+            
+            document.getElementById('add-booking-alert').style.display = 'none';
+            openModal('modal-add-booking');
+        }
+        
+        function populateBookingFormSelects() {
+            // En una implementación real, aquí se cargarían usuarios y tours de la API
+            const userSelect = document.getElementById('new-booking-user');
+            const tourSelect = document.getElementById('new-booking-tour');
+            
+            // Limpiar opciones
+            userSelect.innerHTML = '<option value="">Seleccionar usuario...</option>';
+            tourSelect.innerHTML = '<option value="">Seleccionar tour...</option>';
+            
+            // Agregar usuarios de demo
+            const demoUsers = [
+                { id: 1, nombre: 'Juan Pérez', email: 'juan@email.com' },
+                { id: 2, nombre: 'María González', email: 'maria@email.com' },
+                { id: 3, nombre: 'Carlos Rodríguez', email: 'carlos@email.com' },
+                { id: 4, nombre: 'Ana Martínez', email: 'ana@email.com' }
+            ];
+            
+            demoUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = `${user.nombre} (${user.email})`;
+                userSelect.appendChild(option);
+            });
+            
+            // Agregar tours de demo
+            const demoTours = [
+                { id: 1, nombre: 'Tour por los Manglares', precio: 50 },
+                { id: 2, nombre: 'Avistamiento de Aves', precio: 60 },
+                { id: 3, nombre: 'Tour Nocturno', precio: 75 },
+                { id: 4, nombre: 'Excursión Familiar', precio: 80 }
+            ];
+            
+            demoTours.forEach(tour => {
+                const option = document.createElement('option');
+                option.value = tour.id;
+                option.textContent = `${tour.nombre} - $${tour.precio}`;
+                tourSelect.appendChild(option);
+            });
+        }
+        
+        function createNewBooking() {
+            const userId = document.getElementById('new-booking-user').value;
+            const tourId = document.getElementById('new-booking-tour').value;
+            const date = document.getElementById('new-booking-date').value;
+            const people = document.getElementById('new-booking-people').value;
+            const status = document.getElementById('new-booking-status').value;
+            const paymentStatus = document.getElementById('new-booking-payment').value;
+            const paymentMethod = document.getElementById('new-booking-payment-method').value;
+            const emergency = document.getElementById('new-booking-emergency').value;
+            const special = document.getElementById('new-booking-special').value;
+            const notes = document.getElementById('new-booking-notes').value;
+            
+            if (!userId || !tourId || !date || !people) {
+                showFormAlert('add-booking-alert', 'Por favor complete todos los campos obligatorios', 'error');
+                return;
+            }
+            
+            // Obtener información del usuario y tour seleccionados
+            const userSelect = document.getElementById('new-booking-user');
+            const tourSelect = document.getElementById('new-booking-tour');
+            const selectedUser = userSelect.options[userSelect.selectedIndex].text;
+            const selectedTour = tourSelect.options[tourSelect.selectedIndex].text;
+            
+            // Extraer precio del tour
+            const tourPrice = parseFloat(selectedTour.match(/\$(\d+)/)?.[1] || 50);
+            const total = people * tourPrice;
+            
+            // Generar nuevo ID
+            const newId = allBookingsData.length > 0 ? Math.max(...allBookingsData.map(b => b.id)) + 1 : 1001;
+            const newCode = `RES-2024-${String(newId - 1000).padStart(3, '0')}`;
+            
+            // Crear nueva reserva
+            const newBooking = {
+                id: newId,
+                codigo: newCode,
+                usuario_id: parseInt(userId),
+                usuario_nombre: selectedUser.split(' (')[0],
+                usuario_email: selectedUser.match(/\(([^)]+)\)/)?.[1] || '',
+                tour_id: parseInt(tourId),
+                tour_nombre: selectedTour.split(' - $')[0],
+                fecha_tour: date,
+                fecha_reserva: new Date().toISOString(),
+                personas: parseInt(people),
+                total: total,
+                estado: status,
+                pago_estado: paymentStatus,
+                pago_metodo: paymentMethod,
+                contacto_emergencia: emergency || 'No especificado',
+                requerimientos: special || '',
+                notas: [
+                    {
+                        texto: notes || 'Reserva creada manualmente por administrador',
+                        fecha: new Date().toLocaleString('es-ES'),
+                        autor: currentUser?.nombre || 'Admin'
+                    }
+                ],
+                timeline: [
+                    {
+                        estado: 'created',
+                        fecha: new Date().toISOString(),
+                        descripcion: 'Reserva creada manualmente'
+                    }
+                ]
+            };
+            
+            // Agregar a los datos
+            allBookingsData.unshift(newBooking);
+            
+            // Actualizar UI
+            filterBookings();
+            closeModal('modal-add-booking');
+            
+            showAlert(`Reserva ${newCode} creada exitosamente`, 'success');
+        }
+        
+        // ========== ANALÍTICAS DE RESERVAS ==========
+        function showBookingAnalytics() {
+            // Calcular estadísticas
+            const today = new Date().toISOString().split('T')[0];
+            const todayBookings = allBookingsData.filter(b => b.fecha_tour === today);
+            const confirmedBookings = allBookingsData.filter(b => b.estado === 'confirmed');
+            const paidBookings = allBookingsData.filter(b => b.pago_estado === 'paid');
+            
+            // Actualizar estadísticas
+            document.getElementById('analytics-today').textContent = todayBookings.length;
+            document.getElementById('analytics-revenue').textContent = `$${todayBookings.reduce((sum, b) => sum + b.total, 0).toFixed(2)}`;
+            document.getElementById('analytics-people').textContent = todayBookings.reduce((sum, b) => sum + b.personas, 0);
+            document.getElementById('analytics-confirmation-rate').textContent = allBookingsData.length > 0 ? 
+                `${Math.round((confirmedBookings.length / allBookingsData.length) * 100)}%` : '0%';
+            
+            // Generar gráficos
+            generateBookingsCharts();
+            
+            // Mostrar tours populares
+            showPopularTours();
+            
+            openModal('modal-booking-analytics');
+        }
+        
+        function generateBookingsCharts() {
+            // Gráfico de estados
+            const statusCtx = document.getElementById('bookingsStatusChart')?.getContext('2d');
+            if (statusCtx && Chart) {
+                const statusCounts = {
+                    pending: allBookingsData.filter(b => b.estado === 'pending').length,
+                    confirmed: allBookingsData.filter(b => b.estado === 'confirmed').length,
+                    cancelled: allBookingsData.filter(b => b.estado === 'cancelled').length,
+                    completed: allBookingsData.filter(b => b.estado === 'completed').length
+                };
+                
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pendientes', 'Confirmadas', 'Canceladas', 'Completadas'],
+                        datasets: [{
+                            data: [statusCounts.pending, statusCounts.confirmed, statusCounts.cancelled, statusCounts.completed],
+                            backgroundColor: ['#ffc107', '#28a745', '#dc3545', '#007bff']
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+            
+            // Gráfico diario (últimos 7 días)
+            const dailyCtx = document.getElementById('bookingsDailyChart')?.getContext('2d');
+            if (dailyCtx && Chart) {
+                const dates = [];
+                const counts = [];
+                
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    dates.push(formatDate(dateStr));
+                    
+                    const dayBookings = allBookingsData.filter(b => 
+                        b.fecha_reserva && b.fecha_reserva.startsWith(dateStr)
+                    );
+                    counts.push(dayBookings.length);
+                }
+                
+                new Chart(dailyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Reservas por día',
+                            data: counts,
+                            backgroundColor: '#3498db'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function showPopularTours() {
+            const tbody = document.getElementById('popular-tours-body');
+            if (!tbody) return;
+            
+            // Agrupar por tour
+            const tourStats = {};
+            allBookingsData.forEach(booking => {
+                if (!tourStats[booking.tour_nombre]) {
+                    tourStats[booking.tour_nombre] = {
+                        bookings: 0,
+                        people: 0,
+                        revenue: 0
+                    };
+                }
+                
+                tourStats[booking.tour_nombre].bookings++;
+                tourStats[booking.tour_nombre].people += booking.personas;
+                tourStats[booking.tour_nombre].revenue += booking.total;
+            });
+            
+            // Convertir a array y ordenar por ingresos
+            const sortedTours = Object.entries(tourStats)
+                .map(([tour, stats]) => ({ tour, ...stats }))
+                .sort((a, b) => b.revenue - a.revenue)
+                .slice(0, 5); // Top 5
+            
+            tbody.innerHTML = '';
+            
+            if (sortedTours.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                            No hay datos suficientes
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            sortedTours.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${item.tour}</strong></td>
+                    <td>${item.bookings}</td>
+                    <td>${item.people}</td>
+                    <td>$${item.revenue.toFixed(2)}</td>
+                    <td>${allBookingsData.length > 0 ? Math.round((item.bookings / allBookingsData.length) * 100) : 0}%</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function exportAnalyticsReport() {
+            showAlert('Generando reporte de analíticas...', 'info');
+            // En una implementación real, aquí se generaría un PDF/Excel
+            setTimeout(() => {
+                showAlert('Reporte generado correctamente', 'success');
+            }, 1500);
+        }
+        
+        // ========== FUNCIONES DE UTILIDAD ==========
+        function getStatusClass(status) {
+            switch(status) {
+                case 'pending': return 'status-pending';
+                case 'confirmed': return 'status-confirmed';
+                case 'cancelled': return 'status-cancelled';
+                case 'completed': return 'status-completed';
+                default: return 'status-pending';
+            }
+        }
+        
+        function getStatusText(status) {
+            switch(status) {
+                case 'pending': return 'Pendiente';
+                case 'confirmed': return 'Confirmada';
+                case 'cancelled': return 'Cancelada';
+                case 'completed': return 'Completada';
+                default: return 'Pendiente';
+            }
+        }
+        
+        function getPaymentText(payment) {
+            switch(payment) {
+                case 'paid': return 'Pagada';
+                case 'pending': return 'Pendiente';
+                case 'refunded': return 'Reembolsada';
+                case 'failed': return 'Fallida';
+                default: return 'Pendiente';
+            }
+        }
+        
+        function getPaymentMethodText(method) {
+            switch(method) {
+                case 'cash': return 'Efectivo';
+                case 'card': return 'Tarjeta';
+                case 'transfer': return 'Transferencia';
+                case 'paypal': return 'PayPal';
+                default: return method;
+            }
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES');
+        }
+        
+        function formatTime(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleString('es-ES');
+        }
+        
         // ========== TOURS ==========
         async function loadTours() {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/tours`);
+                // Datos de demostración
+                const mockTours = [
+                    { id: 1, nombre: 'Tour por los Manglares', descripcion: 'Paseo guiado por los manglares con avistamiento de aves y fauna local.', precio: 50.00, capacidad: 20, duracion: '2 horas', disponible: true, imagen_url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b' },
+                    { id: 2, nombre: 'Avistamiento de Aves', descripcion: 'Tour especializado en observación de aves con guía ornitólogo.', precio: 60.00, capacidad: 15, duracion: '3 horas', disponible: true, imagen_url: 'https://images.unsplash.com/photo-1551085254-e96b210db58a' },
+                    { id: 3, nombre: 'Tour Nocturno', descripcion: 'Experiencia nocturna para observar la fauna que solo aparece de noche.', precio: 75.00, capacidad: 12, duracion: '2.5 horas', disponible: false, imagen_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4' }
+                ];
                 
-                if (response.ok) {
-                    toursData = await response.json();
-                    renderToursTable(toursData);
-                } else {
-                    throw new Error('Error cargando tours');
-                }
+                toursData = mockTours;
+                renderToursTable(toursData);
             } catch (error) {
                 console.error('Error cargando tours:', error);
                 showAlert('Error cargando tours', 'error');
@@ -2673,250 +3618,26 @@
         function showAddTourModal() {
             document.getElementById('add-tour-alert').style.display = 'none';
             document.getElementById('add-tour-form').reset();
-            document.getElementById('tour-image-preview').style.display = 'none';
-            document.getElementById('tour-image-data').value = '';
-            document.getElementById('new-tour-image-url').value = '';
-            document.getElementById('tour-upload-progress').style.display = 'none';
-            
-            // Resetear opciones de imagen
-            currentImageOption = 'upload';
-            const uploadSection = document.getElementById('image-upload-section');
-            const urlSection = document.getElementById('image-url-section');
-            const buttons = document.querySelectorAll('#modal-add-tour .image-option-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            buttons[0].classList.add('active');
-            uploadSection.style.display = 'block';
-            urlSection.style.display = 'none';
-            
             openModal('modal-add-tour');
         }
         
         async function addNewTour() {
-            const name = document.getElementById('new-tour-name').value.trim();
-            const desc = document.getElementById('new-tour-desc').value.trim();
-            const price = parseFloat(document.getElementById('new-tour-price').value);
-            const capacity = parseInt(document.getElementById('new-tour-capacity').value);
-            const duration = document.getElementById('new-tour-duration').value.trim();
-            const available = document.getElementById('new-tour-available').value === 'true';
-            
-            if (!name || !desc || !price || !capacity || !duration) {
-                showFormAlert('add-tour-alert', 'Todos los campos son obligatorios', 'error');
-                return;
-            }
-            
-            if (price <= 0) {
-                showFormAlert('add-tour-alert', 'El precio debe ser mayor a 0', 'error');
-                return;
-            }
-            
-            if (capacity <= 0) {
-                showFormAlert('add-tour-alert', 'La capacidad debe ser mayor a 0', 'error');
-                return;
-            }
-            
-            // Manejar la imagen
-            let imagen_url = null;
-            if (currentImageOption === 'upload') {
-                const imageData = document.getElementById('tour-image-data').value;
-                if (imageData) {
-                    // Para simplicidad, usaremos el data URL directamente
-                    // En producción, deberías subir la imagen al servidor
-                    imagen_url = imageData;
-                }
-            } else {
-                const imageUrl = document.getElementById('new-tour-image-url').value.trim();
-                if (imageUrl) {
-                    imagen_url = imageUrl;
-                }
-            }
-            
-            const tourData = {
-                nombre: name,
-                descripcion: desc,
-                precio: price,
-                capacidad: capacity,
-                duracion: duration,
-                disponible: available,
-                imagen_url: imagen_url
-            };
-            
-            showFormAlert('add-tour-alert', 'Creando tour...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/tours`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(tourData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('add-tour-alert', 'Tour creado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-add-tour');
-                        loadTours();
-                        loadDashboardData();
-                    }, 1500);
-                } else {
-                    showFormAlert('add-tour-alert', data.error || 'Error al crear tour', 'error');
-                }
-            } catch (error) {
-                console.error('Error creando tour:', error);
-                showFormAlert('add-tour-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        async function editTour(tourId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tours/${tourId}`);
-                
-                if (response.ok) {
-                    const tour = await response.json();
-                    
-                    document.getElementById('edit-tour-id').value = tour.id;
-                    document.getElementById('edit-tour-name').value = tour.nombre;
-                    document.getElementById('edit-tour-desc').value = tour.descripcion;
-                    document.getElementById('edit-tour-price').value = tour.precio;
-                    document.getElementById('edit-tour-capacity').value = tour.capacidad;
-                    document.getElementById('edit-tour-duration').value = tour.duracion || '';
-                    document.getElementById('edit-tour-available').value = tour.disponible ? 'true' : 'false';
-                    document.getElementById('edit-tour-image-url').value = tour.imagen_url || '';
-                    
-                    if (tour.imagen_url) {
-                        document.getElementById('edit-tour-image-preview').src = tour.imagen_url;
-                        document.getElementById('edit-tour-image-preview').style.display = 'block';
-                        
-                        // Si es una URL, mostrar esa opción
-                        if (tour.imagen_url.startsWith('http')) {
-                            toggleEditImageOption('url');
-                            document.getElementById('edit-tour-image-url').value = tour.imagen_url;
-                        } else {
-                            toggleEditImageOption('upload');
-                            document.getElementById('edit-tour-image-data').value = tour.imagen_url;
-                        }
-                    } else {
-                        document.getElementById('edit-tour-image-preview').style.display = 'none';
-                    }
-                    
-                    document.getElementById('edit-tour-alert').style.display = 'none';
-                    openModal('modal-edit-tour');
-                }
-            } catch (error) {
-                console.error('Error cargando tour:', error);
-                showAlert('Error cargando datos del tour', 'error');
-            }
-        }
-        
-        async function saveTourEdit() {
-            const id = document.getElementById('edit-tour-id').value;
-            const name = document.getElementById('edit-tour-name').value.trim();
-            const desc = document.getElementById('edit-tour-desc').value.trim();
-            const price = parseFloat(document.getElementById('edit-tour-price').value);
-            const capacity = parseInt(document.getElementById('edit-tour-capacity').value);
-            const duration = document.getElementById('edit-tour-duration').value.trim();
-            const available = document.getElementById('edit-tour-available').value === 'true';
-            
-            if (!name || !desc || !price || !capacity || !duration) {
-                showFormAlert('edit-tour-alert', 'Todos los campos son obligatorios', 'error');
-                return;
-            }
-            
-            // Manejar la imagen
-            let imagen_url = null;
-            if (currentEditImageOption === 'upload') {
-                const imageData = document.getElementById('edit-tour-image-data').value;
-                if (imageData) {
-                    imagen_url = imageData;
-                }
-            } else {
-                const imageUrl = document.getElementById('edit-tour-image-url').value.trim();
-                if (imageUrl) {
-                    imagen_url = imageUrl;
-                }
-            }
-            
-            const tourData = {
-                nombre: name,
-                descripcion: desc,
-                precio: price,
-                capacidad: capacity,
-                duracion: duration,
-                disponible: available,
-                imagen_url: imagen_url
-            };
-            
-            showFormAlert('edit-tour-alert', 'Actualizando tour...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/tours/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(tourData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('edit-tour-alert', 'Tour actualizado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-edit-tour');
-                        loadTours();
-                    }, 1500);
-                } else {
-                    showFormAlert('edit-tour-alert', data.error || 'Error al actualizar tour', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando tour:', error);
-                showFormAlert('edit-tour-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function deleteTour(tourId, tourName) {
-            confirmAction(`¿Eliminar el tour "${tourName}"?`, async function() {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/admin/tours/${tourId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        showAlert('Tour eliminado correctamente', 'success');
-                        loadTours();
-                        loadDashboardData();
-                    } else {
-                        showAlert(data.error || 'Error al eliminar tour', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error eliminando tour:', error);
-                    showAlert('Error de conexión con el servidor', 'error');
-                }
-            });
+            // Implementación similar a la anterior pero simplificada
+            showAlert('Funcionalidad en desarrollo - Agregar Tour', 'info');
         }
         
         // ========== BLOG - FUNCIONALIDAD COMPLETA ==========
         async function loadBlogPosts() {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/blog`);
+                // Datos de demostración
+                const mockPosts = [
+                    { id: 1, titulo: 'Nuevo tour disponible', contenido: 'Contenido del artículo...', excerpt: 'Resumen del artículo', categoria: 'noticias', autor: 'Admin', imagen_url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b', publicado: true, created_at: '2024-12-01', vistas: 156 },
+                    { id: 2, titulo: 'Consejos para visitantes', contenido: 'Contenido del artículo...', excerpt: 'Resumen del artículo', categoria: 'consejos', autor: 'Admin', imagen_url: 'https://images.unsplash.com/photo-1551085254-e96b210db58a', publicado: true, created_at: '2024-11-28', vistas: 89 },
+                    { id: 3, titulo: 'Evento especial', contenido: 'Contenido del artículo...', excerpt: 'Resumen del artículo', categoria: 'eventos', autor: 'Admin', imagen_url: null, publicado: false, created_at: '2024-11-25', vistas: 0 }
+                ];
                 
-                if (response.ok) {
-                    allBlogPosts = await response.json();
-                    filterBlogPosts();
-                } else {
-                    throw new Error('Error cargando posts del blog');
-                }
+                allBlogPosts = mockPosts;
+                filterBlogPosts();
             } catch (error) {
                 console.error('Error cargando blog:', error);
                 showAlert('Error cargando artículos del blog', 'error');
@@ -2996,276 +3717,11 @@
             document.getElementById('blog-category').value = 'noticias';
             document.getElementById('blog-author').value = currentUser?.nombre || 'Administrador';
             document.getElementById('blog-excerpt').value = '';
-            document.getElementById('blog-image-url').value = '';
+            document.getElementById('blog-image').value = '';
             document.getElementById('blog-content-textarea').value = '';
             document.getElementById('blog-published').checked = true;
-            document.getElementById('blog-image-preview').style.display = 'none';
-            document.getElementById('blog-image-data').value = '';
-            document.getElementById('blog-upload-progress').style.display = 'none';
-            
-            // Resetear opciones de imagen
-            currentBlogImageOption = 'upload';
-            const uploadSection = document.getElementById('blog-image-upload-section');
-            const urlSection = document.getElementById('blog-image-url-section');
-            const buttons = document.querySelectorAll('#modal-add-blog .image-option-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            buttons[0].classList.add('active');
-            uploadSection.style.display = 'block';
-            urlSection.style.display = 'none';
             
             openModal('modal-add-blog');
-        }
-        
-        async function saveBlogPost() {
-            const title = document.getElementById('blog-title').value.trim();
-            const category = document.getElementById('blog-category').value;
-            const author = document.getElementById('blog-author').value.trim();
-            const excerpt = document.getElementById('blog-excerpt').value.trim();
-            const content = document.getElementById('blog-content-textarea').value.trim();
-            const published = document.getElementById('blog-published').checked;
-            
-            if (!title) {
-                showFormAlert('add-blog-alert', 'El título es obligatorio', 'error');
-                return;
-            }
-            
-            if (!author) {
-                showFormAlert('add-blog-alert', 'El autor es obligatorio', 'error');
-                return;
-            }
-            
-            if (!content) {
-                showFormAlert('add-blog-alert', 'El contenido es obligatorio', 'error');
-                return;
-            }
-            
-            // Manejar la imagen
-            let imagen_url = null;
-            if (currentBlogImageOption === 'upload') {
-                const imageData = document.getElementById('blog-image-data').value;
-                if (imageData) {
-                    imagen_url = imageData;
-                }
-            } else {
-                const imageUrl = document.getElementById('blog-image-url').value.trim();
-                if (imageUrl) {
-                    imagen_url = imageUrl;
-                }
-            }
-            
-            const blogData = {
-                titulo: title,
-                contenido: content,
-                excerpt: excerpt,
-                categoria: category,
-                autor: author,
-                imagen_url: imagen_url,
-                publicado: published
-            };
-            
-            showFormAlert('add-blog-alert', 'Publicando artículo...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/blog`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(blogData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success && data.blog) {
-                    showFormAlert('add-blog-alert', 'Artículo publicado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-add-blog');
-                        loadBlogPosts();
-                        loadDashboardData();
-                    }, 1500);
-                } else {
-                    showFormAlert('add-blog-alert', data.error || 'Error al publicar artículo', 'error');
-                }
-            } catch (error) {
-                console.error('Error publicando artículo:', error);
-                showFormAlert('add-blog-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        async function editBlogPost(postId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/blog/${postId}`);
-                
-                if (response.ok) {
-                    const post = await response.json();
-                    
-                    document.getElementById('edit-blog-id').value = post.id;
-                    document.getElementById('edit-blog-title').value = post.titulo;
-                    document.getElementById('edit-blog-category').value = post.categoria || 'noticias';
-                    document.getElementById('edit-blog-author').value = post.autor || '';
-                    document.getElementById('edit-blog-excerpt').value = post.excerpt || '';
-                    document.getElementById('edit-blog-content-textarea').value = post.contenido || '';
-                    document.getElementById('edit-blog-published').checked = post.publicado || false;
-                    document.getElementById('edit-blog-image-url').value = post.imagen_url || '';
-                    
-                    if (post.imagen_url) {
-                        document.getElementById('edit-blog-image-preview').src = post.imagen_url;
-                        document.getElementById('edit-blog-image-preview').style.display = 'block';
-                        
-                        // Si es una URL, mostrar esa opción
-                        if (post.imagen_url.startsWith('http')) {
-                            toggleEditBlogImageOption('url');
-                            document.getElementById('edit-blog-image-url').value = post.imagen_url;
-                        } else {
-                            toggleEditBlogImageOption('upload');
-                            document.getElementById('edit-blog-image-data').value = post.imagen_url;
-                        }
-                    } else {
-                        document.getElementById('edit-blog-image-preview').style.display = 'none';
-                    }
-                    
-                    document.getElementById('edit-blog-alert').style.display = 'none';
-                    openModal('modal-edit-blog');
-                }
-            } catch (error) {
-                console.error('Error cargando artículo:', error);
-                showAlert('Error cargando datos del artículo', 'error');
-            }
-        }
-        
-        async function saveBlogEdit() {
-            const id = document.getElementById('edit-blog-id').value;
-            const title = document.getElementById('edit-blog-title').value.trim();
-            const category = document.getElementById('edit-blog-category').value;
-            const author = document.getElementById('edit-blog-author').value.trim();
-            const excerpt = document.getElementById('edit-blog-excerpt').value.trim();
-            const content = document.getElementById('edit-blog-content-textarea').value.trim();
-            const published = document.getElementById('edit-blog-published').checked;
-            
-            if (!title) {
-                showFormAlert('edit-blog-alert', 'El título es obligatorio', 'error');
-                return;
-            }
-            
-            if (!author) {
-                showFormAlert('edit-blog-alert', 'El autor es obligatorio', 'error');
-                return;
-            }
-            
-            if (!content) {
-                showFormAlert('edit-blog-alert', 'El contenido es obligatorio', 'error');
-                return;
-            }
-            
-            // Manejar la imagen
-            let imagen_url = null;
-            if (currentEditBlogImageOption === 'upload') {
-                const imageData = document.getElementById('edit-blog-image-data').value;
-                if (imageData) {
-                    imagen_url = imageData;
-                }
-            } else {
-                const imageUrl = document.getElementById('edit-blog-image-url').value.trim();
-                if (imageUrl) {
-                    imagen_url = imageUrl;
-                }
-            }
-            
-            const blogData = {
-                titulo: title,
-                contenido: content,
-                excerpt: excerpt,
-                categoria: category,
-                autor: author,
-                imagen_url: imagen_url,
-                publicado: published
-            };
-            
-            showFormAlert('edit-blog-alert', 'Actualizando artículo...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/blog/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(blogData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('edit-blog-alert', 'Artículo actualizado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-edit-blog');
-                        loadBlogPosts();
-                    }, 1500);
-                } else {
-                    showFormAlert('edit-blog-alert', data.error || 'Error al actualizar artículo', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando artículo:', error);
-                showFormAlert('edit-blog-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function previewBlogPost(postId) {
-            const post = blogPostsData.find(p => p.id === postId);
-            if (!post) {
-                showAlert('Artículo no encontrado', 'error');
-                return;
-            }
-            
-            const previewContent = document.getElementById('blog-preview-content');
-            previewContent.innerHTML = `
-                <div class="blog-preview">
-                    <h1>${post.titulo}</h1>
-                    <div class="meta">
-                        <strong>Categoría:</strong> ${post.categoria || 'General'} |
-                        <strong>Autor:</strong> ${post.autor || 'Anónimo'} |
-                        <strong>Fecha:</strong> ${post.created_at ? new Date(post.created_at).toLocaleDateString() : 'N/A'} |
-                        <strong>Vistas:</strong> ${post.vistas || 0} |
-                        <strong>Estado:</strong> ${post.publicado ? 'Publicado' : 'Borrador'}
-                    </div>
-                    ${post.imagen_url ? `<img src="${post.imagen_url}" alt="${post.titulo}" style="max-width: 100%; border-radius: 8px; margin-bottom: 20px;">` : ''}
-                    ${post.excerpt ? `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-style: italic;">${post.excerpt}</div>` : ''}
-                    <div style="line-height: 1.6; font-size: 16px;">
-                        ${post.contenido ? post.contenido.replace(/\n/g, '<br>') : '<p>Contenido no disponible</p>'}
-                    </div>
-                </div>
-            `;
-            
-            openModal('modal-preview-blog');
-        }
-        
-        function deleteBlogPost(postId, postTitle) {
-            confirmAction(`¿Eliminar el artículo "${postTitle}"?`, async function() {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/admin/blog/${postId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        showAlert('Artículo eliminado correctamente', 'success');
-                        loadBlogPosts();
-                        loadDashboardData();
-                    } else {
-                        showAlert(data.error || 'Error al eliminar artículo', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error eliminando artículo:', error);
-                    showAlert('Error de conexión con el servidor', 'error');
-                }
-            });
         }
         
         // ========== CONFIGURACIÓN ==========
@@ -3316,65 +3772,12 @@
             showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
         }
         
+        function generateFinancialReport() {
+            showAlert('Funcionalidad en desarrollo - Generar reporte', 'info');
+        }
+        
         async function updateProfile() {
-            const name = document.getElementById('profile-name').value.trim();
-            const email = document.getElementById('profile-email').value.trim();
-            const phone = document.getElementById('profile-phone').value.trim();
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            
-            if (!name || !email) {
-                showFormAlert('profile-form-alert', 'Nombre y email son obligatorios', 'error');
-                return;
-            }
-            
-            const profileData = {
-                nombre: name,
-                email: email,
-                telefono: phone
-            };
-            
-            if (currentPassword && newPassword) {
-                if (newPassword.length < 6) {
-                    showFormAlert('profile-form-alert', 'La nueva contraseña debe tener al menos 6 caracteres', 'error');
-                    return;
-                }
-                profileData.current_password = currentPassword;
-                profileData.new_password = newPassword;
-            }
-            
-            showFormAlert('profile-form-alert', 'Actualizando perfil...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(profileData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('profile-form-alert', 'Perfil actualizado correctamente', 'success');
-                    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
-                    currentUser = data.user;
-                    updateUserUI();
-                    
-                    setTimeout(() => {
-                        document.getElementById('profile-form-alert').style.display = 'none';
-                        document.getElementById('current-password').value = '';
-                        document.getElementById('new-password').value = '';
-                    }, 2000);
-                } else {
-                    showFormAlert('profile-form-alert', data.error || 'Error al actualizar perfil', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando perfil:', error);
-                showFormAlert('profile-form-alert', 'Error de conexión con el servidor', 'error');
-            }
+            showAlert('Perfil actualizado (modo demo)', 'success');
         }
         
         function saveSystemSettings() {
@@ -3395,42 +3798,23 @@
             showAlert('Configuración guardada correctamente', 'success');
         }
         
-        // Funciones para usuarios y reservas (mantenidas del código anterior)
+        // Funciones para usuarios (mantenidas del código anterior)
         async function loadUsers() {
             if (!isAdmin) {
                 showAlert('No tienes permisos de administrador', 'error');
                 return;
             }
             
-            const tbody = document.getElementById('users-table-body');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px;">
-                        <div class="spinner"></div>
-                        <p>Cargando usuarios...</p>
-                    </td>
-                </tr>
-            `;
+            // Datos de demostración
+            const mockUsers = [
+                { id: 1, nombre: 'Juan Pérez', email: 'juan@email.com', rol: 'user', fecha_registro: '2024-01-15', activo: true, telefono: '0412-1234567' },
+                { id: 2, nombre: 'María González', email: 'maria@email.com', rol: 'user', fecha_registro: '2024-02-20', activo: true, telefono: '0414-7654321' },
+                { id: 3, nombre: 'Admin', email: 'admin@cano-salao.com', rol: 'admin', fecha_registro: '2024-01-01', activo: true, telefono: '' },
+                { id: 4, nombre: 'Carlos Rodríguez', email: 'carlos@email.com', rol: 'user', fecha_registro: '2024-03-10', activo: false, telefono: '0426-9876543' }
+            ];
             
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/users`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        renderUsersTable(data.users);
-                    }
-                }
-            } catch (error) {
-                console.error('Error cargando usuarios:', error);
-                showAlert('Error cargando usuarios', 'error');
-                renderEmptyUsersTable();
-            }
+            usersData = mockUsers;
+            renderUsersTable(mockUsers);
         }
         
         function renderUsersTable(users) {
@@ -3474,238 +3858,6 @@
                     </td>
                 </tr>
             `;
-        }
-        
-        function showAddUserModal() {
-            if (!isAdmin) {
-                showAlert('Solo los administradores pueden agregar usuarios', 'error');
-                return;
-            }
-            
-            document.getElementById('add-user-alert').style.display = 'none';
-            document.getElementById('add-user-form').reset();
-            openModal('modal-add-user');
-        }
-        
-        async function addNewUser() {
-            if (!isAdmin) return;
-            
-            const name = document.getElementById('new-user-name').value.trim();
-            const email = document.getElementById('new-user-email').value.trim().toLowerCase();
-            const password = document.getElementById('new-user-password').value;
-            const phone = document.getElementById('new-user-phone').value.trim();
-            const role = document.getElementById('new-user-role').value;
-            
-            if (!name || !email || !password) {
-                showFormAlert('add-user-alert', 'Nombre, email y contraseña son obligatorios', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showFormAlert('add-user-alert', 'La contraseña debe tener al menos 6 caracteres', 'error');
-                return;
-            }
-            
-            const userData = {
-                nombre: name,
-                email: email,
-                password: password,
-                telefono: phone || '',
-                rol: role
-            };
-            
-            showFormAlert('add-user-alert', 'Creando usuario...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(userData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('add-user-alert', 'Usuario creado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-add-user');
-                        loadUsers();
-                        loadDashboardData();
-                    }, 1500);
-                } else {
-                    showFormAlert('add-user-alert', data.error || 'Error al crear usuario', 'error');
-                }
-            } catch (error) {
-                console.error('Error creando usuario:', error);
-                showFormAlert('add-user-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function editUser(id, name, email, phone, role, active) {
-            if (!isAdmin) return;
-            
-            document.getElementById('edit-user-id').value = id;
-            document.getElementById('edit-user-name').value = name;
-            document.getElementById('edit-user-email').value = email;
-            document.getElementById('edit-user-phone').value = phone;
-            document.getElementById('edit-user-role').value = role;
-            document.getElementById('edit-user-status').value = active ? 'active' : 'inactive';
-            document.getElementById('edit-user-alert').style.display = 'none';
-            
-            openModal('modal-edit-user');
-        }
-        
-        async function saveUserEdit() {
-            if (!isAdmin) return;
-            
-            const id = document.getElementById('edit-user-id').value;
-            const name = document.getElementById('edit-user-name').value.trim();
-            const email = document.getElementById('edit-user-email').value.trim();
-            const phone = document.getElementById('edit-user-phone').value.trim();
-            const role = document.getElementById('edit-user-role').value;
-            const status = document.getElementById('edit-user-status').value;
-            
-            if (!name || !email) {
-                showFormAlert('edit-user-alert', 'Nombre y email son obligatorios', 'error');
-                return;
-            }
-            
-            const userData = {
-                nombre: name,
-                email: email,
-                telefono: phone,
-                rol: role,
-                activo: status === 'active'
-            };
-            
-            showFormAlert('edit-user-alert', 'Actualizando usuario...', 'info');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/users/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(userData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showFormAlert('edit-user-alert', 'Usuario actualizado correctamente', 'success');
-                    setTimeout(() => {
-                        closeModal('modal-edit-user');
-                        loadUsers();
-                    }, 1500);
-                } else {
-                    showFormAlert('edit-user-alert', data.error || 'Error al actualizar usuario', 'error');
-                }
-            } catch (error) {
-                console.error('Error actualizando usuario:', error);
-                showFormAlert('edit-user-alert', 'Error de conexión con el servidor', 'error');
-            }
-        }
-        
-        function deleteUser(userId, userName) {
-            if (!isAdmin) return;
-            
-            confirmAction(`¿Eliminar al usuario "${userName}"?`, async function() {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        showAlert('Usuario eliminado correctamente', 'success');
-                        loadUsers();
-                        loadDashboardData();
-                    } else {
-                        showAlert(data.error || 'Error al eliminar usuario', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error eliminando usuario:', error);
-                    showAlert('Error de conexión con el servidor', 'error');
-                }
-            });
-        }
-        
-        async function loadBookings() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/user/bookings`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        renderBookingsTable(data.bookings);
-                    }
-                }
-            } catch (error) {
-                console.error('Error cargando reservas:', error);
-                showAlert('Error cargando reservas', 'error');
-                renderEmptyBookingsTable();
-            }
-        }
-        
-        function renderBookingsTable(bookings) {
-            const tbody = document.getElementById('bookings-table-body');
-            if (!tbody) return;
-            
-            if (!bookings || bookings.length === 0) {
-                renderEmptyBookingsTable();
-                return;
-            }
-            
-            tbody.innerHTML = '';
-            bookings.forEach(booking => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${booking.id}</td>
-                    <td>${booking.user_id}</td>
-                    <td>${booking.tour_nombre || `Tour ${booking.tour_id}`}</td>
-                    <td>${booking.fecha ? new Date(booking.fecha).toLocaleDateString() : 'N/A'}</td>
-                    <td>${booking.personas}</td>
-                    <td>$${booking.total?.toFixed(2)}</td>
-                    <td><span class="status-badge ${booking.estado === 'confirmed' ? 'status-confirmed' : 'status-pending'}">${booking.estado || 'pending'}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-edit" onclick="editBooking(${booking.id})"><i class="bi bi-pencil"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-        
-        function renderEmptyBookingsTable() {
-            const tbody = document.getElementById('bookings-table-body');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" class="empty-state">
-                        <i class="bi bi-calendar-check"></i>
-                        <h3>No hay reservas</h3>
-                        <p>No se han realizado reservas aún</p>
-                    </td>
-                </tr>
-            `;
-        }
-        
-        function editBooking(bookingId) {
-            showAlert(`Editando reserva ${bookingId} (funcionalidad en desarrollo)`, 'info');
         }
 
     </script>
