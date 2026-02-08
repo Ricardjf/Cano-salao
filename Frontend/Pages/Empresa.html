@@ -551,7 +551,7 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* ===== HERO SECTION ===== */
+        /* ===== HERO SECTION CORREGIDO ===== */
         .page-hero {
             min-height: 60vh;
             display: flex;
@@ -562,7 +562,7 @@
             padding: 4rem 0;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%);
+            background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%) !important;
         }
         
         .page-hero .container {
@@ -851,27 +851,6 @@
             margin-bottom: 0.5rem;
         }
         
-        /* Grid de objetivos */
-        .objectives-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .objective-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 8px;
-            padding: 2rem;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        
-        .objective-card h3 {
-            color: #0d3b66;
-            margin-bottom: 1.5rem;
-            font-size: 1.4rem;
-        }
-        
         /* Factible features mejoradas */
         .factible-features {
             display: grid;
@@ -993,7 +972,7 @@
                 gap: 2rem;
             }
             
-            .content-grid, .objectives-grid, .factible-features {
+            .content-grid, .factible-features {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
@@ -1119,7 +1098,7 @@
         </nav>
     </div>
 
-    <!-- Hero Section -->
+    <!-- Hero Section CORREGIDO - solo color azul -->
     <section class="page-hero">
         <div class="container">
             <h1 class="times-font">Empresa de Producción Social</h1>
