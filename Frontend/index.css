@@ -1,10 +1,11 @@
-/* ========== VARIABLES CSS OPTIMIZADAS ========== */
+/* ========== VARIABLES CSS OPTIMIZADAS (VERDE NATURALEZA) ========== */
 :root {
-    /* Paleta principal simplificada */
-    --color-primary: #0d3b66;
-    --color-accent: #e62b7e;
-    --color-light: #f8f9fa;
-    --color-dark: #212529;
+    /* Paleta principal transformada a verdes */
+    --color-primary: #1b4332;       /* Verde Bosque profundo */
+    --color-primary-light: #2d6a4f; /* Verde esmeralda medio */
+    --color-accent: #e62b7e;        /* Acento rosa para contraste (mantenido por visibilidad) */
+    --color-light: #f1f8f4;         /* Fondo verde muy pálido */
+    --color-dark: #081c15;          /* Verde casi negro para textos */
     --color-orange: #FF8C42;
     
     /* Utilidades optimizadas */
@@ -67,9 +68,9 @@ body {
     padding: 0 20px;
 }
 
-/* ========== HEADER OPTIMIZADO CON LOGO 35px ========== */
+/* ========== HEADER OPTIMIZADO CON LOGO 35px (VERDE) ========== */
 header {
-    background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
     color: white;
     position: sticky;
     top: 0;
@@ -220,7 +221,7 @@ nav ul li a.active {
     justify-content: center;
 }
 
-/* ========== MENÚ MÓVIL - COMPLETAMENTE CORREGIDO ========== */
+/* ========== MENÚ MÓVIL (VERDE) ========== */
 .mobile-menu-overlay {
     display: none;
     position: fixed;
@@ -246,7 +247,7 @@ nav ul li a.active {
     width: 85%;
     max-width: 300px;
     height: 100%;
-    background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
     z-index: 1000;
     overflow-y: auto;
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -292,12 +293,12 @@ nav ul li a.active {
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column; /* CORRECCIÓN: Asegurar que sea vertical */
+    flex-direction: column;
 }
 
 .mobile-menu-nav li {
     border-bottom: 1px solid rgba(255,255,255,0.1);
-    width: 100%; /* CORRECCIÓN: Asegurar ancho completo */
+    width: 100%;
 }
 
 .mobile-menu-nav li:last-child {
@@ -316,7 +317,7 @@ nav ul li a.active {
     -webkit-tap-highlight-color: rgba(255,255,255,0.2);
     touch-action: manipulation;
     min-height: 44px;
-    width: 100%; /* CORRECCIÓN: Asegurar ancho completo */
+    width: 100%;
 }
 
 .mobile-menu-nav a.active {
@@ -328,7 +329,7 @@ nav ul li a.active {
     background: rgba(255,255,255,0.1);
 }
 
-/* ========== HERO ========== */
+/* ========== HERO (VERDE) ========== */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -348,7 +349,7 @@ nav ul li a.active {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #1a5276 0%, #2c82c9 100%) center/cover no-repeat;
+    background: linear-gradient(135deg, #1b4332 0%, #40916c 100%) center/cover no-repeat;
     z-index: 1;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -522,6 +523,7 @@ section:nth-child(even) {
     margin-bottom: 1rem;
     display: inline-block;
     transition: var(--transition-normal);
+    color: var(--color-primary-light);
 }
 
 .factible-feature:hover .factible-icon {
@@ -633,9 +635,9 @@ section:nth-child(even) {
     line-height: 1.5;
 }
 
-/* ========== SECCIÓN LA RUTA ========== */
+/* ========== SECCIÓN LA RUTA (VERDE OSCURO) ========== */
 #la-ruta {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #0d2d44 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #081c15 100%);
     color: white;
     position: relative;
     padding: 3rem 0;
@@ -661,9 +663,9 @@ section:nth-child(even) {
 }
 
 .carta {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-md);
     overflow: hidden;
     transition: var(--transition-normal);
@@ -717,14 +719,14 @@ section:nth-child(even) {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.15);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: var(--radius-sm);
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition-normal);
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
     font-size: 0.85rem;
 }
 
@@ -734,7 +736,7 @@ section:nth-child(even) {
     transform: translateX(4px);
 }
 
-/* ========== CARACTERÍSTICAS ========== */
+/* ========== CARACTERÍSTICAS (ICONOS VERDE ESMERALDA) ========== */
 .caracteristicas-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -760,7 +762,7 @@ section:nth-child(even) {
     width: 55px;
     height: 55px;
     margin: 0 auto 1rem;
-    background: linear-gradient(135deg, #2a9d8f, #2196f3);
+    background: linear-gradient(135deg, #52b788, #2d6a4f);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -786,9 +788,9 @@ section:nth-child(even) {
     font-size: 0.9rem;
 }
 
-/* ========== SECCIÓN PREGUNTAS ========== */
+/* ========== SECCIÓN PREGUNTAS (VERDE OSCURO) ========== */
 #preguntas {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #0d2d44 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #081c15 100%);
     color: white;
     text-align: center;
     padding: 3rem 0;
@@ -893,7 +895,7 @@ section:nth-child(even) {
 .contact-icon {
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #64B5F6, #42A5F5);
+    background: linear-gradient(135deg, #74c69d, #40916c);
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
@@ -950,8 +952,8 @@ section:nth-child(even) {
 
 .form-control:focus {
     outline: none;
-    border-color: #2a9d8f;
-    box-shadow: 0 0 0 2px rgba(42, 157, 143, 0.1);
+    border-color: #40916c;
+    box-shadow: 0 0 0 2px rgba(64, 145, 108, 0.1);
     background: white;
 }
 
@@ -960,9 +962,9 @@ textarea.form-control {
     resize: vertical;
 }
 
-/* ========== FOOTER ========== */
+/* ========== FOOTER (VERDE CASI NEGRO) ========== */
 footer {
-    background: linear-gradient(135deg, #212529 0%, #121416 100%);
+    background: linear-gradient(135deg, #081c15 0%, #000000 100%);
     color: white;
     padding: 2.5rem 0 1rem;
     position: relative;
@@ -976,7 +978,7 @@ footer {
 }
 
 .footer-column h3 {
-    color: #a8d8ea;
+    color: #95d5b2; /* Verde pastel para el footer */
     margin-bottom: 1rem;
     font-size: 1.1rem;
     display: flex;
@@ -1005,7 +1007,7 @@ footer {
 }
 
 .footer-links a:hover {
-    color: #a8d8ea;
+    color: #95d5b2;
     transform: translateX(5px);
 }
 
@@ -1031,7 +1033,7 @@ footer {
 }
 
 .social-icon:hover {
-    background: #2a9d8f;
+    background: #40916c;
     transform: translateY(-3px) scale(1.05);
     border-color: transparent;
 }
@@ -1056,13 +1058,14 @@ footer {
     color: #FFFFFF !important;
 }
 
-.icon-naturaleza { color: #4CAF50 !important; }
-.icon-comunidad { color: #2196F3 !important; }
+/* Colores de iconos adaptados a la temática verde */
+.icon-naturaleza { color: #74c69d !important; }
+.icon-comunidad { color: #95d5b2 !important; }
 .icon-turismo { color: #FF9800 !important; }
-.icon-historia { color: #795548 !important; }
+.icon-historia { color: #b7e4c7 !important; }
 .icon-contacto { color: #FFFFFF !important; }
 
-/* ========== RESPONSIVE DESIGN CORREGIDO ========== */
+/* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 1200px) {
     .factible-features,
     .caracteristicas-grid {
@@ -1079,7 +1082,6 @@ footer {
         font-size: 1.8rem;
     }
     
-    /* Logo sigue igual */
     .logo-img {
         width: 35px;
         height: 35px;
@@ -1090,19 +1092,16 @@ footer {
     }
 }
 
-/* ========== MÓVIL (768px) - AQUÍ ES DONDE DEBE MOSTRARSE EL MENÚ HAMBURGUESA ========== */
+/* ========== MÓVIL (768px) - MENÚ HAMBURGUESA ========== */
 @media (max-width: 768px) {
-    /* Mostrar botón hamburguesa SOLO EN MÓVIL */
     .menu-toggle {
         display: flex !important;
     }
     
-    /* Ocultar navegación desktop en móvil */
     .nav-center {
         display: none !important;
     }
     
-    /* Ajustar layout del header */
     .header-content {
         flex-wrap: nowrap;
     }
@@ -1119,7 +1118,6 @@ footer {
         order: 3;
     }
     
-    /* Hero section para móvil */
     .hero {
         min-height: 90vh;
         padding: 1.5rem 1rem;
@@ -1139,7 +1137,6 @@ footer {
         font-size: 1.6rem;
     }
     
-    /* Grids a una columna en móvil */
     .factible-features,
     .attractions-grid,
     .caracteristicas-grid,
@@ -1148,13 +1145,11 @@ footer {
         gap: 1rem;
     }
     
-    /* Contacto en móvil */
     .contact-content {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
     
-    /* Botones CTA en móvil */
     .cta-buttons {
         flex-direction: column;
         align-items: center;
@@ -1168,7 +1163,6 @@ footer {
         padding: 0.7rem 1.2rem;
     }
     
-    /* Footer en móvil */
     .footer-content {
         grid-template-columns: 1fr;
         text-align: center;
@@ -1190,7 +1184,6 @@ footer {
 
 /* ========== MÓVIL PEQUEÑO (576px) ========== */
 @media (max-width: 576px) {
-    /* Logo constante */
     .logo-img {
         width: 35px;
         height: 35px;
@@ -1208,7 +1201,6 @@ footer {
         gap: 0.5rem;
     }
     
-    /* Hero para móvil pequeño */
     .hero {
         min-height: 85vh;
         padding: 1.2rem 1rem;
@@ -1228,30 +1220,25 @@ footer {
         font-size: 1rem !important;
     }
     
-    /* Títulos de sección */
     .section-title h2 {
         font-size: 1.4rem;
     }
     
-    /* Botones */
     .btn,
     .cta-btn {
         padding: 0.6rem 1rem;
         font-size: 0.9rem;
     }
     
-    /* Cards */
     .factible-feature,
     .caracteristica-item {
         padding: 1.2rem 0.8rem;
     }
     
-    /* Formulario de contacto */
     .contact-form {
         padding: 1.2rem 0.8rem;
     }
     
-    /* Header más compacto */
     header {
         padding: 0.4rem 0;
     }
@@ -1266,16 +1253,10 @@ footer {
     .mobile-menu-nav a {
         min-height: 44px;
     }
-    
-    .menu-toggle,
-    .mobile-menu-close {
-        min-width: 44px;
-    }
 }
 
 /* ========== CORRECCIONES ESPECÍFICAS PARA ANDROID ========== */
 @media (hover: none) and (pointer: coarse) {
-    /* Mejorar feedback táctil */
     button:active, 
     .btn:active, 
     .carta-btn:active, 
@@ -1291,7 +1272,6 @@ footer {
         background: rgba(255,255,255,0.2) !important;
     }
     
-    /* Desactivar efectos hover en dispositivos táctiles */
     .btn:hover,
     .carta-btn:hover,
     .social-icon:hover,
@@ -1307,7 +1287,6 @@ footer {
         transform: none !important;
     }
     
-    /* Mejorar scrolling en Android */
     .mobile-menu-container {
         -webkit-overflow-scrolling: touch;
         overflow-y: auto;
@@ -1346,15 +1325,8 @@ footer {
     }
 }
 
-/* ========== CORRECCIONES ESPECÍFICAS PARA CHROME/ANDROID ========== */
+/* ========== CORRECCIONES CHROME/ANDROID (INPUTS) ========== */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-    select,
-    input,
-    textarea {
-        font-size: 16px;
-    }
-    
-    /* Prevenir zoom en inputs en Android Chrome */
     @media (max-width: 768px) {
         input[type="text"],
         input[type="email"],
@@ -1366,19 +1338,10 @@ footer {
     }
 }
 
-/* ========== MEJORAS DE ACCESIBILIDAD ========== */
-@media (prefers-contrast: high) {
-    .btn,
-    .carta-btn,
-    .login-btn {
-        border: 2px solid currentColor;
-    }
-}
-
-/* ========== DARK MODE (opcional) ========== */
+/* ========== DARK MODE ADAPTADO A VERDE ========== */
 @media (prefers-color-scheme: dark) {
     body {
-        background: #121212;
+        background: #05100c;
         color: #e0e0e0;
     }
     
@@ -1387,15 +1350,14 @@ footer {
     .caracteristica-item,
     .contact-form,
     .contact-item {
-        background: #1e1e1e;
+        background: #0b1e18;
         color: #e0e0e0;
     }
     
     .factible-feature h3,
     .attraction-info h3,
-    .caracteristica-item h3,
-    .contact-item h4 {
-        color: #bb86fc;
+    .caracteristica-item h3 {
+        color: #74c69d;
     }
     
     .factible-feature p,
@@ -1404,10 +1366,3 @@ footer {
         color: #b0b0b0;
     }
 }
-
-
-
-
-
-
-
