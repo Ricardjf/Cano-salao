@@ -2,205 +2,131 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Reservas | Ruta Turística Caño Salao | Proyecto Factible</title>
-    <meta name="description" content="Reserva tu tour en Caño Salao. Tours por manglares, avistamiento de aves, experiencias pesqueras y más. Sistema de reservas en línea para nuestro proyecto factible">
-    <meta name="keywords" content="reservas Caño Salao, tours manglares Venezuela, reservar tour ecoturismo, proyecto factible, sistema de reservas, turismo sostenible">
-    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
-    
-    <!-- FAVICON -->
-    <link rel="icon" type="image/png" sizes="32x32" href="../media/Logo_cano_60.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../media/Logo_cano_60.png">
-    <link rel="apple-touch-icon" href="../media/Logo_cano_120.png">
-    <meta name="theme-color" content="#0d3b66">
-    
-    <!-- Preload de fuentes críticas -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
-    
-    <!-- Cargar CSS principal -->
-    <link rel="stylesheet" href="../index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas | Ruta Turística Caño Salao</title>
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
-    <!-- Flatpickr para selección de fechas -->
+    <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
-        /* ========== VARIABLES CSS OPTIMIZADAS ========== */
-        :root {
-            /* Paleta principal simplificada */
-            --color-primary: #0d3b66;
-            --color-accent: #e62b7e;
-            --color-light: #f8f9fa;
-            --color-dark: #212529;
-            --color-orange: #FF8C42;
-            
-            /* Utilidades optimizadas */
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
-            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --transition-fast: all 0.2s ease;
-            --transition-normal: all 0.3s ease;
-        }
-        
-        /* ========== RESET Y BASE OPTIMIZADOS ========== */
+        /* RESET Y BASE */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
-            -webkit-touch-callout: none;
         }
-
-        html, body {
-            width: 100%;
-            overflow-x: hidden;
-            touch-action: manipulation;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-        }
-
+        
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Arial', sans-serif;
             line-height: 1.6;
-            color: var(--color-dark);
-            background-color: #fff;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            position: relative;
+            color: #333;
+            background: #f8f9fa;
         }
-
-        /* Clase para fuente Times New Roman - cargada progresivamente */
-        .times-font {
-            font-family: 'Times New Roman', Times, serif;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        .text-orange {
-            color: var(--color-orange);
-        }
-
+        
         .container {
             width: 90%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-
-        /* ========== ESTILOS ESPECÍFICOS PARA RESERVAS ========== */
-        .page-hero {
-            min-height: 60vh;
+        
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
+            gap: 0.5rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .text-orange {
+            color: #FF8C42;
+        }
+        
+        /* NAVEGACIÓN */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* HERO SECTION */
+        .page-hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
             color: white;
             padding: 4rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        .hero-bg.loaded {
-            opacity: 1;
-        }
-        
-        .page-hero .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1000px;
-            padding: 0 1rem;
+            text-align: center;
         }
         
         .page-hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            animation: fadeInDown 0.8s ease-out;
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
         
-        .page-hero .hero-subtitle {
-            font-size: 1.5rem;
-            max-width: 800px;
-            margin: 0 auto 2.5rem;
-            opacity: 0.95;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
-            line-height: 1.5;
-            font-weight: 400;
+        .hero-subtitle {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
         }
         
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
+        /* BREADCRUMB */
         .breadcrumb {
-            background: var(--color-light);
+            background: #e9ecef;
             padding: 1rem 0;
             font-size: 0.9rem;
         }
         
         .breadcrumb a {
-            color: var(--color-primary);
+            color: #0d3b66;
             text-decoration: none;
-            transition: var(--transition-fast);
         }
         
         .breadcrumb a:hover {
-            color: var(--color-accent);
+            text-decoration: underline;
         }
         
-        .breadcrumb span {
-            color: var(--color-dark);
-            font-weight: 500;
-        }
-        
-        /* Estructura principal de reservas */
+        /* CONTENIDO PRINCIPAL */
         .reservas-container {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 3rem;
+            gap: 2rem;
             padding: 3rem 0;
         }
         
@@ -210,129 +136,88 @@
             }
         }
         
-        /* Sección de selección de tour */
-        .tours-section {
+        /* SECCIÓN TOURS */
+        .tours-section, .reserva-form-section {
             background: white;
-            border-radius: var(--radius-lg);
+            border-radius: 10px;
             padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         
-        .tours-section h2 {
-            color: var(--color-primary);
+        .tours-section h2, .reserva-form-section h2 {
+            color: #0d3b66;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid var(--color-light);
+            border-bottom: 2px solid #e9ecef;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        .tour-cards {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-        
+        /* TOUR CARDS */
         .tour-card {
-            background: var(--color-light);
-            border-radius: var(--radius-md);
+            background: #f8f9fa;
+            border-radius: 8px;
             padding: 1.5rem;
+            margin-bottom: 1rem;
             border: 2px solid transparent;
-            transition: var(--transition-normal);
             cursor: pointer;
-            position: relative;
+            transition: all 0.3s ease;
         }
         
         .tour-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--color-accent);
+            border-color: #0d3b66;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .tour-card.selected {
-            border-color: var(--color-primary);
-            background: linear-gradient(135deg, rgba(13, 59, 102, 0.05), transparent);
+            border-color: #e62b7e;
+            background: linear-gradient(135deg, rgba(230, 43, 126, 0.05), transparent);
         }
         
         .tour-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             margin-bottom: 1rem;
         }
         
         .tour-title {
-            color: var(--color-primary);
-            font-size: 1.2rem;
+            color: #0d3b66;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin: 0;
         }
         
         .tour-price {
-            background: var(--color-accent);
+            background: #e62b7e;
             color: white;
             padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            font-weight: 700;
+            border-radius: 6px;
+            font-weight: bold;
             font-size: 1.1rem;
         }
         
         .tour-details {
             display: flex;
-            flex-wrap: wrap;
             gap: 1rem;
-            margin-top: 1rem;
             font-size: 0.9rem;
+            color: #666;
         }
         
         .tour-detail {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: #666;
+            gap: 0.3rem;
         }
         
-        .tour-detail i {
-            color: var(--color-primary);
-        }
-        
-        /* Sección de formulario de reserva */
-        .reserva-form-section {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            position: sticky;
-            top: 2rem;
-        }
-        
-        .reserva-form-section h2 {
-            color: var(--color-primary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--color-light);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
+        /* FORMULARIO */
         .selected-tour-info {
-            background: linear-gradient(135deg, var(--color-primary), #1a5276);
+            background: linear-gradient(135deg, #0d3b66, #1a5276);
             color: white;
             padding: 1.5rem;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             margin-bottom: 2rem;
-            display: none;
-        }
-        
-        .selected-tour-info.visible {
-            display: block;
         }
         
         .selected-tour-header {
@@ -343,15 +228,14 @@
         }
         
         .selected-tour-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin: 0;
         }
         
         .selected-tour-price {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--color-accent);
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #e62b7e;
         }
         
         .reserva-form {
@@ -361,16 +245,17 @@
         }
         
         .form-group {
-            margin-bottom: 0;
+            margin-bottom: 1rem;
         }
         
         .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #0d3b66;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--color-primary);
         }
         
         .form-group label.required:after {
@@ -381,35 +266,16 @@
         
         .form-control {
             width: 100%;
-            padding: 0.8rem 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: var(--radius-md);
-            font-family: inherit;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
             font-size: 1rem;
-            transition: var(--transition-fast);
-            background: #f8f9fa;
+            transition: border-color 0.3s;
         }
         
         .form-control:focus {
             outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.1);
-            background: white;
-        }
-        
-        .form-control.error {
-            border-color: #e74c3c;
-        }
-        
-        .error-message {
-            color: #e74c3c;
-            font-size: 0.85rem;
-            margin-top: 0.3rem;
-            display: none;
-        }
-        
-        .error-message.show {
-            display: block;
+            border-color: #0d3b66;
         }
         
         .input-group {
@@ -421,24 +287,20 @@
             flex: 1;
         }
         
-        /* Sección de pago */
+        /* MÉTODOS DE PAGO */
         .pago-section {
             background: #f8f9fa;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             padding: 1.5rem;
             margin-top: 1rem;
-            border: 2px solid #e0e0e0;
-        }
-        
-        .pago-method {
-            margin-bottom: 1.5rem;
+            border: 2px solid #ddd;
         }
         
         .pago-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 0.5rem;
-            margin-top: 0.5rem;
+            margin-top: 1rem;
         }
         
         .pago-option {
@@ -446,78 +308,34 @@
             flex-direction: column;
             align-items: center;
             padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: var(--radius-md);
+            border: 2px solid #ddd;
+            border-radius: 6px;
             cursor: pointer;
-            transition: var(--transition-fast);
-            text-align: center;
+            transition: all 0.3s;
         }
         
         .pago-option:hover {
-            border-color: var(--color-primary);
+            border-color: #0d3b66;
         }
         
         .pago-option.selected {
-            border-color: var(--color-primary);
+            border-color: #0d3b66;
             background: rgba(13, 59, 102, 0.05);
         }
         
         .pago-option i {
             font-size: 2rem;
+            color: #0d3b66;
             margin-bottom: 0.5rem;
-            color: var(--color-primary);
         }
         
-        .pago-option span {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        
-        .pago-details {
-            display: none;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        .pago-details.show {
-            display: block;
-        }
-        
-        .pago-movil-details {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius-md);
-            border: 1px solid #e0e0e0;
-        }
-        
-        .pago-movil-details h4 {
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .qr-code {
-            width: 150px;
-            height: 150px;
-            background: #f0f0f0;
-            border-radius: var(--radius-md);
-            margin: 1rem auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: #666;
-        }
-        
+        /* RESUMEN DE PAGO */
         .resumen-pago {
             background: white;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             padding: 1.5rem;
-            border: 2px solid #e0e0e0;
             margin-top: 1rem;
+            border: 2px solid #ddd;
         }
         
         .resumen-item {
@@ -525,234 +343,140 @@
             justify-content: space-between;
             margin-bottom: 0.8rem;
             padding-bottom: 0.8rem;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #eee;
         }
         
         .resumen-total {
             display: flex;
             justify-content: space-between;
-            font-weight: 700;
+            font-weight: bold;
             font-size: 1.2rem;
-            color: var(--color-primary);
+            color: #0d3b66;
             margin-top: 1rem;
             padding-top: 1rem;
-            border-top: 2px solid #e0e0e0;
+            border-top: 2px solid #ddd;
         }
         
-        .terms-checkbox {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.8rem;
-            margin-top: 1rem;
-        }
-        
-        .terms-checkbox input {
-            margin-top: 0.3rem;
-        }
-        
-        .terms-checkbox label {
-            font-size: 0.9rem;
-            color: #666;
-        }
-        
-        .terms-checkbox a {
-            color: var(--color-primary);
-            text-decoration: none;
-        }
-        
-        .terms-checkbox a:hover {
-            text-decoration: underline;
-        }
-        
-        .terms-checkbox.error label {
-            color: #e74c3c;
-        }
-        
-        /* Estado de carga y mensajes */
-        .loading-tours {
-            text-align: center;
-            padding: 3rem;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--color-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        
-        .error-tours {
-            text-align: center;
-            padding: 2rem;
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: var(--radius-md);
-            color: #721c24;
-            margin: 2rem 0;
-        }
-        
-        .reserva-success {
-            display: none;
-            text-align: center;
-            padding: 3rem;
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: var(--radius-lg);
-            color: #155724;
-            margin-top: 2rem;
-        }
-        
-        .reserva-success.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .reserva-success-icon {
-            font-size: 4rem;
-            color: #28a745;
-            margin-bottom: 1rem;
-        }
-        
-        .reserva-details {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius-md);
-            margin-top: 1.5rem;
-            text-align: left;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .reserva-details h4 {
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 0.5rem;
-        }
-        
-        .reserva-details-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .reserva-id {
-            background: var(--color-primary);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            display: inline-block;
-            margin-top: 1rem;
-        }
-        
-        .reserva-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        /* Modal de términos */
-        .terms-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
+        /* BOTONES */
+        .btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
-        }
-        
-        .terms-modal.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .terms-content {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .terms-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
+            gap: 0.5rem;
+            background: #e62b7e;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
             border: none;
-            font-size: 1.5rem;
             cursor: pointer;
-            color: #666;
+            font-size: 1rem;
+            transition: all 0.3s;
         }
         
-        .terms-content h3 {
-            color: var(--color-primary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--color-light);
+        .btn:hover {
+            background: #d81b60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
-        .terms-content ul {
-            padding-left: 1.5rem;
-            margin: 1rem 0;
-        }
-        
-        .terms-content li {
-            margin-bottom: 0.5rem;
-        }
-        
+        /* BANNER STICKY */
         .sticky-banner {
-            position: sticky;
+            position: fixed;
             bottom: 0;
+            left: 0;
+            right: 0;
             background: white;
             padding: 1rem;
-            border-top: 2px solid var(--color-light);
+            border-top: 2px solid #e9ecef;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 100;
-            transition: transform 0.3s ease;
         }
         
         .sticky-banner-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1rem;
-        }
-        
-        .sticky-tour-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
         }
         
         .sticky-tour-name {
             font-weight: 600;
-            color: var(--color-primary);
+            color: #0d3b66;
         }
         
         .sticky-tour-price {
-            font-weight: 700;
-            color: var(--color-accent);
+            font-weight: bold;
+            color: #e62b7e;
             font-size: 1.2rem;
         }
         
-        .sticky-banner.hidden {
-            transform: translateY(100%);
+        /* FOOTER */
+        footer {
+            background: linear-gradient(135deg, #212529 0%, #121416 100%);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            color: #a8d8ea;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #a8d8ea;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+        
+        /* LOADING */
+        .loading-tours {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
         }
         
         @keyframes spin {
@@ -760,29 +484,10 @@
             100% { transform: rotate(360deg); }
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        /* Responsive */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .page-hero {
-                min-height: 50vh;
-                padding: 3rem 0;
-            }
-            
             .page-hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .page-hero .hero-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .tours-section,
-            .reserva-form-section {
-                padding: 1.5rem;
+                font-size: 2rem;
             }
             
             .input-group {
@@ -797,409 +502,11 @@
             .sticky-banner-content {
                 flex-direction: column;
                 text-align: center;
-                gap: 0.5rem;
+                gap: 1rem;
             }
             
-            .reserva-actions {
-                flex-direction: column;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .page-hero h1 {
-                font-size: 2rem;
-            }
-            
-            .page-hero .hero-subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .tour-header {
-                flex-direction: column;
-                gap: 0.5rem;
-                align-items: flex-start;
-            }
-            
-            .tour-price {
-                align-self: flex-start;
-            }
-        }
-        
-        /* ========== HEADER OPTIMIZADO ========== */
-        header {
-            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-md);
-            padding: 0.5rem 0;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0;
-            gap: 1rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex-shrink: 0;
-            z-index: 1002;
-        }
-
-        .logo-img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            border-radius: 50%;
-            display: block;
-            flex-shrink: 0;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            letter-spacing: -0.5px;
-            white-space: nowrap;
-            margin: 0;
-            line-height: 1;
-        }
-
-        /* Navegación desktop */
-        .nav-center {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 0.5rem;
-            align-items: center;
-            margin: 0;
-            padding: 0;
-            justify-content: center;
-        }
-
-        nav ul li {
-            position: relative;
-        }
-
-        nav ul li a {
-            color: rgba(255,255,255,0.95);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.4rem 0.6rem;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: var(--transition-fast);
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-
-        nav ul li a:hover {
-            color: white;
-            background: rgba(255,255,255,0.1);
-        }
-
-        nav ul li a.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            font-weight: 600;
-        }
-
-        /* Sección de autenticación */
-        .auth-section {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            flex-shrink: 0;
-            z-index: 1002;
-        }
-
-        .login-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: rgba(255,255,255,0.15);
-            color: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition-fast);
-            border: 1px solid rgba(255,255,255,0.2);
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .login-btn:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
-        /* Botón hamburguesa */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            transition: var(--transition-fast);
-            flex-shrink: 0;
-            z-index: 1002;
-            min-width: 44px;
-            min-height: 44px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ========== MENÚ MÓVIL ========== */
-        .mobile-menu-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .mobile-menu-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-
-        .mobile-menu-container {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 85%;
-            max-width: 300px;
-            height: 100%;
-            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
-            z-index: 1000;
-            overflow-y: auto;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-        }
-
-        .mobile-menu-container.active {
-            right: 0;
-        }
-
-        .mobile-menu-header {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.1);
-        }
-
-        .mobile-menu-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mobile-menu-nav {
-            padding: 1rem 0;
-        }
-
-        .mobile-menu-nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobile-menu-nav li {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            width: 100%;
-        }
-
-        .mobile-menu-nav li:last-child {
-            border-bottom: none;
-        }
-
-        .mobile-menu-nav a {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
-            color: white;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: background 0.2s ease;
-            min-height: 44px;
-            width: 100%;
-        }
-
-        .mobile-menu-nav a.active {
-            background: rgba(255,255,255,0.15);
-            font-weight: 600;
-        }
-
-        .mobile-menu-nav a:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        /* ========== BOTONES ========== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-            background: var(--color-accent);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition-normal);
-            font-size: 1rem;
-            min-height: 44px;
-        }
-
-        .btn:hover {
-            background: #d81b60;
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* ========== FOOTER ========== */
-        footer {
-            background: linear-gradient(135deg, #212529 0%, #121416 100%);
-            color: white;
-            padding: 2.5rem 0 1rem;
-            position: relative;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-column h3 {
-            color: #a8d8ea;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: var(--transition-fast);
-            padding: 0.3rem 0;
-            font-size: 0.85rem;
-        }
-
-        .footer-links a:hover {
-            color: #a8d8ea;
-            transform: translateX(5px);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-        }
-
-        .social-icon {
-            width: 36px;
-            height: 36px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: var(--transition-normal);
-            border: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem;
-        }
-
-        .social-icon:hover {
-            background: #2a9d8f;
-            transform: translateY(-3px) scale(1.05);
-            border-color: transparent;
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 1.2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.6);
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: flex !important;
-            }
-            
-            .nav-center {
-                display: none !important;
-            }
-            
-            .header-content {
-                flex-wrap: nowrap;
-            }
-            
-            .logo {
-                flex: 1;
-            }
-            
-            .logo h1 {
-                font-size: 1.4rem;
-            }
-            
-            .auth-section {
-                order: 3;
+            nav ul {
+                display: none;
             }
         }
     </style>
@@ -1210,83 +517,25 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <img 
-                        src="../media/Logo_cano_60.png" 
-                        srcset="../media/Logo_cano_60.png 1x, ../media/Logo_cano_120.png 2x" 
-                        alt="Logo Caño Salao - Ruta Turística Marítima" 
-                        class="logo-img"
-                        width="35" 
-                        height="35"
-                        loading="eager"
-                        aria-hidden="true"
-                    >
-                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
+                    <h1>Caño <span class="text-orange">Salao</span></h1>
                 </div>
-
-                <!-- Navegación desktop (oculta en móvil) -->
-                <div class="nav-center">
-                    <nav>
-                        <ul id="main-navigation">
-                            <li><a href="../index.html"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
-                            <li><a href="Empresa.html"><i class="bi bi-building"></i> <span>Empresa</span></a></li>
-                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> <span>Historia</span></a></li>
-                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
-                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> <span>Atracciones</span></a></li>
-                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
-                            <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> <span>Reservas</span></a></li>
-                        </ul>
-                    </nav>
-                </div>
-
-                <!-- Sección de autenticación -->
-                <div class="auth-section">
-                    <a href="login.html" class="login-btn">
-                        <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
-                    </a>
-                </div>
-
-                <!-- Botón hamburguesa para móvil -->
-                <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
-                    <i class="bi bi-list"></i>
-                </button>
+                <nav>
+                    <ul>
+                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                        <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> Reservas</a></li>
+                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>
 
-    <!-- Menú móvil overlay (fondo oscuro) -->
-    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
-
-    <!-- Menú móvil (se abre desde la derecha) -->
-    <div class="mobile-menu-container" id="mobile-menu-container">
-        <div class="mobile-menu-header">
-            <div class="logo">
-                <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
-                <h2 class="times-font" style="color: white; font-size: 1.2rem;">Caño <span class="text-orange">Salao</span></h2>
-            </div>
-            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Cerrar menú">
-                <i class="bi bi-x-lg"></i>
-            </button>
-        </div>
-        
-        <nav class="mobile-menu-nav">
-            <ul>
-                <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
-                <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
-                <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
-                <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
-                <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
-                <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> Reservas</a></li>
-            </ul>
-        </nav>
-    </div>
-
     <!-- Hero Section -->
     <section class="page-hero">
-        <div class="hero-bg" id="heroBackgroundReservas"></div>
         <div class="container">
-            <h1 class="times-font">Reservas en Línea</h1>
-            <p class="times-font hero-subtitle">
+            <h1>Reservas en Línea</h1>
+            <p class="hero-subtitle">
                 Reserva tu experiencia en Caño Salao de forma rápida y segura. Nuestro sistema de reservas forma parte del proyecto factible de desarrollo turístico sostenible.
             </p>
         </div>
@@ -1296,9 +545,9 @@
     <section class="breadcrumb">
         <div class="container">
             <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
-            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
+            <i class="bi bi-chevron-right"></i> 
             <a href="Servicios.html">Servicios</a>
-            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
+            <i class="bi bi-chevron-right"></i> 
             <span>Reservas</span>
         </div>
     </section>
@@ -1312,20 +561,10 @@
                 <p style="color: #666; margin-bottom: 1.5rem;">Selecciona el tour que deseas reservar. Todos los tours incluyen guía local, equipo de seguridad y contribución al fondo comunitario.</p>
                 
                 <div id="tours-container" class="tour-cards">
-                    <!-- Los tours se cargarán aquí desde la API -->
                     <div class="loading-tours">
                         <div class="loading-spinner"></div>
                         <p>Cargando tours disponibles...</p>
                     </div>
-                </div>
-                
-                <div id="tours-error" class="error-tours" style="display: none;">
-                    <i class="bi bi-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                    <h3>No se pudieron cargar los tours</h3>
-                    <p>Estamos teniendo problemas para conectarnos con nuestro servidor. Por favor, inténtalo de nuevo más tarde.</p>
-                    <button id="retry-tours" class="btn" style="margin-top: 1rem; background: var(--color-primary);">
-                        <i class="bi bi-arrow-clockwise"></i> Reintentar
-                    </button>
                 </div>
             </section>
 
@@ -1354,7 +593,6 @@
                             <i class="bi bi-person"></i> Nombre Completo
                         </label>
                         <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ej: María González" required>
-                        <div class="error-message" id="nombre-error">Por favor ingresa tu nombre completo</div>
                     </div>
                     
                     <div class="input-group">
@@ -1363,7 +601,6 @@
                                 <i class="bi bi-envelope"></i> Correo Electrónico
                             </label>
                             <input type="email" id="email" name="email" class="form-control" placeholder="ejemplo@email.com" required>
-                            <div class="error-message" id="email-error">Por favor ingresa un correo electrónico válido</div>
                         </div>
                         
                         <div class="form-group">
@@ -1371,7 +608,6 @@
                                 <i class="bi bi-telephone"></i> Teléfono
                             </label>
                             <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="0412-1234567" required>
-                            <div class="error-message" id="telefono-error">Por favor ingresa un número de teléfono válido</div>
                         </div>
                     </div>
                     
@@ -1382,7 +618,6 @@
                                 <i class="bi bi-calendar-date"></i> Fecha del Tour
                             </label>
                             <input type="text" id="fecha" name="fecha" class="form-control" placeholder="Selecciona una fecha" required readonly>
-                            <div class="error-message" id="fecha-error">Por favor selecciona una fecha válida</div>
                         </div>
                         
                         <div class="form-group">
@@ -1402,7 +637,6 @@
                                 <option value="9">9 personas</option>
                                 <option value="10">10 personas</option>
                             </select>
-                            <div class="error-message" id="personas-error">Por favor selecciona el número de personas</div>
                         </div>
                     </div>
                     
@@ -1439,45 +673,6 @@
                         </div>
                         
                         <input type="hidden" id="metodo_pago" name="metodo_pago" value="">
-                        
-                        <!-- Detalles de Pago Móvil -->
-                        <div id="pago-movil-details" class="pago-details">
-                            <div class="pago-movil-details">
-                                <h4><i class="bi bi-phone"></i> Pago Móvil</h4>
-                                <p>Realiza tu pago usando cualquiera de las siguientes opciones:</p>
-                                
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                                    <div>
-                                        <h5 style="color: var(--color-primary); font-size: 0.9rem;">Banco de Venezuela</h5>
-                                        <p style="font-size: 0.9rem;">0102-1234-5678-9012<br>
-                                        <strong>C.I.:</strong> V-12345678<br>
-                                        <strong>Titular:</strong> Ruta Turística Caño Salao</p>
-                                    </div>
-                                    <div>
-                                        <h5 style="color: var(--color-primary); font-size: 0.9rem;">Banesco</h5>
-                                        <p style="font-size: 0.9rem;">0134-8765-4321-0987<br>
-                                        <strong>C.I.:</strong> V-87654321<br>
-                                        <strong>Titular:</strong> Proyecto Caño Salao</p>
-                                    </div>
-                                </div>
-                                
-                                <div style="text-align: center; margin-top: 1rem;">
-                                    <div class="qr-code">
-                                        <i class="bi bi-qr-code-scan"></i>
-                                    </div>
-                                    <p style="font-size: 0.8rem; color: #666;">Escanea este código QR para pagar</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Detalles de Pago en Efectivo -->
-                        <div id="pago-efectivo-details" class="pago-details">
-                            <div class="pago-movil-details">
-                                <h4><i class="bi bi-cash"></i> Pago en Efectivo</h4>
-                                <p>Puedes realizar el pago en efectivo al llegar al punto de encuentro. Asegúrate de traer el monto exacto.</p>
-                                <p style="color: #e74c3c; font-size: 0.9rem;"><i class="bi bi-exclamation-circle"></i> Importante: Confirma tu reserva con al menos 24 horas de anticipación.</p>
-                            </div>
-                        </div>
                     </div>
                     
                     <!-- Resumen de Pago -->
@@ -1521,148 +716,33 @@
                     </div>
                     
                     <!-- Términos y Condiciones -->
-                    <div class="terms-checkbox" id="terms-container">
-                        <input type="checkbox" id="acepto_terminos" name="acepto_terminos" required>
-                        <label for="acepto_terminos">
-                            Acepto los <a href="#" id="ver-terminos">términos y condiciones</a> y la <a href="#" id="ver-privacidad">política de privacidad</a>. Confirmo que he leído y entendido la información sobre la reserva.
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                            <input type="checkbox" id="acepto_terminos" name="acepto_terminos" required style="margin-top: 0.3rem;">
+                            <span>
+                                Acepto los términos y condiciones y la política de privacidad. Confirmo que he leído y entendido la información sobre la reserva.
+                            </span>
                         </label>
-                        <div class="error-message" id="terminos-error">Debes aceptar los términos y condiciones</div>
                     </div>
                     
                     <!-- Botón de Reserva -->
-                    <button type="submit" class="btn" style="background: var(--color-accent); padding: 1rem; font-size: 1.1rem; margin-top: 1rem;">
+                    <button type="submit" class="btn" style="margin-top: 1rem;">
                         <i class="bi bi-calendar-check"></i> Confirmar Reserva
                     </button>
                 </form>
-                
-                <!-- Mensaje de Éxito -->
-                <div id="reserva-success" class="reserva-success">
-                    <div class="reserva-success-icon">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-                    <h3>¡Reserva Confirmada!</h3>
-                    <p>Tu reserva ha sido procesada exitosamente. Te hemos enviado un correo de confirmación con todos los detalles.</p>
-                    
-                    <div class="reserva-details">
-                        <h4>Detalles de tu Reserva</h4>
-                        <div class="reserva-details-item">
-                            <span>Código de Reserva:</span>
-                            <span id="reserva-codigo" style="font-weight: 600;">CS-2024-001</span>
-                        </div>
-                        <div class="reserva-details-item">
-                            <span>Tour:</span>
-                            <span id="reserva-detalle-tour">-</span>
-                        </div>
-                        <div class="reserva-details-item">
-                            <span>Fecha:</span>
-                            <span id="reserva-detalle-fecha">-</span>
-                        </div>
-                        <div class="reserva-details-item">
-                            <span>Personas:</span>
-                            <span id="reserva-detalle-personas">-</span>
-                        </div>
-                        <div class="reserva-details-item">
-                            <span>Total:</span>
-                            <span id="reserva-detalle-total">$0.00</span>
-                        </div>
-                    </div>
-                    
-                    <div class="reserva-id" id="reserva-id-display">Reserva #CS-2024-001</div>
-                    
-                    <div class="reserva-actions">
-                        <a href="reservas.html" class="btn" style="background: var(--color-primary);">
-                            <i class="bi bi-plus-circle"></i> Hacer Otra Reserva
-                        </a>
-                        <a href="../index.html" class="btn" style="background: transparent; border: 2px solid var(--color-primary); color: var(--color-primary);">
-                            <i class="bi bi-house"></i> Volver al Inicio
-                        </a>
-                    </div>
-                </div>
             </section>
         </div>
     </div>
 
-    <!-- Modal de Términos y Condiciones -->
-    <div id="terms-modal" class="terms-modal">
-        <div class="terms-content">
-            <button class="terms-close" id="terms-close">
-                <i class="bi bi-x"></i>
-            </button>
-            <h3>Términos y Condiciones de Reserva</h3>
-            <p>Al realizar una reserva a través de nuestro sistema, aceptas los siguientes términos y condiciones:</p>
-            
-            <h4>1. Proceso de Reserva</h4>
-            <ul>
-                <li>Todas las reservas están sujetas a disponibilidad.</li>
-                <li>Debes completar todos los campos obligatorios del formulario.</li>
-                <li>Recibirás un correo de confirmación una vez procesada la reserva.</li>
-            </ul>
-            
-            <h4>2. Política de Pago</h4>
-            <ul>
-                <li>Los precios están en dólares americanos (USD).</li>
-                <li>El 5% del total contribuye al fondo de desarrollo comunitario.</li>
-                <li>El pago puede realizarse mediante los métodos disponibles.</li>
-            </ul>
-            
-            <h4>3. Política de Cancelación</h4>
-            <ul>
-                <li>Cancelación gratuita hasta 48 horas antes del tour.</li>
-                <li>Entre 48 y 24 horas antes: 50% de reembolso.</li>
-                <li>Menos de 24 horas: no hay reembolso.</li>
-            </ul>
-            
-            <h4>4. Responsabilidades</h4>
-            <ul>
-                <li>Debes llegar 15 minutos antes de la hora programada.</li>
-                <li>Cumplir con las normas de seguridad durante el tour.</li>
-                <li>Informar sobre condiciones médicas especiales.</li>
-            </ul>
-            
-            <h4>5. Proyecto Factible</h4>
-            <p>Este sistema forma parte de un proyecto factible de desarrollo turístico sostenible. Tu participación contribuye al desarrollo económico de la comunidad local.</p>
-        </div>
-    </div>
-
-    <!-- Modal de Política de Privacidad -->
-    <div id="privacy-modal" class="terms-modal">
-        <div class="terms-content">
-            <button class="terms-close" id="privacy-close">
-                <i class="bi bi-x"></i>
-            </button>
-            <h3>Política de Privacidad</h3>
-            
-            <h4>1. Información que Recopilamos</h4>
-            <p>Recopilamos la información necesaria para procesar tu reserva: nombre, correo electrónico, teléfono y detalles del tour.</p>
-            
-            <h4>2. Uso de la Información</h4>
-            <ul>
-                <li>Procesar y confirmar tu reserva</li>
-                <li>Enviar información importante sobre el tour</li>
-                <li>Mejorar nuestros servicios</li>
-                <li>Fines estadísticos del proyecto factible</li>
-            </ul>
-            
-            <h4>3. Protección de Datos</h4>
-            <p>Implementamos medidas de seguridad para proteger tu información personal. No compartimos tus datos con terceros sin tu consentimiento.</p>
-            
-            <h4>4. Derechos del Usuario</h4>
-            <p>Tienes derecho a acceder, rectificar y eliminar tu información personal. Contacta a <strong>info@canosalaotours.com</strong> para ejercer estos derechos.</p>
-            
-            <h4>5. Proyecto Factible</h4>
-            <p>Los datos recopilados forman parte de nuestra investigación para el proyecto factible de desarrollo turístico sostenible en Caño Salao.</p>
-        </div>
-    </div>
-
     <!-- Banner Sticky Inferior -->
-    <div id="sticky-banner" class="sticky-banner hidden">
+    <div id="sticky-banner" class="sticky-banner">
         <div class="container">
             <div class="sticky-banner-content">
                 <div class="sticky-tour-info">
                     <div class="sticky-tour-name" id="sticky-tour-name">Tour Básico por los Manglares</div>
                     <div class="sticky-tour-price" id="sticky-tour-price">$26.25 total</div>
                 </div>
-                <button id="scroll-to-form" class="btn" style="background: var(--color-accent);">
+                <button id="scroll-to-form" class="btn">
                     <i class="bi bi-arrow-up"></i> Completar Reserva
                 </button>
             </div>
@@ -1674,432 +754,274 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
-                    <p>Sistema de reservas en línea como parte del proyecto factible de desarrollo turístico sostenible. Contribuye al crecimiento de nuestra comunidad.</p>
+                    <h3><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Sistema de reservas en línea como parte del proyecto factible de desarrollo turístico sostenible.</p>
                 </div>
                 <div class="footer-column">
-                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <h3><i class="bi bi-link"></i> Enlaces Rápidos</h3>
                     <ul class="footer-links">
                         <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
-                        <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
-                        <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
                         <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                        <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> Reservas</a></li>
+                        <li><a href="reservas.html"><i class="bi bi-calendar-check"></i> Reservas</a></li>
                         <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
                     </ul>
                 </div>
-                <div class="footer-column">
-                    <h3 class="times-font"><i class="bi bi-info-circle"></i> Información de Reservas</h3>
-                    <div style="margin-top: 1rem;">
-                        <p style="font-size: 0.9rem;"><i class="bi bi-clock"></i> Horario de Atención: 8:00 AM - 6:00 PM</p>
-                        <p style="font-size: 0.9rem;"><i class="bi bi-telephone"></i> Soporte: +58 412-205-6558</p>
-                        <p style="font-size: 0.9rem;"><i class="bi bi-envelope"></i> Reservas: reservas@canosalaotours.com</p>
-                        <p style="font-size: 0.9rem;"><i class="bi bi-shield-check"></i> Sistema seguro - Proyecto Factible</p>
-                    </div>
-                </div>
             </div>
             <div class="copyright">
-                <p><i class="bi bi-c-circle"></i> 2025 Sistema de Reservas Caño Salao. Proyecto factible para el desarrollo turístico sostenible.</p>
-                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
+                <p>© 2025 Sistema de Reservas Caño Salao. Proyecto factible para el desarrollo turístico sostenible.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <!-- Flatpickr para selección de fechas -->
+    <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
     <script>
-        (function() {
-            // ========== CONFIGURACIÓN API ==========
-            const API_BASE_URL = 'https://cano-salao.onrender.com/api';
-            let tours = [];
-            let selectedTour = null;
-            let currentReservaId = null;
-            
-            // ========== VARIABLES DEL MENÚ MÓVIL ==========
-            let isMobileMenuOpen = false;
-            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            const mobileMenuClose = document.getElementById('mobile-menu-close');
-            const mobileMenuContainer = document.getElementById('mobile-menu-container');
-            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-            
-            // ========== ELEMENTOS DEL DOM ==========
-            const toursContainer = document.getElementById('tours-container');
-            const toursError = document.getElementById('tours-error');
-            const retryButton = document.getElementById('retry-tours');
-            const reservaForm = document.getElementById('reservaForm');
-            const selectedTourInfo = document.getElementById('selected-tour-info');
-            const reservaSuccess = document.getElementById('reserva-success');
-            const stickyBanner = document.getElementById('sticky-banner');
-            const scrollToFormButton = document.getElementById('scroll-to-form');
-            const termsModal = document.getElementById('terms-modal');
-            const privacyModal = document.getElementById('privacy-modal');
-            const verTerminosBtn = document.getElementById('ver-terminos');
-            const verPrivacidadBtn = document.getElementById('ver-privacidad');
-            const termsCloseBtn = document.getElementById('terms-close');
-            const privacyCloseBtn = document.getElementById('privacy-close');
-            
-            // ========== FUNCIONES PRINCIPALES ==========
-            
-            // Función para cargar tours desde la API
-            async function loadTours() {
-                try {
-                    toursContainer.innerHTML = `
-                        <div class="loading-tours">
-                            <div class="loading-spinner"></div>
-                            <p>Cargando tours disponibles...</p>
-                        </div>
-                    `;
-                    
-                    const response = await fetch(`${API_BASE_URL}/tours`);
-                    
-                    if (!response.ok) {
-                        throw new Error(`Error ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    tours = await response.json();
-                    renderTours();
-                    
-                    // Verificar si hay un tour en la URL
-                    selectTourFromURL();
-                    
-                    // Si no hay tour en URL, seleccionar el primero
-                    if (!selectedTour && tours.length > 0) {
-                        selectTour(tours[0]);
-                    }
-                    
-                    // Ocultar mensaje de error si estaba visible
-                    if (toursError) {
-                        toursError.style.display = 'none';
-                    }
-                    
-                } catch (error) {
-                    console.error('❌ Error cargando tours:', error);
-                    
-                    // Mostrar mensaje de error
-                    if (toursError) {
-                        toursError.style.display = 'block';
-                    }
-                    
-                    // Cargar tours de respaldo después de 2 segundos
-                    setTimeout(() => {
-                        loadFallbackTours();
-                    }, 2000);
-                }
-            }
-            
-            // Función para detectar tour desde URL
-            function selectTourFromURL() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const tourId = urlParams.get('tour');
+        // ========== CONFIGURACIÓN ==========
+        const API_BASE_URL = 'https://cano-salao.onrender.com/api';
+        let tours = [];
+        let selectedTour = null;
+
+        // ========== ELEMENTOS DEL DOM ==========
+        const toursContainer = document.getElementById('tours-container');
+        const reservaForm = document.getElementById('reservaForm');
+
+        // ========== FUNCIONES PRINCIPALES ==========
+        
+        // Función para cargar tours
+        async function loadTours() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/tours`);
                 
-                if (tourId && tours.length > 0) {
-                    const tour = tours.find(t => t.id == tourId || t.id == tourId);
-                    if (tour) {
-                        selectTour(tour);
-                        
-                        // Desplazar al formulario de reserva
-                        setTimeout(() => {
-                            document.querySelector('.reserva-form-section').scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'start' 
-                            });
-                        }, 500);
-                    }
+                if (!response.ok) {
+                    throw new Error('Error al cargar tours');
                 }
-            }
-            
-            // Función para cargar tours de respaldo
-            function loadFallbackTours() {
-                tours = [
-                    {
-                        id: 1,
-                        nombre: 'Tour Básico por los Manglares',
-                        descripcion: 'Recorrido introductorio por los manglares de Caño Salao, ideal para quienes visitan por primera vez.',
-                        precio: 25.00,
-                        duracion: '2 horas',
-                        capacidad: 'Máx. 10 personas',
-                        imagen_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-                    },
-                    {
-                        id: 2,
-                        nombre: 'Tour Completo Experiencia',
-                        descripcion: 'Vive la experiencia completa: manglares, avistamiento de aves, historia local y gastronomía tradicional.',
-                        precio: 45.00,
-                        duracion: '4 horas',
-                        capacidad: 'Máx. 8 personas',
-                        imagen_url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-                    },
-                    {
-                        id: 3,
-                        nombre: 'Tour Personalizado VIP',
-                        descripcion: 'Experiencia exclusiva diseñada según tus intereses. Incluye fotógrafo personal y guía especializado.',
-                        precio: 65.00,
-                        duracion: '6 horas',
-                        capacidad: 'Máx. 6 personas',
-                        imagen_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'
-                    }
-                ];
                 
+                tours = await response.json();
                 renderTours();
                 
-                // Verificar si hay un tour en la URL
+                // Seleccionar tour desde URL o el primero
                 selectTourFromURL();
                 
-                // Si no hay tour en URL, seleccionar el primero
                 if (!selectedTour && tours.length > 0) {
                     selectTour(tours[0]);
                 }
                 
-                // Mostrar mensaje informativo
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'loading-tours';
-                infoDiv.innerHTML = `
-                    <i class="bi bi-info-circle" style="font-size: 2rem; color: #3498db; margin-bottom: 1rem;"></i>
-                    <p>Mostrando información de respaldo. Los datos en tiempo real se restaurarán pronto.</p>
-                `;
-                toursContainer.appendChild(infoDiv);
+            } catch (error) {
+                console.error('Error:', error);
+                loadFallbackTours();
+            }
+        }
+
+        // Función para seleccionar tour desde URL
+        function selectTourFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tourId = urlParams.get('tour');
+            
+            if (tourId && tours.length > 0) {
+                const tour = tours.find(t => t.id == tourId);
+                if (tour) {
+                    selectTour(tour);
+                }
+            }
+        }
+
+        // Función para cargar tours de respaldo
+        function loadFallbackTours() {
+            tours = [
+                {
+                    id: 1,
+                    nombre: 'Tour Básico por los Manglares',
+                    descripcion: 'Recorrido introductorio por los manglares de Caño Salao, ideal para quienes visitan por primera vez.',
+                    precio: 25.00,
+                    duracion: '2 horas',
+                    capacidad: 'Máx. 10 personas'
+                },
+                {
+                    id: 2,
+                    nombre: 'Tour Completo Experiencia',
+                    descripcion: 'Vive la experiencia completa: manglares, avistamiento de aves, historia local y gastronomía tradicional.',
+                    precio: 45.00,
+                    duracion: '4 horas',
+                    capacidad: 'Máx. 8 personas'
+                },
+                {
+                    id: 3,
+                    nombre: 'Tour Personalizado VIP',
+                    descripcion: 'Experiencia exclusiva diseñada según tus intereses. Incluye fotógrafo personal y guía especializado.',
+                    precio: 65.00,
+                    duracion: '6 horas',
+                    capacidad: 'Máx. 6 personas'
+                }
+            ];
+            
+            renderTours();
+            
+            // Seleccionar tour desde URL o el primero
+            selectTourFromURL();
+            
+            if (!selectedTour && tours.length > 0) {
+                selectTour(tours[0]);
+            }
+        }
+
+        // Función para renderizar tours
+        function renderTours() {
+            if (!tours || tours.length === 0) {
+                toursContainer.innerHTML = '<p>No hay tours disponibles en este momento.</p>';
+                return;
             }
             
-            // Función para renderizar tours
-            function renderTours() {
-                if (!tours || tours.length === 0) {
-                    toursContainer.innerHTML = `
-                        <div class="loading-tours">
-                            <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #f39c12; margin-bottom: 1rem;"></i>
-                            <h3>No hay tours disponibles</h3>
-                            <p>Actualmente no tenemos tours programados. Por favor, contáctanos para más información.</p>
-                        </div>
-                    `;
+            toursContainer.innerHTML = '';
+            
+            tours.forEach(tour => {
+                const tourCard = document.createElement('div');
+                tourCard.className = 'tour-card';
+                tourCard.dataset.tourId = tour.id;
+                
+                tourCard.innerHTML = `
+                    <div class="tour-header">
+                        <h3 class="tour-title">${tour.nombre}</h3>
+                        <div class="tour-price">$${tour.precio.toFixed(2)}</div>
+                    </div>
+                    <p style="color: #666; margin-bottom: 0.5rem;">${tour.descripcion}</p>
+                    <div class="tour-details">
+                        <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion}</span>
+                        <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad}</span>
+                    </div>
+                `;
+                
+                tourCard.addEventListener('click', () => selectTour(tour));
+                toursContainer.appendChild(tourCard);
+            });
+        }
+
+        // Función para seleccionar un tour
+        function selectTour(tour) {
+            selectedTour = tour;
+            
+            // Actualizar clases de selección
+            document.querySelectorAll('.tour-card').forEach(card => {
+                card.classList.remove('selected');
+                if (parseInt(card.dataset.tourId) === tour.id) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            // Actualizar información del tour seleccionado
+            document.getElementById('selected-tour-name').textContent = tour.nombre;
+            document.getElementById('selected-tour-price').textContent = `$${tour.precio.toFixed(2)}`;
+            document.getElementById('selected-tour-description').textContent = tour.descripcion;
+            document.getElementById('selected-tour-duration').textContent = tour.duracion;
+            document.getElementById('selected-tour-capacity').textContent = tour.capacidad;
+            
+            // Actualizar resumen
+            document.getElementById('resumen-tour').textContent = tour.nombre;
+            document.getElementById('resumen-precio-unitario').textContent = `$${tour.precio.toFixed(2)}`;
+            
+            // Actualizar banner sticky
+            document.getElementById('sticky-tour-name').textContent = tour.nombre;
+            
+            // Recalcular total
+            updateResumenPago();
+        }
+
+        // Función para actualizar el resumen de pago
+        function updateResumenPago() {
+            if (!selectedTour) return;
+            
+            const fecha = document.getElementById('fecha').value;
+            const personas = parseInt(document.getElementById('personas').value) || 1;
+            const precioUnitario = selectedTour.precio;
+            const subtotal = precioUnitario * personas;
+            const contribucion = subtotal * 0.05;
+            const total = subtotal + contribucion;
+            
+            // Actualizar resumen
+            document.getElementById('resumen-fecha').textContent = fecha || '-';
+            document.getElementById('resumen-personas').textContent = personas;
+            document.getElementById('resumen-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('resumen-contribucion').textContent = `$${contribucion.toFixed(2)}`;
+            document.getElementById('resumen-total').textContent = `$${total.toFixed(2)}`;
+            
+            // Actualizar banner sticky
+            document.getElementById('sticky-tour-price').textContent = `$${total.toFixed(2)} total`;
+        }
+
+        // ========== INICIALIZACIÓN ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar tours
+            loadTours();
+            
+            // Configurar Flatpickr
+            const fechaInput = document.getElementById('fecha');
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            flatpickr(fechaInput, {
+                locale: 'es',
+                minDate: tomorrow,
+                dateFormat: 'Y-m-d',
+                onChange: updateResumenPago
+            });
+            
+            // Event listeners
+            document.getElementById('personas').addEventListener('change', updateResumenPago);
+            document.getElementById('fecha').addEventListener('change', updateResumenPago);
+            
+            // Métodos de pago
+            document.querySelectorAll('.pago-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.pago-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    document.getElementById('metodo_pago').value = this.dataset.method;
+                });
+            });
+            
+            // Seleccionar primer método de pago
+            if (document.querySelector('.pago-option')) {
+                document.querySelector('.pago-option').click();
+            }
+            
+            // Formulario
+            reservaForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!selectedTour) {
+                    alert('Por favor, selecciona un tour primero.');
                     return;
                 }
                 
-                toursContainer.innerHTML = '';
-                
-                tours.forEach(tour => {
-                    const tourCard = document.createElement('div');
-                    tourCard.className = 'tour-card';
-                    tourCard.dataset.tourId = tour.id;
-                    
-                    tourCard.innerHTML = `
-                        <div class="tour-header">
-                            <h3 class="tour-title">${tour.nombre}</h3>
-                            <div class="tour-price">$${tour.precio.toFixed(2)}</div>
-                        </div>
-                        <p style="color: #666; margin-bottom: 0.5rem;">${tour.descripcion}</p>
-                        <div class="tour-details">
-                            <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion || '2-4 horas'}</span>
-                            <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad || 'Máx. 12 personas'}</span>
-                            <span class="tour-detail"><i class="bi bi-star"></i> Incluye guía y equipo</span>
-                        </div>
-                    `;
-                    
-                    tourCard.addEventListener('click', () => selectTour(tour));
-                    toursContainer.appendChild(tourCard);
-                });
-            }
-            
-            // Función para seleccionar un tour
-            function selectTour(tour) {
-                selectedTour = tour;
-                
-                // Actualizar clases de selección en las tarjetas
-                document.querySelectorAll('.tour-card').forEach(card => {
-                    card.classList.remove('selected');
-                    if (parseInt(card.dataset.tourId) === tour.id) {
-                        card.classList.add('selected');
-                    }
-                });
-                
-                // Actualizar información del tour seleccionado
-                document.getElementById('selected-tour-name').textContent = tour.nombre;
-                document.getElementById('selected-tour-price').textContent = `$${tour.precio.toFixed(2)}`;
-                document.getElementById('selected-tour-description').textContent = tour.descripcion;
-                document.getElementById('selected-tour-duration').textContent = tour.duracion || '2-4 horas';
-                document.getElementById('selected-tour-capacity').textContent = tour.capacidad || 'Máx. 12 personas';
-                
-                // Mostrar sección de información del tour seleccionado
-                selectedTourInfo.classList.add('visible');
-                
-                // Actualizar banner sticky
-                document.getElementById('sticky-tour-name').textContent = tour.nombre;
-                
-                // Actualizar resumen de pago
-                updateResumenPago();
-                
-                // Mostrar banner sticky
-                stickyBanner.classList.remove('hidden');
-            }
-            
-            // Función para actualizar el resumen de pago
-            function updateResumenPago() {
-                if (!selectedTour) return;
-                
-                const fecha = document.getElementById('fecha').value;
-                const personas = parseInt(document.getElementById('personas').value) || 1;
-                const precioUnitario = selectedTour.precio;
-                const subtotal = precioUnitario * personas;
-                const contribucion = subtotal * 0.05;
-                const total = subtotal + contribucion;
-                
-                // Actualizar resumen
-                document.getElementById('resumen-tour').textContent = selectedTour.nombre;
-                document.getElementById('resumen-fecha').textContent = fecha || '-';
-                document.getElementById('resumen-personas').textContent = personas;
-                document.getElementById('resumen-precio-unitario').textContent = `$${precioUnitario.toFixed(2)}`;
-                document.getElementById('resumen-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-                document.getElementById('resumen-contribucion').textContent = `$${contribucion.toFixed(2)}`;
-                document.getElementById('resumen-total').textContent = `$${total.toFixed(2)}`;
-                
-                // Actualizar banner sticky
-                document.getElementById('sticky-tour-price').textContent = `$${total.toFixed(2)} total`;
-            }
-            
-            // Función para validar el formulario
-            function validateForm() {
-                let isValid = true;
-                
-                // Validar campos requeridos
-                const requiredFields = ['nombre', 'email', 'telefono', 'fecha', 'personas'];
-                requiredFields.forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    const error = document.getElementById(`${fieldId}-error`);
-                    
-                    if (!field.value.trim()) {
-                        field.classList.add('error');
-                        error.classList.add('show');
-                        isValid = false;
-                    } else {
-                        field.classList.remove('error');
-                        error.classList.remove('show');
-                    }
-                });
-                
-                // Validar email
-                const emailField = document.getElementById('email');
-                const emailError = document.getElementById('email-error');
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                
-                if (emailField.value && !emailRegex.test(emailField.value)) {
-                    emailField.classList.add('error');
-                    emailError.textContent = 'Por favor ingresa un correo electrónico válido';
-                    emailError.classList.add('show');
-                    isValid = false;
+                if (!document.getElementById('acepto_terminos').checked) {
+                    alert('Debes aceptar los términos y condiciones.');
+                    return;
                 }
                 
-                // Validar términos y condiciones
-                const termsCheckbox = document.getElementById('acepto_terminos');
-                const termsContainer = document.getElementById('terms-container');
-                const termsError = document.getElementById('terminos-error');
+                // Preparar datos de reserva
+                const reservaData = {
+                    tour_id: selectedTour.id,
+                    tour_nombre: selectedTour.nombre,
+                    nombre: document.getElementById('nombre').value,
+                    email: document.getElementById('email').value,
+                    telefono: document.getElementById('telefono').value,
+                    fecha: document.getElementById('fecha').value,
+                    personas: parseInt(document.getElementById('personas').value),
+                    comentarios: document.getElementById('comentarios').value,
+                    metodo_pago: document.getElementById('metodo_pago').value,
+                    total: parseFloat(document.getElementById('resumen-total').textContent.replace('$', '')),
+                    estado: 'pendiente'
+                };
                 
-                if (!termsCheckbox.checked) {
-                    termsContainer.classList.add('error');
-                    termsError.classList.add('show');
-                    isValid = false;
-                } else {
-                    termsContainer.classList.remove('error');
-                    termsError.classList.remove('show');
-                }
-                
-                return isValid;
-            }
-            
-            // Función para enviar la reserva a la API
-            async function submitReserva(formData) {
-                try {
-                    // Mostrar estado de carga
-                    const submitBtn = reservaForm.querySelector('button[type="submit"]');
-                    const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Procesando...';
-                    submitBtn.disabled = true;
-                    
-                    // Preparar datos para la API
-                    const reservaData = {
-                        tour_id: selectedTour.id,
-                        tour_nombre: selectedTour.nombre,
-                        nombre: formData.get('nombre'),
-                        email: formData.get('email'),
-                        telefono: formData.get('telefono'),
-                        fecha: formData.get('fecha'),
-                        personas: parseInt(formData.get('personas')),
-                        comentarios: formData.get('comentarios') || '',
-                        metodo_pago: formData.get('metodo_pago'),
-                        precio_unitario: selectedTour.precio,
-                        total: calcularTotal(),
-                        estado: 'pendiente'
-                    };
-                    
-                    // Enviar a la API
-                    const response = await fetch(`${API_BASE_URL}/reservas`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(reservaData)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Error ${response.status}: ${response.statusText}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    // Mostrar mensaje de éxito
-                    showReservaSuccess(result.reserva || reservaData);
-                    
-                } catch (error) {
-                    console.error('❌ Error al procesar la reserva:', error);
-                    
-                    // Mostrar mensaje de error
-                    alert('Hubo un error al procesar tu reserva. Por favor, inténtalo de nuevo o contáctanos directamente.');
-                    
-                    // Restaurar botón
-                    const submitBtn = reservaForm.querySelector('button[type="submit"]');
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                }
-            }
-            
-            // Función para calcular el total
-            function calcularTotal() {
-                if (!selectedTour) return 0;
-                
-                const personas = parseInt(document.getElementById('personas').value) || 1;
-                const subtotal = selectedTour.precio * personas;
-                const contribucion = subtotal * 0.05;
-                return subtotal + contribucion;
-            }
-            
-            // Función para mostrar el mensaje de éxito
-            function showReservaSuccess(reservaData) {
-                // Generar ID de reserva único
+                // Mostrar confirmación
                 const reservaId = `CS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-                currentReservaId = reservaId;
                 
-                // Actualizar detalles en el mensaje de éxito
-                document.getElementById('reserva-codigo').textContent = reservaId;
-                document.getElementById('reserva-detalle-tour').textContent = reservaData.tour_nombre || selectedTour.nombre;
-                document.getElementById('reserva-detalle-fecha').textContent = reservaData.fecha;
-                document.getElementById('reserva-detalle-personas').textContent = reservaData.personas;
-                document.getElementById('reserva-detalle-total').textContent = `$${reservaData.total.toFixed(2)}`;
-                document.getElementById('reserva-id-display').textContent = `Reserva #${reservaId}`;
+                alert(`¡Reserva confirmada!\n\nCódigo de reserva: ${reservaId}\nTour: ${reservaData.tour_nombre}\nFecha: ${reservaData.fecha}\nPersonas: ${reservaData.personas}\nTotal: $${reservaData.total.toFixed(2)}\n\nTe hemos enviado un correo de confirmación.`);
                 
-                // Mostrar mensaje de éxito y ocultar formulario
-                reservaSuccess.classList.add('show');
-                reservaForm.style.display = 'none';
-                
-                // Desplazarse al mensaje de éxito
-                reservaSuccess.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
-                // Ocultar banner sticky
-                stickyBanner.classList.add('hidden');
-                
-                // Enviar email simulado (en un sistema real, esto sería una llamada a la API)
-                console.log(`📧 Email enviado a ${reservaData.email} con detalles de la reserva ${reservaId}`);
-                
-                // Guardar en localStorage para referencia
+                // Guardar en localStorage
                 const reservasPrevias = JSON.parse(localStorage.getItem('cano_salao_reservas') || '[]');
                 reservasPrevias.push({
                     id: reservaId,
@@ -2107,246 +1029,20 @@
                     fecha_reserva: new Date().toISOString()
                 });
                 localStorage.setItem('cano_salao_reservas', JSON.stringify(reservasPrevias));
-            }
-            
-            // ========== INICIALIZACIÓN ==========
-            
-            document.addEventListener('DOMContentLoaded', function() {
-                // Configurar menú móvil
-                setupMobileMenu();
                 
-                // Cargar imagen de fondo del hero
-                loadHeroImage();
-                
-                // Cargar tours desde la API
-                loadTours();
-                
-                // Configurar Flatpickr para selección de fechas
-                const fechaInput = document.getElementById('fecha');
-                const today = new Date();
-                const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                flatpickr(fechaInput, {
-                    locale: 'es',
-                    minDate: tomorrow,
-                    dateFormat: 'Y-m-d',
-                    disable: [
-                        function(date) {
-                            // Deshabilitar los lunes
-                            return date.getDay() === 1;
-                        }
-                    ],
-                    onChange: function(selectedDates, dateStr) {
-                        updateResumenPago();
-                    }
-                });
-                
-                // Event listeners para elementos del formulario
-                document.getElementById('personas').addEventListener('change', updateResumenPago);
-                document.getElementById('fecha').addEventListener('change', updateResumenPago);
-                
-                // Event listeners para métodos de pago
-                document.querySelectorAll('.pago-option').forEach(option => {
-                    option.addEventListener('click', function() {
-                        // Remover selección anterior
-                        document.querySelectorAll('.pago-option').forEach(opt => {
-                            opt.classList.remove('selected');
-                        });
-                        
-                        // Agregar selección actual
-                        this.classList.add('selected');
-                        
-                        // Actualizar campo oculto
-                        const method = this.dataset.method;
-                        document.getElementById('metodo_pago').value = method;
-                        
-                        // Mostrar detalles del método de pago
-                        document.querySelectorAll('.pago-details').forEach(detail => {
-                            detail.classList.remove('show');
-                        });
-                        
-                        if (method === 'movil') {
-                            document.getElementById('pago-movil-details').classList.add('show');
-                        } else if (method === 'efectivo') {
-                            document.getElementById('pago-efectivo-details').classList.add('show');
-                        }
-                    });
-                });
-                
-                // Seleccionar primer método de pago por defecto
-                if (document.querySelector('.pago-option')) {
-                    document.querySelector('.pago-option').click();
-                }
-                
-                // Event listener para el formulario
-                reservaForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    if (!selectedTour) {
-                        alert('Por favor, selecciona un tour primero.');
-                        return;
-                    }
-                    
-                    if (validateForm()) {
-                        const formData = new FormData(this);
-                        submitReserva(formData);
-                    }
-                });
-                
-                // Event listener para botón de reintentar tours
-                if (retryButton) {
-                    retryButton.addEventListener('click', loadTours);
-                }
-                
-                // Event listener para scroll al formulario
-                if (scrollToFormButton) {
-                    scrollToFormButton.addEventListener('click', function() {
-                        document.querySelector('.reserva-form-section').scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'start' 
-                        });
-                    });
-                }
-                
-                // Event listeners para modales
-                if (verTerminosBtn) {
-                    verTerminosBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        termsModal.classList.add('show');
-                    });
-                }
-                
-                if (verPrivacidadBtn) {
-                    verPrivacidadBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        privacyModal.classList.add('show');
-                    });
-                }
-                
-                if (termsCloseBtn) {
-                    termsCloseBtn.addEventListener('click', function() {
-                        termsModal.classList.remove('show');
-                    });
-                }
-                
-                if (privacyCloseBtn) {
-                    privacyCloseBtn.addEventListener('click', function() {
-                        privacyModal.classList.remove('show');
-                    });
-                }
-                
-                // Cerrar modales al hacer clic fuera
-                [termsModal, privacyModal].forEach(modal => {
-                    modal.addEventListener('click', function(e) {
-                        if (e.target === this) {
-                            this.classList.remove('show');
-                        }
-                    });
-                });
-                
-                // Mostrar/ocultar banner sticky al hacer scroll
-                let lastScrollTop = 0;
-                window.addEventListener('scroll', function() {
-                    if (!selectedTour) return;
-                    
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    
-                    if (scrollTop > lastScrollTop) {
-                        // Scrolling down
-                        if (scrollTop > 300) {
-                            stickyBanner.classList.remove('hidden');
-                        }
-                    } else {
-                        // Scrolling up
-                        if (scrollTop < 100) {
-                            stickyBanner.classList.add('hidden');
-                        }
-                    }
-                    
-                    lastScrollTop = scrollTop;
-                });
-                
-                // Verificar autenticación del usuario
-                checkAuthentication();
+                // Limpiar formulario
+                reservaForm.reset();
+                document.getElementById('personas').value = '1';
+                updateResumenPago();
             });
             
-            // ========== FUNCIONES AUXILIARES ==========
-            
-            function setupMobileMenu() {
-                mobileMenuToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (!isMobileMenuOpen) {
-                        openMobileMenu();
-                    } else {
-                        closeMobileMenu();
-                    }
+            // Botón scroll to form
+            document.getElementById('scroll-to-form').addEventListener('click', function() {
+                document.querySelector('.reserva-form-section').scrollIntoView({ 
+                    behavior: 'smooth' 
                 });
-                
-                mobileMenuClose.addEventListener('click', closeMobileMenu);
-                mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-                
-                function openMobileMenu() {
-                    mobileMenuContainer.classList.add('active');
-                    mobileMenuOverlay.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                    isMobileMenuOpen = true;
-                    mobileMenuToggle.setAttribute('aria-expanded', 'true');
-                    mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
-                }
-                
-                function closeMobileMenu() {
-                    mobileMenuContainer.classList.remove('active');
-                    mobileMenuOverlay.classList.remove('active');
-                    document.body.style.overflow = '';
-                    isMobileMenuOpen = false;
-                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                    mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
-                }
-            }
-            
-            function loadHeroImage() {
-                const heroBg = document.getElementById('heroBackgroundReservas');
-                if (!heroBg) return;
-                
-                const heroImg = new Image();
-                heroImg.src = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80';
-                
-                heroImg.onload = function() {
-                    heroBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('${this.src}')`;
-                    heroBg.classList.add('loaded');
-                };
-                
-                heroImg.onerror = function() {
-                    heroBg.style.backgroundImage = `linear-gradient(135deg, #1a5276 0%, #2c82c9 100%)`;
-                    heroBg.classList.add('loaded');
-                };
-            }
-            
-            function checkAuthentication() {
-                const token = localStorage.getItem('cano_salao_token');
-                const user = localStorage.getItem('cano_salao_user');
-                
-                if (token && user) {
-                    try {
-                        const userData = JSON.parse(user);
-                        const loginBtn = document.querySelector('.login-btn');
-                        if (loginBtn) {
-                            loginBtn.innerHTML = `<i class="bi bi-person-check"></i> <span class="login-text">${userData.nombre}</span>`;
-                            loginBtn.href = "usuario.html";
-                            
-                            // Prellenar formulario si el usuario está autenticado
-                            document.getElementById('nombre').value = userData.nombre || '';
-                            document.getElementById('email').value = userData.email || '';
-                            document.getElementById('telefono').value = userData.telefono || '';
-                        }
-                    } catch (error) {
-                        console.error('Error parsing user data:', error);
-                    }
-                }
-            }
-        })();
+            });
+        });
     </script>
 </body>
 </html>
