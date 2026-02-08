@@ -12,31 +12,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
-        /* ========== VARIABLES Y RESET ========== */
+        /* ========== ESTILOS COMPLETOS ========== */
         :root {
             --primary: #0d3b66;
-            --primary-dark: #082842;
             --secondary: #1a7fb8;
             --accent: #e62b7e;
-            --accent-dark: #c2185b;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --dark: #343a40;
             --orange: #FF8C42;
-            --light: #f8fafc;
-            --light-gray: #f1f5f9;
-            --gray: #64748b;
-            --dark: #1e293b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
-            --shadow-xl: 0 12px 32px rgba(0,0,0,0.2);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --success: #28a745;
         }
         
         * {
@@ -46,31 +31,28 @@
         }
         
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             line-height: 1.6;
             color: var(--dark);
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            min-height: 100vh;
+            background: #f5f7fa;
         }
         
         .container {
             width: 90%;
-            max-width: 1280px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px;
         }
         
-        /* ========== HEADER MODERNO ========== */
+        /* ========== HEADER ========== */
         header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: var(--primary);
             color: white;
             padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-lg);
-            backdrop-filter: blur(10px);
-            background: rgba(13, 59, 102, 0.95);
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .header-content {
@@ -84,638 +66,316 @@
             align-items: center;
             gap: 0.8rem;
             text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .logo:hover {
-            transform: translateY(-1px);
         }
         
         .logo img {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         
         .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.4rem;
+            font-weight: 700;
             color: white;
-            letter-spacing: -0.5px;
         }
         
         .text-orange {
             color: var(--orange);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         nav ul {
             display: flex;
             list-style: none;
-            gap: 0.5rem;
-            margin: 0;
-            padding: 0;
+            gap: 1rem;
         }
         
         nav a {
             color: white;
             text-decoration: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--radius-sm);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        nav a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: 0.5s;
-        }
-        
-        nav a:hover::before {
-            left: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
         }
         
         nav a:hover, nav a.active {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
+            background: rgba(255,255,255,0.1);
         }
         
-        nav a.active {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        
-        /* ========== HERO SECTION MEJORADA ========== */
+        /* ========== HERO ========== */
         .page-hero {
-            background: linear-gradient(135deg, rgba(13, 59, 102, 0.9), rgba(26, 127, 184, 0.8)),
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                         url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
             color: white;
-            padding: 6rem 0;
+            padding: 3rem 0;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .page-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(230, 43, 126, 0.1), rgba(255, 140, 66, 0.1));
-            animation: gradientShift 15s ease infinite;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.1) rotate(180deg); }
-        }
-        
-        .page-hero .container {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-        }
-        
-        .hero-content {
-            animation: fadeInUp 1s ease-out;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         
         .page-hero h1 {
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            line-height: 1.2;
-            background: linear-gradient(135deg, white, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
         
         .hero-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             max-width: 600px;
-            margin: 0 auto 3rem;
-            opacity: 0.95;
-            line-height: 1.6;
-            font-weight: 300;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-top: 3rem;
-            flex-wrap: wrap;
-        }
-        
-        .stat-item {
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
-            animation-fill-mode: both;
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--orange);
-            display: block;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
+            margin: 0 auto 1rem;
             opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
         
-        /* ========== BREADCRUMB MEJORADO ========== */
+        /* ========== BREADCRUMB ========== */
         .breadcrumb {
             background: white;
-            padding: 1.2rem 0;
-            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             font-size: 0.9rem;
-            position: sticky;
-            top: 72px;
-            z-index: 999;
-        }
-        
-        .breadcrumb-inner {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
         .breadcrumb a {
             color: var(--primary);
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: var(--transition);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-sm);
+            gap: 0.3rem;
         }
         
         .breadcrumb a:hover {
-            background: var(--light-gray);
             color: var(--accent);
-            transform: translateX(3px);
         }
         
-        .breadcrumb span {
-            color: var(--gray);
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-        }
-        
-        /* ========== LAYOUT PRINCIPAL MEJORADO ========== */
-        .reservas-layout {
-            padding: 4rem 0;
-            position: relative;
-        }
-        
-        .layout-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            position: relative;
-        }
-        
-        @media (max-width: 1024px) {
-            .layout-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-        
-        /* ========== TOURS SECTION MEJORADA ========== */
+        /* ========== TOURS SECTION ========== */
         .tours-section {
-            position: relative;
-        }
-        
-        .tours-section::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
-            border-radius: var(--radius-xl);
-            backdrop-filter: blur(10px);
-            z-index: -1;
-            box-shadow: var(--shadow-xl);
-        }
-        
-        .tours-container {
+            padding: 3rem 0;
             background: white;
-            border-radius: var(--radius-lg);
-            padding: 2.5rem;
-            box-shadow: var(--shadow-lg);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .tours-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--accent), var(--orange));
-        }
-        
-        .section-header {
-            margin-bottom: 2rem;
-            text-align: center;
         }
         
         .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+        }
+        
+        .section-title h2 {
             font-size: 1.8rem;
-            font-weight: 800;
-            position: relative;
-            display: inline-block;
+            margin-bottom: 0.5rem;
         }
         
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(to right, var(--accent), var(--orange));
-            border-radius: 2px;
-        }
-        
-        .section-subtitle {
+        .section-title p {
             color: var(--gray);
-            font-size: 1rem;
-            max-width: 400px;
-            margin: 0 auto;
         }
         
-        /* ========== TOUR CARDS MEJORADAS ========== */
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
         .tour-card {
-            background: white;
-            border-radius: var(--radius-md);
-            padding: 1.8rem;
-            margin-bottom: 1.2rem;
-            border: 2px solid var(--light-gray);
+            background: var(--light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
             cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
         
-        .tour-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(13, 59, 102, 0.02), transparent);
-            z-index: 1;
-        }
-        
         .tour-card:hover {
             transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-xl);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         
         .tour-card.selected {
             border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(230, 43, 126, 0.05), rgba(255, 140, 66, 0.05));
-            box-shadow: var(--shadow-lg);
+            background: white;
+            box-shadow: 0 10px 25px rgba(230, 43, 126, 0.15);
         }
         
-        .tour-card.selected::before {
-            background: linear-gradient(135deg, rgba(230, 43, 126, 0.08), rgba(255, 140, 66, 0.08));
-        }
-        
-        .tour-card-header {
+        .tour-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .tour-title-wrapper {
-            flex: 1;
         }
         
         .tour-title {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 1.3rem;
-            margin-bottom: 0.3rem;
-        }
-        
-        .tour-badge {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
             font-weight: 600;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-            box-shadow: 0 2px 8px rgba(230, 43, 126, 0.3);
+            color: var(--primary);
+            font-size: 1.2rem;
         }
         
         .tour-price {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--radius-sm);
-            font-weight: 800;
-            font-size: 1.3rem;
-            box-shadow: var(--shadow-md);
-            min-width: 100px;
-            text-align: center;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 600;
         }
         
         .tour-desc {
             color: var(--gray);
-            line-height: 1.6;
             font-size: 0.95rem;
-            position: relative;
-            z-index: 2;
+            flex-grow: 1;
         }
         
         .tour-features {
             display: flex;
-            gap: 1.5rem;
             flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
         }
         
         .tour-feature {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--gray);
-            font-size: 0.9rem;
         }
         
         .tour-feature i {
             color: var(--primary);
-            font-size: 1.1rem;
         }
         
-        /* ========== FORM SECTION MEJORADA ========== */
+        /* ========== FORM SECTION ========== */
         .form-section {
-            position: relative;
+            padding: 3rem 0 4rem;
+            background: #f8fafc;
         }
         
         .form-container {
             background: white;
-            border-radius: var(--radius-lg);
-            padding: 2.5rem;
-            box-shadow: var(--shadow-xl);
-            transition: var(--transition);
-            position: sticky;
-            top: 120px;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            max-width: 800px;
+            margin: 0 auto;
         }
         
-        .form-container:hover {
-            box-shadow: var(--shadow-xl);
-            transform: translateY(-2px);
-        }
-        
-        /* ========== SELECTED TOUR INFO MEJORADA ========== */
+        /* ========== SELECTED TOUR INFO ========== */
         .selected-tour-info {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 2rem;
-            border-radius: var(--radius-md);
-            margin-bottom: 2.5rem;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .selected-tour-info::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: none;
         }
         
         .selected-tour-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
         }
         
         .selected-tour-title {
-            font-weight: 700;
-            font-size: 1.4rem;
-            flex: 1;
+            font-weight: 600;
+            font-size: 1.2rem;
         }
         
         .selected-tour-price {
-            font-size: 1.8rem;
-            font-weight: 900;
+            font-weight: 700;
+            font-size: 1.3rem;
             color: var(--orange);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-sm);
-            backdrop-filter: blur(10px);
         }
         
-        .selected-tour-desc {
-            position: relative;
-            z-index: 1;
-            opacity: 0.95;
-            margin-bottom: 1rem;
-        }
-        
-        .selected-tour-features {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* ========== FORM STYLES MEJORADOS ========== */
+        /* ========== FORM STYLES ========== */
         .form-group {
-            margin-bottom: 1.8rem;
-            position: relative;
+            margin-bottom: 1.5rem;
         }
         
         .form-label {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            margin-bottom: 0.6rem;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
             font-weight: 600;
             color: var(--primary);
-            font-size: 0.95rem;
-        }
-        
-        .form-label i {
-            color: var(--accent);
         }
         
         .form-control {
             width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid var(--light-gray);
-            border-radius: var(--radius-sm);
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
             font-size: 1rem;
-            transition: var(--transition);
-            background: white;
-            font-family: inherit;
+            transition: border 0.3s;
         }
         
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(13, 59, 102, 0.1);
-            transform: translateY(-1px);
         }
         
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.2rem;
+            gap: 1rem;
         }
         
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
-                gap: 1rem;
             }
         }
         
-        /* ========== DONATION OPTION MEJORADA ========== */
+        /* ========== DONATION SECTION ========== */
+        .donation-section {
+            margin: 1.5rem 0;
+        }
+        
         .donation-option {
             background: white;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
             padding: 1.5rem;
-            margin: 1.5rem 0;
-            border: 2px solid var(--light-gray);
-            transition: var(--transition);
+            border: 2px solid #e9ecef;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s;
         }
         
         .donation-option:hover {
             border-color: var(--success);
-            transform: translateY(-2px);
         }
         
         .donation-option.selected {
+            background: #f0fff4;
             border-color: var(--success);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(34, 197, 94, 0.05));
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
         }
         
         .donation-header {
             display: flex;
             align-items: center;
             gap: 1rem;
+            margin-bottom: 0.5rem;
         }
         
         .donation-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--success), #22c55e);
+            width: 40px;
+            height: 40px;
+            background: var(--success);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            font-size: 1.2rem;
         }
         
-        .donation-content {
-            flex: 1;
-        }
-        
-        .donation-title {
-            font-weight: 700;
+        .donation-content h4 {
             color: var(--primary);
             margin-bottom: 0.3rem;
         }
         
-        .donation-description {
+        .donation-content p {
             color: var(--gray);
             font-size: 0.9rem;
-            line-height: 1.5;
         }
         
-        .donation-percentage {
-            color: var(--success);
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
-        /* ========== PAYMENT METHODS MEJORADOS ========== */
+        /* ========== PAYMENT METHODS ========== */
         .payment-section {
             margin: 2rem 0;
         }
@@ -723,226 +383,177 @@
         .payment-tabs {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             overflow-x: auto;
-            padding-bottom: 0.5rem;
         }
         
         .payment-tab {
-            padding: 1rem 1.8rem;
-            background: white;
-            border: 2px solid var(--light-gray);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            white-space: nowrap;
             flex: 1;
-            min-width: 150px;
-            justify-content: center;
-        }
-        
-        .payment-tab:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
+            min-width: 120px;
+            padding: 1rem;
+            background: var(--light);
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
         }
         
         .payment-tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             color: white;
             border-color: var(--primary);
-            box-shadow: var(--shadow-md);
         }
         
-        .payment-tab.active i {
-            color: white;
-        }
-        
-        .payment-details-container {
+        .payment-details {
             background: var(--light);
-            border-radius: var(--radius-md);
-            padding: 2rem;
-            border: 2px solid var(--light-gray);
-            animation: slideDown 0.4s ease;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
         }
         
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .payment-info {
+            margin-bottom: 1rem;
         }
         
-        /* ========== SUMMARY MEJORADO ========== */
+        .payment-info h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* ========== SUMMARY ========== */
         .summary {
-            background: linear-gradient(135deg, var(--light), white);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            margin: 2rem 0;
-            border: 2px solid var(--light-gray);
-            position: relative;
-            overflow: hidden;
+            background: var(--light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
         }
         
-        .summary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(to right, var(--accent), var(--orange));
-        }
-        
-        .summary-header {
+        .summary h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .summary-header i {
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-        
-        .summary-header h4 {
-            color: var(--primary);
-            font-size: 1.3rem;
-            font-weight: 700;
+            gap: 0.5rem;
         }
         
         .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #dee2e6;
         }
         
         .summary-total {
             display: flex;
             justify-content: space-between;
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 2px solid rgba(0,0,0,0.1);
-        }
-        
-        /* ========== BUTTONS MEJORADOS ========== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: white;
-            padding: 1.2rem 2.5rem;
-            border-radius: var(--radius-md);
-            text-decoration: none;
             font-weight: 700;
-            border: none;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #dee2e6;
+        }
+        
+        /* ========== TERMS ========== */
+        .terms-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #fff9e6;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .terms-section label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
             cursor: pointer;
+        }
+        
+        .terms-section input[type="checkbox"] {
+            margin-top: 0.3rem;
+        }
+        
+        .terms-section span {
+            color: #333;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* ========== BUTTON ========== */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
             font-size: 1.1rem;
-            width: 100%;
-            transition: var(--transition);
-            box-shadow: 0 4px 16px rgba(230, 43, 126, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-        
-        .btn:hover::before {
-            left: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: center;
         }
         
         .btn:hover {
-            background: linear-gradient(135deg, var(--accent-dark), #b2104e);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(230, 43, 126, 0.4);
+            background: #d81b60;
         }
         
-        .btn:active {
-            transform: translateY(-1px);
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
-        /* ========== ALERTAS MEJORADAS ========== */
+        /* ========== ALERTS ========== */
         .alert {
-            padding: 1.2rem 1.5rem;
-            border-radius: var(--radius-md);
+            padding: 1rem;
+            border-radius: 8px;
             margin: 1rem 0;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            animation: slideDown 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: none;
+            gap: 0.8rem;
         }
         
         .alert-success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(34, 197, 94, 0.1));
-            color: var(--success);
-            border-left: 4px solid var(--success);
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
         
         .alert-error {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
-            color: var(--danger);
-            border-left: 4px solid var(--danger);
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         
-        /* ========== FOOTER MEJORADO ========== */
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        /* ========== FOOTER ========== */
         footer {
-            background: linear-gradient(135deg, var(--dark), #0f172a);
+            background: var(--dark);
             color: white;
-            padding: 4rem 0 2rem;
-            margin-top: 4rem;
-            position: relative;
-        }
-        
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(to right, var(--accent), var(--orange), var(--secondary));
+            padding: 3rem 0 1.5rem;
         }
         
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
         
         .footer-column h3 {
             color: #a8d8ea;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
         
         .footer-links {
@@ -950,76 +561,59 @@
         }
         
         .footer-links li {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
         }
         
         .footer-links a {
             color: rgba(255,255,255,0.8);
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            transition: var(--transition);
-            padding: 0.5rem 0;
+            transition: color 0.3s;
         }
         
         .footer-links a:hover {
             color: white;
-            transform: translateX(8px);
         }
         
         .copyright {
             text-align: center;
-            padding-top: 2rem;
+            padding-top: 1.5rem;
             border-top: 1px solid rgba(255,255,255,0.1);
             color: rgba(255,255,255,0.6);
             font-size: 0.9rem;
         }
         
-        /* ========== RESPONSIVE MEJORADO ========== */
-        @media (max-width: 768px) {
-            .page-hero {
-                padding: 4rem 0;
-            }
-            
-            .page-hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-stats {
-                gap: 2rem;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-            
-            .layout-container {
-                gap: 2rem;
-            }
-            
-            .tours-container,
-            .form-container {
-                padding: 2rem;
-            }
-            
-            .payment-tabs {
-                flex-wrap: wrap;
-            }
-            
-            .payment-tab {
-                min-width: calc(50% - 0.5rem);
-            }
+        /* ========== LOADING ========== */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
         }
         
-        @media (max-width: 480px) {
-            nav ul {
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .header-content {
                 flex-direction: column;
-                width: 100%;
-                gap: 0.3rem;
+                gap: 1rem;
             }
             
-            nav a {
+            nav ul {
+                flex-wrap: wrap;
                 justify-content: center;
             }
             
@@ -1027,51 +621,26 @@
                 font-size: 2rem;
             }
             
-            .hero-subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .payment-tab {
-                min-width: 100%;
-            }
-            
-            .tour-card-header {
-                flex-direction: column;
+            .tours-grid {
+                grid-template-columns: 1fr;
                 gap: 1rem;
+            }
+            
+            .payment-tabs {
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tour-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
             }
             
             .tour-price {
                 align-self: flex-start;
             }
-        }
-        
-        /* ========== UTILIDADES ========== */
-        .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .mt-1 { margin-top: 0.5rem; }
-        .mt-2 { margin-top: 1rem; }
-        .mt-3 { margin-top: 1.5rem; }
-        .mb-1 { margin-bottom: 0.5rem; }
-        .mb-2 { margin-bottom: 1rem; }
-        .mb-3 { margin-bottom: 1.5rem; }
-        .loading {
-            text-align: center;
-            padding: 3rem;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(13, 59, 102, 0.1);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1.5rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -1099,234 +668,211 @@
     <!-- Hero Section -->
     <section class="page-hero">
         <div class="container">
-            <div class="hero-content">
-                <h1>Reserva Tu Experiencia Única</h1>
-                <p class="hero-subtitle">
-                    Vive la magia de Caño Salao. Nuestro sistema de reservas simplifica tu aventura mientras contribuyes al desarrollo sostenible de la comunidad.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat-item" style="animation-delay: 0.2s">
-                        <span class="stat-number">98%</span>
-                        <span class="stat-label">Satisfacción</span>
-                    </div>
-                    <div class="stat-item" style="animation-delay: 0.4s">
-                        <span class="stat-number">500+</span>
-                        <span class="stat-label">Viajeros</span>
-                    </div>
-                    <div class="stat-item" style="animation-delay: 0.6s">
-                        <span class="stat-number">24/7</span>
-                        <span class="stat-label">Soporte</span>
-                    </div>
-                </div>
-            </div>
+            <h1>Reserva Tu Tour</h1>
+            <p class="hero-subtitle">
+                Elige tu experiencia y completa tu reserva en simples pasos
+            </p>
         </div>
     </section>
 
     <!-- Breadcrumb -->
     <section class="breadcrumb">
         <div class="container">
-            <div class="breadcrumb-inner">
-                <a href="../index.html"><i class="bi bi-house"></i> Inicio</a>
-                <i class="bi bi-chevron-right"></i>
-                <a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a>
-                <i class="bi bi-chevron-right"></i>
-                <span><i class="bi bi-calendar-check"></i> Reservas</span>
+            <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
+            <i class="bi bi-chevron-right"></i> 
+            <a href="Servicios.html">Servicios</a>
+            <i class="bi bi-chevron-right"></i> 
+            <span>Reservas</span>
+        </div>
+    </section>
+
+    <!-- Tours Section -->
+    <section class="tours-section">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="bi bi-compass"></i> Tours Disponibles</h2>
+                <p>Selecciona el tour que deseas reservar</p>
+            </div>
+            
+            <div class="tours-grid" id="tours-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando tours disponibles...</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="reservas-layout">
-            <div class="layout-container">
-                <!-- Tours Section -->
-                <section class="tours-section">
-                    <div class="tours-container">
-                        <div class="section-header">
-                            <h2 class="section-title"><i class="bi bi-compass"></i> Tours Disponibles</h2>
-                            <p class="section-subtitle">Selecciona la experiencia que mejor se adapte a tus expectativas</p>
+    <!-- Form Section -->
+    <section class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <div class="section-title">
+                    <h2><i class="bi bi-calendar-plus"></i> Completa Tu Reserva</h2>
+                    <p>Llena tus datos y confirma tu aventura en Caño Salao</p>
+                </div>
+                
+                <!-- Alertas -->
+                <div id="alerts-container"></div>
+                
+                <!-- Selected Tour Info -->
+                <div id="selected-tour-display" class="selected-tour-info">
+                    <div class="selected-tour-header">
+                        <div class="selected-tour-title" id="selected-tour-name"></div>
+                        <div class="selected-tour-price" id="selected-tour-price"></div>
+                    </div>
+                    <p id="selected-tour-desc"></p>
+                </div>
+                
+                <!-- Form -->
+                <form id="reservaForm">
+                    <!-- Personal Info -->
+                    <div class="form-group">
+                        <label class="form-label" for="nombre">
+                            <i class="bi bi-person"></i> Nombre Completo
+                        </label>
+                        <input type="text" id="nombre" class="form-control" placeholder="Ej: María González Rodríguez" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="email">
+                                <i class="bi bi-envelope"></i> Correo Electrónico
+                            </label>
+                            <input type="email" id="email" class="form-control" placeholder="ejemplo@email.com" required>
                         </div>
-                        
-                        <div id="tours-container">
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Cargando experiencias disponibles...</p>
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label" for="telefono">
+                                <i class="bi bi-telephone"></i> Teléfono
+                            </label>
+                            <input type="tel" id="telefono" class="form-control" placeholder="+58 412-1234567" required>
                         </div>
                     </div>
-                </section>
-
-                <!-- Form Section -->
-                <section class="form-section">
-                    <div class="form-container">
-                        <div class="section-header">
-                            <h2 class="section-title"><i class="bi bi-calendar-plus"></i> Completa Tu Reserva</h2>
-                            <p class="section-subtitle">Llena tus datos y confirma tu aventura en Caño Salao</p>
+                    
+                    <!-- Reservation Details -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="fecha">
+                                <i class="bi bi-calendar"></i> Fecha del Tour
+                            </label>
+                            <input type="text" id="fecha" class="form-control" placeholder="Selecciona fecha" readonly required>
                         </div>
-                        
-                        <!-- Alertas -->
-                        <div id="alerts-container"></div>
-                        
-                        <!-- Selected Tour Info -->
-                        <div id="selected-tour-display" class="selected-tour-info hidden">
-                            <div class="selected-tour-header">
-                                <div class="selected-tour-title" id="selected-tour-name"></div>
-                                <div class="selected-tour-price" id="selected-tour-price"></div>
-                            </div>
-                            <p class="selected-tour-desc" id="selected-tour-desc"></p>
-                            <div class="selected-tour-features" id="selected-tour-details"></div>
+                        <div class="form-group">
+                            <label class="form-label" for="personas">
+                                <i class="bi bi-people"></i> Número de Personas
+                            </label>
+                            <select id="personas" class="form-control" required>
+                                <option value="1">1 persona</option>
+                                <option value="2">2 personas</option>
+                                <option value="3">3 personas</option>
+                                <option value="4" selected>4 personas</option>
+                                <option value="5">5 personas</option>
+                                <option value="6">6 personas</option>
+                                <option value="7">7 personas</option>
+                                <option value="8">8 personas</option>
+                                <option value="9">9 personas</option>
+                                <option value="10">10 personas</option>
+                            </select>
                         </div>
-                        
-                        <!-- Form -->
-                        <form id="reservaForm">
-                            <!-- Personal Info -->
-                            <div class="form-group">
-                                <label class="form-label" for="nombre">
-                                    <i class="bi bi-person"></i> Nombre Completo
-                                </label>
-                                <input type="text" id="nombre" class="form-control" placeholder="Ej: María González Rodríguez" required>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label" for="email">
-                                        <i class="bi bi-envelope"></i> Correo Electrónico
-                                    </label>
-                                    <input type="email" id="email" class="form-control" placeholder="ejemplo@email.com" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="telefono">
-                                        <i class="bi bi-telephone"></i> Teléfono
-                                    </label>
-                                    <input type="tel" id="telefono" class="form-control" placeholder="+58 412-1234567" required>
-                                </div>
-                            </div>
-                            
-                            <!-- Reservation Details -->
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label" for="fecha">
-                                        <i class="bi bi-calendar"></i> Fecha del Tour
-                                    </label>
-                                    <input type="text" id="fecha" class="form-control" placeholder="Selecciona fecha" readonly required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="personas">
-                                        <i class="bi bi-people"></i> Número de Personas
-                                    </label>
-                                    <select id="personas" class="form-control" required>
-                                        <option value="1">1 persona</option>
-                                        <option value="2">2 personas</option>
-                                        <option value="3">3 personas</option>
-                                        <option value="4" selected>4 personas</option>
-                                        <option value="5">5 personas</option>
-                                        <option value="6">6 personas</option>
-                                        <option value="7">7 personas</option>
-                                        <option value="8">8 personas</option>
-                                        <option value="9">9 personas</option>
-                                        <option value="10">10 personas</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <!-- Contribución -->
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="bi bi-heart"></i> Apoya el Proyecto
-                                </label>
-                                <div class="donation-option selected" id="donation-option" onclick="toggleDonation()">
-                                    <div class="donation-header">
-                                        <div class="donation-icon">
-                                            <i class="bi bi-check-lg"></i>
-                                        </div>
-                                        <div class="donation-content">
-                                            <div class="donation-title">
-                                                Incluir contribución <span class="donation-percentage">5%</span>
-                                            </div>
-                                            <div class="donation-description">
-                                                Tu aporte se destina al fondo de desarrollo sostenible de la comunidad Caño Salao.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="incluir_contribucion" value="true">
-                                </div>
-                            </div>
-                            
-                            <!-- Payment Method -->
-                            <div class="payment-section">
-                                <label class="form-label">
-                                    <i class="bi bi-credit-card"></i> Método de Pago
-                                </label>
-                                <div class="payment-tabs">
-                                    <div class="payment-tab active" data-method="tarjeta">
-                                        <i class="bi bi-credit-card"></i> Tarjeta
-                                    </div>
-                                    <div class="payment-tab" data-method="movil">
-                                        <i class="bi bi-phone"></i> Pago Móvil
-                                    </div>
-                                    <div class="payment-tab" data-method="transferencia">
-                                        <i class="bi bi-bank"></i> Transferencia
-                                    </div>
-                                </div>
-                                
-                                <div class="payment-details-container" id="payment-details">
-                                    <!-- Contenido dinámico -->
-                                </div>
-                                <input type="hidden" id="metodo_pago" value="tarjeta">
-                            </div>
-                            
-                            <!-- Summary -->
-                            <div class="summary">
-                                <div class="summary-header">
-                                    <i class="bi bi-receipt"></i>
-                                    <h4>Resumen de la Reserva</h4>
-                                </div>
-                                <div class="summary-item">
-                                    <span>Tour seleccionado:</span>
-                                    <span id="summary-tour">-</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span>Fecha del tour:</span>
-                                    <span id="summary-fecha">-</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span>Número de personas:</span>
-                                    <span id="summary-personas">-</span>
-                                </div>
-                                <div class="summary-item">
-                                    <span>Subtotal:</span>
-                                    <span id="summary-subtotal">$0.00</span>
-                                </div>
-                                <div class="summary-item" id="contribucion-item">
-                                    <span>Contribución (5%):</span>
-                                    <span id="summary-contribucion">$0.00</span>
-                                </div>
-                                <div class="summary-total">
-                                    <span>Total a pagar:</span>
-                                    <span id="summary-total">$0.00</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Terms -->
-                            <div class="form-group">
-                                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
-                                    <input type="checkbox" id="terminos" required style="margin-top: 5px;">
-                                    <span style="color: var(--gray); font-size: 0.9rem;">
-                                        He leído y acepto los <a href="#" style="color: var(--primary); font-weight: 600;">términos y condiciones</a> del servicio. Confirmo que toda la información proporcionada es correcta y autorizo el procesamiento de mi reserva.
-                                    </span>
-                                </label>
-                            </div>
-                            
-                            <!-- Submit -->
-                            <button type="submit" class="btn" id="submitBtn">
-                                <i class="bi bi-calendar-check"></i> Confirmar Reserva
-                            </button>
-                        </form>
                     </div>
-                </section>
+                    
+                    <!-- Donation Section -->
+                    <div class="donation-section">
+                        <label class="form-label">
+                            <i class="bi bi-heart"></i> Contribución al Proyecto
+                        </label>
+                        <div class="donation-option selected" id="donation-option" onclick="toggleDonation()">
+                            <div class="donation-header">
+                                <div class="donation-icon">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <div class="donation-content">
+                                    <h4>Incluir contribución del 5%</h4>
+                                    <p>Tu aporte será destinado al fondo de desarrollo sostenible de la comunidad Caño Salao.</p>
+                                </div>
+                            </div>
+                            <input type="hidden" id="incluir_contribucion" value="true">
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method -->
+                    <div class="payment-section">
+                        <label class="form-label">
+                            <i class="bi bi-credit-card"></i> Método de Pago
+                        </label>
+                        <div class="payment-tabs">
+                            <div class="payment-tab active" data-method="tarjeta">
+                                <i class="bi bi-credit-card"></i> Tarjeta
+                            </div>
+                            <div class="payment-tab" data-method="movil">
+                                <i class="bi bi-phone"></i> Pago Móvil
+                            </div>
+                            <div class="payment-tab" data-method="transferencia">
+                                <i class="bi bi-bank"></i> Transferencia
+                            </div>
+                            <div class="payment-tab" data-method="efectivo">
+                                <i class="bi bi-cash"></i> Efectivo
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="payment-details">
+                            <!-- Contenido dinámico -->
+                            <div class="payment-info">
+                                <h4><i class="bi bi-credit-card"></i> Pago con Tarjeta</h4>
+                                <p>Puedes pagar con cualquier tarjeta de crédito o débito.</p>
+                            </div>
+                        </div>
+                        <input type="hidden" id="metodo_pago" value="tarjeta">
+                    </div>
+                    
+                    <!-- Summary -->
+                    <div class="summary">
+                        <h4><i class="bi bi-receipt"></i> Resumen de la Reserva</h4>
+                        <div class="summary-item">
+                            <span>Tour seleccionado:</span>
+                            <span id="summary-tour">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Fecha del tour:</span>
+                            <span id="summary-fecha">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Número de personas:</span>
+                            <span id="summary-personas">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Subtotal:</span>
+                            <span id="summary-subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-item" id="contribucion-item">
+                            <span>Contribución (5%):</span>
+                            <span id="summary-contribucion">$0.00</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Total a pagar:</span>
+                            <span id="summary-total">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Terms -->
+                    <div class="terms-section">
+                        <label>
+                            <input type="checkbox" id="terminos" required>
+                            <span>
+                                He leído y acepto los <a href="#" style="color: var(--primary); font-weight: 600;">términos y condiciones</a> del servicio. 
+                                Confirmo que toda la información proporcionada es correcta y autorizo el procesamiento de mi reserva.
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <!-- Submit -->
+                    <button type="submit" class="btn" id="submitBtn">
+                        <i class="bi bi-calendar-check"></i> Confirmar Reserva
+                    </button>
+                </form>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -1334,9 +880,7 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
-                    <p style="opacity: 0.9; line-height: 1.6;">
-                        Sistema de reservas en línea como parte del proyecto factible de desarrollo turístico sostenible. Transformando experiencias en impacto comunitario.
-                    </p>
+                    <p>Sistema de reservas en línea como parte del proyecto factible de desarrollo turístico sostenible.</p>
                 </div>
                 <div class="footer-column">
                     <h3><i class="bi bi-link"></i> Navegación</h3>
@@ -1353,15 +897,12 @@
                         <li><a href="#"><i class="bi bi-shield-check"></i> Políticas de Privacidad</a></li>
                         <li><a href="#"><i class="bi bi-file-text"></i> Términos y Condiciones</a></li>
                         <li><a href="#"><i class="bi bi-question-circle"></i> Preguntas Frecuentes</a></li>
-                        <li><a href="#"><i class="bi bi-envelope"></i> Soporte Técnico</a></li>
+                        <li><a href="#"><i class="bi bi-telephone"></i> +58 412-205-6558</a></li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
                 <p>© 2025 Sistema de Reservas Caño Salao. Proyecto factible para el desarrollo turístico sostenible.</p>
-                <p style="margin-top: 0.5rem; font-size: 0.8rem;">
-                    <i class="bi bi-mortarboard"></i> Desarrollo académico - Universidad Politécnica Territorial
-                </p>
             </div>
         </div>
     </footer>
@@ -1372,47 +913,47 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // ========== DATOS Y CONFIGURACIÓN ==========
+            // ========== DATOS COMPLETOS ==========
             const tours = [
                 {
                     id: 1,
                     nombre: 'Tour Explorador Básico',
-                    descripcion: 'Descubre los manglares de Caño Salao en un recorrido introductorio perfecto para toda la familia.',
+                    descripcion: 'Recorrido introductorio por los manglares de Caño Salao, ideal para toda la familia.',
                     precio: 25.00,
                     duracion: '2 horas',
-                    capacidad: '10 personas',
+                    capacidad: 'Máx. 10 personas',
                     popular: true
                 },
                 {
                     id: 2,
                     nombre: 'Tour Naturaleza Completa',
-                    descripcion: 'Experiencia inmersiva con avistamiento de aves, fotografía y gastronomía local incluida.',
+                    descripcion: 'Experiencia completa con avistamiento de aves y gastronomía local incluida.',
                     precio: 45.00,
                     duracion: '4 horas',
-                    capacidad: '8 personas',
+                    capacidad: 'Máx. 8 personas',
                     popular: true
                 },
                 {
                     id: 3,
-                    nombre: 'Tour Premium Personalizado',
-                    descripcion: 'Aventura exclusiva diseñada a tu medida con acceso a áreas restringidas y guía especializado.',
+                    nombre: 'Tour Personalizado Premium',
+                    descripcion: 'Aventura exclusiva diseñada según tus intereses con guía especializado.',
                     precio: 65.00,
                     duracion: '6 horas',
-                    capacidad: '6 personas',
+                    capacidad: 'Máx. 6 personas',
                     popular: false
                 },
                 {
                     id: 4,
-                    nombre: 'Tour Fotográfico Profesional',
-                    descripcion: 'Para amantes de la fotografía, con horarios especiales y guías expertos en fotografía de naturaleza.',
+                    nombre: 'Tour Fotográfico Especial',
+                    descripcion: 'Para amantes de la fotografía, con horarios especiales y guía experto.',
                     precio: 55.00,
                     duracion: '3 horas',
-                    capacidad: '6 personas',
+                    capacidad: 'Máx. 6 personas',
                     popular: true
                 }
             ];
             
-            let selectedTour = tours[0];
+            let selectedTour = null;
             let includeDonation = true;
             
             // ========== FUNCIONES PRINCIPALES ==========
@@ -1422,8 +963,7 @@
                 initFlatpickr();
                 setupPaymentMethods();
                 setupEventListeners();
-                updateSummary();
-                preloadDemoData();
+                loadDemoData();
             }
             
             function renderTours() {
@@ -1436,11 +976,8 @@
                     tourCard.dataset.id = tour.id;
                     
                     tourCard.innerHTML = `
-                        <div class="tour-card-header">
-                            <div class="tour-title-wrapper">
-                                <div class="tour-title">${tour.nombre}</div>
-                                ${tour.popular ? '<span class="tour-badge">Más Popular</span>' : ''}
-                            </div>
+                        <div class="tour-header">
+                            <div class="tour-title">${tour.nombre}</div>
                             <div class="tour-price">$${tour.precio.toFixed(2)}</div>
                         </div>
                         <p class="tour-desc">${tour.descripcion}</p>
@@ -1453,18 +990,13 @@
                                 <i class="bi bi-people"></i>
                                 <span>${tour.capacidad}</span>
                             </div>
-                            <div class="tour-feature">
-                                <i class="bi bi-star"></i>
-                                <span>Guía incluido</span>
-                            </div>
+                            ${tour.popular ? '<div class="tour-feature"><i class="bi bi-star"></i> Popular</div>' : ''}
                         </div>
                     `;
                     
                     tourCard.addEventListener('click', () => selectTour(tour));
                     container.appendChild(tourCard);
                 });
-                
-                selectTour(tours[0]);
             }
             
             function selectTour(tour) {
@@ -1480,30 +1012,22 @@
                 
                 // Mostrar información del tour seleccionado
                 const display = document.getElementById('selected-tour-display');
-                display.classList.remove('hidden');
+                display.style.display = 'block';
                 
                 document.getElementById('selected-tour-name').textContent = tour.nombre;
                 document.getElementById('selected-tour-price').textContent = `$${tour.precio.toFixed(2)}`;
                 document.getElementById('selected-tour-desc').textContent = tour.descripcion;
                 
-                const details = document.getElementById('selected-tour-details');
-                details.innerHTML = `
-                    <div class="tour-feature">
-                        <i class="bi bi-clock"></i>
-                        <span>${tour.duracion}</span>
-                    </div>
-                    <div class="tour-feature">
-                        <i class="bi bi-people"></i>
-                        <span>${tour.capacidad}</span>
-                    </div>
-                    <div class="tour-feature">
-                        <i class="bi bi-star"></i>
-                        <span>Guía incluido</span>
-                    </div>
-                `;
-                
                 // Actualizar resumen
                 updateSummary();
+                
+                // Desplazar al formulario
+                setTimeout(() => {
+                    document.querySelector('.form-section').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 300);
             }
             
             function initFlatpickr() {
@@ -1517,6 +1041,8 @@
             }
             
             function updateSummary() {
+                if (!selectedTour) return;
+                
                 const fecha = document.getElementById('fecha').value;
                 const personas = parseInt(document.getElementById('personas').value) || 1;
                 const precioUnitario = selectedTour.precio;
@@ -1553,7 +1079,7 @@
                     donationInput.value = 'true';
                 } else {
                     donationOption.classList.remove('selected');
-                    donationIcon.className = 'bi bi-plus-lg';
+                    donationIcon.className = 'bi bi-plus';
                     donationInput.value = 'false';
                 }
                 
@@ -1588,189 +1114,68 @@
                 switch(method) {
                     case 'tarjeta':
                         container.innerHTML = `
-                            <div class="form-group">
-                                <label class="form-label" for="tarjeta_numero">
-                                    <i class="bi bi-credit-card"></i> Número de Tarjeta
-                                </label>
-                                <div class="form-row">
-                                    <div class="form-group" style="flex: 2;">
-                                        <input type="text" id="tarjeta_numero" class="form-control" 
-                                               placeholder="1234 5678 9012 3456" 
-                                               maxlength="19">
-                                    </div>
-                                    <div class="form-group" style="flex: 1;">
-                                        <input type="text" id="tarjeta_vencimiento" class="form-control" 
-                                               placeholder="MM/AA"
-                                               maxlength="5">
-                                    </div>
-                                    <div class="form-group" style="flex: 1;">
-                                        <input type="password" id="tarjeta_cvv" class="form-control" 
-                                               placeholder="CVV"
-                                               maxlength="4">
-                                    </div>
-                                </div>
-                                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                                    <div style="padding: 0.3rem 0.8rem; background: #1434CB; color: white; border-radius: 4px; font-size: 0.8rem;">
-                                        VISA
-                                    </div>
-                                    <div style="padding: 0.3rem 0.8rem; background: linear-gradient(45deg, #EB001B, #FF5F00); color: white; border-radius: 4px; font-size: 0.8rem;">
-                                        MasterCard
-                                    </div>
-                                </div>
+                            <div class="payment-info">
+                                <h4><i class="bi bi-credit-card"></i> Pago con Tarjeta</h4>
+                                <p>Puedes pagar con cualquier tarjeta Visa o Mastercard.</p>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label" for="tarjeta_nombre">
-                                    <i class="bi bi-person"></i> Nombre en la Tarjeta
-                                </label>
-                                <input type="text" id="tarjeta_nombre" class="form-control" 
-                                       placeholder="Como aparece en la tarjeta">
-                            </div>
-                            
-                            <div style="background: rgba(13, 59, 102, 0.05); padding: 1rem; border-radius: 8px; margin-top: 1rem; border-left: 4px solid var(--primary);">
-                                <p style="color: var(--primary); font-size: 0.9rem; margin-bottom: 0.5rem;">
-                                    <i class="bi bi-shield-check"></i> <strong>Datos de prueba:</strong>
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                                <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                    <i class="bi bi-info-circle"></i> Datos de prueba para desarrollo:
                                 </p>
-                                <div style="font-family: monospace; font-size: 0.85rem; color: var(--gray);">
+                                <div style="font-family: monospace; font-size: 0.85rem;">
                                     <div>Tarjeta: 4242 4242 4242 4242</div>
                                     <div>Vencimiento: 12/30</div>
                                     <div>CVV: 123</div>
                                 </div>
                             </div>
                         `;
-                        setupCardInputs();
                         break;
                         
                     case 'movil':
                         container.innerHTML = `
-                            <div style="background: rgba(16, 185, 129, 0.05); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--success);">
-                                <h4 style="color: var(--success); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-phone"></i> Pasos para Pago Móvil
-                                </h4>
-                                
-                                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                                    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                                        <div style="width: 30px; height: 30px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</div>
-                                        <div>
-                                            <strong>Configura beneficiario:</strong>
-                                            <div style="font-family: monospace; background: white; padding: 0.8rem; border-radius: 6px; margin-top: 0.5rem; border: 1px solid var(--light-gray);">
-                                                Banco: Banco de Venezuela<br>
-                                                Teléfono: 0412-205-6558<br>
-                                                Cédula: 12.345.678
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                                        <div style="width: 30px; height: 30px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</div>
-                                        <div>
-                                            <strong>Realiza el pago:</strong>
-                                            <p style="color: var(--gray); margin-top: 0.3rem;">Envía el monto exacto mostrado en el resumen.</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                                        <div style="width: 30px; height: 30px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">3</div>
-                                        <div>
-                                            <strong>Envía comprobante:</strong>
-                                            <p style="color: var(--gray); margin-top: 0.3rem;">WhatsApp: +58 412-205-6558</p>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="payment-info">
+                                <h4><i class="bi bi-phone"></i> Pago Móvil</h4>
+                                <p>Realiza el pago móvil a los siguientes datos:</p>
+                                <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
+                                    <li>Banco: Banco de Venezuela</li>
+                                    <li>Teléfono: 0412-205-6558</li>
+                                    <li>Cédula: 12.345.678</li>
+                                </ul>
+                                <p>Envía el comprobante a nuestro WhatsApp: +58 412-205-6558</p>
                             </div>
                         `;
                         break;
                         
                     case 'transferencia':
                         container.innerHTML = `
-                            <div style="background: rgba(13, 59, 102, 0.05); padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary);">
-                                <h4 style="color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="bi bi-bank"></i> Datos Bancarios
-                                </h4>
-                                
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                                        <div style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.3rem;">Banco</div>
-                                        <div style="font-weight: 600; color: var(--primary);">Banco de Venezuela</div>
-                                    </div>
-                                    
-                                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                                        <div style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.3rem;">Tipo de Cuenta</div>
-                                        <div style="font-weight: 600; color: var(--primary);">Corriente</div>
-                                    </div>
-                                    
-                                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                                        <div style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.3rem;">Número</div>
-                                        <div style="font-weight: 600; color: var(--primary); font-family: monospace;">0102-1234-5678-9012</div>
-                                    </div>
-                                    
-                                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                                        <div style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.3rem;">Titular</div>
-                                        <div style="font-weight: 600; color: var(--primary);">Proyecto Caño Salao</div>
-                                    </div>
-                                    
-                                    <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--light-gray);">
-                                        <div style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.3rem;">RIF</div>
-                                        <div style="font-weight: 600; color: var(--primary); font-family: monospace;">J-12345678-9</div>
-                                    </div>
-                                </div>
-                                
-                                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(230, 43, 126, 0.05); border-radius: 8px; border-left: 4px solid var(--accent);">
-                                    <p style="color: var(--gray); font-size: 0.9rem;">
-                                        <i class="bi bi-info-circle" style="color: var(--accent);"></i>
-                                        Después de realizar la transferencia, envía el comprobante a nuestro WhatsApp.
-                                    </p>
-                                </div>
+                            <div class="payment-info">
+                                <h4><i class="bi bi-bank"></i> Transferencia Bancaria</h4>
+                                <p>Datos bancarios para transferencia:</p>
+                                <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
+                                    <li>Banco: Banco de Venezuela</li>
+                                    <li>Cuenta: 0102-1234-5678-9012</li>
+                                    <li>Titular: Proyecto Caño Salao</li>
+                                    <li>RIF: J-12345678-9</li>
+                                </ul>
+                                <p>Envía el comprobante a: reservas@canosalao.com</p>
                             </div>
                         `;
                         break;
-                }
-            }
-            
-            function setupCardInputs() {
-                const cardNumberInput = document.getElementById('tarjeta_numero');
-                const cardExpiryInput = document.getElementById('tarjeta_vencimiento');
-                
-                if (cardNumberInput) {
-                    cardNumberInput.addEventListener('input', function(e) {
-                        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                        let parts = [];
                         
-                        for (let i = 0; i < value.length && i < 16; i += 4) {
-                            parts.push(value.substring(i, i + 4));
-                        }
-                        
-                        if (parts.length) {
-                            e.target.value = parts.join(' ');
-                        }
-                    });
-                    
-                    // Datos de prueba
-                    cardNumberInput.value = '4242 4242 4242 4242';
-                }
-                
-                if (cardExpiryInput) {
-                    cardExpiryInput.addEventListener('input', function(e) {
-                        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                        
-                        if (value.length >= 2) {
-                            value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                        }
-                        
-                        e.target.value = value;
-                    });
-                    
-                    cardExpiryInput.value = '12/30';
-                }
-                
-                const cardCvvInput = document.getElementById('tarjeta_cvv');
-                if (cardCvvInput) {
-                    cardCvvInput.value = '123';
-                }
-                
-                const cardNameInput = document.getElementById('tarjeta_nombre');
-                if (cardNameInput) {
-                    cardNameInput.value = 'TEST CARD';
+                    case 'efectivo':
+                        container.innerHTML = `
+                            <div class="payment-info">
+                                <h4><i class="bi bi-cash"></i> Pago en Efectivo</h4>
+                                <p>Paga en efectivo al llegar al punto de encuentro.</p>
+                                <p><strong>Instrucciones:</strong></p>
+                                <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
+                                    <li>Trae el monto exacto indicado en el resumen</li>
+                                    <li>Horario para pagos: 8:00 AM - 5:00 PM</li>
+                                    <li>Punto de encuentro: Muelle principal de Caño Salao</li>
+                                </ul>
+                            </div>
+                        `;
+                        break;
                 }
             }
             
@@ -1791,7 +1196,7 @@
                 }, 5000);
             }
             
-            function preloadDemoData() {
+            function loadDemoData() {
                 if (!localStorage.getItem('reservas_demo_loaded')) {
                     setTimeout(() => {
                         document.getElementById('nombre').value = 'María González';
@@ -1803,20 +1208,25 @@
             }
             
             function setupEventListeners() {
-                // Actualizar resumen
+                // Actualizar resumen cuando cambian los datos
                 document.getElementById('personas').addEventListener('change', updateSummary);
-                document.getElementById('fecha').addEventListener('change', updateSummary);
                 
                 // Envío del formulario
                 document.getElementById('reservaForm').addEventListener('submit', function(e) {
                     e.preventDefault();
                     
-                    if (!document.getElementById('terminos').checked) {
-                        showAlert('error', 'Debes aceptar los términos y condiciones para continuar.');
+                    if (!selectedTour) {
+                        showAlert('error', 'Por favor selecciona un tour primero');
+                        document.querySelector('.tours-section').scrollIntoView({ behavior: 'smooth' });
                         return;
                     }
                     
-                    const formData = {
+                    if (!document.getElementById('terminos').checked) {
+                        showAlert('error', 'Debes aceptar los términos y condiciones');
+                        return;
+                    }
+                    
+                    const reservationData = {
                         tour: selectedTour.nombre,
                         nombre: document.getElementById('nombre').value,
                         email: document.getElementById('email').value,
@@ -1835,24 +1245,49 @@
                     const reservas = JSON.parse(localStorage.getItem('cano_salao_reservas') || '[]');
                     reservas.push({
                         id: reservationCode,
-                        ...formData
+                        ...reservationData
                     });
                     localStorage.setItem('cano_salao_reservas', JSON.stringify(reservas));
                     
                     showAlert('success', `¡Reserva confirmada exitosamente!<br><strong>Código: ${reservationCode}</strong><br>Te hemos enviado un correo de confirmación.`);
                     
-                    // Resetear formulario
+                    // Resetear después de 2 segundos
                     setTimeout(() => {
-                        this.reset();
-                        selectTour(tours[0]);
-                        flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
-                        includeDonation = true;
-                        const donationOption = document.getElementById('donation-option');
-                        donationOption.classList.add('selected');
-                        donationOption.querySelector('.donation-icon i').className = 'bi bi-check-lg';
-                        document.getElementById('incluir_contribucion').value = 'true';
-                        updateSummary();
+                        resetForm();
                     }, 2000);
+                });
+            }
+            
+            function resetForm() {
+                document.getElementById('reservaForm').reset();
+                
+                // Resetear selección de tour
+                document.querySelectorAll('.tour-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                // Ocultar información del tour seleccionado
+                document.getElementById('selected-tour-display').style.display = 'none';
+                selectedTour = null;
+                
+                // Resetear fecha
+                flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
+                
+                // Resetear contribución
+                includeDonation = true;
+                const donationOption = document.getElementById('donation-option');
+                const donationIcon = donationOption.querySelector('.donation-icon i');
+                donationOption.classList.add('selected');
+                donationIcon.className = 'bi bi-check-lg';
+                document.getElementById('incluir_contribucion').value = 'true';
+                
+                // Resetear resumen
+                updateSummary();
+                
+                // Regresar a la sección de tours
+                document.querySelector('.tours-section').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }
             
