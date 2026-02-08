@@ -2,14 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservas | Ruta Turística Caño Salao</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Reservas | Ruta Turística Caño Salao | Proyecto Factible</title>
+    <meta name="description" content="Reserva tu tour en Caño Salao. Sistema de reservas en línea para tours por manglares, avistamiento de aves y experiencias turísticas sostenibles.">
+    <meta name="keywords" content="reservas Caño Salao, tours manglares, ecoturismo Venezuela, proyecto factible, reservas en línea, turismo sostenible">
+    <meta name="author" content="Estudiantes: Alejandra Paricaguan, Luis Nucete, Ricardo Farías | Tutora: Dulce Paraguan">
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../media/Logo_cano_60.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../media/Logo_cano_60.png">
+    <link rel="apple-touch-icon" href="../media/Logo_cano_120.png">
+    <meta name="theme-color" content="#0d3b66">
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <!-- Cargar CSS principal -->
+    <link rel="stylesheet" href="../index.css">
     
     <style>
         /* ========== VARIABLES Y RESET ========== */
@@ -54,70 +66,10 @@
             padding: 0 20px;
         }
         
-        /* ========== HEADER ========== */
-        header {
-            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
-            color: white;
-            padding: 0.8rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-md);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-decoration: none;
-        }
-        
+        /* ========== HEADER (manteniendo tu header original) ========== */
         .logo-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        
-        .logo h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: white;
-        }
-        
-        .text-orange {
-            color: var(--color-orange);
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 1rem;
-            margin: 0;
-            padding: 0;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-sm);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-weight: 500;
-        }
-        
-        nav a:hover, nav a.active {
-            background: rgba(255,255,255,0.15);
+            width: 35px;
+            height: 35px;
         }
         
         /* ========== HERO SECTION ========== */
@@ -144,7 +96,7 @@
         
         .page-hero .container {
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
         
         .page-hero h1 {
@@ -408,54 +360,48 @@
             flex: 1;
         }
         
-        /* ========== PAYMENT METHODS ========== */
-        .payment-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
+        /* ========== MEJORAS DE MÉTODOS DE PAGO ========== */
+        .payment-methods-container {
+            margin: 1.5rem 0;
         }
         
-        .payment-method {
+        .payment-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .payment-tab {
+            padding: 1rem 1.5rem;
+            background: white;
             border: 2px solid #e1e5e9;
             border-radius: var(--radius-md);
-            padding: 1.2rem;
             cursor: pointer;
-            text-align: center;
             transition: var(--transition);
-            background: white;
-        }
-        
-        .payment-method:hover {
-            border-color: var(--color-primary);
-            transform: translateY(-2px);
-        }
-        
-        .payment-method.selected {
-            border-color: var(--color-primary);
-            background: linear-gradient(135deg, rgba(13, 59, 102, 0.05), transparent);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .payment-icon {
-            font-size: 2rem;
-            color: var(--color-primary);
-            margin-bottom: 0.8rem;
-            display: block;
-        }
-        
-        .payment-method-name {
             font-weight: 600;
-            color: var(--color-dark);
-            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
-        /* ========== PAYMENT DETAILS ========== */
-        .payment-details {
+        .payment-tab:hover {
+            border-color: var(--color-primary);
+        }
+        
+        .payment-tab.active {
+            background: linear-gradient(135deg, rgba(13, 59, 102, 0.05), transparent);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+        
+        .payment-details-container {
             background: var(--color-light);
             border-radius: var(--radius-md);
             padding: 1.5rem;
-            margin-top: 1rem;
             border: 2px solid #e1e5e9;
             animation: slideDown 0.3s ease;
         }
@@ -465,16 +411,57 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .payment-info {
+        /* TARJETA DE CRÉDITO MEJORADA */
+        .card-input-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .card-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .card-visa { color: #1434CB; }
+        .card-mastercard { color: #EB001B; }
+        .card-amex { color: #002663; }
+        
+        .card-images {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .card-image {
+            width: 40px;
+            height: 25px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .visa { background: #1434CB; }
+        .mastercard { background: linear-gradient(45deg, #EB001B, #FF5F00); }
+        .amex { background: #002663; }
+        
+        /* DATOS DE TRANSFERENCIA */
+        .transfer-info {
             background: white;
             padding: 1rem;
             border-radius: var(--radius-sm);
             margin-top: 1rem;
-            font-size: 0.9rem;
             border-left: 4px solid var(--color-success);
         }
         
-        .payment-info h4 {
+        .transfer-info h4 {
             color: var(--color-primary);
             margin-bottom: 0.5rem;
             display: flex;
@@ -482,7 +469,80 @@
             gap: 0.5rem;
         }
         
-        /* ========== SUMMARY ========== */
+        .bank-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .bank-detail {
+            padding: 0.8rem;
+            background: white;
+            border-radius: var(--radius-sm);
+            border: 1px solid #e1e5e9;
+        }
+        
+        .bank-detail .label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+        
+        .bank-detail .value {
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* PAGO MÓVIL MEJORADO */
+        .pago-movil-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .step {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        /* EFECTIVO */
+        .cash-instructions {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .cash-instructions h4 {
+            color: #f57c00;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* ========== RESUMEN MEJORADO ========== */
         .summary {
             background: linear-gradient(135deg, var(--color-light), white);
             border-radius: var(--radius-md);
@@ -510,7 +570,7 @@
             border-top: 2px solid rgba(0,0,0,0.1);
         }
         
-        /* ========== BUTTONS ========== */
+        /* ========== BOTONES ========== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -579,6 +639,56 @@
             background: linear-gradient(135deg, rgba(233, 196, 106, 0.1), white);
             border: 2px solid var(--color-warning);
             color: #8b6c1f;
+        }
+        
+        /* ========== CHECKBOX CONTRIBUCIÓN ========== */
+        .donation-option {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid #e1e5e9;
+            transition: var(--transition);
+        }
+        
+        .donation-option:hover {
+            border-color: var(--color-primary);
+        }
+        
+        .donation-option.selected {
+            border-color: var(--color-success);
+            background: rgba(42, 157, 143, 0.05);
+        }
+        
+        .donation-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .donation-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .donation-title {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        
+        .donation-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 3rem;
         }
         
         /* ========== LOADING ========== */
@@ -659,17 +769,6 @@
         
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            .header-content {
-                flex-wrap: wrap;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-                margin-top: 1rem;
-                width: 100%;
-            }
-            
             .reservas-container {
                 padding: 1.5rem 0;
             }
@@ -683,16 +782,22 @@
                 gap: 0;
             }
             
-            .payment-methods {
-                grid-template-columns: 1fr 1fr;
+            .payment-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .payment-tab {
+                flex: 1;
+                min-width: 140px;
+                justify-content: center;
+            }
+            
+            .bank-details {
+                grid-template-columns: 1fr;
             }
         }
         
         @media (max-width: 480px) {
-            .payment-methods {
-                grid-template-columns: 1fr;
-            }
-            
             .tour-header {
                 flex-direction: column;
                 gap: 0.5rem;
@@ -700,6 +805,10 @@
             
             .tour-price {
                 align-self: flex-start;
+            }
+            
+            .payment-tab {
+                min-width: 120px;
             }
         }
         
@@ -720,27 +829,74 @@
         <div class="container">
             <div class="header-content">
                 <a href="../index.html" class="logo">
-                    <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img">
-                    <h1>Caño <span class="text-orange">Salao</span></h1>
+                    <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
+                    <h1 class="times-font">Caño <span class="text-orange">Salao</span></h1>
                 </a>
-                <nav>
-                    <ul>
-                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
-                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                        <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> Reservas</a></li>
-                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
-                    </ul>
-                </nav>
+
+                <!-- Navegación desktop -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
+                            <li><a href="Empresa.html"><i class="bi bi-building"></i> <span>Empresa</span></a></li>
+                            <li><a href="Historia.html"><i class="bi bi-journal-text"></i> <span>Historia</span></a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
+                            <li><a href="Atracciones.html"><i class="bi bi-star"></i> <span>Atracciones</span></a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
+                            <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> <span>Reservas</span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Sección de autenticación -->
+                <div class="auth-section">
+                    <a href="login.html" class="login-btn">
+                        <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
+                    </a>
+                </div>
+
+                <!-- Botón hamburguesa para móvil -->
+                <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
         </div>
     </header>
 
+    <!-- Menú móvil overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+    <!-- Menú móvil -->
+    <div class="mobile-menu-container" id="mobile-menu-container">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
+                <h2 class="times-font" style="color: white; font-size: 1.2rem;">Caño <span class="text-orange">Salao</span></h2>
+            </div>
+            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Cerrar menú">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-menu-nav">
+            <ul>
+                <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
+                <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
+                <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> Reservas</a></li>
+            </ul>
+        </nav>
+    </div>
+
     <!-- Hero Section -->
     <section class="page-hero">
         <div class="container">
-            <h1>Reservas en Línea</h1>
-            <p class="hero-subtitle">
-                Reserva tu experiencia en Caño Salao de forma rápida y segura. Nuestro sistema de reservas forma parte del proyecto factible de desarrollo turístico sostenible.
+            <h1 class="times-font">Reserva Tu Tour</h1>
+            <p class="times-font hero-subtitle">
+                Reserva tu experiencia única en Caño Salao con nuestro sistema seguro. Forma parte del proyecto factible de desarrollo turístico sostenible.
             </p>
         </div>
     </section>
@@ -749,9 +905,9 @@
     <section class="breadcrumb">
         <div class="container">
             <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
-            <i class="bi bi-chevron-right"></i> 
+            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
             <a href="Servicios.html">Servicios</a>
-            <i class="bi bi-chevron-right"></i> 
+            <i class="bi bi-chevron-right" style="margin: 0 0.5rem; opacity: 0.6;"></i> 
             <span>Reservas</span>
         </div>
     </section>
@@ -767,8 +923,18 @@
                 <div id="tours-container">
                     <div class="loading">
                         <div class="spinner"></div>
-                        <p>Cargando tours...</p>
+                        <p>Cargando tours disponibles...</p>
                     </div>
+                </div>
+                
+                <!-- Información adicional -->
+                <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(13, 59, 102, 0.05); border-radius: var(--radius-md);">
+                    <h4 style="color: var(--color-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="bi bi-info-circle"></i> Información importante
+                    </h4>
+                    <p style="color: #666; font-size: 0.9rem; line-height: 1.5;">
+                        Todos nuestros tours incluyen guía especializado, equipo de seguridad y contribución al fondo de desarrollo comunitario (opcional). Precios por persona.
+                    </p>
                 </div>
             </section>
 
@@ -811,17 +977,17 @@
                     <!-- Reservation Details -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="fecha"><i class="bi bi-calendar"></i> Fecha</label>
+                            <label for="fecha"><i class="bi bi-calendar"></i> Fecha del Tour</label>
                             <input type="text" id="fecha" class="form-control" placeholder="Selecciona fecha" readonly required>
                         </div>
                         <div class="form-group">
-                            <label for="personas"><i class="bi bi-people"></i> Personas</label>
+                            <label for="personas"><i class="bi bi-people"></i> Número de Personas</label>
                             <select id="personas" class="form-control" required>
                                 <option value="1">1 persona</option>
                                 <option value="2">2 personas</option>
                                 <option value="3">3 personas</option>
-                                <option value="4">4 personas</option>
-                                <option value="5" selected>5 personas</option>
+                                <option value="4" selected>4 personas</option>
+                                <option value="5">5 personas</option>
                                 <option value="6">6 personas</option>
                                 <option value="7">7 personas</option>
                                 <option value="8">8 personas</option>
@@ -831,39 +997,100 @@
                         </div>
                     </div>
                     
+                    <!-- Contribución al Proyecto -->
+                    <div class="form-group">
+                        <label><i class="bi bi-heart"></i> Contribución al Proyecto Factible</label>
+                        <div class="donation-option selected" id="donation-option">
+                            <div class="donation-header" onclick="toggleDonation()">
+                                <div class="donation-icon">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <div>
+                                    <div class="donation-title">Incluir contribución al desarrollo comunitario (5%)</div>
+                                    <div class="donation-description">
+                                        Tu contribución será destinada al fondo de desarrollo sostenible de la comunidad Caño Salao.
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="incluir_contribucion" value="true">
+                        </div>
+                    </div>
+                    
                     <!-- Payment Method -->
                     <div class="form-group">
                         <label><i class="bi bi-credit-card"></i> Método de Pago</label>
-                        <div class="payment-methods">
-                            <div class="payment-method selected" data-method="movil">
-                                <div class="payment-icon"><i class="bi bi-phone"></i></div>
-                                <div class="payment-method-name">Pago Móvil</div>
+                        <div class="payment-methods-container">
+                            <div class="payment-tabs">
+                                <div class="payment-tab active" data-method="tarjeta">
+                                    <i class="bi bi-credit-card"></i> Tarjeta
+                                </div>
+                                <div class="payment-tab" data-method="movil">
+                                    <i class="bi bi-phone"></i> Pago Móvil
+                                </div>
+                                <div class="payment-tab" data-method="transferencia">
+                                    <i class="bi bi-bank"></i> Transferencia
+                                </div>
+                                <div class="payment-tab" data-method="efectivo">
+                                    <i class="bi bi-cash"></i> Efectivo
+                                </div>
                             </div>
-                            <div class="payment-method" data-method="tarjeta">
-                                <div class="payment-icon"><i class="bi bi-credit-card"></i></div>
-                                <div class="payment-method-name">Tarjeta</div>
-                            </div>
-                            <div class="payment-method" data-method="efectivo">
-                                <div class="payment-icon"><i class="bi bi-cash"></i></div>
-                                <div class="payment-method-name">Efectivo</div>
-                            </div>
-                            <div class="payment-method" data-method="transferencia">
-                                <div class="payment-icon"><i class="bi bi-bank"></i></div>
-                                <div class="payment-method-name">Transferencia</div>
+                            
+                            <div class="payment-details-container" id="payment-details">
+                                <!-- Tarjeta por defecto -->
+                                <div id="tarjeta-details" class="payment-details-section">
+                                    <div class="form-group">
+                                        <label for="tarjeta_numero"><i class="bi bi-credit-card"></i> Número de Tarjeta</label>
+                                        <div class="card-input-container">
+                                            <input type="text" id="tarjeta_numero" class="form-control" 
+                                                   placeholder="1234 5678 9012 3456" 
+                                                   maxlength="19"
+                                                   pattern="[0-9\s]{13,19}">
+                                            <div class="card-icon" id="card-type-icon">
+                                                <i class="bi bi-credit-card"></i>
+                                            </div>
+                                        </div>
+                                        <div class="card-images">
+                                            <div class="card-image visa">VISA</div>
+                                            <div class="card-image mastercard">MC</div>
+                                            <div class="card-image amex">AMEX</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="tarjeta_vencimiento"><i class="bi bi-calendar"></i> Fecha de Vencimiento</label>
+                                            <input type="text" id="tarjeta_vencimiento" class="form-control" 
+                                                   placeholder="MM/AA"
+                                                   maxlength="5">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="tarjeta_cvv"><i class="bi bi-lock"></i> CVV</label>
+                                            <input type="password" id="tarjeta_cvv" class="form-control" 
+                                                   placeholder="123"
+                                                   maxlength="4">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="tarjeta_nombre"><i class="bi bi-person"></i> Nombre en la Tarjeta</label>
+                                        <input type="text" id="tarjeta_nombre" class="form-control" 
+                                               placeholder="Como aparece en la tarjeta">
+                                    </div>
+                                    
+                                    <div style="background: #f8f9fa; padding: 1rem; border-radius: var(--radius-sm); margin-top: 1rem;">
+                                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                            <i class="bi bi-shield-check"></i> Pago seguro procesado. Datos de prueba:
+                                        </p>
+                                        <div style="font-family: monospace; font-size: 0.85rem; color: #333;">
+                                            <div>VISA: 4242 4242 4242 4242</div>
+                                            <div>Vencimiento: 12/30</div>
+                                            <div>CVV: 123</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <input type="hidden" id="metodo_pago" value="movil">
-                    </div>
-                    
-                    <!-- Payment Details (Dynamic) -->
-                    <div id="payment-details" class="payment-details">
-                        <div class="payment-info">
-                            <h4><i class="bi bi-phone"></i> Datos para Pago Móvil</h4>
-                            <p>Banco: Banco de Venezuela</p>
-                            <p>Teléfono: 0412-555-5555</p>
-                            <p>Cédula: 12.345.678</p>
-                            <p>Referencia: Últimos 3 dígitos de tu teléfono</p>
-                        </div>
+                        <input type="hidden" id="metodo_pago" value="tarjeta">
                     </div>
                     
                     <!-- Summary -->
@@ -872,26 +1099,26 @@
                             <i class="bi bi-receipt"></i> Resumen de la Reserva
                         </h4>
                         <div class="summary-item">
-                            <span>Tour:</span>
+                            <span>Tour seleccionado:</span>
                             <span id="summary-tour">-</span>
                         </div>
                         <div class="summary-item">
-                            <span>Fecha:</span>
+                            <span>Fecha del tour:</span>
                             <span id="summary-fecha">-</span>
                         </div>
                         <div class="summary-item">
-                            <span>Personas:</span>
+                            <span>Número de personas:</span>
                             <span id="summary-personas">-</span>
                         </div>
                         <div class="summary-item">
-                            <span>Precio unitario:</span>
+                            <span>Precio por persona:</span>
                             <span id="summary-precio">$0.00</span>
                         </div>
                         <div class="summary-item">
                             <span>Subtotal:</span>
                             <span id="summary-subtotal">$0.00</span>
                         </div>
-                        <div class="summary-item">
+                        <div class="summary-item" id="contribucion-item">
                             <span>Contribución (5%):</span>
                             <span id="summary-contribucion">$0.00</span>
                         </div>
@@ -906,7 +1133,7 @@
                         <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="terminos" required style="margin-top: 5px;">
                             <span style="color: #666; font-size: 0.9rem;">
-                                Acepto los términos y condiciones. Confirmo que he leído la información sobre la reserva.
+                                He leído y acepto los <a href="#" style="color: var(--color-primary);">términos y condiciones</a> del servicio. Confirmo que toda la información proporcionada es correcta.
                             </span>
                         </label>
                     </div>
@@ -916,6 +1143,13 @@
                         <i class="bi bi-calendar-check"></i> Confirmar Reserva
                     </button>
                 </form>
+                
+                <!-- Botones adicionales -->
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <a href="Servicios.html" class="btn btn-secondary" style="flex: 1;">
+                        <i class="bi bi-arrow-left"></i> Ver Más Servicios
+                    </a>
+                </div>
             </section>
         </div>
     </div>
@@ -925,31 +1159,35 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <h3 class="times-font"><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
                     <p style="opacity: 0.8; line-height: 1.5; font-size: 0.9rem;">
                         Sistema de reservas en línea como parte del proyecto factible de desarrollo turístico sostenible.
                     </p>
                 </div>
                 <div class="footer-column">
-                    <h3><i class="bi bi-link"></i> Enlaces Rápidos</h3>
+                    <h3 class="times-font"><i class="bi bi-link"></i> Enlaces Rápidos</h3>
                     <ul class="footer-links">
                         <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                        <li><a href="Empresa.html"><i class="bi bi-building"></i> Empresa</a></li>
+                        <li><a href="Historia.html"><i class="bi bi-journal-text"></i> Historia</a></li>
                         <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                        <li><a href="reservas.html"><i class="bi bi-calendar-check"></i> Reservas</a></li>
+                        <li><a href="Atracciones.html"><i class="bi bi-star"></i> Atracciones</a></li>
                         <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                        <li><a href="reservas.html"><i class="bi bi-calendar-check"></i> Reservas</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3><i class="bi bi-telephone"></i> Contacto</h3>
+                    <h3 class="times-font"><i class="bi bi-telephone"></i> Contacto</h3>
                     <ul class="footer-links">
-                        <li><a href="tel:+584121234567"><i class="bi bi-phone"></i> +58 412-1234567</a></li>
-                        <li><a href="mailto:info@canosalao.com"><i class="bi bi-envelope"></i> info@canosalao.com</a></li>
-                        <li><a href="#"><i class="bi bi-geo-alt"></i> Caño Salao, Venezuela</a></li>
+                        <li><a href="tel:+584122056558"><i class="bi bi-phone"></i> +58 412-205-6558</a></li>
+                        <li><a href="mailto:info@canosalaotours.com"><i class="bi bi-envelope"></i> info@canosalaotours.com</a></li>
+                        <li><a href="mailto:reservas@canosalaotours.com"><i class="bi bi-calendar-check"></i> reservas@canosalaotours.com</a></li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                <p>© 2025 Sistema de Reservas Caño Salao. Proyecto factible para el desarrollo turístico sostenible.</p>
+                <p><i class="bi bi-c-circle"></i> 2025 Ruta Turística Marítima Caño Salao. Todos los derechos reservados.</p>
+                <p><i class="bi bi-mortarboard"></i> Proyecto desarrollado por estudiantes del PNF en Informática - Universidad Politécnica Territorial "José Antonio Anzoátegui"</p>
             </div>
         </div>
     </footer>
@@ -959,61 +1197,117 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
     <script>
-        // URL base del backend (ajusta según tu configuración)
-        const API_BASE_URL = 'http://localhost:3000/api'; // Cambia esta URL por la de tu backend
+        // ========== CONFIGURACIÓN ==========
+        const API_BASE_URL = 'https://cano-salao.onrender.com/api';
         
         document.addEventListener('DOMContentLoaded', function() {
-            // ========== ESTADO GLOBAL ==========
+            // ========== VARIABLES GLOBALES ==========
             let selectedTour = null;
             let tours = [];
+            let isMobileMenuOpen = false;
+            let includeDonation = true;
             
-            // ========== INICIALIZACIÓN ==========
+            // ========== ELEMENTOS DEL DOM ==========
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const mobileMenuContainer = document.getElementById('mobile-menu-container');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            // ========== FUNCIONES PRINCIPALES ==========
+            
+            // Inicializar aplicación
             function init() {
-                loadToursFromBackend();
+                setupMobileMenu();
+                loadToursFromAPI();
                 initFlatpickr();
                 setupEventListeners();
                 setupPaymentMethods();
-                updateSummary();
+                checkAuthentication();
             }
             
-            // ========== CARGAR TOURS DEL BACKEND ==========
-            async function loadToursFromBackend() {
+            // Configurar menú móvil
+            function setupMobileMenu() {
+                mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+                mobileMenuClose.addEventListener('click', closeMobileMenu);
+                mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+                
+                // Cerrar menú al hacer clic en enlaces
+                const mobileLinks = mobileMenuContainer.querySelectorAll('a');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', closeMobileMenu);
+                });
+                
+                // Cerrar con Escape
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && isMobileMenuOpen) {
+                        closeMobileMenu();
+                    }
+                });
+            }
+            
+            function toggleMobileMenu() {
+                if (!isMobileMenuOpen) {
+                    mobileMenuContainer.classList.add('active');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    isMobileMenuOpen = true;
+                    mobileMenuToggle.innerHTML = '<i class="bi bi-x-lg"></i>';
+                    mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                } else {
+                    closeMobileMenu();
+                }
+            }
+            
+            function closeMobileMenu() {
+                mobileMenuContainer.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                isMobileMenuOpen = false;
+                mobileMenuToggle.innerHTML = '<i class="bi bi-list"></i>';
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+            
+            // Cargar tours desde API
+            async function loadToursFromAPI() {
                 const container = document.getElementById('tours-container');
                 
                 try {
-                    // Intenta cargar tours desde el backend
                     const response = await fetch(`${API_BASE_URL}/tours`);
                     
-                    if (response.ok) {
-                        tours = await response.json();
-                    } else {
-                        // Si falla, usar datos de ejemplo
-                        tours = getDefaultTours();
+                    if (!response.ok) {
+                        throw new Error(`Error ${response.status}`);
+                    }
+                    
+                    tours = await response.json();
+                    
+                    // Si no hay tours, usar datos de respaldo
+                    if (!tours || tours.length === 0) {
+                        tours = getFallbackTours();
                     }
                     
                     renderTours();
                     
-                    // Seleccionar el primer tour por defecto
+                    // Seleccionar primer tour si existe
                     if (tours.length > 0) {
                         selectTour(tours[0]);
                     }
                     
                 } catch (error) {
                     console.error('Error cargando tours:', error);
-                    // Usar datos de ejemplo si hay error
-                    tours = getDefaultTours();
+                    showAlert('warning', 'Usando datos de respaldo mientras se restablece la conexión');
+                    
+                    // Usar datos de respaldo
+                    tours = getFallbackTours();
                     renderTours();
                     
                     if (tours.length > 0) {
                         selectTour(tours[0]);
                     }
-                    
-                    showAlert('warning', 'Usando datos de ejemplo. No se pudo conectar al servidor.');
                 }
             }
             
-            // ========== DATOS POR DEFECTO ==========
-            function getDefaultTours() {
+            // Tours de respaldo
+            function getFallbackTours() {
                 return [
                     {
                         id: 1,
@@ -1027,7 +1321,7 @@
                     {
                         id: 2,
                         nombre: 'Tour Completo con Avistamiento',
-                        descripcion: 'Experiencia completa con avistamiento de aves y gastonomía local incluida.',
+                        descripcion: 'Experiencia completa con avistamiento de aves y gastronomía local incluida.',
                         precio: 45.00,
                         duracion: '4 horas',
                         capacidad: 'Máx. 8 personas',
@@ -1041,29 +1335,28 @@
                         duracion: '6 horas',
                         capacidad: 'Máx. 6 personas',
                         popular: false
+                    },
+                    {
+                        id: 4,
+                        nombre: 'Tour Fotográfico Especial',
+                        descripcion: 'Recorrido especializado para fotógrafos con acceso a áreas exclusivas.',
+                        precio: 55.00,
+                        duracion: '3 horas',
+                        capacidad: 'Máx. 6 personas',
+                        popular: true
                     }
                 ];
             }
             
-            // ========== RENDERIZAR TOURS ==========
+            // Renderizar tours
             function renderTours() {
                 const container = document.getElementById('tours-container');
                 container.innerHTML = '';
                 
-                if (tours.length === 0) {
-                    container.innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            No hay tours disponibles en este momento.
-                        </div>
-                    `;
-                    return;
-                }
-                
-                tours.forEach(tour => {
+                tours.forEach((tour, index) => {
                     const tourCard = document.createElement('div');
                     tourCard.className = 'tour-card';
-                    tourCard.dataset.id = tour.id;
+                    tourCard.dataset.id = tour.id || index;
                     
                     tourCard.innerHTML = `
                         <div class="tour-header">
@@ -1075,9 +1368,9 @@
                         </div>
                         <p class="tour-desc">${tour.descripcion}</p>
                         <div class="tour-details">
-                            <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion}</span>
-                            <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad}</span>
-                            <span class="tour-detail"><i class="bi bi-star"></i> Incluye guía</span>
+                            <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion || '2-4 horas'}</span>
+                            <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad || 'Grupo pequeño'}</span>
+                            <span class="tour-detail"><i class="bi bi-star"></i> Guía incluido</span>
                         </div>
                     `;
                     
@@ -1086,7 +1379,7 @@
                 });
             }
             
-            // ========== SELECCIONAR TOUR ==========
+            // Seleccionar tour
             function selectTour(tour) {
                 selectedTour = tour;
                 
@@ -1108,31 +1401,27 @@
                 
                 const details = document.getElementById('selected-tour-details');
                 details.innerHTML = `
-                    <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion}</span>
-                    <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad}</span>
+                    <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion || '2-4 horas'}</span>
+                    <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad || 'Grupo pequeño'}</span>
                     <span class="tour-detail"><i class="bi bi-arrow-up-right"></i> Guía incluido</span>
                 `;
                 
                 // Actualizar resumen
-                document.getElementById('summary-tour').textContent = tour.nombre;
-                document.getElementById('summary-precio').textContent = `$${tour.precio.toFixed(2)}`;
                 updateSummary();
             }
             
-            // ========== INICIALIZAR CALENDARIO ==========
+            // Inicializar calendario
             function initFlatpickr() {
                 flatpickr('#fecha', {
                     locale: 'es',
                     minDate: 'today',
                     dateFormat: 'd/m/Y',
-                    defaultDate: new Date(Date.now() + 86400000 * 3), // 3 días desde hoy
-                    onChange: function(selectedDates, dateStr) {
-                        updateSummary();
-                    }
+                    defaultDate: new Date(Date.now() + 86400000 * 3),
+                    onChange: updateSummary
                 });
             }
             
-            // ========== ACTUALIZAR RESUMEN ==========
+            // Actualizar resumen
             function updateSummary() {
                 if (!selectedTour) return;
                 
@@ -1140,91 +1429,413 @@
                 const personas = parseInt(document.getElementById('personas').value) || 1;
                 const precioUnitario = selectedTour.precio;
                 const subtotal = precioUnitario * personas;
-                const contribucion = subtotal * 0.05; // 5% para el proyecto
-                const total = subtotal + contribucion;
+                let total = subtotal;
                 
+                // Agregar contribución si está seleccionada
+                if (includeDonation) {
+                    const contribucion = subtotal * 0.05;
+                    total += contribucion;
+                    
+                    document.getElementById('contribucion-item').style.display = 'flex';
+                    document.getElementById('summary-contribucion').textContent = `$${contribucion.toFixed(2)}`;
+                } else {
+                    document.getElementById('contribucion-item').style.display = 'none';
+                    document.getElementById('summary-contribucion').textContent = '$0.00';
+                }
+                
+                document.getElementById('summary-tour').textContent = selectedTour.nombre;
                 document.getElementById('summary-fecha').textContent = fecha || '-';
                 document.getElementById('summary-personas').textContent = personas;
+                document.getElementById('summary-precio').textContent = `$${precioUnitario.toFixed(2)}`;
                 document.getElementById('summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-                document.getElementById('summary-contribucion').textContent = `$${contribucion.toFixed(2)}`;
                 document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
             }
             
-            // ========== CONFIGURAR MÉTODOS DE PAGO ==========
+            // Configurar métodos de pago
             function setupPaymentMethods() {
-                const methods = document.querySelectorAll('.payment-method');
-                methods.forEach(method => {
-                    method.addEventListener('click', function() {
-                        // Remover selección anterior
-                        methods.forEach(m => m.classList.remove('selected'));
+                const tabs = document.querySelectorAll('.payment-tab');
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const method = this.dataset.method;
                         
-                        // Agregar selección nueva
-                        this.classList.add('selected');
+                        // Actualizar tabs
+                        tabs.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
                         
-                        const metodo = this.dataset.method;
-                        document.getElementById('metodo_pago').value = metodo;
+                        // Actualizar método de pago oculto
+                        document.getElementById('metodo_pago').value = method;
                         
-                        // Actualizar detalles del pago
-                        updatePaymentDetails(metodo);
+                        // Mostrar detalles del método seleccionado
+                        showPaymentDetails(method);
                     });
                 });
             }
             
-            // ========== ACTUALIZAR DETALLES DE PAGO ==========
-            function updatePaymentDetails(metodo) {
-                const details = document.getElementById('payment-details');
+            // Mostrar detalles del método de pago
+            function showPaymentDetails(method) {
+                const container = document.getElementById('payment-details');
                 
-                let paymentInfo = '';
-                let icon = '';
+                let content = '';
                 
-                switch(metodo) {
-                    case 'movil':
-                        icon = 'bi-phone';
-                        paymentInfo = `
-                            <h4><i class="bi ${icon}"></i> Datos para Pago Móvil</h4>
-                            <p>Banco: Banco de Venezuela</p>
-                            <p>Teléfono: 0412-555-5555</p>
-                            <p>Cédula: 12.345.678</p>
-                            <p>Referencia: Últimos 3 dígitos de tu teléfono</p>
-                        `;
-                        break;
+                switch(method) {
                     case 'tarjeta':
-                        icon = 'bi-credit-card';
-                        paymentInfo = `
-                            <h4><i class="bi ${icon}"></i> Datos para Tarjeta</h4>
-                            <p>Puedes pagar con cualquier tarjeta Visa o Mastercard</p>
-                            <p>Procesado de forma segura con nuestro sistema de pagos</p>
+                        content = `
+                            <div id="tarjeta-details" class="payment-details-section">
+                                <div class="form-group">
+                                    <label for="tarjeta_numero"><i class="bi bi-credit-card"></i> Número de Tarjeta</label>
+                                    <div class="card-input-container">
+                                        <input type="text" id="tarjeta_numero" class="form-control" 
+                                               placeholder="1234 5678 9012 3456" 
+                                               maxlength="19"
+                                               pattern="[0-9\s]{13,19}">
+                                        <div class="card-icon" id="card-type-icon">
+                                            <i class="bi bi-credit-card"></i>
+                                        </div>
+                                    </div>
+                                    <div class="card-images">
+                                        <div class="card-image visa">VISA</div>
+                                        <div class="card-image mastercard">MC</div>
+                                        <div class="card-image amex">AMEX</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="tarjeta_vencimiento"><i class="bi bi-calendar"></i> Fecha de Vencimiento</label>
+                                        <input type="text" id="tarjeta_vencimiento" class="form-control" 
+                                               placeholder="MM/AA"
+                                               maxlength="5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tarjeta_cvv"><i class="bi bi-lock"></i> CVV</label>
+                                        <input type="password" id="tarjeta_cvv" class="form-control" 
+                                               placeholder="123"
+                                               maxlength="4">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="tarjeta_nombre"><i class="bi bi-person"></i> Nombre en la Tarjeta</label>
+                                    <input type="text" id="tarjeta_nombre" class="form-control" 
+                                           placeholder="Como aparece en la tarjeta">
+                                </div>
+                                
+                                <div style="background: #f8f9fa; padding: 1rem; border-radius: var(--radius-sm); margin-top: 1rem;">
+                                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                        <i class="bi bi-shield-check"></i> Pago seguro procesado. Datos de prueba:
+                                    </p>
+                                    <div style="font-family: monospace; font-size: 0.85rem; color: #333;">
+                                        <div>VISA: 4242 4242 4242 4242</div>
+                                        <div>Vencimiento: 12/30</div>
+                                        <div>CVV: 123</div>
+                                    </div>
+                                </div>
+                            </div>
                         `;
                         break;
-                    case 'efectivo':
-                        icon = 'bi-cash';
-                        paymentInfo = `
-                            <h4><i class="bi ${icon}"></i> Pago en Efectivo</h4>
-                            <p>Paga en efectivo al llegar al punto de encuentro</p>
-                            <p>Trae el monto exacto indicado en el resumen</p>
-                            <p>Horario: 8:00 AM - 5:00 PM</p>
+                        
+                    case 'movil':
+                        content = `
+                            <div id="movil-details" class="payment-details-section">
+                                <div class="pago-movil-steps">
+                                    <div class="step">
+                                        <div class="step-number">1</div>
+                                        <div>
+                                            <strong>Configura tu Pago Móvil</strong>
+                                            <p>Agrega nuestro número como beneficiario:</p>
+                                            <div style="font-family: monospace; background: white; padding: 0.5rem; border-radius: var(--radius-sm); margin-top: 0.5rem;">
+                                                Teléfono: 0412-205-6558<br>
+                                                Cédula: 12.345.678<br>
+                                                Banco: Banco de Venezuela
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="step">
+                                        <div class="step-number">2</div>
+                                        <div>
+                                            <strong>Realiza la transferencia</strong>
+                                            <p>Envía el monto exacto indicado en el resumen</p>
+                                        </div>
+                                    </div>
+                                    <div class="step">
+                                        <div class="step-number">3</div>
+                                        <div>
+                                            <strong>Envía el comprobante</strong>
+                                            <p>Envía el número de referencia a nuestro WhatsApp: +58 412-205-6558</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         `;
                         break;
+                        
                     case 'transferencia':
-                        icon = 'bi-bank';
-                        paymentInfo = `
-                            <h4><i class="bi ${icon}"></i> Transferencia Bancaria</h4>
-                            <p>Banco: Banco de Venezuela</p>
-                            <p>Cuenta: 0102-1234-5678-9012</p>
-                            <p>Titular: Proyecto Caño Salao</p>
-                            <p>RIF: J-12345678-9</p>
+                        content = `
+                            <div id="transferencia-details" class="payment-details-section">
+                                <div class="transfer-info">
+                                    <h4><i class="bi bi-bank"></i> Datos Bancarios</h4>
+                                    <p>Realiza una transferencia a nuestra cuenta y envía el comprobante a nuestro WhatsApp.</p>
+                                </div>
+                                
+                                <div class="bank-details">
+                                    <div class="bank-detail">
+                                        <div class="label">Banco</div>
+                                        <div class="value">Banco de Venezuela</div>
+                                    </div>
+                                    <div class="bank-detail">
+                                        <div class="label">Tipo de Cuenta</div>
+                                        <div class="value">Corriente</div>
+                                    </div>
+                                    <div class="bank-detail">
+                                        <div class="label">Número de Cuenta</div>
+                                        <div class="value">0102-1234-5678-9012</div>
+                                    </div>
+                                    <div class="bank-detail">
+                                        <div class="label">Titular</div>
+                                        <div class="value">Proyecto Caño Salao</div>
+                                    </div>
+                                    <div class="bank-detail">
+                                        <div class="label">RIF</div>
+                                        <div class="value">J-12345678-9</div>
+                                    </div>
+                                    <div class="bank-detail">
+                                        <div class="label">Correo para comprobantes</div>
+                                        <div class="value">reservas@canosalaotours.com</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                        
+                    case 'efectivo':
+                        content = `
+                            <div id="efectivo-details" class="payment-details-section">
+                                <div class="cash-instructions">
+                                    <h4><i class="bi bi-cash-coin"></i> Instrucciones para pago en efectivo</h4>
+                                    <p><strong>Recomendaciones:</strong></p>
+                                    <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
+                                        <li>Trae el monto exacto indicado en el resumen</li>
+                                        <li>Evita billetes rotos o muy usados</li>
+                                        <li>Paga al momento de llegar al punto de encuentro</li>
+                                    </ul>
+                                    <p style="margin-top: 0.5rem;"><strong>Horario para pagos:</strong> 8:00 AM - 5:00 PM</p>
+                                    <p style="margin-top: 0.5rem;"><strong>Punto de encuentro:</strong> Muelle principal de Caño Salao</p>
+                                </div>
+                                
+                                <div class="form-group mt-2">
+                                    <label for="efectivo_observaciones"><i class="bi bi-chat-text"></i> Observaciones adicionales</label>
+                                    <textarea id="efectivo_observaciones" class="form-control" rows="3" 
+                                              placeholder="Ej: Llegaré 15 minutos antes, necesito factura, etc."></textarea>
+                                </div>
+                            </div>
                         `;
                         break;
                 }
                 
-                details.innerHTML = `
-                    <div class="payment-info">
-                        ${paymentInfo}
-                    </div>
-                `;
+                container.innerHTML = content;
+                
+                // Configurar eventos para tarjeta
+                if (method === 'tarjeta') {
+                    setupCardInputs();
+                }
             }
             
-            // ========== MOSTRAR ALERTAS ==========
+            // Configurar inputs de tarjeta
+            function setupCardInputs() {
+                const cardNumberInput = document.getElementById('tarjeta_numero');
+                const cardExpiryInput = document.getElementById('tarjeta_vencimiento');
+                const cardCvvInput = document.getElementById('tarjeta_cvv');
+                
+                if (cardNumberInput) {
+                    // Formatear número de tarjeta
+                    cardNumberInput.addEventListener('input', function(e) {
+                        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                        let matches = value.match(/\d{4,16}/g);
+                        let match = matches && matches[0] || '';
+                        let parts = [];
+                        
+                        for (let i = 0; i < match.length; i += 4) {
+                            parts.push(match.substring(i, i + 4));
+                        }
+                        
+                        if (parts.length) {
+                            e.target.value = parts.join(' ');
+                        } else {
+                            e.target.value = value;
+                        }
+                        
+                        // Detectar tipo de tarjeta
+                        detectCardType(value);
+                    });
+                    
+                    // Pre-cargar datos de prueba
+                    cardNumberInput.value = '4242 4242 4242 4242';
+                }
+                
+                if (cardExpiryInput) {
+                    // Formatear fecha de vencimiento
+                    cardExpiryInput.addEventListener('input', function(e) {
+                        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                        
+                        if (value.length >= 2) {
+                            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                        }
+                        
+                        e.target.value = value;
+                    });
+                    
+                    // Pre-cargar datos de prueba
+                    cardExpiryInput.value = '12/30';
+                }
+                
+                if (cardCvvInput) {
+                    // Pre-cargar datos de prueba
+                    cardCvvInput.value = '123';
+                }
+            }
+            
+            // Detectar tipo de tarjeta
+            function detectCardType(cardNumber) {
+                const icon = document.getElementById('card-type-icon');
+                
+                if (!icon) return;
+                
+                // Limpiar clases anteriores
+                icon.className = 'card-icon';
+                
+                // Detectar tipo
+                if (/^4/.test(cardNumber)) {
+                    icon.innerHTML = '<i class="bi bi-credit-card card-visa"></i>';
+                    icon.classList.add('card-visa');
+                } else if (/^5[1-5]/.test(cardNumber)) {
+                    icon.innerHTML = '<i class="bi bi-credit-card card-mastercard"></i>';
+                    icon.classList.add('card-mastercard');
+                } else if (/^3[47]/.test(cardNumber)) {
+                    icon.innerHTML = '<i class="bi bi-credit-card card-amex"></i>';
+                    icon.classList.add('card-amex');
+                } else {
+                    icon.innerHTML = '<i class="bi bi-credit-card"></i>';
+                }
+            }
+            
+            // Alternar contribución
+            window.toggleDonation = function() {
+                const donationOption = document.getElementById('donation-option');
+                const donationIcon = donationOption.querySelector('.donation-icon');
+                const donationInput = document.getElementById('incluir_contribucion');
+                
+                includeDonation = !includeDonation;
+                
+                if (includeDonation) {
+                    donationOption.classList.add('selected');
+                    donationIcon.innerHTML = '<i class="bi bi-check-lg"></i>';
+                    donationInput.value = 'true';
+                } else {
+                    donationOption.classList.remove('selected');
+                    donationIcon.innerHTML = '<i class="bi bi-plus"></i>';
+                    donationInput.value = 'false';
+                }
+                
+                updateSummary();
+            };
+            
+            // Enviar reserva
+            async function submitReservation(formData) {
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                
+                try {
+                    // Deshabilitar botón
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; margin-right: 10px;"></div> Procesando...';
+                    
+                    // Preparar datos
+                    const reservationData = {
+                        ...formData,
+                        tour_id: selectedTour.id || selectedTour.nombre,
+                        precio_unitario: selectedTour.precio,
+                        total: parseFloat(formData.total.replace('$', '')),
+                        incluye_contribucion: includeDonation,
+                        fecha_reserva: new Date().toISOString(),
+                        estado: 'confirmada'
+                    };
+                    
+                    // Enviar al backend
+                    const response = await fetch(`${API_BASE_URL}/reservas`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(reservationData)
+                    });
+                    
+                    let result;
+                    
+                    if (response.ok) {
+                        result = await response.json();
+                        showAlert('success', `¡Reserva confirmada! Código: ${result.codigo_reserva || 'CS-' + Date.now().toString().slice(-6)}`);
+                        
+                        // Resetear formulario
+                        resetForm();
+                        
+                    } else {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error enviando reserva:', error);
+                    
+                    // Modo offline - guardar en localStorage
+                    const reservationCode = `CS-OFFLINE-${Date.now().toString().slice(-8)}`;
+                    
+                    const offlineReservation = {
+                        id: reservationCode,
+                        ...formData,
+                        tour_id: selectedTour.id || selectedTour.nombre,
+                        fecha_reserva: new Date().toISOString(),
+                        sincronizado: false
+                    };
+                    
+                    // Guardar en localStorage
+                    const existing = JSON.parse(localStorage.getItem('cano_salao_reservas_offline') || '[]');
+                    existing.push(offlineReservation);
+                    localStorage.setItem('cano_salao_reservas_offline', JSON.stringify(existing));
+                    
+                    showAlert('warning', `¡Reserva guardada localmente! Código: ${reservationCode}. Se sincronizará cuando se restaure la conexión.`);
+                    
+                    // Resetear formulario
+                    resetForm();
+                    
+                } finally {
+                    // Rehabilitar botón
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            }
+            
+            // Resetear formulario
+            function resetForm() {
+                document.getElementById('reservaForm').reset();
+                
+                if (tours.length > 0) {
+                    selectTour(tours[0]);
+                }
+                
+                // Resetear fecha
+                flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
+                
+                // Resetear contribución
+                includeDonation = true;
+                const donationOption = document.getElementById('donation-option');
+                const donationIcon = donationOption.querySelector('.donation-icon');
+                donationOption.classList.add('selected');
+                donationIcon.innerHTML = '<i class="bi bi-check-lg"></i>';
+                document.getElementById('incluir_contribucion').value = 'true';
+                
+                updateSummary();
+            }
+            
+            // Mostrar alerta
             function showAlert(type, message) {
                 const container = document.getElementById('alerts-container');
                 
@@ -1252,94 +1863,9 @@
                 }
             }
             
-            // ========== ENVIAR RESERVA AL BACKEND ==========
-            async function submitReservation(formData) {
-                const submitBtn = document.getElementById('submitBtn');
-                const originalText = submitBtn.innerHTML;
-                
-                try {
-                    // Deshabilitar botón y mostrar loading
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; margin-right: 10px;"></div> Procesando...';
-                    
-                    // Agregar tour_id a los datos
-                    const reservationData = {
-                        ...formData,
-                        tour_id: selectedTour.id,
-                        total: parseFloat(formData.total.replace('$', ''))
-                    };
-                    
-                    // Enviar al backend
-                    const response = await fetch(`${API_BASE_URL}/reservas`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(reservationData)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('Error en la respuesta del servidor');
-                    }
-                    
-                    const result = await response.json();
-                    
-                    // Mostrar éxito
-                    showAlert('success', `¡Reserva confirmada! Código: ${result.codigo_reserva || 'N/A'}`);
-                    
-                    // Resetear formulario
-                    document.getElementById('reservaForm').reset();
-                    
-                    // Resetear selección de tour
-                    if (tours.length > 0) {
-                        selectTour(tours[0]);
-                    }
-                    
-                    // Resetear flatpickr
-                    flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
-                    
-                    updateSummary();
-                    
-                } catch (error) {
-                    console.error('Error enviando reserva:', error);
-                    
-                    // Simular éxito para demostración si el backend falla
-                    const reservationCode = `CS-${Date.now().toString().slice(-8)}`;
-                    
-                    // Guardar en localStorage como fallback
-                    const fallbackReservation = {
-                        id: reservationCode,
-                        ...formData,
-                        tour_id: selectedTour.id,
-                        fecha_reserva: new Date().toISOString()
-                    };
-                    
-                    const existing = JSON.parse(localStorage.getItem('cano_salao_reservas_fallback') || '[]');
-                    existing.push(fallbackReservation);
-                    localStorage.setItem('cano_salao_reservas_fallback', JSON.stringify(existing));
-                    
-                    showAlert('warning', `¡Reserva confirmada localmente! Código: ${reservationCode} (Modo offline)`);
-                    
-                    // Resetear formulario
-                    document.getElementById('reservaForm').reset();
-                    
-                    if (tours.length > 0) {
-                        selectTour(tours[0]);
-                    }
-                    
-                    flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
-                    updateSummary();
-                    
-                } finally {
-                    // Rehabilitar botón
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
-                }
-            }
-            
-            // ========== ESCUCHADORES DE EVENTOS ==========
+            // Configurar event listeners
             function setupEventListeners() {
-                // Actualizar resumen cuando cambian los datos
+                // Actualizar resumen
                 document.getElementById('personas').addEventListener('change', updateSummary);
                 document.getElementById('fecha').addEventListener('change', updateSummary);
                 
@@ -1365,11 +1891,41 @@
                         fecha: document.getElementById('fecha').value,
                         personas: document.getElementById('personas').value,
                         metodo_pago: document.getElementById('metodo_pago').value,
-                        total: document.getElementById('summary-total').textContent
+                        total: document.getElementById('summary-total').textContent,
+                        incluye_contribucion: includeDonation
                     };
                     
                     await submitReservation(formData);
                 });
+                
+                // Cargar datos de prueba automáticamente
+                setTimeout(() => {
+                    if (!localStorage.getItem('demo_data_loaded')) {
+                        document.getElementById('nombre').value = 'María González';
+                        document.getElementById('email').value = 'maria.gonzalez@email.com';
+                        document.getElementById('telefono').value = '0412-1234567';
+                        localStorage.setItem('demo_data_loaded', 'true');
+                    }
+                }, 1000);
+            }
+            
+            // Verificar autenticación
+            function checkAuthentication() {
+                const token = localStorage.getItem('cano_salao_token');
+                const user = localStorage.getItem('cano_salao_user');
+                
+                if (token && user) {
+                    try {
+                        const userData = JSON.parse(user);
+                        const loginBtn = document.querySelector('.login-btn');
+                        if (loginBtn) {
+                            loginBtn.innerHTML = `<i class="bi bi-person-check"></i> <span class="login-text">${userData.nombre || 'Mi Cuenta'}</span>`;
+                            loginBtn.href = "usuario.html";
+                        }
+                    } catch (error) {
+                        console.error('Error parsing user data:', error);
+                    }
+                }
             }
             
             // ========== INICIAR APLICACIÓN ==========
