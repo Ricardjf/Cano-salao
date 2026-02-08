@@ -801,6 +801,9 @@
                     if (tour.precio > 40) priceColor = '#9C27B0'; // Morado para tours caros
                     if (tour.precio < 30) priceColor = '#4CAF50'; // Verde para tours económicos
                     
+                    // Usar ID del tour o generar uno si no existe
+                    const tourId = tour.id || index + 1;
+                    
                     card.innerHTML = `
                         <div class="service-card-header">
                             <img src="${tour.imagen_url || getDefaultTourImage(index)}" 
@@ -826,7 +829,7 @@
                                 <li>${tour.capacidad ? `Capacidad: ${tour.capacidad} personas` : 'Grupos pequeños'}</li>
                                 <li>Contribución al fondo comunitario</li>
                             </ul>
-                            <a href="reservas.html?tour=${encodeURIComponent(tour.id)}" 
+                            <a href="reservas.html?tour=${tourId}" 
                                class="service-card-btn ${isFeatured ? 'accent' : ''}"
                                style="${isFeatured ? 'background: var(--color-accent);' : ''}">
                                 <i class="bi bi-calendar-plus"></i> Reservar Este Tour
