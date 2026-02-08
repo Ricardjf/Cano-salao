@@ -28,7 +28,76 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
-        /* Estilos específicos para Reservas */
+        /* ========== VARIABLES CSS OPTIMIZADAS ========== */
+        :root {
+            /* Paleta principal simplificada */
+            --color-primary: #0d3b66;
+            --color-accent: #e62b7e;
+            --color-light: #f8f9fa;
+            --color-dark: #212529;
+            --color-orange: #FF8C42;
+            
+            /* Utilidades optimizadas */
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --transition-fast: all 0.2s ease;
+            --transition-normal: all 0.3s ease;
+        }
+        
+        /* ========== RESET Y BASE OPTIMIZADOS ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            -webkit-touch-callout: none;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--color-dark);
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            position: relative;
+        }
+
+        /* Clase para fuente Times New Roman - cargada progresivamente */
+        .times-font {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .text-orange {
+            color: var(--color-orange);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ========== ESTILOS ESPECÍFICOS PARA RESERVAS ========== */
         .page-hero {
             min-height: 60vh;
             display: flex;
@@ -655,6 +724,7 @@
             border-top: 2px solid var(--color-light);
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 100;
+            transition: transform 0.3s ease;
         }
         
         .sticky-banner-content {
@@ -752,6 +822,384 @@
             
             .tour-price {
                 align-self: flex-start;
+            }
+        }
+        
+        /* ========== HEADER OPTIMIZADO ========== */
+        header {
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            padding: 0.5rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 50%;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* Navegación desktop */
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            color: rgba(255,255,255,0.95);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.4rem 0.6rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: var(--transition-fast);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        nav ul li a:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        nav ul li a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Sección de autenticación */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Botón hamburguesa */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: var(--transition-fast);
+            flex-shrink: 0;
+            z-index: 1002;
+            min-width: 44px;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========== MENÚ MÓVIL ========== */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .mobile-menu-container {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .mobile-menu-container.active {
+            right: 0;
+        }
+
+        .mobile-menu-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-nav {
+            padding: 1rem 0;
+        }
+
+        .mobile-menu-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-menu-nav li {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+
+        .mobile-menu-nav li:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-menu-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s ease;
+            min-height: 44px;
+            width: 100%;
+        }
+
+        .mobile-menu-nav a.active {
+            background: rgba(255,255,255,0.15);
+            font-weight: 600;
+        }
+
+        .mobile-menu-nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* ========== BOTONES ========== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: 1rem;
+            min-height: 44px;
+        }
+
+        .btn:hover {
+            background: #d81b60;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: linear-gradient(135deg, #212529 0%, #121416 100%);
+            color: white;
+            padding: 2.5rem 0 1rem;
+            position: relative;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            color: #a8d8ea;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: var(--transition-fast);
+            padding: 0.3rem 0;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a:hover {
+            color: #a8d8ea;
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition-normal);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+
+        .social-icon:hover {
+            background: #2a9d8f;
+            transform: translateY(-3px) scale(1.05);
+            border-color: transparent;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex !important;
+            }
+            
+            .nav-center {
+                display: none !important;
+            }
+            
+            .header-content {
+                flex-wrap: nowrap;
+            }
+            
+            .logo {
+                flex: 1;
+            }
+            
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+            
+            .auth-section {
+                order: 3;
             }
         }
     </style>
@@ -888,13 +1336,13 @@
                 <!-- Información del Tour Seleccionado -->
                 <div id="selected-tour-info" class="selected-tour-info">
                     <div class="selected-tour-header">
-                        <h3 class="selected-tour-title" id="selected-tour-name">Tour Completo</h3>
-                        <div class="selected-tour-price" id="selected-tour-price">$45.00</div>
+                        <h3 class="selected-tour-title" id="selected-tour-name">Tour Básico por los Manglares</h3>
+                        <div class="selected-tour-price" id="selected-tour-price">$25.00</div>
                     </div>
-                    <p id="selected-tour-description">Experiencia completa que incluye manglares, ruinas históricas y gastronomía local.</p>
+                    <p id="selected-tour-description">Recorrido introductorio perfecto para conocer Caño Salao y sus manglares.</p>
                     <div class="tour-details">
-                        <span class="tour-detail"><i class="bi bi-clock"></i> <span id="selected-tour-duration">4 horas</span></span>
-                        <span class="tour-detail"><i class="bi bi-people"></i> <span id="selected-tour-capacity">Máx. 12 personas</span></span>
+                        <span class="tour-detail"><i class="bi bi-clock"></i> <span id="selected-tour-duration">2 horas</span></span>
+                        <span class="tour-detail"><i class="bi bi-people"></i> <span id="selected-tour-capacity">Máx. 10 personas</span></span>
                     </div>
                 </div>
                 
@@ -1038,7 +1486,7 @@
                         
                         <div class="resumen-item">
                             <span>Tour seleccionado:</span>
-                            <span id="resumen-tour">-</span>
+                            <span id="resumen-tour">Tour Básico por los Manglares</span>
                         </div>
                         
                         <div class="resumen-item">
@@ -1048,27 +1496,27 @@
                         
                         <div class="resumen-item">
                             <span>Número de personas:</span>
-                            <span id="resumen-personas">-</span>
+                            <span id="resumen-personas">1</span>
                         </div>
                         
                         <div class="resumen-item">
                             <span>Precio por persona:</span>
-                            <span id="resumen-precio-unitario">$0.00</span>
+                            <span id="resumen-precio-unitario">$25.00</span>
                         </div>
                         
                         <div class="resumen-item">
                             <span>Subtotal:</span>
-                            <span id="resumen-subtotal">$0.00</span>
+                            <span id="resumen-subtotal">$25.00</span>
                         </div>
                         
                         <div class="resumen-item">
                             <span>Contribución comunitaria (5%):</span>
-                            <span id="resumen-contribucion">$0.00</span>
+                            <span id="resumen-contribucion">$1.25</span>
                         </div>
                         
                         <div class="resumen-total">
                             <span>Total a pagar:</span>
-                            <span id="resumen-total">$0.00</span>
+                            <span id="resumen-total">$26.25</span>
                         </div>
                     </div>
                     
@@ -1211,8 +1659,8 @@
         <div class="container">
             <div class="sticky-banner-content">
                 <div class="sticky-tour-info">
-                    <div class="sticky-tour-name" id="sticky-tour-name">Selecciona un tour</div>
-                    <div class="sticky-tour-price" id="sticky-tour-price">$0.00</div>
+                    <div class="sticky-tour-name" id="sticky-tour-name">Tour Básico por los Manglares</div>
+                    <div class="sticky-tour-price" id="sticky-tour-price">$26.25 total</div>
                 </div>
                 <button id="scroll-to-form" class="btn" style="background: var(--color-accent);">
                     <i class="bi bi-arrow-up"></i> Completar Reserva
@@ -1314,8 +1762,11 @@
                     tours = await response.json();
                     renderTours();
                     
-                    // Seleccionar el primer tour por defecto si hay tours disponibles
-                    if (tours.length > 0) {
+                    // Verificar si hay un tour en la URL
+                    selectTourFromURL();
+                    
+                    // Si no hay tour en URL, seleccionar el primero
+                    if (!selectedTour && tours.length > 0) {
                         selectTour(tours[0]);
                     }
                     
@@ -1339,12 +1790,33 @@
                 }
             }
             
+            // Función para detectar tour desde URL
+            function selectTourFromURL() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const tourId = urlParams.get('tour');
+                
+                if (tourId && tours.length > 0) {
+                    const tour = tours.find(t => t.id == tourId || t.id == tourId);
+                    if (tour) {
+                        selectTour(tour);
+                        
+                        // Desplazar al formulario de reserva
+                        setTimeout(() => {
+                            document.querySelector('.reserva-form-section').scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'start' 
+                            });
+                        }, 500);
+                    }
+                }
+            }
+            
             // Función para cargar tours de respaldo
             function loadFallbackTours() {
                 tours = [
                     {
                         id: 1,
-                        nombre: 'Tour Básico de Manglares',
+                        nombre: 'Tour Básico por los Manglares',
                         descripcion: 'Recorrido introductorio por los manglares de Caño Salao, ideal para quienes visitan por primera vez.',
                         precio: 25.00,
                         duracion: '2 horas',
@@ -1373,8 +1845,11 @@
                 
                 renderTours();
                 
-                // Seleccionar el primer tour
-                if (tours.length > 0) {
+                // Verificar si hay un tour en la URL
+                selectTourFromURL();
+                
+                // Si no hay tour en URL, seleccionar el primero
+                if (!selectedTour && tours.length > 0) {
                     selectTour(tours[0]);
                 }
                 
@@ -1450,13 +1925,12 @@
                 
                 // Actualizar banner sticky
                 document.getElementById('sticky-tour-name').textContent = tour.nombre;
-                document.getElementById('sticky-tour-price').textContent = `$${tour.precio.toFixed(2)}`;
-                
-                // Mostrar banner sticky
-                stickyBanner.classList.remove('hidden');
                 
                 // Actualizar resumen de pago
                 updateResumenPago();
+                
+                // Mostrar banner sticky
+                stickyBanner.classList.remove('hidden');
             }
             
             // Función para actualizar el resumen de pago
