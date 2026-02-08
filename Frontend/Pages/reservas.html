@@ -12,7 +12,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <style>
-        /* RESET SIMPLE */
+        /* ========== VARIABLES Y RESET ========== */
+        :root {
+            --color-primary: #0d3b66;
+            --color-secondary: #1a7fb8;
+            --color-accent: #e62b7e;
+            --color-light: #f8f9fa;
+            --color-dark: #212529;
+            --color-orange: #FF8C42;
+            --color-success: #2a9d8f;
+            --color-warning: #e9c46a;
+            --color-danger: #e63946;
+            
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.3s ease;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -20,20 +40,11 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-        }
-        
-        /* HEADER SIMPLE */
-        header {
-            background: linear-gradient(to right, #1a7fb8, #0d3b66);
-            color: white;
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            color: var(--color-dark);
+            background: var(--color-light);
+            -webkit-font-smoothing: antialiased;
         }
         
         .container {
@@ -41,6 +52,17 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+        
+        /* ========== HEADER ========== */
+        header {
+            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+            color: white;
+            padding: 0.8rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
         }
         
         .header-content {
@@ -52,78 +74,121 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.8rem;
+            text-decoration: none;
         }
         
-        .logo img {
+        .logo-img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.2);
         }
         
         .logo h1 {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
         }
         
         .text-orange {
-            color: #FF8C42;
+            color: var(--color-orange);
         }
         
-        /* NAV SIMPLE */
         nav ul {
             display: flex;
             list-style: none;
-            gap: 20px;
+            gap: 1rem;
+            margin: 0;
+            padding: 0;
         }
         
         nav a {
             color: white;
             text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
         }
         
         nav a:hover, nav a.active {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
         }
         
-        /* HERO SIMPLE */
+        /* ========== HERO SECTION ========== */
         .page-hero {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
             background-size: cover;
             background-position: center;
             color: white;
             padding: 4rem 0;
             text-align: center;
+            position: relative;
+        }
+        
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(26, 127, 184, 0.3), rgba(13, 59, 102, 0.3));
+        }
+        
+        .page-hero .container {
+            position: relative;
+            z-index: 1;
         }
         
         .page-hero h1 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .hero-subtitle {
-            font-size: 1.2rem;
-            max-width: 600px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            max-width: 700px;
             margin: 0 auto 2rem;
             opacity: 0.9;
+            line-height: 1.6;
         }
         
-        /* BREADCRUMB SIMPLE */
+        /* ========== BREADCRUMB ========== */
         .breadcrumb {
-            background: #e9ecef;
+            background: white;
             padding: 1rem 0;
+            box-shadow: var(--shadow-sm);
             font-size: 0.9rem;
         }
         
         .breadcrumb a {
-            color: #0d3b66;
+            color: var(--color-primary);
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: var(--transition);
         }
         
-        /* CONTENIDO PRINCIPAL */
+        .breadcrumb a:hover {
+            color: var(--color-accent);
+        }
+        
+        .breadcrumb i {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        /* ========== MAIN LAYOUT ========== */
         .reservas-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -134,140 +199,204 @@
         @media (max-width: 992px) {
             .reservas-container {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
         }
         
-        /* SECCIÓN TOURS */
+        /* ========== TOURS SECTION ========== */
         .tours-section, .form-section {
             background: white;
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
             padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        
+        .tours-section:hover, .form-section:hover {
+            box-shadow: var(--shadow-lg);
         }
         
         .section-title {
-            color: #0d3b66;
+            color: var(--color-primary);
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 2px solid var(--color-light);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.8rem;
+            font-size: 1.4rem;
         }
         
-        /* TOUR CARDS */
+        .section-title i {
+            color: var(--color-accent);
+        }
+        
+        /* ========== TOUR CARDS ========== */
         .tour-card {
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: var(--color-light);
+            border-radius: var(--radius-md);
             padding: 1.5rem;
             margin-bottom: 1rem;
-            border: 2px solid #dee2e6;
+            border: 2px solid transparent;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tour-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: transparent;
+            transition: var(--transition);
         }
         
         .tour-card:hover {
-            border-color: #0d3b66;
             transform: translateY(-2px);
+            border-color: var(--color-primary);
+        }
+        
+        .tour-card:hover::before {
+            background: var(--color-primary);
         }
         
         .tour-card.selected {
-            border-color: #e62b7e;
-            background: #f9f0f5;
+            border-color: var(--color-accent);
+            background: linear-gradient(135deg, rgba(230, 43, 126, 0.05), transparent);
+        }
+        
+        .tour-card.selected::before {
+            background: var(--color-accent);
         }
         
         .tour-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 1rem;
         }
         
         .tour-title {
-            color: #0d3b66;
-            font-weight: bold;
-            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex: 1;
+        }
+        
+        .tour-badge {
+            background: var(--color-accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
         }
         
         .tour-price {
-            background: #e62b7e;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
             color: white;
             padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-weight: bold;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-sm);
         }
         
         .tour-desc {
             color: #666;
             margin-bottom: 1rem;
-            font-size: 0.95rem;
+            line-height: 1.5;
         }
         
         .tour-details {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             font-size: 0.9rem;
             color: #666;
+            flex-wrap: wrap;
         }
         
         .tour-detail {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 0.5rem;
         }
         
-        /* FORMULARIO */
+        .tour-detail i {
+            color: var(--color-primary);
+        }
+        
+        /* ========== SELECTED TOUR INFO ========== */
         .selected-tour-info {
-            background: linear-gradient(to right, #0d3b66, #1a5276);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
             color: white;
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .selected-tour-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .selected-tour-title {
-            font-weight: bold;
-            font-size: 1.2rem;
+            font-weight: 700;
+            font-size: 1.3rem;
         }
         
         .selected-tour-price {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #e62b7e;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-orange);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         
+        /* ========== FORM STYLES ========== */
         .form-group {
             margin-bottom: 1.5rem;
         }
         
         .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #0d3b66;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.95rem;
         }
         
         .form-control {
             width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #dee2e6;
-            border-radius: 6px;
+            padding: 0.9rem 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: var(--radius-md);
             font-size: 1rem;
+            transition: var(--transition);
+            background: white;
         }
         
         .form-control:focus {
             outline: none;
-            border-color: #0d3b66;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.1);
         }
         
         .form-row {
@@ -279,45 +408,87 @@
             flex: 1;
         }
         
-        /* MÉTODOS DE PAGO */
+        /* ========== PAYMENT METHODS ========== */
         .payment-methods {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 1rem;
             margin: 1rem 0;
         }
         
         .payment-method {
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            padding: 1.5rem;
+            border: 2px solid #e1e5e9;
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
             cursor: pointer;
             text-align: center;
-            transition: all 0.3s;
+            transition: var(--transition);
+            background: white;
         }
         
         .payment-method:hover {
-            border-color: #0d3b66;
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
         }
         
         .payment-method.selected {
-            border-color: #0d3b66;
-            background: #f0f7ff;
+            border-color: var(--color-primary);
+            background: linear-gradient(135deg, rgba(13, 59, 102, 0.05), transparent);
+            box-shadow: var(--shadow-sm);
         }
         
         .payment-icon {
             font-size: 2rem;
-            color: #0d3b66;
-            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+            margin-bottom: 0.8rem;
+            display: block;
         }
         
-        /* RESUMEN */
+        .payment-method-name {
+            font-weight: 600;
+            color: var(--color-dark);
+            font-size: 0.95rem;
+        }
+        
+        /* ========== PAYMENT DETAILS ========== */
+        .payment-details {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 2px solid #e1e5e9;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .payment-info {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border-left: 4px solid var(--color-success);
+        }
+        
+        .payment-info h4 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* ========== SUMMARY ========== */
         .summary {
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--color-light), white);
+            border-radius: var(--radius-md);
             padding: 1.5rem;
             margin: 1.5rem 0;
-            border: 2px solid #dee2e6;
+            border: 2px solid #e1e5e9;
         }
         
         .summary-item {
@@ -325,47 +496,115 @@
             justify-content: space-between;
             margin-bottom: 0.8rem;
             padding-bottom: 0.8rem;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
         
         .summary-total {
             display: flex;
             justify-content: space-between;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #0d3b66;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--color-primary);
             margin-top: 1rem;
             padding-top: 1rem;
-            border-top: 2px solid #dee2e6;
+            border-top: 2px solid rgba(0,0,0,0.1);
         }
         
-        /* BOTONES */
+        /* ========== BUTTONS ========== */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            background: #e62b7e;
+            gap: 0.6rem;
+            background: linear-gradient(135deg, var(--color-accent), #d81b60);
             color: white;
             padding: 1rem 2rem;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 700;
             border: none;
             cursor: pointer;
             font-size: 1rem;
             width: 100%;
-            transition: all 0.3s;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .btn:hover {
-            background: #d81b60;
+            background: linear-gradient(135deg, #d81b60, #c2185b);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
         
-        /* FOOTER */
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #495057, #343a40);
+        }
+        
+        /* ========== ALERTAS ========== */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(42, 157, 143, 0.1), white);
+            border: 2px solid var(--color-success);
+            color: var(--color-success);
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1), white);
+            border: 2px solid var(--color-danger);
+            color: var(--color-danger);
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(233, 196, 106, 0.1), white);
+            border: 2px solid var(--color-warning);
+            color: #8b6c1f;
+        }
+        
+        /* ========== LOADING ========== */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(13, 59, 102, 0.1);
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ========== FOOTER ========== */
         footer {
-            background: #212529;
+            background: linear-gradient(135deg, var(--color-dark), #121416);
             color: white;
             padding: 3rem 0 1.5rem;
             margin-top: 3rem;
@@ -384,6 +623,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 1.1rem;
         }
         
         .footer-links {
@@ -400,10 +640,13 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: var(--transition);
+            padding: 0.3rem 0;
         }
         
         .footer-links a:hover {
             color: #a8d8ea;
+            transform: translateX(5px);
         }
         
         .copyright {
@@ -414,35 +657,25 @@
             font-size: 0.9rem;
         }
         
-        /* LOADING */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #0d3b66;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* RESPONSIVE */
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            .reservas-container {
-                grid-template-columns: 1fr;
+            .header-content {
+                flex-wrap: wrap;
             }
             
-            .page-hero h1 {
-                font-size: 2rem;
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 1rem;
+                width: 100%;
+            }
+            
+            .reservas-container {
+                padding: 1.5rem 0;
+            }
+            
+            .tours-section, .form-section {
+                padding: 1.5rem;
             }
             
             .form-row {
@@ -451,13 +684,34 @@
             }
             
             .payment-methods {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .payment-methods {
                 grid-template-columns: 1fr;
             }
             
-            nav ul {
-                display: none;
+            .tour-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .tour-price {
+                align-self: flex-start;
             }
         }
+        
+        /* ========== UTILITY CLASSES ========== */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
     </style>
 </head>
 <body>
@@ -465,10 +719,10 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">
-                    <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao">
+                <a href="../index.html" class="logo">
+                    <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img">
                     <h1>Caño <span class="text-orange">Salao</span></h1>
-                </div>
+                </a>
                 <nav>
                     <ul>
                         <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
@@ -522,17 +776,17 @@
             <section class="form-section">
                 <h2 class="section-title"><i class="bi bi-calendar-plus"></i> Completa tu Reserva</h2>
                 
+                <!-- Alertas -->
+                <div id="alerts-container"></div>
+                
                 <!-- Selected Tour Info -->
-                <div class="selected-tour-info">
+                <div id="selected-tour-display" class="selected-tour-info hidden">
                     <div class="selected-tour-header">
-                        <div class="selected-tour-title" id="selected-tour-name">Tour Básico</div>
-                        <div class="selected-tour-price" id="selected-tour-price">$25.00</div>
+                        <div class="selected-tour-title" id="selected-tour-name"></div>
+                        <div class="selected-tour-price" id="selected-tour-price"></div>
                     </div>
-                    <p id="selected-tour-desc">Recorrido introductorio por los manglares</p>
-                    <div class="tour-details">
-                        <span class="tour-detail"><i class="bi bi-clock"></i> 2 horas</span>
-                        <span class="tour-detail"><i class="bi bi-people"></i> Máx. 10 personas</span>
-                    </div>
+                    <p id="selected-tour-desc"></p>
+                    <div class="tour-details" id="selected-tour-details"></div>
                 </div>
                 
                 <!-- Form -->
@@ -567,7 +821,12 @@
                                 <option value="2">2 personas</option>
                                 <option value="3">3 personas</option>
                                 <option value="4">4 personas</option>
-                                <option value="5">5 personas</option>
+                                <option value="5" selected>5 personas</option>
+                                <option value="6">6 personas</option>
+                                <option value="7">7 personas</option>
+                                <option value="8">8 personas</option>
+                                <option value="9">9 personas</option>
+                                <option value="10">10 personas</option>
                             </select>
                         </div>
                     </div>
@@ -578,38 +837,43 @@
                         <div class="payment-methods">
                             <div class="payment-method selected" data-method="movil">
                                 <div class="payment-icon"><i class="bi bi-phone"></i></div>
-                                <div>Pago Móvil</div>
+                                <div class="payment-method-name">Pago Móvil</div>
                             </div>
                             <div class="payment-method" data-method="tarjeta">
                                 <div class="payment-icon"><i class="bi bi-credit-card"></i></div>
-                                <div>Tarjeta</div>
+                                <div class="payment-method-name">Tarjeta</div>
                             </div>
                             <div class="payment-method" data-method="efectivo">
                                 <div class="payment-icon"><i class="bi bi-cash"></i></div>
-                                <div>Efectivo</div>
+                                <div class="payment-method-name">Efectivo</div>
                             </div>
                             <div class="payment-method" data-method="transferencia">
                                 <div class="payment-icon"><i class="bi bi-bank"></i></div>
-                                <div>Transferencia</div>
+                                <div class="payment-method-name">Transferencia</div>
                             </div>
                         </div>
                         <input type="hidden" id="metodo_pago" value="movil">
                     </div>
                     
                     <!-- Payment Details (Dynamic) -->
-                    <div id="payment-details">
-                        <div class="form-group">
-                            <label for="comprobante"><i class="bi bi-receipt"></i> Número de Comprobante</label>
-                            <input type="text" id="comprobante" class="form-control" placeholder="Opcional">
-                            <small style="color: #666;">Si ya realizaste el pago, ingresa el número de comprobante</small>
+                    <div id="payment-details" class="payment-details">
+                        <div class="payment-info">
+                            <h4><i class="bi bi-phone"></i> Datos para Pago Móvil</h4>
+                            <p>Banco: Banco de Venezuela</p>
+                            <p>Teléfono: 0412-555-5555</p>
+                            <p>Cédula: 12.345.678</p>
+                            <p>Referencia: Últimos 3 dígitos de tu teléfono</p>
                         </div>
                     </div>
                     
                     <!-- Summary -->
                     <div class="summary">
+                        <h4 style="color: var(--color-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="bi bi-receipt"></i> Resumen de la Reserva
+                        </h4>
                         <div class="summary-item">
                             <span>Tour:</span>
-                            <span id="summary-tour">Tour Básico</span>
+                            <span id="summary-tour">-</span>
                         </div>
                         <div class="summary-item">
                             <span>Fecha:</span>
@@ -617,34 +881,38 @@
                         </div>
                         <div class="summary-item">
                             <span>Personas:</span>
-                            <span id="summary-personas">1</span>
+                            <span id="summary-personas">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Precio unitario:</span>
+                            <span id="summary-precio">$0.00</span>
                         </div>
                         <div class="summary-item">
                             <span>Subtotal:</span>
-                            <span id="summary-subtotal">$25.00</span>
+                            <span id="summary-subtotal">$0.00</span>
                         </div>
                         <div class="summary-item">
                             <span>Contribución (5%):</span>
-                            <span id="summary-contribucion">$1.25</span>
+                            <span id="summary-contribucion">$0.00</span>
                         </div>
                         <div class="summary-total">
-                            <span>Total:</span>
-                            <span id="summary-total">$26.25</span>
+                            <span>Total a pagar:</span>
+                            <span id="summary-total">$0.00</span>
                         </div>
                     </div>
                     
                     <!-- Terms -->
                     <div class="form-group">
-                        <label style="display: flex; align-items: flex-start; gap: 10px;">
+                        <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="terminos" required style="margin-top: 5px;">
-                            <span style="color: #666;">
+                            <span style="color: #666; font-size: 0.9rem;">
                                 Acepto los términos y condiciones. Confirmo que he leído la información sobre la reserva.
                             </span>
                         </label>
                     </div>
                     
                     <!-- Submit -->
-                    <button type="submit" class="btn">
+                    <button type="submit" class="btn" id="submitBtn">
                         <i class="bi bi-calendar-check"></i> Confirmar Reserva
                     </button>
                 </form>
@@ -658,7 +926,9 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
-                    <p>Sistema de reservas en línea como parte del proyecto factible de desarrollo turístico sostenible.</p>
+                    <p style="opacity: 0.8; line-height: 1.5; font-size: 0.9rem;">
+                        Sistema de reservas en línea como parte del proyecto factible de desarrollo turístico sostenible.
+                    </p>
                 </div>
                 <div class="footer-column">
                     <h3><i class="bi bi-link"></i> Enlaces Rápidos</h3>
@@ -667,6 +937,14 @@
                         <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
                         <li><a href="reservas.html"><i class="bi bi-calendar-check"></i> Reservas</a></li>
                         <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3><i class="bi bi-telephone"></i> Contacto</h3>
+                    <ul class="footer-links">
+                        <li><a href="tel:+584121234567"><i class="bi bi-phone"></i> +58 412-1234567</a></li>
+                        <li><a href="mailto:info@canosalao.com"><i class="bi bi-envelope"></i> info@canosalao.com</a></li>
+                        <li><a href="#"><i class="bi bi-geo-alt"></i> Caño Salao, Venezuela</a></li>
                     </ul>
                 </div>
             </div>
@@ -681,41 +959,106 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
     <script>
+        // URL base del backend (ajusta según tu configuración)
+        const API_BASE_URL = 'http://localhost:3000/api'; // Cambia esta URL por la de tu backend
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Tours de ejemplo
-            const tours = [
-                {
-                    id: 1,
-                    nombre: 'Tour Básico',
-                    descripcion: 'Recorrido introductorio por los manglares de Caño Salao',
-                    precio: 25.00,
-                    duracion: '2 horas',
-                    capacidad: 'Máx. 10 personas'
-                },
-                {
-                    id: 2,
-                    nombre: 'Tour Completo',
-                    descripcion: 'Experiencia completa con avistamiento de aves y gastronomía local',
-                    precio: 45.00,
-                    duracion: '4 horas',
-                    capacidad: 'Máx. 8 personas'
-                },
-                {
-                    id: 3,
-                    nombre: 'Tour Personalizado',
-                    descripcion: 'Experiencia exclusiva diseñada según tus intereses',
-                    precio: 65.00,
-                    duracion: '6 horas',
-                    capacidad: 'Máx. 6 personas'
+            // ========== ESTADO GLOBAL ==========
+            let selectedTour = null;
+            let tours = [];
+            
+            // ========== INICIALIZACIÓN ==========
+            function init() {
+                loadToursFromBackend();
+                initFlatpickr();
+                setupEventListeners();
+                setupPaymentMethods();
+                updateSummary();
+            }
+            
+            // ========== CARGAR TOURS DEL BACKEND ==========
+            async function loadToursFromBackend() {
+                const container = document.getElementById('tours-container');
+                
+                try {
+                    // Intenta cargar tours desde el backend
+                    const response = await fetch(`${API_BASE_URL}/tours`);
+                    
+                    if (response.ok) {
+                        tours = await response.json();
+                    } else {
+                        // Si falla, usar datos de ejemplo
+                        tours = getDefaultTours();
+                    }
+                    
+                    renderTours();
+                    
+                    // Seleccionar el primer tour por defecto
+                    if (tours.length > 0) {
+                        selectTour(tours[0]);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error cargando tours:', error);
+                    // Usar datos de ejemplo si hay error
+                    tours = getDefaultTours();
+                    renderTours();
+                    
+                    if (tours.length > 0) {
+                        selectTour(tours[0]);
+                    }
+                    
+                    showAlert('warning', 'Usando datos de ejemplo. No se pudo conectar al servidor.');
                 }
-            ];
+            }
             
-            let selectedTour = tours[0];
+            // ========== DATOS POR DEFECTO ==========
+            function getDefaultTours() {
+                return [
+                    {
+                        id: 1,
+                        nombre: 'Tour Básico de Exploración',
+                        descripcion: 'Recorrido introductorio por los manglares de Caño Salao, ideal para primerizos.',
+                        precio: 25.00,
+                        duracion: '2 horas',
+                        capacidad: 'Máx. 10 personas',
+                        popular: true
+                    },
+                    {
+                        id: 2,
+                        nombre: 'Tour Completo con Avistamiento',
+                        descripcion: 'Experiencia completa con avistamiento de aves y gastonomía local incluida.',
+                        precio: 45.00,
+                        duracion: '4 horas',
+                        capacidad: 'Máx. 8 personas',
+                        popular: true
+                    },
+                    {
+                        id: 3,
+                        nombre: 'Tour Personalizado Premium',
+                        descripcion: 'Experiencia exclusiva diseñada según tus intereses con guía especializado.',
+                        precio: 65.00,
+                        duracion: '6 horas',
+                        capacidad: 'Máx. 6 personas',
+                        popular: false
+                    }
+                ];
+            }
             
-            // Renderizar tours
+            // ========== RENDERIZAR TOURS ==========
             function renderTours() {
                 const container = document.getElementById('tours-container');
                 container.innerHTML = '';
+                
+                if (tours.length === 0) {
+                    container.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            No hay tours disponibles en este momento.
+                        </div>
+                    `;
+                    return;
+                }
                 
                 tours.forEach(tour => {
                     const tourCard = document.createElement('div');
@@ -724,25 +1067,26 @@
                     
                     tourCard.innerHTML = `
                         <div class="tour-header">
-                            <div class="tour-title">${tour.nombre}</div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div class="tour-title">${tour.nombre}</div>
+                                ${tour.popular ? '<span class="tour-badge">Popular</span>' : ''}
+                            </div>
                             <div class="tour-price">$${tour.precio.toFixed(2)}</div>
                         </div>
                         <p class="tour-desc">${tour.descripcion}</p>
                         <div class="tour-details">
                             <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion}</span>
                             <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad}</span>
+                            <span class="tour-detail"><i class="bi bi-star"></i> Incluye guía</span>
                         </div>
                     `;
                     
                     tourCard.addEventListener('click', () => selectTour(tour));
                     container.appendChild(tourCard);
                 });
-                
-                // Seleccionar el primer tour
-                selectTour(tours[0]);
             }
             
-            // Seleccionar tour
+            // ========== SELECCIONAR TOUR ==========
             function selectTour(tour) {
                 selectedTour = tour;
                 
@@ -754,22 +1098,49 @@
                     }
                 });
                 
-                // Actualizar información
+                // Mostrar información del tour seleccionado
+                const display = document.getElementById('selected-tour-display');
+                display.classList.remove('hidden');
+                
                 document.getElementById('selected-tour-name').textContent = tour.nombre;
                 document.getElementById('selected-tour-price').textContent = `$${tour.precio.toFixed(2)}`;
                 document.getElementById('selected-tour-desc').textContent = tour.descripcion;
-                document.getElementById('summary-tour').textContent = tour.nombre;
                 
+                const details = document.getElementById('selected-tour-details');
+                details.innerHTML = `
+                    <span class="tour-detail"><i class="bi bi-clock"></i> ${tour.duracion}</span>
+                    <span class="tour-detail"><i class="bi bi-people"></i> ${tour.capacidad}</span>
+                    <span class="tour-detail"><i class="bi bi-arrow-up-right"></i> Guía incluido</span>
+                `;
+                
+                // Actualizar resumen
+                document.getElementById('summary-tour').textContent = tour.nombre;
+                document.getElementById('summary-precio').textContent = `$${tour.precio.toFixed(2)}`;
                 updateSummary();
             }
             
-            // Actualizar resumen
+            // ========== INICIALIZAR CALENDARIO ==========
+            function initFlatpickr() {
+                flatpickr('#fecha', {
+                    locale: 'es',
+                    minDate: 'today',
+                    dateFormat: 'd/m/Y',
+                    defaultDate: new Date(Date.now() + 86400000 * 3), // 3 días desde hoy
+                    onChange: function(selectedDates, dateStr) {
+                        updateSummary();
+                    }
+                });
+            }
+            
+            // ========== ACTUALIZAR RESUMEN ==========
             function updateSummary() {
+                if (!selectedTour) return;
+                
                 const fecha = document.getElementById('fecha').value;
                 const personas = parseInt(document.getElementById('personas').value) || 1;
                 const precioUnitario = selectedTour.precio;
                 const subtotal = precioUnitario * personas;
-                const contribucion = subtotal * 0.05;
+                const contribucion = subtotal * 0.05; // 5% para el proyecto
                 const total = subtotal + contribucion;
                 
                 document.getElementById('summary-fecha').textContent = fecha || '-';
@@ -779,114 +1150,230 @@
                 document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
             }
             
-            // Métodos de pago
-            document.querySelectorAll('.payment-method').forEach(method => {
-                method.addEventListener('click', function() {
-                    document.querySelectorAll('.payment-method').forEach(m => {
-                        m.classList.remove('selected');
+            // ========== CONFIGURAR MÉTODOS DE PAGO ==========
+            function setupPaymentMethods() {
+                const methods = document.querySelectorAll('.payment-method');
+                methods.forEach(method => {
+                    method.addEventListener('click', function() {
+                        // Remover selección anterior
+                        methods.forEach(m => m.classList.remove('selected'));
+                        
+                        // Agregar selección nueva
+                        this.classList.add('selected');
+                        
+                        const metodo = this.dataset.method;
+                        document.getElementById('metodo_pago').value = metodo;
+                        
+                        // Actualizar detalles del pago
+                        updatePaymentDetails(metodo);
                     });
-                    this.classList.add('selected');
-                    
-                    const metodo = this.dataset.method;
-                    document.getElementById('metodo_pago').value = metodo;
-                    
-                    // Actualizar detalles de pago
-                    const details = document.getElementById('payment-details');
-                    if (metodo === 'movil') {
-                        details.innerHTML = `
-                            <div class="form-group">
-                                <label for="comprobante"><i class="bi bi-receipt"></i> Número de Comprobante</label>
-                                <input type="text" id="comprobante" class="form-control" placeholder="Opcional">
-                                <small style="color: #666;">Si ya realizaste el pago, ingresa el número de comprobante</small>
-                            </div>
-                        `;
-                    } else if (metodo === 'tarjeta') {
-                        details.innerHTML = `
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="tarjeta_numero"><i class="bi bi-credit-card"></i> Número de Tarjeta</label>
-                                    <input type="text" id="tarjeta_numero" class="form-control" placeholder="1234 5678 9012 3456">
-                                </div>
-                                <div class="form-group">
-                                    <label for="tarjeta_vencimiento"><i class="bi bi-calendar"></i> Vencimiento</label>
-                                    <input type="text" id="tarjeta_vencimiento" class="form-control" placeholder="MM/AA">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tarjeta_cvv"><i class="bi bi-lock"></i> CVV</label>
-                                <input type="password" id="tarjeta_cvv" class="form-control" placeholder="123">
-                            </div>
-                        `;
-                    } else if (metodo === 'efectivo') {
-                        details.innerHTML = `
-                            <div class="form-group">
-                                <p style="color: #666;"><i class="bi bi-info-circle"></i> Paga en efectivo al llegar. Trae el monto exacto.</p>
-                            </div>
-                        `;
-                    } else if (metodo === 'transferencia') {
-                        details.innerHTML = `
-                            <div class="form-group">
-                                <label for="comprobante_transferencia"><i class="bi bi-receipt"></i> Número de Transferencia</label>
-                                <input type="text" id="comprobante_transferencia" class="form-control" placeholder="Opcional">
-                            </div>
-                        `;
-                    }
                 });
-            });
+            }
             
-            // Flatpickr
-            flatpickr('#fecha', {
-                locale: 'es',
-                minDate: 'today',
-                dateFormat: 'd/m/Y',
-                onChange: updateSummary
-            });
-            
-            // Event listeners
-            document.getElementById('personas').addEventListener('change', updateSummary);
-            document.getElementById('fecha').addEventListener('change', updateSummary);
-            
-            // Form submit
-            document.getElementById('reservaForm').addEventListener('submit', function(e) {
-                e.preventDefault();
+            // ========== ACTUALIZAR DETALLES DE PAGO ==========
+            function updatePaymentDetails(metodo) {
+                const details = document.getElementById('payment-details');
                 
-                if (!document.getElementById('terminos').checked) {
-                    alert('Debes aceptar los términos y condiciones');
-                    return;
+                let paymentInfo = '';
+                let icon = '';
+                
+                switch(metodo) {
+                    case 'movil':
+                        icon = 'bi-phone';
+                        paymentInfo = `
+                            <h4><i class="bi ${icon}"></i> Datos para Pago Móvil</h4>
+                            <p>Banco: Banco de Venezuela</p>
+                            <p>Teléfono: 0412-555-5555</p>
+                            <p>Cédula: 12.345.678</p>
+                            <p>Referencia: Últimos 3 dígitos de tu teléfono</p>
+                        `;
+                        break;
+                    case 'tarjeta':
+                        icon = 'bi-credit-card';
+                        paymentInfo = `
+                            <h4><i class="bi ${icon}"></i> Datos para Tarjeta</h4>
+                            <p>Puedes pagar con cualquier tarjeta Visa o Mastercard</p>
+                            <p>Procesado de forma segura con nuestro sistema de pagos</p>
+                        `;
+                        break;
+                    case 'efectivo':
+                        icon = 'bi-cash';
+                        paymentInfo = `
+                            <h4><i class="bi ${icon}"></i> Pago en Efectivo</h4>
+                            <p>Paga en efectivo al llegar al punto de encuentro</p>
+                            <p>Trae el monto exacto indicado en el resumen</p>
+                            <p>Horario: 8:00 AM - 5:00 PM</p>
+                        `;
+                        break;
+                    case 'transferencia':
+                        icon = 'bi-bank';
+                        paymentInfo = `
+                            <h4><i class="bi ${icon}"></i> Transferencia Bancaria</h4>
+                            <p>Banco: Banco de Venezuela</p>
+                            <p>Cuenta: 0102-1234-5678-9012</p>
+                            <p>Titular: Proyecto Caño Salao</p>
+                            <p>RIF: J-12345678-9</p>
+                        `;
+                        break;
                 }
                 
-                const reservaData = {
-                    tour: selectedTour.nombre,
-                    nombre: document.getElementById('nombre').value,
-                    email: document.getElementById('email').value,
-                    telefono: document.getElementById('telefono').value,
-                    fecha: document.getElementById('fecha').value,
-                    personas: document.getElementById('personas').value,
-                    metodo_pago: document.getElementById('metodo_pago').value,
-                    total: document.getElementById('summary-total').textContent
-                };
-                
-                const reservaId = `CS-${Date.now().toString().slice(-6)}`;
-                
-                alert(`¡Reserva confirmada!\n\nCódigo: ${reservaId}\nTour: ${reservaData.tour}\nFecha: ${reservaData.fecha}\nPersonas: ${reservaData.personas}\nTotal: ${reservaData.total}\n\nTe hemos enviado un correo de confirmación.`);
-                
-                // Guardar en localStorage
-                const reservasPrevias = JSON.parse(localStorage.getItem('cano_salao_reservas') || '[]');
-                reservasPrevias.push({
-                    id: reservaId,
-                    ...reservaData,
-                    fecha_reserva: new Date().toISOString()
-                });
-                localStorage.setItem('cano_salao_reservas', JSON.stringify(reservasPrevias));
-                
-                // Limpiar formulario
-                this.reset();
-                selectTour(tours[0]);
-                updateSummary();
-            });
+                details.innerHTML = `
+                    <div class="payment-info">
+                        ${paymentInfo}
+                    </div>
+                `;
+            }
             
-            // Inicializar
-            renderTours();
+            // ========== MOSTRAR ALERTAS ==========
+            function showAlert(type, message) {
+                const container = document.getElementById('alerts-container');
+                
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.innerHTML = `
+                    <i class="bi ${getAlertIcon(type)}"></i>
+                    <span>${message}</span>
+                `;
+                
+                container.appendChild(alert);
+                
+                // Auto-remover después de 5 segundos
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+            
+            function getAlertIcon(type) {
+                switch(type) {
+                    case 'success': return 'bi-check-circle';
+                    case 'error': return 'bi-exclamation-circle';
+                    case 'warning': return 'bi-exclamation-triangle';
+                    default: return 'bi-info-circle';
+                }
+            }
+            
+            // ========== ENVIAR RESERVA AL BACKEND ==========
+            async function submitReservation(formData) {
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                
+                try {
+                    // Deshabilitar botón y mostrar loading
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; margin-right: 10px;"></div> Procesando...';
+                    
+                    // Agregar tour_id a los datos
+                    const reservationData = {
+                        ...formData,
+                        tour_id: selectedTour.id,
+                        total: parseFloat(formData.total.replace('$', ''))
+                    };
+                    
+                    // Enviar al backend
+                    const response = await fetch(`${API_BASE_URL}/reservas`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(reservationData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Mostrar éxito
+                    showAlert('success', `¡Reserva confirmada! Código: ${result.codigo_reserva || 'N/A'}`);
+                    
+                    // Resetear formulario
+                    document.getElementById('reservaForm').reset();
+                    
+                    // Resetear selección de tour
+                    if (tours.length > 0) {
+                        selectTour(tours[0]);
+                    }
+                    
+                    // Resetear flatpickr
+                    flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
+                    
+                    updateSummary();
+                    
+                } catch (error) {
+                    console.error('Error enviando reserva:', error);
+                    
+                    // Simular éxito para demostración si el backend falla
+                    const reservationCode = `CS-${Date.now().toString().slice(-8)}`;
+                    
+                    // Guardar en localStorage como fallback
+                    const fallbackReservation = {
+                        id: reservationCode,
+                        ...formData,
+                        tour_id: selectedTour.id,
+                        fecha_reserva: new Date().toISOString()
+                    };
+                    
+                    const existing = JSON.parse(localStorage.getItem('cano_salao_reservas_fallback') || '[]');
+                    existing.push(fallbackReservation);
+                    localStorage.setItem('cano_salao_reservas_fallback', JSON.stringify(existing));
+                    
+                    showAlert('warning', `¡Reserva confirmada localmente! Código: ${reservationCode} (Modo offline)`);
+                    
+                    // Resetear formulario
+                    document.getElementById('reservaForm').reset();
+                    
+                    if (tours.length > 0) {
+                        selectTour(tours[0]);
+                    }
+                    
+                    flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
+                    updateSummary();
+                    
+                } finally {
+                    // Rehabilitar botón
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            }
+            
+            // ========== ESCUCHADORES DE EVENTOS ==========
+            function setupEventListeners() {
+                // Actualizar resumen cuando cambian los datos
+                document.getElementById('personas').addEventListener('change', updateSummary);
+                document.getElementById('fecha').addEventListener('change', updateSummary);
+                
+                // Envío del formulario
+                document.getElementById('reservaForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    if (!selectedTour) {
+                        showAlert('error', 'Por favor selecciona un tour');
+                        return;
+                    }
+                    
+                    if (!document.getElementById('terminos').checked) {
+                        showAlert('error', 'Debes aceptar los términos y condiciones');
+                        return;
+                    }
+                    
+                    const formData = {
+                        tour: selectedTour.nombre,
+                        nombre: document.getElementById('nombre').value,
+                        email: document.getElementById('email').value,
+                        telefono: document.getElementById('telefono').value,
+                        fecha: document.getElementById('fecha').value,
+                        personas: document.getElementById('personas').value,
+                        metodo_pago: document.getElementById('metodo_pago').value,
+                        total: document.getElementById('summary-total').textContent
+                    };
+                    
+                    await submitReservation(formData);
+                });
+            }
+            
+            // ========== INICIAR APLICACIÓN ==========
+            init();
         });
     </script>
 </body>
