@@ -44,61 +44,449 @@
             padding: 0 15px;
         }
         
+        /* ===== LOADER ===== */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         /* ========== HEADER ========== */
         header {
-            background: var(--primary);
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
             color: white;
-            padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            padding: 0.5rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
         
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 1rem;
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.6rem;
+            flex-shrink: 0;
+            z-index: 1002;
             text-decoration: none;
         }
         
-        .logo img {
+        .logo-img {
             width: 35px;
             height: 35px;
+            object-fit: contain;
             border-radius: 50%;
+            display: block;
+            flex-shrink: 0;
+            -webkit-user-select: none;
+            user-select: none;
         }
         
         .logo h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: bold;
             color: white;
+            margin: 0;
+            white-space: nowrap;
         }
         
         .text-orange {
-            color: var(--orange);
+            color: #FF8C42;
+        }
+        
+        /* ===== NAVEGACIÓN DESKTOP ===== */
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        nav {
+            width: 100%;
         }
         
         nav ul {
             display: flex;
             list-style: none;
-            gap: 1rem;
+            gap: 0.5rem;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
         }
         
-        nav a {
+        nav ul li {
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: rgba(255,255,255,0.95);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.1);
+            touch-action: manipulation;
+        }
+        
+        nav ul li a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        nav ul li a.active {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        /* ===== SISTEMA DE USUARIO ===== */
+        .user-menu-container {
+            position: relative;
+            z-index: 1002;
+        }
+        
+        .logged-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 44px;
+        }
+        
+        .logged-user:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        
+        .user-role.admin {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Dropdown menu styles */
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 220px;
+            z-index: 1001;
+            overflow: hidden;
+            margin-top: 5px;
+            display: none;
+            animation: fadeInDown 0.2s ease;
+            border: 1px solid #eee;
+        }
+        
+        .user-dropdown-menu.show {
+            display: block;
+        }
+        
+        .user-dropdown-header {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #1a7fb8, #0d3b66);
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 2px;
+        }
+        
+        .user-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .user-dropdown-menu a:hover {
+            background: #f5f5f5;
+        }
+        
+        .user-dropdown-menu a:last-child {
+            border-bottom: none;
+            color: #e74c3c;
+        }
+        
+        .user-dropdown-menu a:last-child:hover {
+            background: #ffeaea;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: auto;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Sección de autenticación */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+        
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            min-height: 44px;
+        }
+        
+        .login-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        /* ===== MENÚ MÓVIL ===== */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            z-index: 1002;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
+            touch-action: manipulation;
+            min-width: 44px;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mobile-menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .mobile-menu-container {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+        }
+        
+        .mobile-menu-container.active {
+            right: 0;
+        }
+        
+        .mobile-menu-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
+            touch-action: manipulation;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-menu-nav {
+            padding: 1rem 0;
+        }
+        
+        .mobile-menu-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-menu-nav li {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+        
+        .mobile-menu-nav li:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-menu-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background 0.3s;
+            font-size: 1.1rem;
+            transition: background 0.2s ease;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.2);
+            touch-action: manipulation;
+            width: 100%;
         }
         
-        nav a:hover, nav a.active {
+        .mobile-menu-nav a.active {
+            background: rgba(255,255,255,0.15);
+            font-weight: 600;
+        }
+        
+        .mobile-menu-nav a:hover {
             background: rgba(255,255,255,0.1);
         }
         
@@ -445,6 +833,36 @@
             font-size: 1rem;
         }
         
+        /* Campos de tarjeta de crédito (opcionales) */
+        .card-fields {
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+        
+        .card-fields legend {
+            font-size: 0.9rem;
+            color: var(--gray);
+            padding: 0 0.5rem;
+            font-weight: 500;
+        }
+        
+        .card-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .optional-note {
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+        
         /* ========== SUMMARY ========== */
         .summary {
             background: var(--light);
@@ -563,6 +981,47 @@
             border: 1px solid #ffeaa7;
         }
         
+        .site-alert {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            z-index: 9998;
+            max-width: 300px;
+            display: none;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .site-alert.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .site-alert.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .site-alert.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .site-alert.warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
         /* ========== FOOTER ========== */
         footer {
             background: var(--dark);
@@ -628,22 +1087,30 @@
             margin: 0 auto 0.8rem;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 0.8rem;
+            .menu-toggle {
+                display: flex !important;
             }
             
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 0.6rem;
+            .nav-center {
+                display: none !important;
+            }
+            
+            .header-content {
+                flex-wrap: nowrap;
+            }
+            
+            .logo {
+                flex: 1;
+            }
+            
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+            
+            .auth-section {
+                order: 3;
             }
             
             .page-hero h1 {
@@ -662,6 +1129,22 @@
             
             .payment-tabs {
                 flex-wrap: wrap;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .user-dropdown-menu {
+                position: fixed;
+                top: 60px;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+            }
+            
+            .card-row {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -685,29 +1168,103 @@
                 padding: 0.7rem 0.4rem;
                 font-size: 0.85rem;
             }
+            
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Sistema de alertas -->
+    <div id="site-alert" class="site-alert"></div>
+    
+    <!-- Loader -->
+    <div id="page-loader" class="hidden">
+        <div class="loader-spinner"></div>
+    </div>
+
     <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
                 <a href="../index.html" class="logo">
-                    <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao">
+                    <img src="../media/Logo_cano_60.png" 
+                         alt="Logo Caño Salao - Ruta Turística Marítima" 
+                         class="logo-img"
+                         width="35" 
+                         height="35"
+                         loading="eager"
+                         aria-hidden="true">
                     <h1>Caño <span class="text-orange">Salao</span></h1>
-                </a>
-                <nav>
-                    <ul>
-                        <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
-                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
-                        <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> Reservas</a></li>
-                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
-                    </ul>
-                </nav>
+                </div>
+
+                <!-- Navegación desktop -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
+                            <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> <span>Reservas</span></a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Sistema de usuario -->
+                <div class="auth-section">
+                    <div class="user-menu-container" id="user-menu-container">
+                        <a href="login.html" class="login-btn" id="login-btn">
+                            <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
+                        </a>
+                        
+                        <div class="logged-user" id="logged-user" style="display: none;">
+                            <div class="user-avatar" id="user-avatar" aria-label="Menú de usuario" role="button" tabindex="0" title="Menú de usuario">U</div>
+                            <div class="user-info">
+                                <div class="user-name" id="user-name">Usuario</div>
+                                <div class="user-role" id="user-role">user</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menú móvil -->
+                <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
         </div>
     </header>
+
+    <!-- Menú móvil overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+    <!-- Menú móvil container -->
+    <div class="mobile-menu-container" id="mobile-menu-container">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
+                <h2 style="color: white; font-size: 1.2rem;">Caño <span class="text-orange">Salao</span></h2>
+            </div>
+            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Cerrar menú">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-menu-nav">
+            <ul>
+                <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                <li><a href="reservas.html" class="active"><i class="bi bi-calendar-check"></i> Reservas</a></li>
+                <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                <li id="mobile-user-menu" style="display: none;">
+                    <a href="usuario.html"><i class="bi bi-person-circle"></i> Mi Cuenta</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 
     <!-- Hero Section -->
     <section class="page-hero">
@@ -773,7 +1330,7 @@
                     <!-- Personal Info -->
                     <div class="form-group">
                         <label class="form-label" for="nombre">
-                            <i class="bi bi-person"></i> Nombre Completo
+                            <i class="bi bi-person"></i> Nombre Completo *
                         </label>
                         <input type="text" id="nombre" class="form-control" placeholder="Ej: María González Rodríguez" required>
                     </div>
@@ -781,13 +1338,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="email">
-                                <i class="bi bi-envelope"></i> Correo Electrónico
+                                <i class="bi bi-envelope"></i> Correo Electrónico *
                             </label>
                             <input type="email" id="email" class="form-control" placeholder="ejemplo@email.com" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="telefono">
-                                <i class="bi bi-telephone"></i> Teléfono
+                                <i class="bi bi-telephone"></i> Teléfono *
                             </label>
                             <input type="tel" id="telefono" class="form-control" placeholder="+58 412-1234567" required>
                         </div>
@@ -797,13 +1354,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="fecha">
-                                <i class="bi bi-calendar"></i> Fecha del Tour
+                                <i class="bi bi-calendar"></i> Fecha del Tour *
                             </label>
                             <input type="text" id="fecha" class="form-control" placeholder="Selecciona fecha" readonly required>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="personas">
-                                <i class="bi bi-people"></i> Número de Personas
+                                <i class="bi bi-people"></i> Número de Personas *
                             </label>
                             <select id="personas" class="form-control" required>
                                 <option value="1">1 persona</option>
@@ -842,7 +1399,7 @@
                     <!-- Payment Method -->
                     <div class="payment-section">
                         <label class="form-label">
-                            <i class="bi bi-credit-card"></i> Método de Pago
+                            <i class="bi bi-credit-card"></i> Método de Pago *
                         </label>
                         <div class="payment-tabs">
                             <div class="payment-tab active" data-method="tarjeta">
@@ -860,13 +1417,30 @@
                         </div>
                         
                         <div class="payment-details" id="payment-details">
-                            <!-- Contenido dinámico -->
+                            <!-- Contenido dinámico según método de pago -->
                             <div class="payment-info">
                                 <h4><i class="bi bi-credit-card"></i> Pago con Tarjeta</h4>
-                                <p>Puedes pagar con cualquier tarjeta de crédito o débito.</p>
+                                <p>Puedes pagar con cualquier tarjeta de crédito o débito. Los datos son opcionales.</p>
                             </div>
+                            
+                            <!-- Campos de tarjeta de crédito (opcionales) -->
+                            <fieldset class="card-fields">
+                                <legend>Datos de tarjeta (opcionales)</legend>
+                                <div class="form-group">
+                                    <input type="text" id="card-number" class="form-control" placeholder="Número de tarjeta (ej: 4242 4242 4242 4242)" maxlength="19">
+                                </div>
+                                <div class="card-row">
+                                    <div class="form-group">
+                                        <input type="text" id="card-expiry" class="form-control" placeholder="MM/AA (ej: 12/25)" maxlength="5">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="card-cvc" class="form-control" placeholder="CVC (ej: 123)" maxlength="4">
+                                    </div>
+                                </div>
+                                <p class="optional-note"><i class="bi bi-info-circle"></i> Estos datos son opcionales. Puedes completarlos ahora o más tarde.</p>
+                            </fieldset>
                         </div>
-                        <input type="hidden" id="metodo_pago" value="tarjeta">
+                        <input type="hidden" id="metodo_pago" value="tarjeta" required>
                     </div>
                     
                     <!-- Summary -->
@@ -956,17 +1530,631 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // ========== DATOS COMPLETOS ==========
-            const tours = [
+        // ========== CONFIGURACIÓN ==========
+        const API_BASE_URL = 'https://cano-salao.onrender.com/api';
+        const STORAGE_KEYS = {
+            TOKEN: 'cano_salao_token',
+            REFRESH_TOKEN: 'cano_salao_refresh_token',
+            USER: 'cano_salao_user',
+            SESSION_EXPIRES: 'cano_salao_expires',
+            LAST_ACTIVITY: 'cano_salao_last_activity'
+        };
+        
+        // Variables globales
+        let currentUser = null;
+        let selectedTour = null;
+        let includeDonation = true;
+        let userDropdown = null;
+        let userDropdownOpen = false;
+        let isMobileMenuOpen = false;
+        let isRefreshingToken = false;
+        let failedRequestsQueue = [];
+        
+        // ========== INICIALIZACIÓN ==========
+        (function init() {
+            console.log('🚀 Iniciando sistema de reservas Caño Salao...');
+            
+            // Ocultar loader
+            hideLoader();
+            
+            // Inicializar sistema de usuario
+            initializeUserSystem();
+            
+            // Inicializar sistema de reservas
+            initializeReservaSystem();
+            
+            console.log('✅ Sistema de reservas inicializado');
+        })();
+        
+        // ========== SISTEMA DE GESTIÓN DE TOKENS ==========
+        
+        function getStorageItem(key) {
+            return localStorage.getItem(key);
+        }
+        
+        function setStorageItem(key, value) {
+            localStorage.setItem(key, value);
+        }
+        
+        function removeStorageItem(key) {
+            localStorage.removeItem(key);
+        }
+        
+        async function fetchWithAuth(url, options = {}) {
+            const accessToken = getStorageItem(STORAGE_KEYS.TOKEN);
+            
+            if (!accessToken) {
+                console.warn('⚠️ No hay token de acceso disponible');
+                return fetch(url, options);
+            }
+            
+            options.headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${accessToken}`
+            };
+            
+            try {
+                const response = await fetch(url, options);
+                
+                if (response.status === 401) {
+                    const responseData = await response.json().catch(() => ({}));
+                    
+                    if (responseData.error === 'token_expired' || responseData.error === 'invalid_token') {
+                        console.log('🔄 Token expirado, intentando refrescar...');
+                        
+                        if (isRefreshingToken) {
+                            return new Promise((resolve, reject) => {
+                                failedRequestsQueue.push({ resolve, reject });
+                            }).then(newToken => {
+                                options.headers = {
+                                    ...options.headers,
+                                    'Authorization': `Bearer ${newToken}`
+                                };
+                                return fetch(url, options);
+                            }).catch(err => {
+                                console.error('Error en cola de refresco:', err);
+                                return response;
+                            });
+                        }
+                        
+                        isRefreshingToken = true;
+                        
+                        try {
+                            const newTokens = await refreshTokens();
+                            
+                            if (newTokens && newTokens.access_token) {
+                                options.headers = {
+                                    ...options.headers,
+                                    'Authorization': `Bearer ${newTokens.access_token}`
+                                };
+                                
+                                processFailedQueue(null, newTokens.access_token);
+                                const retryResponse = await fetch(url, options);
+                                isRefreshingToken = false;
+                                return retryResponse;
+                            } else {
+                                throw new Error('No se pudo refrescar el token');
+                            }
+                        } catch (refreshError) {
+                            console.error('❌ Error refrescando token:', refreshError);
+                            processFailedQueue(refreshError, null);
+                            isRefreshingToken = false;
+                            clearUserSession();
+                            showLoginInterface();
+                            showAlert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
+                            return response;
+                        }
+                    }
+                }
+                
+                if (response.ok && currentUser) {
+                    updateLastActivity();
+                }
+                
+                return response;
+                
+            } catch (error) {
+                console.error('❌ Error en fetchWithAuth:', error);
+                throw error;
+            }
+        }
+        
+        async function refreshTokens() {
+            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+            
+            if (!refreshToken) {
+                console.warn('⚠️ No hay refresh token disponible');
+                return null;
+            }
+            
+            try {
+                console.log('🔄 Refrescando tokens...');
+                
+                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${refreshToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    saveTokens(data.access_token, data.refresh_token);
+                    
+                    if (data.user) {
+                        saveUserData(data.user);
+                        currentUser = data.user;
+                        updateUserInfo();
+                    }
+                    
+                    updateSessionExpiration();
+                    console.log('✅ Tokens refrescados exitosamente');
+                    return {
+                        access_token: data.access_token,
+                        refresh_token: data.refresh_token
+                    };
+                } else {
+                    console.error('❌ Error en respuesta de refresh:', response.status);
+                    return null;
+                }
+            } catch (error) {
+                console.error('❌ Error en refreshTokens:', error);
+                return null;
+            }
+        }
+        
+        function saveTokens(accessToken, refreshToken) {
+            setStorageItem(STORAGE_KEYS.TOKEN, accessToken);
+            setStorageItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+        }
+        
+        function saveUserData(user) {
+            setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user));
+        }
+        
+        function updateSessionExpiration() {
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 30);
+            setStorageItem(STORAGE_KEYS.SESSION_EXPIRES, expires.toISOString());
+        }
+        
+        function updateLastActivity() {
+            const now = new Date().toISOString();
+            setStorageItem(STORAGE_KEYS.LAST_ACTIVITY, now);
+        }
+        
+        function processFailedQueue(error, token = null) {
+            failedRequestsQueue.forEach(prom => {
+                if (error) {
+                    prom.reject(error);
+                } else {
+                    prom.resolve(token);
+                }
+            });
+            failedRequestsQueue = [];
+        }
+        
+        // ========== SISTEMA DE USUARIO ==========
+        
+        function initializeUserSystem() {
+            console.log('🔐 Verificando sesión del usuario...');
+            
+            const userData = getStorageItem(STORAGE_KEYS.USER);
+            const token = getStorageItem(STORAGE_KEYS.TOKEN);
+            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+            
+            if (token && userData && refreshToken) {
+                try {
+                    currentUser = JSON.parse(userData);
+                    console.log('✅ Usuario encontrado:', currentUser.nombre);
+                    showUserInterface();
+                    updateLastActivity();
+                } catch (error) {
+                    console.error('❌ Error parseando datos de usuario:', error);
+                    clearUserSession();
+                    showLoginInterface();
+                }
+            } else {
+                console.log('ℹ️ No hay sesión activa');
+                showLoginInterface();
+            }
+            
+            initializeMobileMenu();
+        }
+        
+        function showUserInterface() {
+            const loginBtn = document.getElementById('login-btn');
+            const loggedUser = document.getElementById('logged-user');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (loggedUser) loggedUser.style.display = 'flex';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'block';
+            
+            updateUserInfo();
+            
+            const avatar = document.getElementById('user-avatar');
+            if (avatar && currentUser) {
+                const letter = currentUser.nombre 
+                    ? currentUser.nombre.charAt(0).toUpperCase() 
+                    : currentUser.email.charAt(0).toUpperCase();
+                
+                avatar.textContent = letter;
+                
+                if (currentUser.rol === 'admin') {
+                    avatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    avatar.title = `Administrador: ${currentUser.nombre}`;
+                } else {
+                    avatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
+                    avatar.title = `Usuario: ${currentUser.nombre}`;
+                }
+                
+                avatar.onclick = toggleUserDropdown;
+                avatar.onkeydown = function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleUserDropdown();
+                    }
+                };
+            }
+        }
+        
+        function showLoginInterface() {
+            const loginBtn = document.getElementById('login-btn');
+            const loggedUser = document.getElementById('logged-user');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            
+            if (loginBtn) loginBtn.style.display = 'flex';
+            if (loggedUser) loggedUser.style.display = 'none';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'none';
+            
+            if (userDropdown && userDropdownOpen) {
+                closeUserDropdown();
+            }
+        }
+        
+        function updateUserInfo() {
+            if (!currentUser) return;
+            
+            const userName = document.getElementById('user-name');
+            const userRole = document.getElementById('user-role');
+            
+            if (userName) {
+                userName.textContent = currentUser.nombre || currentUser.email.split('@')[0];
+            }
+            
+            if (userRole) {
+                userRole.textContent = currentUser.rol || 'user';
+                userRole.className = 'user-role ' + (currentUser.rol === 'admin' ? 'admin' : '');
+            }
+        }
+        
+        function toggleUserDropdown() {
+            if (!currentUser) return;
+            
+            if (!userDropdown) {
+                createUserDropdown();
+            }
+            
+            if (userDropdownOpen) {
+                closeUserDropdown();
+            } else {
+                openUserDropdown();
+            }
+        }
+        
+        function createUserDropdown() {
+            const existing = document.getElementById('user-dropdown-menu');
+            if (existing) existing.remove();
+            
+            userDropdown = document.createElement('div');
+            userDropdown.id = 'user-dropdown-menu';
+            userDropdown.className = 'user-dropdown-menu';
+            
+            const isAdmin = currentUser.rol === 'admin';
+            
+            userDropdown.innerHTML = `
+                <div class="user-dropdown-header">
+                    <div style="font-weight: bold; font-size: 16px;">${currentUser.nombre || 'Usuario'}</div>
+                    <div class="user-dropdown-email">${currentUser.email}</div>
+                    ${isAdmin ? '<div style="font-size: 12px; margin-top: 4px; padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; display: inline-block;">Administrador</div>' : ''}
+                </div>
+                <a href="usuario.html" class="user-dropdown-link" id="user-account-link">
+                    <i class="bi bi-person"></i> Mi Cuenta
+                    ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
+                </a>
+                ${isAdmin ? `
+                <a href="admin.html" class="user-dropdown-link">
+                    <i class="bi bi-shield-check"></i> Panel de Administración
+                </a>
+                ` : ''}
+                <a href="reservas.html" class="user-dropdown-link">
+                    <i class="bi bi-calendar-check"></i> Mis Reservas
+                </a>
+                <a href="#" class="user-dropdown-link" id="logout-link">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a>
+            `;
+            
+            document.getElementById('user-menu-container').appendChild(userDropdown);
+            
+            const accountLink = document.getElementById('user-account-link');
+            if (accountLink) {
+                accountLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.setItem('redirecting_to_user', 'true');
+                    window.location.href = 'usuario.html';
+                });
+            }
+            
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            const links = userDropdown.querySelectorAll('.user-dropdown-link');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.background = '#f5f5f5';
+                });
+                link.addEventListener('mouseleave', function() {
+                    this.style.background = '';
+                });
+            });
+        }
+        
+        function openUserDropdown() {
+            if (!userDropdown) return;
+            
+            userDropdown.classList.add('show');
+            userDropdownOpen = true;
+            
+            setTimeout(() => {
+                document.addEventListener('click', closeUserDropdownOnClickOutside);
+                document.addEventListener('keydown', closeUserDropdownOnEscape);
+            }, 10);
+        }
+        
+        function closeUserDropdown() {
+            if (userDropdown) {
+                userDropdown.classList.remove('show');
+                userDropdownOpen = false;
+                document.removeEventListener('click', closeUserDropdownOnClickOutside);
+                document.removeEventListener('keydown', closeUserDropdownOnEscape);
+            }
+        }
+        
+        function closeUserDropdownOnClickOutside(e) {
+            if (userDropdown && 
+                !userDropdown.contains(e.target) && 
+                !document.getElementById('user-avatar').contains(e.target)) {
+                closeUserDropdown();
+            }
+        }
+        
+        function closeUserDropdownOnEscape(e) {
+            if (e.key === 'Escape' && userDropdownOpen) {
+                closeUserDropdown();
+            }
+        }
+        
+        function logout() {
+            if (confirm('¿Estás seguro de cerrar sesión?')) {
+                clearUserSession();
+                showLoginInterface();
+                showAlert('Sesión cerrada correctamente', 'success');
+            }
+        }
+        
+        function clearUserSession() {
+            Object.values(STORAGE_KEYS).forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+            
+            currentUser = null;
+            console.log('✅ Sesión completamente limpiada');
+        }
+        
+        // ========== FUNCIONES DE UI ==========
+        
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+            }
+        }
+        
+        function showAlert(message, type = 'info') {
+            let alertDiv = document.getElementById('site-alert');
+            if (!alertDiv) {
+                alertDiv = document.createElement('div');
+                alertDiv.id = 'site-alert';
+                alertDiv.className = 'site-alert';
+                document.body.appendChild(alertDiv);
+            }
+            
+            alertDiv.textContent = message;
+            alertDiv.className = `site-alert ${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 4000);
+        }
+        
+        function showFormAlert(type, message) {
+            const container = document.getElementById('alerts-container');
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
+        function initializeMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const menuClose = document.getElementById('mobile-menu-close');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            const menuContainer = document.getElementById('mobile-menu-container');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                });
+            }
+            
+            if (menuClose) {
+                menuClose.addEventListener('click', closeMobileMenu);
+            }
+            
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', closeMobileMenu);
+            }
+            
+            const mobileLinks = document.querySelectorAll('.mobile-menu-nav a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isMobileMenuOpen) {
+                    closeMobileMenu();
+                }
+            });
+        }
+        
+        function openMobileMenu() {
+            const menuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            if (menuContainer && menuOverlay) {
+                menuContainer.classList.add('active');
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                isMobileMenuOpen = true;
+                closeUserDropdown();
+            }
+        }
+        
+        function closeMobileMenu() {
+            const menuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            if (menuContainer && menuOverlay) {
+                menuContainer.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                isMobileMenuOpen = false;
+            }
+        }
+        
+        // ========== SISTEMA DE RESERVAS ==========
+        
+        function initializeReservaSystem() {
+            console.log('📅 Inicializando sistema de reservas...');
+            
+            loadTours();
+            initFlatpickr();
+            setupPaymentMethods();
+            setupEventListeners();
+            
+            // Cargar datos del usuario si está logueado
+            if (currentUser) {
+                loadUserData();
+            }
+        }
+        
+        async function loadTours() {
+            try {
+                console.log('🔄 Cargando tours desde API...');
+                
+                const response = await fetchWithAuth(`${API_BASE_URL}/tours`);
+                
+                if (response.ok) {
+                    const tours = await response.json();
+                    renderTours(tours);
+                    console.log(`✅ ${tours.length} tours cargados`);
+                } else {
+                    console.error('❌ Error cargando tours:', response.status);
+                    renderFallbackTours();
+                }
+            } catch (error) {
+                console.error('❌ Error de conexión:', error);
+                renderFallbackTours();
+            }
+        }
+        
+        function renderTours(tours) {
+            const container = document.getElementById('tours-container');
+            if (!container) return;
+            
+            if (!tours || tours.length === 0) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: #f39c12; margin-bottom: 1rem;"></i>
+                        <p>No hay tours disponibles en este momento.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            tours.forEach(tour => {
+                const tourCard = document.createElement('div');
+                tourCard.className = 'tour-card';
+                tourCard.dataset.id = tour.id;
+                
+                tourCard.innerHTML = `
+                    <div class="tour-header">
+                        <div class="tour-title">${tour.nombre}</div>
+                        <div class="tour-price">$${tour.precio ? parseFloat(tour.precio).toFixed(2) : '25.00'}</div>
+                    </div>
+                    <p class="tour-desc">${tour.descripcion || 'Descripción no disponible'}</p>
+                    <div class="tour-features">
+                        <div class="tour-feature">
+                            <i class="bi bi-clock"></i>
+                            <span>${tour.duracion || '2 horas'}</span>
+                        </div>
+                        <div class="tour-feature">
+                            <i class="bi bi-people"></i>
+                            <span>Máx. ${tour.capacidad_maxima || '10'} personas</span>
+                        </div>
+                    </div>
+                `;
+                
+                tourCard.addEventListener('click', () => selectTour(tour));
+                container.appendChild(tourCard);
+            });
+        }
+        
+        function renderFallbackTours() {
+            const fallbackTours = [
                 {
                     id: 1,
                     nombre: 'Tour Explorador Básico',
                     descripcion: 'Recorrido introductorio por los manglares de Caño Salao, ideal para toda la familia.',
                     precio: 25.00,
                     duracion: '2 horas',
-                    capacidad: 'Máx. 10 personas',
-                    popular: true
+                    capacidad_maxima: '10'
                 },
                 {
                     id: 2,
@@ -974,8 +2162,7 @@
                     descripcion: 'Experiencia completa con avistamiento de aves y gastronomía local incluida.',
                     precio: 45.00,
                     duracion: '4 horas',
-                    capacidad: 'Máx. 8 personas',
-                    popular: true
+                    capacidad_maxima: '8'
                 },
                 {
                     id: 3,
@@ -983,295 +2170,298 @@
                     descripcion: 'Aventura exclusiva diseñada según tus intereses con guía especializado.',
                     precio: 65.00,
                     duracion: '6 horas',
-                    capacidad: 'Máx. 6 personas',
-                    popular: false
-                },
-                {
-                    id: 4,
-                    nombre: 'Tour Fotográfico Especial',
-                    descripcion: 'Para amantes de la fotografía, con horarios especiales y guía experto.',
-                    precio: 55.00,
-                    duracion: '3 horas',
-                    capacidad: 'Máx. 6 personas',
-                    popular: true
+                    capacidad_maxima: '6'
                 }
             ];
             
-            let selectedTour = null;
-            let includeDonation = true;
+            renderTours(fallbackTours);
+        }
+        
+        function selectTour(tour) {
+            selectedTour = tour;
             
-            // ========== FUNCIONES PRINCIPALES ==========
-            
-            function init() {
-                renderTours();
-                initFlatpickr();
-                setupPaymentMethods();
-                setupEventListeners();
-                loadDemoData();
-            }
-            
-            function renderTours() {
-                const container = document.getElementById('tours-container');
-                container.innerHTML = '';
-                
-                tours.forEach(tour => {
-                    const tourCard = document.createElement('div');
-                    tourCard.className = 'tour-card';
-                    tourCard.dataset.id = tour.id;
-                    
-                    tourCard.innerHTML = `
-                        <div class="tour-header">
-                            <div class="tour-title">${tour.nombre}</div>
-                            <div class="tour-price">$${tour.precio.toFixed(2)}</div>
-                        </div>
-                        <p class="tour-desc">${tour.descripcion}</p>
-                        <div class="tour-features">
-                            <div class="tour-feature">
-                                <i class="bi bi-clock"></i>
-                                <span>${tour.duracion}</span>
-                            </div>
-                            <div class="tour-feature">
-                                <i class="bi bi-people"></i>
-                                <span>${tour.capacidad}</span>
-                            </div>
-                            ${tour.popular ? '<div class="tour-badge">Popular</div>' : ''}
-                        </div>
-                    `;
-                    
-                    tourCard.addEventListener('click', () => selectTour(tour));
-                    container.appendChild(tourCard);
-                });
-            }
-            
-            function selectTour(tour) {
-                selectedTour = tour;
-                
-                // Actualizar selección visual
-                document.querySelectorAll('.tour-card').forEach(card => {
-                    card.classList.remove('selected');
-                    if (parseInt(card.dataset.id) === tour.id) {
-                        card.classList.add('selected');
-                    }
-                });
-                
-                // Mostrar información del tour seleccionado
-                const display = document.getElementById('selected-tour-display');
-                display.style.display = 'block';
-                
-                document.getElementById('selected-tour-name').textContent = tour.nombre;
-                document.getElementById('selected-tour-price').textContent = `$${tour.precio.toFixed(2)}`;
-                document.getElementById('selected-tour-desc').textContent = tour.descripcion;
-                
-                // Actualizar resumen
-                updateSummary();
-                
-                // Desplazar al formulario
-                setTimeout(() => {
-                    document.querySelector('.form-section').scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }, 300);
-            }
-            
-            function initFlatpickr() {
-                flatpickr('#fecha', {
-                    locale: 'es',
-                    minDate: 'today',
-                    dateFormat: 'd/m/Y',
-                    defaultDate: new Date(Date.now() + 86400000 * 3),
-                    onChange: updateSummary
-                });
-            }
-            
-            function updateSummary() {
-                if (!selectedTour) return;
-                
-                const fecha = document.getElementById('fecha').value;
-                const personas = parseInt(document.getElementById('personas').value) || 1;
-                const precioUnitario = selectedTour.precio;
-                const subtotal = precioUnitario * personas;
-                let total = subtotal;
-                
-                if (includeDonation) {
-                    const contribucion = subtotal * 0.05;
-                    total += contribucion;
-                    
-                    document.getElementById('contribucion-item').style.display = 'flex';
-                    document.getElementById('summary-contribucion').textContent = `$${contribucion.toFixed(2)}`;
-                } else {
-                    document.getElementById('contribucion-item').style.display = 'none';
+            document.querySelectorAll('.tour-card').forEach(card => {
+                card.classList.remove('selected');
+                if (parseInt(card.dataset.id) === tour.id) {
+                    card.classList.add('selected');
                 }
-                
-                document.getElementById('summary-tour').textContent = selectedTour.nombre;
-                document.getElementById('summary-fecha').textContent = fecha || '-';
-                document.getElementById('summary-personas').textContent = personas;
-                document.getElementById('summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-                document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
-            }
+            });
             
-            window.toggleDonation = function() {
-                const donationOption = document.getElementById('donation-option');
-                const donationIcon = donationOption.querySelector('.donation-icon i');
-                const donationInput = document.getElementById('incluir_contribucion');
-                
-                includeDonation = !includeDonation;
-                
-                if (includeDonation) {
-                    donationOption.classList.add('selected');
-                    donationIcon.className = 'bi bi-check-lg';
-                    donationInput.value = 'true';
-                } else {
-                    donationOption.classList.remove('selected');
-                    donationIcon.className = 'bi bi-plus';
-                    donationInput.value = 'false';
-                }
-                
-                updateSummary();
-            };
+            const display = document.getElementById('selected-tour-display');
+            display.style.display = 'block';
             
-            function setupPaymentMethods() {
-                const tabs = document.querySelectorAll('.payment-tab');
-                tabs.forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        const method = this.dataset.method;
-                        
-                        // Actualizar tabs
-                        tabs.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Actualizar método de pago
-                        document.getElementById('metodo_pago').value = method;
-                        
-                        // Mostrar detalles
-                        showPaymentDetails(method);
-                    });
+            document.getElementById('selected-tour-name').textContent = tour.nombre;
+            document.getElementById('selected-tour-price').textContent = `$${tour.precio ? parseFloat(tour.precio).toFixed(2) : '25.00'}`;
+            document.getElementById('selected-tour-desc').textContent = tour.descripcion || 'Descripción no disponible';
+            
+            updateSummary();
+            
+            setTimeout(() => {
+                document.querySelector('.form-section').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
                 });
-                
-                // Mostrar detalles iniciales
-                showPaymentDetails('tarjeta');
+            }, 300);
+        }
+        
+        function initFlatpickr() {
+            flatpickr('#fecha', {
+                locale: 'es',
+                minDate: 'today',
+                dateFormat: 'd/m/Y',
+                defaultDate: new Date(Date.now() + 86400000 * 3),
+                onChange: updateSummary
+            });
+        }
+        
+        window.toggleDonation = function() {
+            const donationOption = document.getElementById('donation-option');
+            const donationIcon = donationOption.querySelector('.donation-icon i');
+            const donationInput = document.getElementById('incluir_contribucion');
+            
+            includeDonation = !includeDonation;
+            
+            if (includeDonation) {
+                donationOption.classList.add('selected');
+                donationIcon.className = 'bi bi-check-lg';
+                donationInput.value = 'true';
+            } else {
+                donationOption.classList.remove('selected');
+                donationIcon.className = 'bi bi-plus';
+                donationInput.value = 'false';
             }
             
-            function showPaymentDetails(method) {
-                const container = document.getElementById('payment-details');
+            updateSummary();
+        };
+        
+        function updateSummary() {
+            if (!selectedTour) return;
+            
+            const fecha = document.getElementById('fecha').value;
+            const personas = parseInt(document.getElementById('personas').value) || 1;
+            const precioUnitario = selectedTour.precio ? parseFloat(selectedTour.precio) : 25.00;
+            const subtotal = precioUnitario * personas;
+            let total = subtotal;
+            
+            if (includeDonation) {
+                const contribucion = subtotal * 0.05;
+                total += contribucion;
                 
-                switch(method) {
-                    case 'tarjeta':
-                        container.innerHTML = `
-                            <div class="payment-info">
-                                <h4><i class="bi bi-credit-card"></i> Pago con Tarjeta</h4>
-                                <p>Puedes pagar con cualquier tarjeta Visa o Mastercard.</p>
+                document.getElementById('contribucion-item').style.display = 'flex';
+                document.getElementById('summary-contribucion').textContent = `$${contribucion.toFixed(2)}`;
+            } else {
+                document.getElementById('contribucion-item').style.display = 'none';
+            }
+            
+            document.getElementById('summary-tour').textContent = selectedTour.nombre;
+            document.getElementById('summary-fecha').textContent = fecha || '-';
+            document.getElementById('summary-personas').textContent = personas;
+            document.getElementById('summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
+        }
+        
+        function setupPaymentMethods() {
+            const tabs = document.querySelectorAll('.payment-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const method = this.dataset.method;
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.getElementById('metodo_pago').value = method;
+                    showPaymentDetails(method);
+                });
+            });
+            
+            showPaymentDetails('tarjeta');
+        }
+        
+        function showPaymentDetails(method) {
+            const container = document.getElementById('payment-details');
+            
+            switch(method) {
+                case 'tarjeta':
+                    container.innerHTML = `
+                        <div class="payment-info">
+                            <h4><i class="bi bi-credit-card"></i> Pago con Tarjeta</h4>
+                            <p>Puedes pagar con cualquier tarjeta Visa o Mastercard. Los datos son opcionales.</p>
+                        </div>
+                        <fieldset class="card-fields">
+                            <legend>Datos de tarjeta (opcionales)</legend>
+                            <div class="form-group">
+                                <input type="text" id="card-number" class="form-control" placeholder="Número de tarjeta (ej: 4242 4242 4242 4242)" maxlength="19">
                             </div>
-                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
-                                <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
-                                    <i class="bi bi-info-circle"></i> Datos de prueba para desarrollo:
-                                </p>
-                                <div style="font-family: monospace; font-size: 0.85rem;">
-                                    <div>Tarjeta: 4242 4242 4242 4242</div>
-                                    <div>Vencimiento: 12/30</div>
-                                    <div>CVV: 123</div>
+                            <div class="card-row">
+                                <div class="form-group">
+                                    <input type="text" id="card-expiry" class="form-control" placeholder="MM/AA (ej: 12/25)" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="card-cvc" class="form-control" placeholder="CVC (ej: 123)" maxlength="4">
                                 </div>
                             </div>
-                        `;
-                        break;
-                        
-                    case 'movil':
-                        container.innerHTML = `
-                            <div class="payment-info">
-                                <h4><i class="bi bi-phone"></i> Pago Móvil</h4>
-                                <p>Realiza el pago móvil a los siguientes datos:</p>
-                                <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
-                                    <li>Banco: Banco de Venezuela</li>
-                                    <li>Teléfono: 0412-205-6558</li>
-                                    <li>Cédula: 12.345.678</li>
-                                </ul>
-                                <p>Envía el comprobante a nuestro WhatsApp: +58 412-205-6558</p>
-                            </div>
-                        `;
-                        break;
-                        
-                    case 'transferencia':
-                        container.innerHTML = `
-                            <div class="payment-info">
-                                <h4><i class="bi bi-bank"></i> Transferencia Bancaria</h4>
-                                <p>Datos bancarios para transferencia:</p>
-                                <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
-                                    <li>Banco: Banco de Venezuela</li>
-                                    <li>Cuenta: 0102-1234-5678-9012</li>
-                                    <li>Titular: Proyecto Caño Salao</li>
-                                    <li>RIF: J-12345678-9</li>
-                                </ul>
-                                <p>Envía el comprobante a: reservas@canosalao.com</p>
-                            </div>
-                        `;
-                        break;
-                        
-                    case 'efectivo':
-                        container.innerHTML = `
-                            <div class="payment-info">
-                                <h4><i class="bi bi-cash"></i> Pago en Efectivo</h4>
-                                <p>Paga en efectivo al llegar al punto de encuentro.</p>
-                                <p><strong>Instrucciones:</strong></p>
-                                <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
-                                    <li>Trae el monto exacto indicado en el resumen</li>
-                                    <li>Horario para pagos: 8:00 AM - 5:00 PM</li>
-                                    <li>Punto de encuentro: Muelle principal de Caño Salao</li>
-                                </ul>
-                            </div>
-                        `;
-                        break;
+                            <p class="optional-note"><i class="bi bi-info-circle"></i> Estos datos son opcionales. Puedes completarlos ahora o más tarde.</p>
+                        </fieldset>
+                    `;
+                    break;
+                    
+                case 'movil':
+                    container.innerHTML = `
+                        <div class="payment-info">
+                            <h4><i class="bi bi-phone"></i> Pago Móvil</h4>
+                            <p>Realiza el pago móvil a los siguientes datos:</p>
+                            <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
+                                <li>Banco: Banco de Venezuela</li>
+                                <li>Teléfono: 0412-205-6558</li>
+                                <li>Cédula: 12.345.678</li>
+                            </ul>
+                            <p>Envía el comprobante a nuestro WhatsApp: +58 412-205-6558</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'transferencia':
+                    container.innerHTML = `
+                        <div class="payment-info">
+                            <h4><i class="bi bi-bank"></i> Transferencia Bancaria</h4>
+                            <p>Datos bancarios para transferencia:</p>
+                            <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
+                                <li>Banco: Banco de Venezuela</li>
+                                <li>Cuenta: 0102-1234-5678-9012</li>
+                                <li>Titular: Proyecto Caño Salao</li>
+                                <li>RIF: J-12345678-9</li>
+                            </ul>
+                            <p>Envía el comprobante a: reservas@canosalao.com</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'efectivo':
+                    container.innerHTML = `
+                        <div class="payment-info">
+                            <h4><i class="bi bi-cash"></i> Pago en Efectivo</h4>
+                            <p>Paga en efectivo al llegar al punto de encuentro.</p>
+                            <p><strong>Instrucciones:</strong></p>
+                            <ul style="padding-left: 1.2rem; margin: 0.5rem 0;">
+                                <li>Trae el monto exacto indicado en el resumen</li>
+                                <li>Horario para pagos: 8:00 AM - 5:00 PM</li>
+                                <li>Punto de encuentro: Muelle principal de Caño Salao</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+        
+        function loadUserData() {
+            if (!currentUser) return;
+            
+            // Prellenar datos del usuario si está logueado
+            document.getElementById('nombre').value = currentUser.nombre || '';
+            document.getElementById('email').value = currentUser.email || '';
+            
+            // Intentar cargar teléfono si existe
+            if (currentUser.telefono) {
+                document.getElementById('telefono').value = currentUser.telefono;
+            }
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('personas').addEventListener('change', updateSummary);
+            
+            document.getElementById('reservaForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!selectedTour) {
+                    showFormAlert('error', 'Por favor selecciona un tour primero');
+                    document.querySelector('.tours-section').scrollIntoView({ behavior: 'smooth' });
+                    return;
                 }
-            }
-            
-            function showAlert(type, message) {
-                const container = document.getElementById('alerts-container');
                 
-                const alert = document.createElement('div');
-                alert.className = `alert alert-${type}`;
-                alert.innerHTML = `
-                    <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'}"></i>
-                    <span>${message}</span>
-                `;
-                
-                container.appendChild(alert);
-                
-                setTimeout(() => {
-                    alert.remove();
-                }, 5000);
-            }
-            
-            function loadDemoData() {
-                if (!localStorage.getItem('reservas_demo_loaded')) {
-                    setTimeout(() => {
-                        document.getElementById('nombre').value = 'María González';
-                        document.getElementById('email').value = 'maria.gonzalez@email.com';
-                        document.getElementById('telefono').value = '+58 412-1234567';
-                        localStorage.setItem('reservas_demo_loaded', 'true');
-                    }, 1000);
+                if (!document.getElementById('terminos').checked) {
+                    showFormAlert('error', 'Debes aceptar los términos y condiciones');
+                    return;
                 }
-            }
-            
-            function setupEventListeners() {
-                // Actualizar resumen cuando cambian los datos
-                document.getElementById('personas').addEventListener('change', updateSummary);
                 
-                // Envío del formulario
-                document.getElementById('reservaForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    if (!selectedTour) {
-                        showAlert('error', 'Por favor selecciona un tour primero');
-                        document.querySelector('.tours-section').scrollIntoView({ behavior: 'smooth' });
-                        return;
+                // Verificar si el usuario está logueado
+                if (!currentUser) {
+                    const proceed = confirm('Para realizar una reserva, necesitas iniciar sesión. ¿Deseas ir a la página de inicio de sesión?');
+                    if (proceed) {
+                        window.location.href = 'login.html?redirect=reservas.html';
                     }
-                    
-                    if (!document.getElementById('terminos').checked) {
-                        showAlert('error', 'Debes aceptar los términos y condiciones');
-                        return;
-                    }
-                    
+                    return;
+                }
+                
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Procesando...';
+                submitBtn.disabled = true;
+                
+                try {
+                    // Preparar datos de la reserva
                     const reservationData = {
-                        tour: selectedTour.nombre,
+                        tour_id: selectedTour.id,
+                        nombre: document.getElementById('nombre').value,
+                        email: document.getElementById('email').value,
+                        telefono: document.getElementById('telefono').value,
+                        fecha: document.getElementById('fecha').value,
+                        personas: document.getElementById('personas').value,
+                        metodo_pago: document.getElementById('metodo_pago').value,
+                        incluye_contribucion: includeDonation,
+                        total: parseFloat(document.getElementById('summary-total').textContent.replace('$', '')),
+                        usuario_id: currentUser.id,
+                        // Datos de tarjeta opcionales
+                        datos_tarjeta: document.getElementById('metodo_pago').value === 'tarjeta' ? {
+                            numero: document.getElementById('card-number')?.value || '',
+                            expiracion: document.getElementById('card-expiry')?.value || '',
+                            cvc: document.getElementById('card-cvc')?.value || ''
+                        } : null
+                    };
+                    
+                    // Enviar reserva a la API
+                    const response = await fetchWithAuth(`${API_BASE_URL}/reservas`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(reservationData)
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        
+                        // Mostrar éxito
+                        const reservationCode = result.codigo || `CS-${Date.now().toString().slice(-8)}`;
+                        showFormAlert('success', `¡Reserva confirmada exitosamente!<br><strong>Código: ${reservationCode}</strong><br>Te hemos enviado un correo de confirmación.`);
+                        
+                        // Guardar en localStorage para referencia
+                        const reservas = JSON.parse(localStorage.getItem('cano_salao_reservas') || '[]');
+                        reservas.push({
+                            id: reservationCode,
+                            ...reservationData,
+                            fecha_reserva: new Date().toISOString()
+                        });
+                        localStorage.setItem('cano_salao_reservas', JSON.stringify(reservas));
+                        
+                        // Resetear después de 3 segundos
+                        setTimeout(() => {
+                            resetForm();
+                        }, 3000);
+                        
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        showFormAlert('error', errorData.message || 'Error al procesar la reserva. Por favor intenta nuevamente.');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error en reserva:', error);
+                    showFormAlert('error', 'Error de conexión. Por favor verifica tu conexión e intenta nuevamente.');
+                    
+                    // Como fallback, guardar localmente
+                    const reservationCode = `CS-${Date.now().toString().slice(-8)}`;
+                    const reservationData = {
+                        tour_id: selectedTour.id,
+                        tour_nombre: selectedTour.nombre,
                         nombre: document.getElementById('nombre').value,
                         email: document.getElementById('email').value,
                         telefono: document.getElementById('telefono').value,
@@ -1279,13 +2469,10 @@
                         personas: document.getElementById('personas').value,
                         metodo_pago: document.getElementById('metodo_pago').value,
                         total: document.getElementById('summary-total').textContent,
-                        incluye_contribucion: includeDonation,
-                        fecha_reserva: new Date().toISOString()
+                        fecha_reserva: new Date().toISOString(),
+                        usuario_id: currentUser?.id || null
                     };
                     
-                    const reservationCode = `CS-${Date.now().toString().slice(-8)}`;
-                    
-                    // Guardar en localStorage
                     const reservas = JSON.parse(localStorage.getItem('cano_salao_reservas') || '[]');
                     reservas.push({
                         id: reservationCode,
@@ -1293,51 +2480,45 @@
                     });
                     localStorage.setItem('cano_salao_reservas', JSON.stringify(reservas));
                     
-                    showAlert('success', `¡Reserva confirmada exitosamente!<br><strong>Código: ${reservationCode}</strong><br>Te hemos enviado un correo de confirmación.`);
+                    showFormAlert('warning', `¡Reserva guardada localmente!<br><strong>Código: ${reservationCode}</strong><br>La sincronización con el servidor falló, pero tu reserva está guardada.`);
                     
-                    // Resetear después de 2 segundos
                     setTimeout(() => {
                         resetForm();
-                    }, 2000);
-                });
-            }
+                    }, 3000);
+                    
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+        
+        function resetForm() {
+            document.getElementById('reservaForm').reset();
             
-            function resetForm() {
-                document.getElementById('reservaForm').reset();
-                
-                // Resetear selección de tour
-                document.querySelectorAll('.tour-card').forEach(card => {
-                    card.classList.remove('selected');
-                });
-                
-                // Ocultar información del tour seleccionado
-                document.getElementById('selected-tour-display').style.display = 'none';
-                selectedTour = null;
-                
-                // Resetear fecha
-                flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
-                
-                // Resetear contribución
-                includeDonation = true;
-                const donationOption = document.getElementById('donation-option');
-                const donationIcon = donationOption.querySelector('.donation-icon i');
-                donationOption.classList.add('selected');
-                donationIcon.className = 'bi bi-check-lg';
-                document.getElementById('incluir_contribucion').value = 'true';
-                
-                // Resetear resumen
-                updateSummary();
-                
-                // Regresar a la sección de tours
-                document.querySelector('.tours-section').scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+            document.querySelectorAll('.tour-card').forEach(card => {
+                card.classList.remove('selected');
+            });
             
-            // ========== INICIAR APLICACIÓN ==========
-            init();
-        });
+            document.getElementById('selected-tour-display').style.display = 'none';
+            selectedTour = null;
+            
+            flatpickr('#fecha').setDate(new Date(Date.now() + 86400000 * 3), true);
+            
+            includeDonation = true;
+            const donationOption = document.getElementById('donation-option');
+            const donationIcon = donationOption.querySelector('.donation-icon i');
+            donationOption.classList.add('selected');
+            donationIcon.className = 'bi bi-check-lg';
+            document.getElementById('incluir_contribucion').value = 'true';
+            
+            updateSummary();
+            
+            document.querySelector('.tours-section').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     </script>
 </body>
 </html>
