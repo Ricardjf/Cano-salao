@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Ruta Turística Caño Salao</title>
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        /* ========== ESTILOS COMPLETOS ========== */
+        :root {
+            --primary: #0d3b66;
+            --secondary: #1a7fb8;
+            --accent: #e62b7e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --dark: #343a40;
+            --orange: #FF8C42;
+            --success: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: #f5f7fa;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* ===== LOADER ===== */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0d3b66;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-shrink: 0;
+            z-index: 1002;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+            border-radius: 50%;
+            display: block;
+            flex-shrink: 0;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+            white-space: nowrap;
+        }
+        
+        .text-orange {
+            color: #FF8C42;
+        }
+        
+        /* ===== NAVEGACIÓN DESKTOP ===== */
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        nav {
+            width: 100%;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+        }
+        
+        nav ul li {
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: rgba(255,255,255,0.95);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.1);
+            touch-action: manipulation;
+        }
+        
+        nav ul li a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        nav ul li a.active {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        /* ===== SISTEMA DE USUARIO ===== */
+        .user-menu-container {
+            position: relative;
+            z-index: 1002;
+        }
+        
+        .logged-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 44px;
+        }
+        
+        .logged-user:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        
+        .user-role.admin {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Dropdown menu styles */
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 220px;
+            z-index: 1001;
+            overflow: hidden;
+            margin-top: 5px;
+            display: none;
+            animation: fadeInDown 0.2s ease;
+            border: 1px solid #eee;
+        }
+        
+        .user-dropdown-menu.show {
+            display: block;
+        }
+        
+        .user-dropdown-header {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #1a7fb8, #0d3b66);
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+            margin-top: 2px;
+        }
+        
+        .user-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .user-dropdown-menu a:hover {
+            background: #f5f5f5;
+        }
+        
+        .user-dropdown-menu a:last-child {
+            border-bottom: none;
+            color: #e74c3c;
+        }
+        
+        .user-dropdown-menu a:last-child:hover {
+            background: #ffeaea;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: auto;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Sección de autenticación */
+        .auth-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            z-index: 1002;
+        }
+        
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            min-height: 44px;
+        }
+        
+        .login-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        /* ===== MENÚ MÓVIL ===== */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            z-index: 1002;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
+            touch-action: manipulation;
+            min-width: 44px;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mobile-menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .mobile-menu-container {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #1a7fb8 0%, #0d3b66 100%);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+        }
+        
+        .mobile-menu-container.active {
+            right: 0;
+        }
+        
+        .mobile-menu-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.3);
+            touch-action: manipulation;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-menu-nav {
+            padding: 1rem 0;
+        }
+        
+        .mobile-menu-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-menu-nav li {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+        
+        .mobile-menu-nav li:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-menu-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s ease;
+            -webkit-tap-highlight-color: rgba(255,255,255,0.2);
+            touch-action: manipulation;
+            width: 100%;
+        }
+        
+        .mobile-menu-nav a.active {
+            background: rgba(255,255,255,0.15);
+            font-weight: 600;
+        }
+        
+        .mobile-menu-nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* ========== HERO ========== */
+        .page-hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 2.5rem 0;
+            text-align: center;
+        }
+        
+        .page-hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* ========== BREADCRUMB ========== */
+        .breadcrumb {
+            background: white;
+            padding: 0.8rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--accent);
+        }
+        
+        /* ========== BLOG SECTION ========== */
+        .blog-section {
+            padding: 3rem 0;
+            background: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Filtros de categorías */
+        .category-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        
+        .category-filter {
+            padding: 0.6rem 1.2rem;
+            background: var(--light);
+            border: 1px solid #e9ecef;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .category-filter:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .category-filter.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Grid de blogs */
+        .blogs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .blogs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Tarjeta de blog */
+        .blog-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .blog-image {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .blog-card:hover .blog-image img {
+            transform: scale(1.05);
+        }
+        
+        .blog-category {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 140, 66, 0.9);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .blog-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .blog-date, .blog-views {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .blog-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            line-height: 1.4;
+            font-weight: 600;
+        }
+        
+        .blog-excerpt {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .blog-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .blog-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+        
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .read-more {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+        
+        .read-more:hover {
+            gap: 0.8rem;
+            color: var(--secondary);
+        }
+        
+        /* Vista detallada del blog */
+        .blog-detail {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .blog-detail-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .blog-detail-title {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        
+        .blog-detail-meta {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .blog-detail-image {
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .blog-detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .blog-detail-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .blog-detail-content h2, 
+        .blog-detail-content h3 {
+            color: var(--primary);
+            margin: 2rem 0 1rem;
+        }
+        
+        .blog-detail-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .blog-detail-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .blog-detail-content blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--gray);
+        }
+        
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+        }
+        
+        .pagination-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--light);
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .page-numbers {
+            display: flex;
+            gap: 0.3rem;
+        }
+        
+        .page-number {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-number:hover {
+            background: var(--light);
+        }
+        
+        .page-number.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* ========== LOADING ========== */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            grid-column: 1 / -1;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 0.8rem;
+        }
+        
+        /* ========== SEARCH BAR ========== */
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 1px solid #e9ecef;
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state p {
+            color: var(--gray);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* ========== ALERTS ========== */
+        .site-alert {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            z-index: 9998;
+            max-width: 300px;
+            display: none;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        .site-alert.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .site-alert.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .site-alert.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .site-alert.warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* ========== FOOTER ========== */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2.5rem 0 1.2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-column h3 {
+            color: #a8d8ea;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.4rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+        
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex !important;
+            }
+            
+            .nav-center {
+                display: none !important;
+            }
+            
+            .header-content {
+                flex-wrap: nowrap;
+            }
+            
+            .logo {
+                flex: 1;
+            }
+            
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+            
+            .auth-section {
+                order: 3;
+            }
+            
+            .page-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .blog-detail {
+                padding: 1.5rem;
+            }
+            
+            .blog-detail-title {
+                font-size: 1.8rem;
+            }
+            
+            .blog-detail-image {
+                height: 250px;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .user-dropdown-menu {
+                position: fixed;
+                top: 60px;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .blogs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-filters {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                justify-content: flex-start;
+            }
+            
+            .blog-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .blog-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .read-more {
+                align-self: flex-end;
+            }
+            
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sistema de alertas -->
+    <div id="site-alert" class="site-alert"></div>
+    
+    <!-- Loader -->
+    <div id="page-loader" class="hidden">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="../index.html" class="logo">
+                    <img 
+                        src="../media/Logo_cano_60.png" 
+                        srcset="../media/Logo_cano_60.png 1x, ../media/Logo_cano_120.png 2x" 
+                        alt="Logo Caño Salao - Ruta Turística Marítima" 
+                        class="logo-img"
+                        width="35" 
+                        height="35"
+                        loading="eager"
+                        aria-hidden="true"
+                    >
+                    <h1>Caño <span class="text-orange">Salao</span></h1>
+                </a>
+
+                <!-- Navegación desktop -->
+                <div class="nav-center">
+                    <nav>
+                        <ul id="main-navigation">
+                            <li><a href="../index.html"><i class="bi bi-house"></i> <span>Inicio</span></a></li>
+                            <li><a href="Servicios.html"><i class="bi bi-list-check"></i> <span>Servicios</span></a></li>
+                            <li><a href="reservas.html"><i class="bi bi-calendar-check"></i> <span>Reservas</span></a></li>
+                            <li><a href="blog.html" class="active"><i class="bi bi-newspaper"></i> <span>Blog</span></a></li>
+                            <li><a href="Contacto.html"><i class="bi bi-telephone"></i> <span>Contacto</span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Sistema de usuario -->
+                <div class="auth-section">
+                    <div class="user-menu-container" id="user-menu-container">
+                        <a href="login.html" class="login-btn" id="login-btn">
+                            <i class="bi bi-person-circle"></i> <span class="login-text">Iniciar Sesión</span>
+                        </a>
+                        
+                        <div class="logged-user" id="logged-user" style="display: none;">
+                            <div class="user-avatar" id="user-avatar" aria-label="Menú de usuario" role="button" tabindex="0" title="Menú de usuario">U</div>
+                            <div class="user-info">
+                                <div class="user-name" id="user-name">Usuario</div>
+                                <div class="user-role" id="user-role">user</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menú móvil -->
+                <button class="menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menú móvil overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+    <!-- Menú móvil container -->
+    <div class="mobile-menu-container" id="mobile-menu-container">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <img src="../media/Logo_cano_60.png" alt="Logo Caño Salao" class="logo-img" width="35" height="35">
+                <h2 style="color: white; font-size: 1.2rem;">Caño <span class="text-orange">Salao</span></h2>
+            </div>
+            <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Cerrar menú">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <nav class="mobile-menu-nav">
+            <ul>
+                <li><a href="../index.html"><i class="bi bi-house"></i> Inicio</a></li>
+                <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Servicios</a></li>
+                <li><a href="reservas.html"><i class="bi bi-calendar-check"></i> Reservas</a></li>
+                <li><a href="blog.html" class="active"><i class="bi bi-newspaper"></i> Blog</a></li>
+                <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contacto</a></li>
+                <li id="mobile-user-menu" style="display: none;">
+                    <a href="usuario.html"><i class="bi bi-person-circle"></i> Mi Cuenta</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="container">
+            <h1>Blog de Caño Salao</h1>
+            <p class="hero-subtitle">
+                Descubre las últimas noticias, consejos de viaje y experiencias en nuestra ruta turística marítima
+            </p>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <a href="../index.html"><i class="bi bi-house"></i> Inicio</a> 
+            <i class="bi bi-chevron-right"></i> 
+            <span>Blog</span>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="bi bi-newspaper"></i> Últimas Publicaciones</h2>
+                <p>Mantente informado sobre nuestras actividades, consejos de viaje y noticias del turismo sostenible</p>
+            </div>
+            
+            <!-- Barra de búsqueda -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Buscar en el blog...">
+                </div>
+            </div>
+            
+            <!-- Filtros de categorías -->
+            <div class="category-filters" id="category-filters">
+                <div class="category-filter active" data-category="all">Todos</div>
+                <div class="category-filter" data-category="noticias">Noticias</div>
+                <div class="category-filter" data-category="viajes">Consejos de Viaje</div>
+                <div class="category-filter" data-category="naturaleza">Naturaleza</div>
+                <div class="category-filter" data-category="comunidad">Comunidad</div>
+                <div class="category-filter" data-category="turismo">Turismo Sostenible</div>
+            </div>
+            
+            <!-- Grid de blogs -->
+            <div class="blogs-grid" id="blogs-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando publicaciones del blog...</p>
+                </div>
+            </div>
+            
+            <!-- Paginación -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prev-btn" disabled>
+                    <i class="bi bi-chevron-left"></i> Anterior
+                </button>
+                <div class="page-numbers" id="page-numbers"></div>
+                <button class="pagination-btn" id="next-btn">
+                    Siguiente <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Vista detallada del blog (oculta inicialmente) -->
+            <div id="blog-detail-container" style="display: none;">
+                <button class="pagination-btn" id="back-to-blogs" style="margin-bottom: 2rem;">
+                    <i class="bi bi-arrow-left"></i> Volver al blog
+                </button>
+                <div id="blog-detail-content"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3><i class="bi bi-geo-alt"></i> Ruta Turística Caño Salao</h3>
+                    <p>Compartimos conocimiento sobre turismo sostenible, naturaleza y comunidad a través de nuestro blog.</p>
+                </div>
+                <div class="footer-column">
+                    <h3><i class="bi bi-link"></i> Navegación</h3>
+                    <ul class="footer-links">
+                        <li><a href="../index.html"><i class="bi bi-house"></i> Página de Inicio</a></li>
+                        <li><a href="Servicios.html"><i class="bi bi-list-check"></i> Nuestros Servicios</a></li>
+                        <li><a href="reservas.html"><i class="bi bi-calendar-check"></i> Sistema de Reservas</a></li>
+                        <li><a href="blog.html"><i class="bi bi-newspaper"></i> Blog</a></li>
+                        <li><a href="Contacto.html"><i class="bi bi-telephone"></i> Contáctanos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3><i class="bi bi-info-circle"></i> Información</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="bi bi-shield-check"></i> Políticas de Privacidad</a></li>
+                        <li><a href="#"><i class="bi bi-file-text"></i> Términos y Condiciones</a></li>
+                        <li><a href="#"><i class="bi bi-question-circle"></i> Preguntas Frecuentes</a></li>
+                        <li><a href="#"><i class="bi bi-telephone"></i> +58 412-205-6558</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2025 Blog de Caño Salao. Proyecto factible para el desarrollo turístico sostenible.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // ========== CONFIGURACIÓN ==========
+        const API_BASE_URL = 'https://cano-salao.onrender.com/api';
+        const STORAGE_KEYS = {
+            TOKEN: 'cano_salao_token',
+            REFRESH_TOKEN: 'cano_salao_refresh_token',
+            USER: 'cano_salao_user',
+            SESSION_EXPIRES: 'cano_salao_expires',
+            LAST_ACTIVITY: 'cano_salao_last_activity'
+        };
+        
+        // Variables globales del blog
+        let currentUser = null;
+        let userDropdown = null;
+        let userDropdownOpen = false;
+        let isMobileMenuOpen = false;
+        let isRefreshingToken = false;
+        let failedRequestsQueue = [];
+        let allBlogPosts = [];
+        let filteredBlogPosts = [];
+        let currentCategory = 'all';
+        let currentSearch = '';
+        let currentPage = 1;
+        const postsPerPage = 6;
+        
+        // ========== INICIALIZACIÓN ==========
+        (function init() {
+            console.log('🚀 Iniciando sistema de blog Caño Salao...');
+            
+            // Ocultar loader
+            hideLoader();
+            
+            // Inicializar sistema de usuario
+            initializeUserSystem();
+            
+            // Inicializar sistema de blog
+            initializeBlogSystem();
+            
+            console.log('✅ Sistema de blog inicializado');
+        })();
+        
+        // ========== SISTEMA DE GESTIÓN DE TOKENS ==========
+        
+        function getStorageItem(key) {
+            return localStorage.getItem(key);
+        }
+        
+        function setStorageItem(key, value) {
+            localStorage.setItem(key, value);
+        }
+        
+        function removeStorageItem(key) {
+            localStorage.removeItem(key);
+        }
+        
+        async function fetchWithAuth(url, options = {}) {
+            const accessToken = getStorageItem(STORAGE_KEYS.TOKEN);
+            
+            if (!accessToken) {
+                console.warn('⚠️ No hay token de acceso disponible');
+                return fetch(url, options);
+            }
+            
+            options.headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${accessToken}`
+            };
+            
+            try {
+                const response = await fetch(url, options);
+                
+                if (response.status === 401) {
+                    const responseData = await response.json().catch(() => ({}));
+                    
+                    if (responseData.error === 'token_expired' || responseData.error === 'invalid_token') {
+                        console.log('🔄 Token expirado, intentando refrescar...');
+                        
+                        if (isRefreshingToken) {
+                            return new Promise((resolve, reject) => {
+                                failedRequestsQueue.push({ resolve, reject });
+                            }).then(newToken => {
+                                options.headers = {
+                                    ...options.headers,
+                                    'Authorization': `Bearer ${newToken}`
+                                };
+                                return fetch(url, options);
+                            }).catch(err => {
+                                console.error('Error en cola de refresco:', err);
+                                return response;
+                            });
+                        }
+                        
+                        isRefreshingToken = true;
+                        
+                        try {
+                            const newTokens = await refreshTokens();
+                            
+                            if (newTokens && newTokens.access_token) {
+                                options.headers = {
+                                    ...options.headers,
+                                    'Authorization': `Bearer ${newTokens.access_token}`
+                                };
+                                
+                                processFailedQueue(null, newTokens.access_token);
+                                const retryResponse = await fetch(url, options);
+                                isRefreshingToken = false;
+                                return retryResponse;
+                            } else {
+                                throw new Error('No se pudo refrescar el token');
+                            }
+                        } catch (refreshError) {
+                            console.error('❌ Error refrescando token:', refreshError);
+                            processFailedQueue(refreshError, null);
+                            isRefreshingToken = false;
+                            clearUserSession();
+                            showLoginInterface();
+                            showAlert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'warning');
+                            return response;
+                        }
+                    }
+                }
+                
+                if (response.ok && currentUser) {
+                    updateLastActivity();
+                }
+                
+                return response;
+                
+            } catch (error) {
+                console.error('❌ Error en fetchWithAuth:', error);
+                throw error;
+            }
+        }
+        
+        async function refreshTokens() {
+            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+            
+            if (!refreshToken) {
+                console.warn('⚠️ No hay refresh token disponible');
+                return null;
+            }
+            
+            try {
+                console.log('🔄 Refrescando tokens...');
+                
+                const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${refreshToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    saveTokens(data.access_token, data.refresh_token);
+                    
+                    if (data.user) {
+                        saveUserData(data.user);
+                        currentUser = data.user;
+                        updateUserInfo();
+                    }
+                    
+                    updateSessionExpiration();
+                    console.log('✅ Tokens refrescados exitosamente');
+                    return {
+                        access_token: data.access_token,
+                        refresh_token: data.refresh_token
+                    };
+                } else {
+                    console.error('❌ Error en respuesta de refresh:', response.status);
+                    return null;
+                }
+            } catch (error) {
+                console.error('❌ Error en refreshTokens:', error);
+                return null;
+            }
+        }
+        
+        function saveTokens(accessToken, refreshToken) {
+            setStorageItem(STORAGE_KEYS.TOKEN, accessToken);
+            setStorageItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+        }
+        
+        function saveUserData(user) {
+            setStorageItem(STORAGE_KEYS.USER, JSON.stringify(user));
+        }
+        
+        function updateSessionExpiration() {
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 30);
+            setStorageItem(STORAGE_KEYS.SESSION_EXPIRES, expires.toISOString());
+        }
+        
+        function updateLastActivity() {
+            const now = new Date().toISOString();
+            setStorageItem(STORAGE_KEYS.LAST_ACTIVITY, now);
+        }
+        
+        function processFailedQueue(error, token = null) {
+            failedRequestsQueue.forEach(prom => {
+                if (error) {
+                    prom.reject(error);
+                } else {
+                    prom.resolve(token);
+                }
+            });
+            failedRequestsQueue = [];
+        }
+        
+        // ========== SISTEMA DE USUARIO ==========
+        
+        function initializeUserSystem() {
+            console.log('🔐 Verificando sesión del usuario...');
+            
+            const userData = getStorageItem(STORAGE_KEYS.USER);
+            const token = getStorageItem(STORAGE_KEYS.TOKEN);
+            const refreshToken = getStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
+            
+            if (token && userData && refreshToken) {
+                try {
+                    currentUser = JSON.parse(userData);
+                    console.log('✅ Usuario encontrado:', currentUser.nombre);
+                    showUserInterface();
+                    updateLastActivity();
+                } catch (error) {
+                    console.error('❌ Error parseando datos de usuario:', error);
+                    clearUserSession();
+                    showLoginInterface();
+                }
+            } else {
+                console.log('ℹ️ No hay sesión activa');
+                showLoginInterface();
+            }
+            
+            initializeMobileMenu();
+        }
+        
+        function showUserInterface() {
+            const loginBtn = document.getElementById('login-btn');
+            const loggedUser = document.getElementById('logged-user');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (loggedUser) loggedUser.style.display = 'flex';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'block';
+            
+            updateUserInfo();
+            
+            const avatar = document.getElementById('user-avatar');
+            if (avatar && currentUser) {
+                const letter = currentUser.nombre 
+                    ? currentUser.nombre.charAt(0).toUpperCase() 
+                    : currentUser.email.charAt(0).toUpperCase();
+                
+                avatar.textContent = letter;
+                
+                if (currentUser.rol === 'admin') {
+                    avatar.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    avatar.title = `Administrador: ${currentUser.nombre}`;
+                } else {
+                    avatar.style.background = 'linear-gradient(135deg, #3498db, #2c3e50)';
+                    avatar.title = `Usuario: ${currentUser.nombre}`;
+                }
+                
+                avatar.onclick = toggleUserDropdown;
+                avatar.onkeydown = function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleUserDropdown();
+                    }
+                };
+            }
+        }
+        
+        function showLoginInterface() {
+            const loginBtn = document.getElementById('login-btn');
+            const loggedUser = document.getElementById('logged-user');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            
+            if (loginBtn) loginBtn.style.display = 'flex';
+            if (loggedUser) loggedUser.style.display = 'none';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'none';
+            
+            if (userDropdown && userDropdownOpen) {
+                closeUserDropdown();
+            }
+        }
+        
+        function updateUserInfo() {
+            if (!currentUser) return;
+            
+            const userName = document.getElementById('user-name');
+            const userRole = document.getElementById('user-role');
+            
+            if (userName) {
+                userName.textContent = currentUser.nombre || currentUser.email.split('@')[0];
+            }
+            
+            if (userRole) {
+                userRole.textContent = currentUser.rol || 'user';
+                userRole.className = 'user-role ' + (currentUser.rol === 'admin' ? 'admin' : '');
+            }
+        }
+        
+        function toggleUserDropdown() {
+            if (!currentUser) return;
+            
+            if (!userDropdown) {
+                createUserDropdown();
+            }
+            
+            if (userDropdownOpen) {
+                closeUserDropdown();
+            } else {
+                openUserDropdown();
+            }
+        }
+        
+        function createUserDropdown() {
+            const existing = document.getElementById('user-dropdown-menu');
+            if (existing) existing.remove();
+            
+            userDropdown = document.createElement('div');
+            userDropdown.id = 'user-dropdown-menu';
+            userDropdown.className = 'user-dropdown-menu';
+            
+            const isAdmin = currentUser.rol === 'admin';
+            
+            userDropdown.innerHTML = `
+                <div class="user-dropdown-header">
+                    <div style="font-weight: bold; font-size: 16px;">${currentUser.nombre || 'Usuario'}</div>
+                    <div class="user-dropdown-email">${currentUser.email}</div>
+                    ${isAdmin ? '<div style="font-size: 12px; margin-top: 4px; padding: 2px 8px; background: rgba(255,255,255,0.2); border-radius: 4px; display: inline-block;">Administrador</div>' : ''}
+                </div>
+                <a href="usuario.html" class="user-dropdown-link" id="user-account-link">
+                    <i class="bi bi-person"></i> Mi Cuenta
+                    ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
+                </a>
+                ${isAdmin ? `
+                <a href="admin.html" class="user-dropdown-link">
+                    <i class="bi bi-shield-check"></i> Panel de Administración
+                </a>
+                ` : ''}
+                <a href="reservas.html" class="user-dropdown-link">
+                    <i class="bi bi-calendar-check"></i> Mis Reservas
+                </a>
+                <a href="#" class="user-dropdown-link" id="logout-link">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a>
+            `;
+            
+            document.getElementById('user-menu-container').appendChild(userDropdown);
+            
+            const accountLink = document.getElementById('user-account-link');
+            if (accountLink) {
+                accountLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.setItem('redirecting_to_user', 'true');
+                    window.location.href = 'usuario.html';
+                });
+            }
+            
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            const links = userDropdown.querySelectorAll('.user-dropdown-link');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.background = '#f5f5f5';
+                });
+                link.addEventListener('mouseleave', function() {
+                    this.style.background = '';
+                });
+            });
+        }
+        
+        function openUserDropdown() {
+            if (!userDropdown) return;
+            
+            userDropdown.classList.add('show');
+            userDropdownOpen = true;
+            
+            setTimeout(() => {
+                document.addEventListener('click', closeUserDropdownOnClickOutside);
+                document.addEventListener('keydown', closeUserDropdownOnEscape);
+            }, 10);
+        }
+        
+        function closeUserDropdown() {
+            if (userDropdown) {
+                userDropdown.classList.remove('show');
+                userDropdownOpen = false;
+                document.removeEventListener('click', closeUserDropdownOnClickOutside);
+                document.removeEventListener('keydown', closeUserDropdownOnEscape);
+            }
+        }
+        
+        function closeUserDropdownOnClickOutside(e) {
+            if (userDropdown && 
+                !userDropdown.contains(e.target) && 
+                !document.getElementById('user-avatar').contains(e.target)) {
+                closeUserDropdown();
+            }
+        }
+        
+        function closeUserDropdownOnEscape(e) {
+            if (e.key === 'Escape' && userDropdownOpen) {
+                closeUserDropdown();
+            }
+        }
+        
+        function logout() {
+            if (confirm('¿Estás seguro de cerrar sesión?')) {
+                clearUserSession();
+                showLoginInterface();
+                showAlert('Sesión cerrada correctamente', 'success');
+            }
+        }
+        
+        function clearUserSession() {
+            Object.values(STORAGE_KEYS).forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+            
+            currentUser = null;
+            console.log('✅ Sesión completamente limpiada');
+        }
+        
+        // ========== FUNCIONES DE UI ==========
+        
+        function hideLoader() {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.classList.add('hidden');
+            }
+        }
+        
+        function showAlert(message, type = 'info') {
+            let alertDiv = document.getElementById('site-alert');
+            if (!alertDiv) {
+                alertDiv = document.createElement('div');
+                alertDiv.id = 'site-alert';
+                alertDiv.className = 'site-alert';
+                document.body.appendChild(alertDiv);
+            }
+            
+            alertDiv.textContent = message;
+            alertDiv.className = `site-alert ${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 4000);
+        }
+        
+        function initializeMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const menuClose = document.getElementById('mobile-menu-close');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            const menuContainer = document.getElementById('mobile-menu-container');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    if (!isMobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                });
+            }
+            
+            if (menuClose) {
+                menuClose.addEventListener('click', closeMobileMenu);
+            }
+            
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', closeMobileMenu);
+            }
+            
+            const mobileLinks = document.querySelectorAll('.mobile-menu-nav a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isMobileMenuOpen) {
+                    closeMobileMenu();
+                }
+            });
+        }
+        
+        function openMobileMenu() {
+            const menuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            if (menuContainer && menuOverlay) {
+                menuContainer.classList.add('active');
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                isMobileMenuOpen = true;
+                closeUserDropdown();
+            }
+        }
+        
+        function closeMobileMenu() {
+            const menuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            
+            if (menuContainer && menuOverlay) {
+                menuContainer.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                isMobileMenuOpen = false;
+            }
+        }
+        
+        // ========== SISTEMA DE BLOG ==========
+        
+        function initializeBlogSystem() {
+            console.log('📝 Inicializando sistema de blog...');
+            
+            loadBlogPosts();
+            setupEventListeners();
+        }
+        
+        async function loadBlogPosts() {
+            try {
+                console.log('🔄 Cargando posts del blog desde API...');
+                
+                const response = await fetchWithAuth(`${API_BASE_URL}/blog`);
+                
+                if (response.ok) {
+                    allBlogPosts = await response.json();
+                    console.log(`✅ ${allBlogPosts.length} posts cargados`);
+                    
+                    // Procesar y mostrar posts
+                    processBlogPosts();
+                } else {
+                    console.error('❌ Error cargando posts del blog:', response.status);
+                    loadFallbackBlogPosts();
+                }
+            } catch (error) {
+                console.error('❌ Error de conexión:', error);
+                loadFallbackBlogPosts();
+            }
+        }
+        
+        function processBlogPosts() {
+            // Aplicar filtros
+            filterBlogPosts();
+            
+            // Mostrar posts
+            renderBlogPosts();
+            
+            // Actualizar paginación
+            updatePagination();
+        }
+        
+        function filterBlogPosts() {
+            filteredBlogPosts = allBlogPosts.filter(post => {
+                // Filtrar por categoría
+                if (currentCategory !== 'all') {
+                    // Aquí podrías ajustar según cómo vengan las categorías de la API
+                    const postCategory = post.categoria || post.category || 'noticias';
+                    if (postCategory.toLowerCase() !== currentCategory) {
+                        return false;
+                    }
+                }
+                
+                // Filtrar por búsqueda
+                if (currentSearch) {
+                    const searchLower = currentSearch.toLowerCase();
+                    const title = post.titulo ? post.titulo.toLowerCase() : '';
+                    const excerpt = post.excerpt ? post.excerpt.toLowerCase() : '';
+                    const content = post.contenido ? post.contenido.toLowerCase() : '';
+                    
+                    if (!title.includes(searchLower) && 
+                        !excerpt.includes(searchLower) && 
+                        !content.includes(searchLower)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            // Ordenar por fecha (más reciente primero)
+            filteredBlogPosts.sort((a, b) => {
+                const dateA = new Date(a.created_at || a.fecha_publicacion || Date.now());
+                const dateB = new Date(b.created_at || b.fecha_publicacion || Date.now());
+                return dateB - dateA;
+            });
+        }
+        
+        function renderBlogPosts() {
+            const container = document.getElementById('blogs-container');
+            if (!container) return;
+            
+            // Mostrar vista de lista o detalle
+            const detailContainer = document.getElementById('blog-detail-container');
+            const listContainer = document.querySelector('.blog-section .container > :not(#blog-detail-container)');
+            
+            if (detailContainer.style.display === 'block') {
+                // Ya estamos en vista detallada
+                return;
+            }
+            
+            // Calcular posts para la página actual
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const endIndex = startIndex + postsPerPage;
+            const postsToShow = filteredBlogPosts.slice(startIndex, endIndex);
+            
+            if (filteredBlogPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <h3>No se encontraron publicaciones</h3>
+                        <p>${currentSearch || currentCategory !== 'all' ? 
+                            'Intenta con otros términos de búsqueda o selecciona otra categoría.' : 
+                            'Próximamente habrá nuevas publicaciones en nuestro blog.'}</p>
+                    </div>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            postsToShow.forEach(post => {
+                const postDate = new Date(post.created_at || post.fecha_publicacion || Date.now());
+                const formattedDate = postDate.toLocaleDateString('es-ES', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                
+                const category = post.categoria || post.category || 'noticias';
+                const authorName = post.autor || post.author || 'Equipo Caño Salao';
+                const authorInitial = authorName.charAt(0).toUpperCase();
+                const views = post.vistas || post.views || Math.floor(Math.random() * 100) + 50;
+                
+                const blogCard = document.createElement('div');
+                blogCard.className = 'blog-card';
+                blogCard.innerHTML = `
+                    <div class="blog-image">
+                        ${post.imagen_url ? 
+                            `<img src="${post.imagen_url}" alt="${post.titulo}" loading="lazy">` : 
+                            `<div style="width:100%;height:100%;background:linear-gradient(135deg, #2c3e50, #3498db);display:flex;align-items:center;justify-content:center;">
+                                <i class="bi bi-newspaper" style="font-size:48px;color:white;"></i>
+                            </div>`
+                        }
+                        <div class="blog-category">${getCategoryLabel(category)}</div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <div class="blog-date">
+                                <i class="bi bi-calendar"></i> ${formattedDate}
+                            </div>
+                            <div class="blog-views">
+                                <i class="bi bi-eye"></i> ${views} vistas
+                            </div>
+                        </div>
+                        <h3 class="blog-title">${post.titulo || 'Sin título'}</h3>
+                        <p class="blog-excerpt">${post.excerpt || (post.contenido ? 
+                            post.contenido.substring(0, 150) + '...' : 
+                            'Descripción no disponible')}</p>
+                        <div class="blog-footer">
+                            <div class="blog-author">
+                                <div class="author-avatar">${authorInitial}</div>
+                                <span>${authorName}</span>
+                            </div>
+                            <a href="#" class="read-more" data-post-id="${post.id}">
+                                Leer más <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(blogCard);
+            });
+            
+            // Añadir event listeners para "Leer más"
+            document.querySelectorAll('.read-more').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const postId = this.dataset.postId;
+                    showBlogDetail(postId);
+                });
+            });
+        }
+        
+        function getCategoryLabel(category) {
+            const categories = {
+                'noticias': 'Noticias',
+                'viajes': 'Consejos de Viaje',
+                'naturaleza': 'Naturaleza',
+                'comunidad': 'Comunidad',
+                'turismo': 'Turismo Sostenible'
+            };
+            return categories[category] || 'Noticias';
+        }
+        
+        function showBlogDetail(postId) {
+            const post = allBlogPosts.find(p => p.id == postId);
+            if (!post) return;
+            
+            // Ocultar lista, mostrar detalle
+            const detailContainer = document.getElementById('blog-detail-container');
+            const listContainer = document.querySelector('.blog-section .container > :not(#blog-detail-container)');
+            
+            listContainer.style.display = 'none';
+            detailContainer.style.display = 'block';
+            
+            // Renderizar detalle
+            const detailContent = document.getElementById('blog-detail-content');
+            const postDate = new Date(post.created_at || post.fecha_publicacion || Date.now());
+            const formattedDate = postDate.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            const category = post.categoria || post.category || 'noticias';
+            const authorName = post.autor || post.author || 'Equipo Caño Salao';
+            const authorInitial = authorName.charAt(0).toUpperCase();
+            const views = post.vistas || post.views || Math.floor(Math.random() * 100) + 50;
+            
+            detailContent.innerHTML = `
+                <div class="blog-detail">
+                    <div class="blog-detail-header">
+                        <div class="blog-category" style="display: inline-block; margin-bottom: 1rem;">${getCategoryLabel(category)}</div>
+                        <h1 class="blog-detail-title">${post.titulo || 'Sin título'}</h1>
+                        <div class="blog-detail-meta">
+                            <div class="blog-author">
+                                <div class="author-avatar">${authorInitial}</div>
+                                <span>${authorName}</span>
+                            </div>
+                            <div><i class="bi bi-calendar"></i> ${formattedDate}</div>
+                            <div><i class="bi bi-eye"></i> ${views} vistas</div>
+                        </div>
+                    </div>
+                    
+                    ${post.imagen_url ? `
+                    <div class="blog-detail-image">
+                        <img src="${post.imagen_url}" alt="${post.titulo}" loading="lazy">
+                    </div>
+                    ` : ''}
+                    
+                    <div class="blog-detail-content">
+                        ${post.contenido ? 
+                            formatBlogContent(post.contenido) : 
+                            '<p>Contenido no disponible.</p>'}
+                    </div>
+                </div>
+            `;
+            
+            // Incrementar vistas (simulado)
+            if (!post.vistas) {
+                post.vistas = views + 1;
+            }
+            
+            // Scroll al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function formatBlogContent(content) {
+            // Formatear contenido básico (podrías usar un parser más complejo según tu backend)
+            return content
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/<h2>/g, '</p><h2>')
+                .replace(/<\/h2>/g, '</h2><p>')
+                .replace(/<h3>/g, '</p><h3>')
+                .replace(/<\/h3>/g, '</h3><p>')
+                .replace(/<blockquote>/g, '</p><blockquote>')
+                .replace(/<\/blockquote>/g, '</blockquote><p>')
+                .replace(/^/, '<p>')
+                .replace(/$/, '</p>');
+        }
+        
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredBlogPosts.length / postsPerPage);
+            
+            if (totalPages <= 1) {
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('pagination').style.display = 'flex';
+            
+            // Actualizar botones
+            document.getElementById('prev-btn').disabled = currentPage === 1;
+            document.getElementById('next-btn').disabled = currentPage === totalPages;
+            
+            // Actualizar números de página
+            const pageNumbersContainer = document.getElementById('page-numbers');
+            pageNumbersContainer.innerHTML = '';
+            
+            // Mostrar máximo 5 números de página
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageNumber = document.createElement('div');
+                pageNumber.className = `page-number ${i === currentPage ? 'active' : ''}`;
+                pageNumber.textContent = i;
+                pageNumber.addEventListener('click', () => {
+                    currentPage = i;
+                    renderBlogPosts();
+                    updatePagination();
+                });
+                pageNumbersContainer.appendChild(pageNumber);
+            }
+        }
+        
+        function loadFallbackBlogPosts() {
+            console.log('📝 Cargando posts de ejemplo...');
+            
+            allBlogPosts = [
+                {
+                    id: 1,
+                    titulo: 'La Importancia de los Manglares en Caño Salao',
+                    excerpt: 'Descubre por qué los manglares son esenciales para el ecosistema y cómo los protegemos en nuestra ruta turística.',
+                    contenido: `<h2>Los Manglares: Pulmones del Ecosistema Marino</h2>
+<p>Los manglares son uno de los ecosistemas más importantes y productivos del planeta. En Caño Salao, hemos dedicado años a la conservación y protección de estos increíbles bosques costeros.</p>
+
+<h3>¿Por qué son tan importantes?</h3>
+<p>Los manglares actúan como barreras naturales contra la erosión costera, protegen las comunidades de tormentas y tsunamis, y sirven como criaderos naturales para muchas especies marinas.</p>
+
+<blockquote>"La protección de los manglares no es solo una responsabilidad ambiental, es una inversión en nuestro futuro" - Guía local de Caño Salao</blockquote>
+
+<p>En nuestros tours, enseñamos a los visitantes sobre la importancia de estos ecosistemas y cómo pueden contribuir a su conservación.</p>`,
+                    imagen_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                    categoria: 'naturaleza',
+                    autor: 'María González',
+                    fecha_publicacion: '2024-03-15',
+                    vistas: 342
+                },
+                {
+                    id: 2,
+                    titulo: 'Consejos para Fotografiar la Naturaleza en Nuestros Tours',
+                    excerpt: 'Aprende técnicas profesionales para capturar las mejores imágenes durante tu aventura en Caño Salao.',
+                    contenido: `<h2>Fotografía de Naturaleza: Capturando la Esencia de Caño Salao</h2>
+<p>La fotografía es una forma maravillosa de conservar los recuerdos de tu visita a Caño Salao. Aquí te damos algunos consejos profesionales.</p>
+
+<h3>Mejores Momentos del Día</h3>
+<p>La "hora dorada" (primeras horas de la mañana y última hora de la tarde) ofrece la mejor luz para fotografiar paisajes y vida silvestre.</p>
+
+<h3>Equipo Recomendado</h3>
+<ul>
+<li>Cámara con lente zoom (70-200mm ideal para aves)</li>
+<li>Trípode para fotos estables</li>
+<li>Protector contra el agua y la humedad</li>
+</ul>
+
+<p>Nuestros guías están entrenados para ayudarte a encontrar los mejores ángulos y momentos para tus fotografías.</p>`,
+                    imagen_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                    categoria: 'viajes',
+                    autor: 'Carlos Rodríguez',
+                    fecha_publicacion: '2024-03-10',
+                    vistas: 287
+                },
+                {
+                    id: 3,
+                    titulo: 'Nuevo Programa de Turismo Sostenible 2024',
+                    excerpt: 'Presentamos nuestras nuevas iniciativas para hacer del turismo una fuerza positiva para la comunidad y el medio ambiente.',
+                    contenido: `<h2>Turismo Sostenible: Nuestro Compromiso con el Futuro</h2>
+<p>Este 2024, lanzamos nuevas iniciativas que refuerzan nuestro compromiso con el turismo sostenible en Caño Salao.</p>
+
+<h3>Novedades del Programa</h3>
+<p>1. <strong>Capacitación comunitaria:</strong> Entrenamiento para residentes locales como guías turísticos.<br>
+2. <strong>Fondo de conservación:</strong> 10% de cada reserva se destina a proyectos ambientales.<br>
+3. <strong>Monitoreo ecológico:</strong> Sistema para evaluar el impacto del turismo en el ecosistema.</p>
+
+<p>Estas iniciativas buscan equilibrar el desarrollo económico con la protección ambiental y el bienestar social.</p>`,
+                    imagen_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                    categoria: 'turismo',
+                    autor: 'Ana López',
+                    fecha_publicacion: '2024-03-05',
+                    vistas: 198
+                },
+                {
+                    id: 4,
+                    titulo: 'Historias de la Comunidad: Don Pedro, el Pescador',
+                    excerpt: 'Conoce la inspiradora historia de Don Pedro, pescador local que se convirtió en uno de nuestros guías más queridos.',
+                    contenido: `<h2>De Pescador a Guía: La Historia de Don Pedro</h2>
+<p>Don Pedro ha vivido en Caño Salao toda su vida. Durante 40 años, se ganó la vida como pescador, conociendo cada rincón de los manglares.</p>
+
+<h3>Una Nueva Vocación</h3>
+<p>Cuando comenzamos el proyecto turístico, Don Pedro fue uno de los primeros en unirse. Su conocimiento del área es incomparable.</p>
+
+<blockquote>"Antes pescaba para vivir, ahora ayudo a otros a descubrir la belleza de este lugar que tanto amo" - Don Pedro</blockquote>
+
+<p>Sus historias sobre la vida en el manglar, los cambios que ha visto a lo largo de los años, y su conexión con la naturaleza hacen de sus tours una experiencia única.</p>`,
+                    imagen_url: 'https://images.unsplash.com/photo-1580137189272-c9370b0d12c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                    categoria: 'comunidad',
+                    autor: 'Luisa Martínez',
+                    fecha_publicacion: '2024-02-28',
+                    vistas: 156
+                }
+            ];
+            
+            processBlogPosts();
+        }
+        
+        function setupEventListeners() {
+            // Filtros de categoría
+            document.querySelectorAll('.category-filter').forEach(filter => {
+                filter.addEventListener('click', function() {
+                    // Actualizar filtro activo
+                    document.querySelectorAll('.category-filter').forEach(f => {
+                        f.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Actualizar categoría y renderizar
+                    currentCategory = this.dataset.category;
+                    currentPage = 1;
+                    processBlogPosts();
+                });
+            });
+            
+            // Búsqueda
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentSearch = this.value.trim();
+                    currentPage = 1;
+                    processBlogPosts();
+                }, 500);
+            });
+            
+            // Botones de paginación
+            document.getElementById('prev-btn').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderBlogPosts();
+                    updatePagination();
+                }
+            });
+            
+            document.getElementById('next-btn').addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredBlogPosts.length / postsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderBlogPosts();
+                    updatePagination();
+                }
+            });
+            
+            // Volver al listado
+            document.getElementById('back-to-blogs').addEventListener('click', function() {
+                const detailContainer = document.getElementById('blog-detail-container');
+                const listContainer = document.querySelector('.blog-section .container > :not(#blog-detail-container)');
+                
+                detailContainer.style.display = 'none';
+                listContainer.style.display = 'block';
+                
+                // Scroll al inicio del blog
+                document.querySelector('.blog-section').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    </script>
+</body>
+</html>
